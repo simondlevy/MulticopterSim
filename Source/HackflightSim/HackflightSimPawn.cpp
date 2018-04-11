@@ -8,6 +8,45 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
+#include "Runtime/Core/Public/Math/UnrealMathUtility.h"
+
+// Main firmware
+hf::Hackflight hackflight;
+
+// Controller input
+#ifdef _WIN32
+#include <receivers/sim/windows.hpp>
+#else
+#include <receivers/sim/linux.hpp>
+#endif
+hf::Controller controller;
+
+// Debugging
+
+static FColor TEXT_COLOR = FColor::Yellow;
+static float  TEXT_SCALE = 2.f;
+
+void hf::Board::outbuf(char * buf)
+{
+	if (GEngine) {
+
+		// 0 = overwrite; 5.0f = arbitrary time to display
+		GEngine->AddOnScreenDebugMessage(0, 5.0f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
+	}
+
+}
+
+// PID tuning
+hf::Stabilizer stabilizer = hf::Stabilizer(
+	1.0f,      // Level P
+	.00001f,    // Gyro cyclic P
+	0,			// Gyro cyclic I
+	0,			// Gyro cyclic D
+	0,			// Gyro yaw P
+	0);			// Gyro yaw I
+
+
+// Pawn methods ---------------------------------------------------
 
 AHackflightSimPawn::AHackflightSimPawn()
 {
@@ -16,7 +55,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 	{
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> PlaneMesh;
 		FConstructorStatics()
-			: PlaneMesh(TEXT("/Game/Flying/Meshes/UFO.UFO"))
+			: PlaneMesh(TEXT("/Game/Flying/Meshes/3DFly.3DFly"))
 		{
 		}
 	};
@@ -27,107 +66,165 @@ AHackflightSimPawn::AHackflightSimPawn()
 	PlaneMesh->SetStaticMesh(ConstructorStatics.PlaneMesh.Get());	// Set static mesh
 	RootComponent = PlaneMesh;
 
-	// Create a spring arm component
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
-	SpringArm->SetupAttachment(RootComponent);	// Attach SpringArm to RootComponent
-	SpringArm->TargetArmLength = 160.0f; // The camera follows at this distance behind the character	
-	SpringArm->SocketOffset = FVector(0.f,0.f,60.f);
-	SpringArm->bEnableCameraLag = false;	// Do not allow camera to lag
-	SpringArm->CameraLagSpeed = 15.f;
+	// Start Hackflight firmware
+	hackflight.init(this, &controller, &stabilizer);
 
-	// Create camera component 
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
-	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);	// Attach the camera
-	Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
+    // Initialize the motor-spin values
+    for (uint8_t k=0; k<4; ++k) {
+        motorvals[k] = 0;
+    }
 
-	// Set handling parameters
-	Acceleration = 500.f;
-	TurnSpeed = 50.f;
-	MaxSpeed = 1000.f;
-	MinSpeed = 100.f;
-	CurrentForwardSpeed = 100.f;
+    // Initialize elapsed time
+    elapsedTime = 0;
+
+	// Load our Sound Cue for the propeller sound we created in the editor... 
+	// note your path may be different depending
+	// on where you store the asset on disk.
+	static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/Flying/Audio/MotorSoundCue'"));
+	
+	// Store a reference to the Cue asset - we'll need it later.
+	propellerAudioCue = propellerCue.Object;
+
+	// Create an audio component, the audio component wraps the Cue, 
+	// and allows us to ineract with it, and its parameters from code.
+	propellerAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
+
+	// I don't want the sound playing the moment it's created.
+	propellerAudioComponent->bAutoActivate = false;
+
+	// I want the sound to follow the pawn around, so I attach it to the Pawns root.
+	propellerAudioComponent->SetupAttachment(GetRootComponent());
+
+    // Set up the FPV camera
+    fpvSpringArm = CreateDefaultSubobject<USpringArmComponent>(L"FpvSpringArm");
+    fpvSpringArm->SetupAttachment(RootComponent);
+    fpvCamera = CreateDefaultSubobject<UCameraComponent>(L"FpvCamera");
+    fpvCamera ->SetupAttachment(fpvSpringArm, USpringArmComponent::SocketName); 
+}
+
+void AHackflightSimPawn::PostInitializeComponents()
+{
+	if (propellerAudioCue->IsValidLowLevelFast()) {
+		propellerAudioComponent->SetSound(propellerAudioCue);
+	}
+
+    // Grab the static prop mesh components by name, storing them for use in Tick()
+    TArray<UStaticMeshComponent *> staticComponents;
+    this->GetComponents<UStaticMeshComponent>(staticComponents);
+    for (int i = 0; i < staticComponents.Num(); i++) {
+        if (staticComponents[i]) {
+            UStaticMeshComponent* child = staticComponents[i];
+            if (child->GetName() == "Prop1") PropMeshes[0] = child;
+            if (child->GetName() == "Prop2") PropMeshes[1] = child;
+            if (child->GetName() == "Prop3") PropMeshes[2] = child;
+            if (child->GetName() == "Prop4") PropMeshes[3] = child;
+        }
+	}
+
+	Super::PostInitializeComponents();
+}
+
+void AHackflightSimPawn::BeginPlay()
+{
+    // Start playing the sound.  Note that because the Cue Asset is set to loop the sound,
+    // once we start playing the sound, it will play continiously...
+    propellerAudioComponent->Play();
+
+    Super::BeginPlay();
 }
 
 void AHackflightSimPawn::Tick(float DeltaSeconds)
 {
-	const FVector LocalMove = FVector(CurrentForwardSpeed * DeltaSeconds, 0.f, 0.f);
+    // Update our flight firmware
+    hackflight.update();
 
-	// Move plan forwards (with sweep so we stop when we collide with things)
-	AddActorLocalOffset(LocalMove, true);
+    // Accumulate elapsed time
+    elapsedTime += DeltaSeconds;
 
-	// Calculate change in rotation this frame
-	FRotator DeltaRotation(0,0,0);
-	DeltaRotation.Pitch = CurrentPitchSpeed * DeltaSeconds;
-	DeltaRotation.Yaw = CurrentYawSpeed * DeltaSeconds;
-	DeltaRotation.Roll = CurrentRollSpeed * DeltaSeconds;
+    // Compute body-frame roll, pitch, yaw velocities based on differences between motors
+    float forces[3];
+    forces[0] = motorsToAngularForce(2, 3, 0, 1);
+    forces[1] = motorsToAngularForce(1, 3, 0, 2); 
+    forces[2] = motorsToAngularForce(1, 2, 0, 3); 
 
-	// Rotate plane
-	AddActorLocalRotation(DeltaRotation);
+    // Rotate vehicle
+    AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
 
-	// Call any parent class Tick implementation
-	Super::Tick(DeltaSeconds);
+    // Spin props proportionate to motor values, acumulating their sum 
+    float motorSum = 0;
+    for (uint8_t k=0; k<4; ++k) {
+        FRotator PropRotation(0, motorvals[k]*motordirs[k]*60, 0);
+        PropMeshes[k]->AddLocalRotation(PropRotation);
+        motorSum += motorvals[k];
+    }
+
+    // Get current quaternion
+    FQuat q = this->GetActorQuat();
+
+    // Convert quaternion to Euler angles
+    FVector euler = FMath::DegreesToRadians(q.Euler());
+
+    // Rename Euler X,Y,Z to familiar Greek-letter variables
+    float phi   = euler.X;
+    float theta = euler.Y;
+    float psi   = euler.Z;
+
+    // Rotate Euler angles into inertial frame
+    // https://ocw.mit.edu/courses/mechanical-engineering/2-017j-design-of-electromechanical-robotic-systems-fall-2009/course-text/MIT2_017JF09_ch09.pdf
+    float x = sin(phi)*sin(psi) + cos(phi)*cos(psi)*sin(theta);
+    float y = cos(phi)*sin(theta)*sin(psi) - cos(psi)*sin(phi);
+    float z = cos(theta)*cos(phi);
+
+    // Add movement force to vehicle
+    PlaneMesh->AddForce(100*motorSum*FVector(-x, -y, z));
+
+    // Modulate the pitch and voume of the propeller sound
+    propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
+    propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
+
+    // Call any parent class Tick implementation
+    Super::Tick(DeltaSeconds);
 }
 
-void AHackflightSimPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+void AHackflightSimPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
+        bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
-	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+    Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	// Deflect along the surface when we collide.
-	FRotator CurrentRotation = GetActorRotation();
-	SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
+    // Deflect along the surface when we collide.
+    FRotator CurrentRotation = GetActorRotation();
+    SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
 }
 
-
-void AHackflightSimPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+float AHackflightSimPawn::motorsToAngularForce(int a, int b, int c, int d)
 {
-    // Check if PlayerInputComponent is valid (not NULL)
-	check(PlayerInputComponent);
+    float v = ((motorvals[a] + motorvals[b]) - (motorvals[c] + motorvals[d]));
 
-	// Bind our control axis' to callback functions
-	PlayerInputComponent->BindAxis("Thrust", this, &AHackflightSimPawn::ThrustInput);
-	PlayerInputComponent->BindAxis("MoveUp", this, &AHackflightSimPawn::MoveUpInput);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AHackflightSimPawn::MoveRightInput);
+    return (v<0 ? -1 : +1) * pow(fabs(v), 3);
 }
 
-void AHackflightSimPawn::ThrustInput(float Val)
+void AHackflightSimPawn::init(void)
 {
-	// Is there any input?
-	bool bHasInput = !FMath::IsNearlyEqual(Val, 0.f);
-	// If input is not held down, reduce speed
-	float CurrentAcc = bHasInput ? (Val * Acceleration) : (-0.5f * Acceleration);
-	// Calculate new speed
-	float NewForwardSpeed = CurrentForwardSpeed + (GetWorld()->GetDeltaSeconds() * CurrentAcc);
-	// Clamp between MinSpeed and MaxSpeed
-	CurrentForwardSpeed = FMath::Clamp(NewForwardSpeed, MinSpeed, MaxSpeed);
 }
 
-void AHackflightSimPawn::MoveUpInput(float Val)
+bool AHackflightSimPawn::getEulerAngles(float eulerAngles[3]) 
 {
-	// Target pitch speed is based in input
-	float TargetPitchSpeed = (Val * TurnSpeed * -1.f);
-
-	// When steering, we decrease pitch slightly
-	TargetPitchSpeed += (FMath::Abs(CurrentYawSpeed) * -0.2f);
-
-	// Smoothly interpolate to target pitch speed
-	CurrentPitchSpeed = FMath::FInterpTo(CurrentPitchSpeed, TargetPitchSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
+    eulerAngles[0] = eulerAngles[1] = eulerAngles[2] = 0;
+    return true;
 }
 
-void AHackflightSimPawn::MoveRightInput(float Val)
+bool AHackflightSimPawn::getGyroRates(float gyroRates[3]) 
 {
-	// Target yaw speed is based on input
-	float TargetYawSpeed = (Val * TurnSpeed);
+    gyroRates[0] = gyroRates[1] = gyroRates[2] = 0;
+    return true;
+}
 
-	// Smoothly interpolate to target yaw speed
-	CurrentYawSpeed = FMath::FInterpTo(CurrentYawSpeed, TargetYawSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
+uint32_t AHackflightSimPawn::getMicroseconds() 
+{
+    return (uint32_t)(elapsedTime*1e6);
+}
 
-	// Is there any left/right input?
-	const bool bIsTurning = FMath::Abs(Val) > 0.2f;
-
-	// If turning, yaw value is used to influence roll
-	// If not turning, roll to reverse current roll value.
-	float TargetRollSpeed = bIsTurning ? (CurrentYawSpeed * 0.5f) : (GetActorRotation().Roll * -2.f);
-
-	// Smoothly interpolate roll speed
-	CurrentRollSpeed = FMath::FInterpTo(CurrentRollSpeed, TargetRollSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
+void AHackflightSimPawn::writeMotor(uint8_t index, float value) 
+{
+    motorvals[index] = value;
 }

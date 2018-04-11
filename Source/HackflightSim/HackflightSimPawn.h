@@ -1,84 +1,76 @@
 // Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
 #pragma once
 
+// Math support
+#define _USE_MATH_DEFINES
+#include <math.h>
+
+#include <hackflight.hpp>
+using namespace hf;
+
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Runtime/Engine/Classes/Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 #include "HackflightSimPawn.generated.h"
 
 UCLASS(Config=Game)
-class AHackflightSimPawn : public APawn
+class AHackflightSimPawn : public APawn, public Board
 {
-	GENERATED_BODY()
+    private:
 
-	/** StaticMesh component that will be the visuals for our flying pawn */
-	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* PlaneMesh;
+        GENERATED_BODY()
 
-	/** Spring arm that will offset the camera */
-	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* SpringArm;
+        // StaticMesh component that will be the visuals for our flying pawn 
+        UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+        class UStaticMeshComponent* PlaneMesh;
 
-	/** Camera component that will be our viewpoint */
-	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* Camera;
-public:
-	AHackflightSimPawn();
+        // Propeller meshes for spinning
+        class UStaticMeshComponent* PropMeshes[4];
 
-	// Begin AActor overrides
-	virtual void Tick(float DeltaSeconds) override;
-	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
-	// End AActor overrides
+        // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
 
-protected:
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+            class USoundCue* propellerAudioCue;
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+            class USoundCue* propellerStartupCue;
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+            class UAudioComponent* propellerAudioComponent;
 
-	// Begin APawn overrides
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override; // Allows binding actions/axes to functions
-	// End APawn overrides
+        // FPV camera support
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+            class UCameraComponent* fpvCamera;
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+            class USpringArmComponent* fpvSpringArm;
 
-	/** Bound to the thrust axis */
-	void ThrustInput(float Val);
-	
-	/** Bound to the vertical axis */
-	void MoveUpInput(float Val);
+    public:
 
-	/** Bound to the horizontal axis */
-	void MoveRightInput(float Val);
+        AHackflightSimPawn();
 
-private:
+        // Begin AActor overrides
+        virtual void BeginPlay() override;
+        void PostInitializeComponents() override;
+        virtual void Tick(float DeltaSeconds) override;
+        virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
+                bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+        // End AActor overrides
 
-	/** How quickly forward speed changes */
-	UPROPERTY(Category=Plane, EditAnywhere)
-	float Acceleration;
+        virtual void     init(void) override;
+        virtual bool     getEulerAngles(float eulerAngles[3]) override;
+        virtual bool     getGyroRates(float gyroRates[3]) override;
+        virtual uint32_t getMicroseconds() override;
+        virtual void     writeMotor(uint8_t index, float value) override;
 
-	/** How quickly pawn can steer */
-	UPROPERTY(Category=Plane, EditAnywhere)
-	float TurnSpeed;
+        // Support for spinning propellers
+        const int8_t motordirs[4] = {+1, -1, -1, +1};
+        float motorvals[4];
 
-	/** Max forward speed */
-	UPROPERTY(Category = Pitch, EditAnywhere)
-	float MaxSpeed;
+        // Support for Hackflight::Board::getMicroseconds()
+        float elapsedTime;
 
-	/** Min forward speed */
-	UPROPERTY(Category=Yaw, EditAnywhere)
-	float MinSpeed;
+        // Converts a set of motor values to angular forces in body frame
+        float motorsToAngularForce(int a, int b, int c, int d);
 
-	/** Current forward speed */
-	float CurrentForwardSpeed;
-
-	/** Current yaw speed */
-	float CurrentYawSpeed;
-
-	/** Current pitch speed */
-	float CurrentPitchSpeed;
-
-	/** Current roll speed */
-	float CurrentRollSpeed;
-
-public:
-	/** Returns PlaneMesh subobject **/
-	FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
-	/** Returns SpringArm subobject **/
-	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }
-	/** Returns Camera subobject **/
-	FORCEINLINE class UCameraComponent* GetCamera() const { return Camera; }
+        // Returns PlaneMesh subobject 
+        FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
 };
