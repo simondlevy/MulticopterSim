@@ -56,7 +56,7 @@ class AHackflightSimPawn : public APawn, public Board
 
         // AActor overrides
         virtual void BeginPlay() override;
-        void PostInitializeComponents() override;
+        virtual void PostInitializeComponents() override;
         virtual void Tick(float DeltaSeconds) override;
         virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
                 bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
@@ -73,6 +73,8 @@ class AHackflightSimPawn : public APawn, public Board
         float motorvals[4];
 
         // Support for accelerometer, gyrometer emulation
+        FVector euler;
+        FVector eulerPrev;
 
         // Support for Hackflight::Board::getMicroseconds()
         float elapsedTime;

@@ -39,12 +39,11 @@ void hf::Board::outbuf(char * buf)
 		// 0 = overwrite; 5.0f = arbitrary time to display
 		GEngine->AddOnScreenDebugMessage(0, 5.0f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
 	}
-
 }
 
 // PID tuning
 hf::Stabilizer stabilizer = hf::Stabilizer(
-	1.0f,      // Level P
+	1.0f,       // Level P
 	.00001f,    // Gyro cyclic P
 	0,			// Gyro cyclic I
 	0,			// Gyro cyclic D
@@ -104,6 +103,7 @@ AHackflightSimPawn::AHackflightSimPawn()
     // Set up the FPV camera
     fpvSpringArm = CreateDefaultSubobject<USpringArmComponent>(L"FpvSpringArm");
     fpvSpringArm->SetupAttachment(RootComponent);
+	fpvSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
     fpvCamera = CreateDefaultSubobject<UCameraComponent>(L"FpvCamera");
     fpvCamera ->SetupAttachment(fpvSpringArm, USpringArmComponent::SocketName); 
 }
@@ -168,7 +168,7 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     FQuat quat = this->GetActorQuat();
 
     // Convert quaternion to Euler angles
-    FVector euler = FMath::DegreesToRadians(quat.Euler());
+    euler = FMath::DegreesToRadians(quat.Euler());
 
     // Rename Euler X,Y,Z to familiar Greek-letter variables
     float phi   = euler.X;
