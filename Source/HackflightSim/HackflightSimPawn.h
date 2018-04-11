@@ -62,7 +62,6 @@ class AHackflightSimPawn : public APawn, public Board
                 bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
         // Hackflight::Board overrides
-        virtual void     init(void) override;
         virtual bool     getEulerAngles(float eulerAngles[3]) override;
         virtual bool     getGyroRates(float gyroRates[3]) override;
         virtual uint32_t getMicroseconds() override;

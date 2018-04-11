@@ -212,10 +212,6 @@ float AHackflightSimPawn::motorsToAngularForce(int a, int b, int c, int d)
 
 // Hackflight::Board methods ---------------------------------------------------
 
-void AHackflightSimPawn::init(void)
-{
-}
-
 bool AHackflightSimPawn::getEulerAngles(float eulerAngles[3]) 
 {
     eulerAngles[0] =  euler.X;
