@@ -176,7 +176,7 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     float z = cos(theta)*cos(phi);
 
     // Add movement force to vehicle
-    PlaneMesh->AddForce(100*motorSum*FVector(-x, -y, z));
+    PlaneMesh->AddForce(5000*motorSum*FVector(-x, -y, z));
 
     // Modulate the pitch and voume of the propeller sound
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
