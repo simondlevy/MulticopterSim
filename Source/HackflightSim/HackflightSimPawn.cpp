@@ -177,8 +177,7 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     gyro = (euler - eulerPrev) / DeltaSeconds;
     eulerPrev = euler;
  
-    // Rotate Euler angles into inertial frame
-    // https://ocw.mit.edu/courses/mechanical-engineering/2-017j-design-of-electromechanical-robotic-systems-fall-2009/course-text/MIT2_017JF09_ch09.pdf
+    // Rotate Euler angles into inertial frame: http://www.chrobotics.com/library/understanding-euler-angles
     float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
     float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
     float z = cos(euler.Y)*cos(euler.X);
