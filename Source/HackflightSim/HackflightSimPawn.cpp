@@ -95,10 +95,10 @@ AHackflightSimPawn::AHackflightSimPawn()
 	// and allows us to ineract with it, and its parameters from code.
 	propellerAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
 
-	// I don't want the sound playing the moment it's created.
+	// Stop the sound from sound playing the moment it's created.
 	propellerAudioComponent->bAutoActivate = false;
 
-	// I want the sound to follow the pawn around, so I attach it to the Pawns root.
+	// Attach the sound to the pawn's root, the sound follows the pawn around
 	propellerAudioComponent->SetupAttachment(GetRootComponent());
 
     // Set up the FPV camera
@@ -153,8 +153,6 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     forces[1] = motorsToAngularForce(1, 3, 0, 2); 
     forces[2] = motorsToAngularForce(1, 2, 0, 3); 
 
-    Debug::printf("%f %f %f", forces[0], forces[1], forces[2]);
-
     // Rotate vehicle
     AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
 
@@ -167,10 +165,10 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     }
 
     // Get current quaternion
-    FQuat q = this->GetActorQuat();
+    FQuat quat = this->GetActorQuat();
 
     // Convert quaternion to Euler angles
-    FVector euler = FMath::DegreesToRadians(q.Euler());
+    FVector euler = FMath::DegreesToRadians(quat.Euler());
 
     // Rename Euler X,Y,Z to familiar Greek-letter variables
     float phi   = euler.X;
