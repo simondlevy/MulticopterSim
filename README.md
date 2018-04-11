@@ -81,8 +81,7 @@ As with any UE4 C++ project, there are two ways to build and modify the Hackflig
 <ol>
 <li> Double-click on <b>HackflightSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
 You can then use your favorite code editor (ours is 
-[vim](https://www.vim.org) 
-) to edit the source code in <b>Source/HackflightSim</b>.
+<a hfred="https://www.vim.org">vim</a>)) to edit the source code in <b>Source/HackflightSim</b>.
 <li> Right-click on <b>HackflightSim.uproject</b>, and select the menu item
 <b>Generate Visual Studio project files</b>.  This should create a file
 <b>HackflightSim.sln</b> and some new folders.  If you don't get the new .sln
