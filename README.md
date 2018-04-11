@@ -91,11 +91,10 @@ Visual Studio you've installed (see this
 for tips).
 Double-clicking on the .sln file should launch Visual Studio.  The first time
 you launch Visual Studio, it can take several minutes to parse up all the C++
-source code for the UE4 engine.  
+source code for the UE4 engine.  Once you've got the project built and your
+controller plugged in, hitting the <b>F5</b> key should build the project and
+launch Unreal Editor. 
 </ol>
-
-Once you've got the project built and your controller plugged in, hitting the
-<b>F5</b> key should build the project and launch Unreal Editor. 
 
 ## Linux
 
