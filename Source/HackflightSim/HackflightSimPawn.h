@@ -75,6 +75,7 @@ class AHackflightSimPawn : public APawn, public Board
         // Support for accelerometer, gyrometer emulation
         FVector euler;
         FVector eulerPrev;
+        FVector gyro;
 
         // Support for Hackflight::Board::getMicroseconds()
         float elapsedTime;

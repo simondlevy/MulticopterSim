@@ -136,6 +136,9 @@ void AHackflightSimPawn::BeginPlay()
     // once we start playing the sound, it will play continiously...
     propellerAudioComponent->Play();
 
+    // Reset previous Euler angles for gyro emulation
+    eulerPrev = FVector(0, 0, 0);
+
     Super::BeginPlay();
 }
 
@@ -170,16 +173,15 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Convert quaternion to Euler angles
     euler = FMath::DegreesToRadians(quat.Euler());
 
-    // Rename Euler X,Y,Z to familiar Greek-letter variables
-    float phi   = euler.X;
-    float theta = euler.Y;
-    float psi   = euler.Z;
-
+    // Use Euler angle first difference to emulate gyro
+    gyro = (euler - eulerPrev) / DeltaSeconds;
+    eulerPrev = euler;
+ 
     // Rotate Euler angles into inertial frame
     // https://ocw.mit.edu/courses/mechanical-engineering/2-017j-design-of-electromechanical-robotic-systems-fall-2009/course-text/MIT2_017JF09_ch09.pdf
-    float x = sin(phi)*sin(psi) + cos(phi)*cos(psi)*sin(theta);
-    float y = cos(phi)*sin(theta)*sin(psi) - cos(psi)*sin(phi);
-    float z = cos(theta)*cos(phi);
+    float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
+    float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
+    float z = cos(euler.Y)*cos(euler.X);
 
     // Add movement force to vehicle
     PlaneMesh->AddForce(5000*motorSum*FVector(-x, -y, z));
@@ -223,7 +225,12 @@ bool AHackflightSimPawn::getEulerAngles(float eulerAngles[3])
 
 bool AHackflightSimPawn::getGyroRates(float gyroRates[3]) 
 {
-    gyroRates[0] = gyroRates[1] = gyroRates[2] = 0;
+    gyroRates[0] = gyro.X;
+    gyroRates[1] = gyro.Y;
+    gyroRates[2] = gyro.Z;
+
+    Debug::printf("%+3.3f %+3.3f %+3.3f", gyroRates[0], gyroRates[1], gyroRates[2]);
+
     return true;
 }
 
