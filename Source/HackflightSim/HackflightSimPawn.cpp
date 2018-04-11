@@ -168,10 +168,10 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     }
 
     // Get current quaternion
-    FQuat quat = this->GetActorQuat();
+    quat = this->GetActorQuat();
 
     // Convert quaternion to Euler angles
-    euler = FMath::DegreesToRadians(quat.Euler());
+    FVector euler = FMath::DegreesToRadians(quat.Euler());
 
     // Use Euler angle first difference to emulate gyro
     gyro = (euler - eulerPrev) / DeltaSeconds;
@@ -212,11 +212,12 @@ float AHackflightSimPawn::motorsToAngularForce(int a, int b, int c, int d)
 
 // Hackflight::Board methods ---------------------------------------------------
 
-bool AHackflightSimPawn::getEulerAngles(float eulerAngles[3]) 
+bool AHackflightSimPawn::getQuaternion(float q[4]) 
 {
-    eulerAngles[0] =  euler.X;
-    eulerAngles[1] = -euler.Y;
-    eulerAngles[2] =  euler.Z;
+    q[0] = +quat.W;
+    q[1] = -quat.X;
+    q[2] = -quat.Y;
+    q[3] = +quat.Z;
 
     return true;
 }

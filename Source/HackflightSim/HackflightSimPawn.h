@@ -50,6 +50,23 @@ class AHackflightSimPawn : public APawn, public Board
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
             class USpringArmComponent* fpvSpringArm;
 
+        // Support for spinning propellers
+        const int8_t motordirs[4] = {+1, -1, -1, +1};
+        float motorvals[4];
+
+        // Support for quaternions
+        FQuat quat;
+
+        // Support for accelerometer, gyrometer emulation
+        FVector eulerPrev;
+        FVector gyro;
+
+        // Support for Hackflight::Board::getMicroseconds()
+        float elapsedTime;
+
+        // Converts a set of motor values to angular forces in body frame
+        float motorsToAngularForce(int a, int b, int c, int d);
+
     public:
 
         AHackflightSimPawn();
@@ -62,25 +79,10 @@ class AHackflightSimPawn : public APawn, public Board
                 bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
         // Hackflight::Board overrides
-        virtual bool     getEulerAngles(float eulerAngles[3]) override;
+        virtual bool     getQuaternion(float quat[4]) override;
         virtual bool     getGyroRates(float gyroRates[3]) override;
         virtual uint32_t getMicroseconds() override;
         virtual void     writeMotor(uint8_t index, float value) override;
-
-        // Support for spinning propellers
-        const int8_t motordirs[4] = {+1, -1, -1, +1};
-        float motorvals[4];
-
-        // Support for accelerometer, gyrometer emulation
-        FVector euler;
-        FVector eulerPrev;
-        FVector gyro;
-
-        // Support for Hackflight::Board::getMicroseconds()
-        float elapsedTime;
-
-        // Converts a set of motor values to angular forces in body frame
-        float motorsToAngularForce(int a, int b, int c, int d);
 
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
