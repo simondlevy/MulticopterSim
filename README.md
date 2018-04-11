@@ -77,7 +77,7 @@ code.  (On Windows, as long as the code is in
 
 ## Windows
 
-As with any UE4 C++ project, there are two ways to build and modify the HackflightSim code:
+As with any UE4 C++ project, there are two ways to build and modify the HackflightSim code on Windows:
 <ol>
 <li> Double-click on <b>HackflightSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
 You can then use your favorite code editor (ours is 
