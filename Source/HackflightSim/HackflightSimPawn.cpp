@@ -21,9 +21,9 @@ hf::Hackflight hackflight;
 
 // Controller input
 #ifdef _WIN32
-#include <receivers/sim/windows.hpp>
+#include "HackflightSimReceiverWindows.h"
 #else
-#include <receivers/sim/linux.hpp>
+#include "HackflightSimReceiverLinux.h"
 #endif
 hf::Controller controller;
 
