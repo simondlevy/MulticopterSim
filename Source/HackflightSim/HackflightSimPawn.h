@@ -1,4 +1,11 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+/*
+* HackflightSimPawn.h: Class declaration for pawn class in HackflightSim
+*
+* Copyright (C) 2018 Simon D. Levy
+*
+* MIT License
+*/
+
 #pragma once
 
 // Math support

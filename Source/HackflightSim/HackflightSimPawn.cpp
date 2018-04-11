@@ -1,4 +1,10 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+/*
+* HackflightSimPawn.cpp: Class implementation for pawn class in HackflightSim
+*
+* Copyright (C) 2018 Simon D. Levy
+*
+* MIT License
+*/
 
 #include "HackflightSimPawn.h"
 #include "UObject/ConstructorHelpers.h"

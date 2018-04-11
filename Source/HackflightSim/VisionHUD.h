@@ -1,4 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+* VisionHud.h: Class declaration for Vision HUD in HackflightSim
+*
+* Copyright (C) 2018 Simon D. Levy
+*
+* MIT License
+*/
 
 #pragma once
 
