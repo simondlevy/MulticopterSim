@@ -218,7 +218,10 @@ void AHackflightSimPawn::init(void)
 
 bool AHackflightSimPawn::getEulerAngles(float eulerAngles[3]) 
 {
-    eulerAngles[0] = eulerAngles[1] = eulerAngles[2] = 0;
+    eulerAngles[0] =  euler.X;
+    eulerAngles[1] = -euler.Y;
+    eulerAngles[2] =  euler.Z;
+
     return true;
 }
 
@@ -227,8 +230,6 @@ bool AHackflightSimPawn::getGyroRates(float gyroRates[3])
     gyroRates[0] = gyro.X;
     gyroRates[1] = gyro.Y;
     gyroRates[2] = gyro.Z;
-
-    Debug::printf("%+3.3f %+3.3f %+3.3f", gyroRates[0], gyroRates[1], gyroRates[2]);
 
     return true;
 }
