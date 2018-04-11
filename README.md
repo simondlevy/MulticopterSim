@@ -18,7 +18,6 @@ HackflightSim differs from AirSim in a few important ways:
 [quadcopters](http://diydrones.com/profiles/blogs/flight-of-the-ladybug).
 * HackflightSim is tiny, using a few thousand lines of C++ code for the simulator and firmware.
 * HackflightSim is released under the GPL license, whereas AirSim uses the MIT license.
-* HackflightSim focuses exclusively on quadcopter firmware, whereas AirSim supports [deep learning](https://github.com/simondlevy/AirSimTensorFlow) and
 different kinds of vehicles.
 
 # Prerequisites

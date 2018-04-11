@@ -29,7 +29,7 @@ class HACKFLIGHTSIM_API AVisionHUD : public AHUD
 	virtual void DrawHUD() override;
 
 	const float LEFTX  = 20;
-	const float TOPY   = 20;
+	const float TOPY   = 40;
 	const float WIDTH  = 256;
 	const float HEIGHT = 128;
 	

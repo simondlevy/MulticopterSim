@@ -52,7 +52,7 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 	0);			// Gyro yaw I
 
 
-// Pawn methods ---------------------------------------------------
+// APawn methods ---------------------------------------------------
 
 AHackflightSimPawn::AHackflightSimPawn()
 {
@@ -153,6 +153,8 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     forces[1] = motorsToAngularForce(1, 3, 0, 2); 
     forces[2] = motorsToAngularForce(1, 2, 0, 3); 
 
+    Debug::printf("%f %f %f", forces[0], forces[1], forces[2]);
+
     // Rotate vehicle
     AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
 
@@ -208,6 +210,8 @@ float AHackflightSimPawn::motorsToAngularForce(int a, int b, int c, int d)
 
     return (v<0 ? -1 : +1) * pow(fabs(v), 3);
 }
+
+// Hackflight::Board methods ---------------------------------------------------
 
 void AHackflightSimPawn::init(void)
 {
