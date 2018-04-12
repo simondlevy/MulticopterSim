@@ -50,6 +50,10 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 	0,			// Gyro yaw P
 	0);			// Gyro yaw I
 
+// Mixer
+#include <mixers/quadx.hpp>
+MixerQuadX mixer;
+
 
 // APawn methods ---------------------------------------------------
 
@@ -72,7 +76,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 	RootComponent = PlaneMesh;
 
 	// Start Hackflight firmware
-	hackflight.init(this, &controller, &stabilizer);
+	hackflight.init(this, &controller, &stabilizer, &mixer);
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
