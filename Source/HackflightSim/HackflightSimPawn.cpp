@@ -83,9 +83,6 @@ AHackflightSimPawn::AHackflightSimPawn()
         motorvals[k] = 0;
     }
 
-    // Initialize elapsed time
-    elapsedTime = 0;
-
 	// Load our Sound Cue for the propeller sound we created in the editor... 
 	// note your path may be different depending
 	// on where you store the asset on disk.
@@ -150,9 +147,6 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
 {
     // Update our flight firmware
     hackflight.update();
-
-    // Accumulate elapsed time
-    elapsedTime += DeltaSeconds;
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];
@@ -233,11 +227,6 @@ bool AHackflightSimPawn::getGyroRates(float gyroRates[3])
     gyroRates[2] = gyro.Z;
 
     return true;
-}
-
-uint32_t AHackflightSimPawn::getMicroseconds() 
-{
-    return (uint32_t)(elapsedTime*1e6);
 }
 
 void AHackflightSimPawn::writeMotor(uint8_t index, float value) 

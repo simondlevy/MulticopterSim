@@ -61,9 +61,6 @@ class AHackflightSimPawn : public APawn, public Board
         FVector eulerPrev;
         FVector gyro;
 
-        // Support for Hackflight::Board::getMicroseconds()
-        float elapsedTime;
-
         // Converts a set of motor values to angular forces in body frame
         float motorsToAngularForce(int a, int b, int c, int d);
 
@@ -81,7 +78,6 @@ class AHackflightSimPawn : public APawn, public Board
         // Hackflight::Board overrides
         virtual bool     getQuaternion(float quat[4]) override;
         virtual bool     getGyroRates(float gyroRates[3]) override;
-        virtual uint32_t getMicroseconds() override;
         virtual void     writeMotor(uint8_t index, float value) override;
 
         // Returns PlaneMesh subobject 
