@@ -44,7 +44,7 @@ controllers:
 ## Toolchain
 
 You will need Unreal Engine 4 (UE4). We are attempting to use the latest version, which as of the time of this
-writing is UE4.18.2.  
+writing is UE4.19.1.  
 
 Windows users will need Visual Studio Community (we're using the latest version, 2017).
 If you don't have UE4 or Visual Studio 2017 installed, these
@@ -106,7 +106,7 @@ Do the following in your bash shell:
 </pre>
 
 Then launch UnrealEngineEditor and open <b>HackflightSim.uproject</b>.  If you're asked about making
-a copy to deal with version incompatibility (4.18.1 vs. 4.18.2), click Okay.  Once you've done that,
+a copy to deal with version incompatibility, click Okay.  Once you've done that,
 it can take several minutes for the UE4 Editor to build your project.
 
 # Launch and fly!
