@@ -44,7 +44,7 @@ controllers:
 ## Toolchain
 
 You will need Unreal Engine 4 (UE4). We are attempting to use the latest version, which as of the time of this
-writing is UE4.19.1.  
+writing is UE4.18.3.  
 
 Windows users will need Visual Studio Community (we're using the latest version, 2017).
 If you don't have UE4 or Visual Studio 2017 installed, these
