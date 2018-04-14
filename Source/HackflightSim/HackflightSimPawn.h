@@ -77,7 +77,7 @@ class AHackflightSimPawn : public APawn, public Board
 
         // Hackflight::Board overrides
         virtual bool     getQuaternion(float quat[4]) override;
-        virtual bool     getGyroRates(float gyroRates[3]) override;
+        virtual bool     getGyrometer(float gyroRates[3]) override;
         virtual void     writeMotor(uint8_t index, float value) override;
 
         // Returns PlaneMesh subobject 

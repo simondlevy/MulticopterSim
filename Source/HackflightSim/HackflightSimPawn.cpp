@@ -220,7 +220,7 @@ bool AHackflightSimPawn::getQuaternion(float q[4])
     return true;
 }
 
-bool AHackflightSimPawn::getGyroRates(float gyroRates[3]) 
+bool AHackflightSimPawn::getGyrometer(float gyroRates[3]) 
 {
     gyroRates[0] = gyro.X;
     gyroRates[1] = gyro.Y;
