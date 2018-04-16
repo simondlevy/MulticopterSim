@@ -181,7 +181,7 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     float z = cos(euler.Y)*cos(euler.X);
 
     // Add movement force to vehicle
-    PlaneMesh->AddForce(5000*motorSum*FVector(-x, -y, z));
+    PlaneMesh->AddForce(100*motorSum*FVector(-x, -y, z));
 
     // Modulate the pitch and voume of the propeller sound
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
@@ -205,7 +205,7 @@ float AHackflightSimPawn::motorsToAngularForce(int a, int b, int c, int d)
 {
     float v = ((motorvals[a] + motorvals[b]) - (motorvals[c] + motorvals[d]));
 
-    return (v<0 ? -1 : +1) * pow(fabs(v), 3);
+    return (v<0 ? -1 : +1) * fabs(v);
 }
 
 // Hackflight::Board methods ---------------------------------------------------
