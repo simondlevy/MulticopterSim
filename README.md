@@ -1,4 +1,4 @@
-<img src="HackflightSim.png" width=800>
+<img src="HackflightSim2.png" width=800>
 
 # About
 
