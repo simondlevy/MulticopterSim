@@ -29,6 +29,9 @@ hf::Hackflight hackflight;
 #endif
 hf::Controller controller;
 
+// Comms
+HackflightSimSocketClient socketClient;
+
 // Debugging
 
 static FColor TEXT_COLOR = FColor::Yellow;

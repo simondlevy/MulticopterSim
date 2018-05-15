@@ -2,6 +2,8 @@
 
 #include "HackflightSimSocketClientWindows.h"
 
+#define WIN32_LEAN_AND_MEAN
+
 // https://answers.unrealengine.com/questions/27560/trouble-using-windows-includes-with-dword-int.html
 #include "AllowWindowsPlatformTypes.h"
 #include <windows.h>
@@ -9,21 +11,17 @@
 #include <ws2tcpip.h>
 #include "HideWindowsPlatformTypes.h"
 
-HackflightSimSocketClientWindows::HackflightSimSocketClientWindows()
-{
-}
-
-HackflightSimSocketClientWindows::~HackflightSimSocketClientWindows()
-{
-}
-
-/*
-
-#define WIN32_LEAN_AND_MEAN
-
 #include <stdlib.h>
 #include <stdio.h>
+/*
+* HackflightSimSocketClientWindows.h : Windwos Support for socket client
+*
+* Copyright (C) 2018 Simon D. Levy
+*
+* MIT License
+*/
 
+#include <debug.hpp>
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -31,10 +29,9 @@ HackflightSimSocketClientWindows::~HackflightSimSocketClientWindows()
 #pragma comment (lib, "AdvApi32.lib")
 
 
-#define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27015"
 
-int __cdecl main(int argc, char **argv)
+
+HackflightSimSocketClient::HackflightSimSocketClient()
 {
     WSADATA wsaData;
     SOCKET ConnectSocket = INVALID_SOCKET;
@@ -42,21 +39,13 @@ int __cdecl main(int argc, char **argv)
                     *ptr = NULL,
                     hints;
     char *sendbuf = "this is a test";
-    char recvbuf[DEFAULT_BUFLEN];
     int iResult;
-    int recvbuflen = DEFAULT_BUFLEN;
-
-    // Validate the parameters
-    if (argc != 2) {
-        printf("usage: %s server-name\n", argv[0]);
-        return 1;
-    }
+    int recvbuflen = BUFLEN;
 
     // Initialize Winsock
     iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
     if (iResult != 0) {
-        printf("WSAStartup failed with error: %d\n", iResult);
-        return 1;
+        hf::Debug::printf("WSAStartup failed with error: %d\n", iResult);
     }
 
     ZeroMemory( &hints, sizeof(hints) );
@@ -65,13 +54,21 @@ int __cdecl main(int argc, char **argv)
     hints.ai_protocol = IPPROTO_TCP;
 
     // Resolve the server address and port
-    iResult = getaddrinfo(argv[1], DEFAULT_PORT, &hints, &result);
+    iResult = getaddrinfo(HOST, PORT, &hints, &result);
     if ( iResult != 0 ) {
-        printf("getaddrinfo failed with error: %d\n", iResult);
+        hf::Debug::printf("getaddrinfo failed with error: %d\n", iResult);
         WSACleanup();
-        return 1;
     }
+}
 
+HackflightSimSocketClient::~HackflightSimSocketClient()
+{
+}
+
+/*
+
+int __cdecl main(int argc, char **argv)
+{
     // Attempt to connect to an address until one succeeds
     for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
 
