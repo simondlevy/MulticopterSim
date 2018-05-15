@@ -1,5 +1,5 @@
 /*
-* HackflightSimReceiverWindows.h : Windows Support for USB controllers
+* HackflightSimReceiverWindows.h : Windows support for USB controllers
 *
 * Copyright (C) 2018 Simon D. Levy
 *

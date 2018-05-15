@@ -19,9 +19,11 @@
 // Main firmware
 hf::Hackflight hackflight;
 
+
 // Controller input
 #ifdef _WIN32
 #include "HackflightSimReceiverWindows.h"
+#include "HackflightSimSocketClientWindows.h"
 #else
 #include "HackflightSimReceiverLinux.h"
 #endif
