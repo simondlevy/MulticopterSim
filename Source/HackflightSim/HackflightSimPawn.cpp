@@ -153,6 +153,11 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Update our flight firmware
     hackflight.update();
 
+	// Check socket connection for MSP comms
+	if (!socketClient.isConnected()) {
+		socketClient.attemptConnection();
+	}
+
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];
     forces[0] = motorsToAngularForce(2, 3, 0, 1);

@@ -65,6 +65,16 @@ HackflightSimSocketClient::~HackflightSimSocketClient()
 {
 }
 
+bool HackflightSimSocketClient::isConnected()
+{
+	return _is_connected;
+}
+
+void HackflightSimSocketClient::attemptConnection()
+{
+
+}
+
 /*
 
 int __cdecl main(int argc, char **argv)

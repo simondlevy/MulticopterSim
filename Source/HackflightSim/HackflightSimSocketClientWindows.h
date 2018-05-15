@@ -19,11 +19,17 @@ class HackflightSimSocketClient {
 
         ~HackflightSimSocketClient();
 
+		bool isConnected();
+
+		void attemptConnection();
+
 	private:
 
 	 const char * HOST = "localhost";
 	 const char * PORT = "20000";
 	 static const int    BUFLEN = 512;
 
-	 char recvbuf[BUFLEN];
+	 bool _is_connected;
+
+	 char _recvbuf[BUFLEN];
 };
