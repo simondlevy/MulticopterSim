@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "HackflightSimSocketClientWindows.h"
-
 #define WIN32_LEAN_AND_MEAN
+
+
+#include "HackflightSimSocketClientWindows.h"
 
 // https://answers.unrealengine.com/questions/27560/trouble-using-windows-includes-with-dword-int.html
 #include "AllowWindowsPlatformTypes.h"
@@ -28,17 +29,11 @@
 #pragma comment (lib, "Mswsock.lib")
 #pragma comment (lib, "AdvApi32.lib")
 
-
-
-
 HackflightSimSocketClient::HackflightSimSocketClient()
 {
     WSADATA wsaData;
     SOCKET ConnectSocket = INVALID_SOCKET;
-    struct addrinfo *result = NULL,
-                    *ptr = NULL,
-                    hints;
-    char *sendbuf = "this is a test";
+    struct addrinfo *result = NULL, *ptr = NULL, hints;
     int iResult;
     int recvbuflen = BUFLEN;
 
@@ -59,6 +54,10 @@ HackflightSimSocketClient::HackflightSimSocketClient()
         hf::Debug::printf("getaddrinfo failed with error: %d\n", iResult);
         WSACleanup();
     }
+
+	_result = result;
+
+	_connected = false;
 }
 
 HackflightSimSocketClient::~HackflightSimSocketClient()
@@ -67,48 +66,59 @@ HackflightSimSocketClient::~HackflightSimSocketClient()
 
 bool HackflightSimSocketClient::isConnected()
 {
-	return _is_connected;
+	return _connected;
 }
 
 void HackflightSimSocketClient::attemptConnection()
 {
+	SOCKET ConnectSocket = INVALID_SOCKET;
 
+	struct addrinfo *result = (struct addrinfo *)_result;
+
+	// Attempt to connect to an address until one succeeds
+	for (struct addrinfo * ptr = result; ptr != NULL; ptr = ptr->ai_next) {
+
+		// Create a SOCKET for connecting to server
+		ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+
+		hf::Debug::printf("%d %d %d", ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+
+		continue;
+
+		if (ConnectSocket == INVALID_SOCKET) {
+			hf::Debug::printf("socket failed with error: %ld\n", WSAGetLastError());
+			WSACleanup();
+			return;
+		}
+
+		// Connect to server.
+		if (connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen) == SOCKET_ERROR) {
+			closesocket(ConnectSocket);
+			ConnectSocket = INVALID_SOCKET;
+			continue;
+		}
+		break;
+	}
+
+	return;
+
+	freeaddrinfo(result);
+
+	if (ConnectSocket == INVALID_SOCKET) {
+		printf("Unable to connect to server!\n");
+		WSACleanup();
+		return;
+	}
+
+	_ConnectSocket = (void *)ConnectSocket;
+
+	_connected = true;
 }
 
 /*
 
 int __cdecl main(int argc, char **argv)
 {
-    // Attempt to connect to an address until one succeeds
-    for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
-
-        // Create a SOCKET for connecting to server
-        ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
-            ptr->ai_protocol);
-        if (ConnectSocket == INVALID_SOCKET) {
-            printf("socket failed with error: %ld\n", WSAGetLastError());
-            WSACleanup();
-            return 1;
-        }
-
-        // Connect to server.
-        iResult = connect( ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-        if (iResult == SOCKET_ERROR) {
-            closesocket(ConnectSocket);
-            ConnectSocket = INVALID_SOCKET;
-            continue;
-        }
-        break;
-    }
-
-    freeaddrinfo(result);
-
-    if (ConnectSocket == INVALID_SOCKET) {
-        printf("Unable to connect to server!\n");
-        WSACleanup();
-        return 1;
-    }
-
     // Send an initial buffer
     iResult = send( ConnectSocket, sendbuf, (int)strlen(sendbuf), 0 );
     if (iResult == SOCKET_ERROR) {

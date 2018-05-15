@@ -7,7 +7,6 @@
 */
 
 #pragma once
-
 /**
  * 
  */
@@ -29,7 +28,11 @@ class HackflightSimSocketClient {
 	 const char * PORT = "20000";
 	 static const int    BUFLEN = 512;
 
-	 bool _is_connected;
+	 void * _result;
+
+	 void * _ConnectSocket;
+
+	 bool _connected;
 
 	 char _recvbuf[BUFLEN];
 };
