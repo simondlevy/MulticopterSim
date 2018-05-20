@@ -114,7 +114,7 @@ bool ThreadedSocketServer::start(void)
 	return true;
 }
 
-void ThreadedSocketServer::stop(void)
+bool ThreadedSocketServer::stop(void)
 {
 	socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
 
@@ -123,7 +123,7 @@ void ThreadedSocketServer::stop(void)
 		sprintf_s(sockinfo->errmsg, "shutdown failed with error: %d\n", WSAGetLastError());
 		closesocket(sockinfo->ClientSocket);
 		WSACleanup();
-		return;
+		return false;
 	}
 
 	// cleanup
@@ -131,6 +131,8 @@ void ThreadedSocketServer::stop(void)
 	sockinfo->ListenSocket = INVALID_SOCKET;
 	sockinfo->ClientSocket = INVALID_SOCKET;
 	WSACleanup();
+
+    return true;
 }
 
 bool ThreadedSocketServer::connected(void)
@@ -162,3 +164,9 @@ int ThreadedSocketServer::receiveBuffer(char * buf, int len)
 
 }
 
+const char * ThreadedSocketServer::lastError(void)
+{
+	socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
+
+    return (const char *)sockinfo->errmsg;
+}

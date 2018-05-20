@@ -150,7 +150,11 @@ void AHackflightSimPawn::BeginPlay()
     eulerPrev = FVector(0, 0, 0);
 
 	// Start the server
-	server.start();
+    serverRunning = true;
+	if (!server.start()) {
+        serverError();
+        serverRunning = false;
+    }
 
     Super::BeginPlay();
 }
@@ -158,8 +162,14 @@ void AHackflightSimPawn::BeginPlay()
 void AHackflightSimPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	// Stop the server
-	server.stop();
-	hf::Debug::printf("Disconnected");
+	if (serverRunning) {
+        if (!server.stop()) {
+            serverError();
+        }
+        else {
+            hf::Debug::printf("Disconnected");
+        }
+    }
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -221,7 +231,7 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
 			server.sendBuffer(buf, strlen(buf));
 		}
 	}
-	else {
+	else if (serverRunning) {
 		hf::Debug::printf("Listening for connection (%d FPS)", fps);
 	}
 
@@ -244,6 +254,11 @@ float AHackflightSimPawn::motorsToAngularForce(int a, int b, int c, int d)
     float v = ((motorvals[a] + motorvals[b]) - (motorvals[c] + motorvals[d]));
 
     return (v<0 ? -1 : +1) * fabs(v);
+}
+
+void AHackflightSimPawn::serverError(void)
+{
+    hf::Debug::printf("MSP server error: %s", server.lastError());
 }
 
 // Hackflight::Board methods ---------------------------------------------------

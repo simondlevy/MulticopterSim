@@ -64,6 +64,10 @@ class AHackflightSimPawn : public APawn, public Board
         // Converts a set of motor values to angular forces in body frame
         float motorsToAngularForce(int a, int b, int c, int d);
 
+        // Supports MSP over socket
+        void serverError(void);
+        bool serverRunning;
+
     public:
 
         AHackflightSimPawn();

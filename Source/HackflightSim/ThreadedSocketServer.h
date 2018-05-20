@@ -26,13 +26,15 @@ public:
 
 	bool start(void);
 
-	void stop(void);
+	bool stop(void);
 
 	bool connected(void);
 
 	int sendBuffer(char * buf, int len);
 
 	int receiveBuffer(char * buf, int len);
+
+    const char * lastError(void);
 };
 
 
