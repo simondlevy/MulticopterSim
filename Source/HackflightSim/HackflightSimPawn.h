@@ -15,6 +15,8 @@
 #include <hackflight.hpp>
 using namespace hf;
 
+#include "ThreadedSocketServer.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"
@@ -67,6 +69,9 @@ class AHackflightSimPawn : public APawn, public Board
         // Supports MSP over socket
         void serverError(void);
         bool serverRunning;
+		int serverAvailableBytes;
+		int serverByteIndex;
+		char serverBuffer[ThreadedSocketServer::BUFLEN];
 
     public:
 

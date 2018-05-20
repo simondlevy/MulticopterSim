@@ -22,7 +22,6 @@ hf::Hackflight hackflight;
 
 #ifdef _WIN32
 #include "HackflightSimReceiverWindows.h"
-#include "ThreadedSocketServer.h"
 #else
 #include "HackflightSimReceiverLinux.h"
 #endif
@@ -220,10 +219,9 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Modulate the pitch and voume of the propeller sound
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
     propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
-
-    // Debug status of client connection
+	
+	// Debug status of client connection
 	if (!server.connected() && serverRunning) {
-		hf::Debug::printf("Listening for connection");
 	}
 
     // Call any parent class Tick implementation
@@ -280,27 +278,19 @@ void AHackflightSimPawn::writeMotor(uint8_t index, float value)
 
 uint8_t AHackflightSimPawn::serialAvailableBytes(void)
 { 
-    /*
 	if (server.connected()) {
-		Debug::printf("Connected (%d FPS)", fps);
-		static int count;
-		char buf[80] = "";
-		if (server.receiveBuffer(buf, 80) > 0) {
-			hf::Debug::printf("Client said: %s", buf);
-			sprintf_s(buf, "%d", count++);
-			server.sendBuffer(buf, strlen(buf));
-		}
+
+		serverAvailableBytes = server.receiveBuffer(serverBuffer, ThreadedSocketServer::BUFLEN);
+		serverByteIndex = 0;
+		return serverAvailableBytes;
 	}
-    */
 
-    hf::Debug::printf("serialAvailableBytes");
-
-    return 0; 
+	return 0;
 }
 
 uint8_t AHackflightSimPawn::serialReadByte(void)
 { 
-    return 0; 
+    return serverBuffer[serverByteIndex++]; // post-increment 
 }
 
 void AHackflightSimPawn::serialWriteByte(uint8_t c)
