@@ -13,7 +13,10 @@ class ThreadedSocketServer {
 
 private:
 
-	void * _sockinfo;
+	void * _sockinfo; // kludge to support different OSs
+
+    char _host[100];
+    int _port;
 
 public:
 
