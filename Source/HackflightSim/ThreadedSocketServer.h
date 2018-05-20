@@ -19,7 +19,7 @@ public:
 
 	static const int BUFLEN = 512; // abitrary
 
-	ThreadedSocketServer(int port);
+	ThreadedSocketServer(int port, const char * host = "localhost");
 
 	bool start(void);
 

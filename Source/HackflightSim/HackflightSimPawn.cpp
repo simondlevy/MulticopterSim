@@ -32,8 +32,9 @@ hf::Hackflight hackflight;
 hf::Controller controller;
 
 // Socket comms
+static const char * HOST = "137.113.118.68";  // thales.cs.wlu.edu
 static const int PORT = 20000;
-ThreadedSocketServer server = ThreadedSocketServer(PORT);
+ThreadedSocketServer server = ThreadedSocketServer(PORT, HOST);
 
 // Debugging
 

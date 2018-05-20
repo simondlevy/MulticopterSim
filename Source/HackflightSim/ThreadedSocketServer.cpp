@@ -9,8 +9,6 @@ MIT License
 
 #include "ThreadedSocketServer.h"
 
-#undef UNICODE
-
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
@@ -63,71 +61,44 @@ DWORD WINAPI threadfunc(LPVOID lpParameter)
 }
 
 
-ThreadedSocketServer::ThreadedSocketServer(int port)
+ThreadedSocketServer::ThreadedSocketServer(int port, const char * host)
 {
+	// Extract the socket info set up by the constructor
 	socket_info_t * sockinfo = new socket_info_t;
 	sockinfo->ListenSocket = INVALID_SOCKET;
 	sockinfo->ClientSocket = INVALID_SOCKET;
 	_sockinfo = (void *)sockinfo;
 
-	WSADATA wsaData;
-	int iResult;
-
-	struct addrinfo *result = NULL;
-	struct addrinfo hints;
-
-	int recvbuflen = BUFLEN;
-
 	// Initialize Winsock
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	WSADATA wsaData;
+	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
 		printf("WSAStartup failed with error: %d\n", iResult);
 		return;
 	}
 
-	ZeroMemory(&hints, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags = AI_PASSIVE;
-
-	// Resolve the server address and port
-	char portstr[20];
-	sprintf_s(portstr, "%d", port);
-	iResult = getaddrinfo(NULL, portstr, &hints, &result);
-	if (iResult != 0) {
-		printf("getaddrinfo failed with error: %d\n", iResult);
-		WSACleanup();
-	}
-
-	// Create a SOCKET for connecting to server
-	sockinfo->ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+	// Create a socket to listen for a client
+	sockinfo->ListenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (sockinfo->ListenSocket == INVALID_SOCKET) {
 		printf("socket failed with error: %d\n", WSAGetLastError());
-		freeaddrinfo(result);
 		WSACleanup();
 		return;
 	}
-
 	// The sockaddr_in structure specifies the address family,
 	// IP address, and port for the socket that is being bound.
 	sockaddr_in service;
 	service.sin_family = AF_INET;
-	service.sin_addr.s_addr = inet_addr("137.113.118.68");
+	service.sin_addr.s_addr = inet_addr(host);
 	service.sin_port = htons(port);
 
 	// Setup the TCP listening socket
-	//if (bind(sockinfo->ListenSocket, result->ai_addr, (int)result->ai_addrlen) == SOCKET_ERROR) {
 	if (bind(sockinfo->ListenSocket, (SOCKADDR *)& service, sizeof(service)) == SOCKET_ERROR) {
 
 		printf("bind failed with error: %d\n", WSAGetLastError());
-		freeaddrinfo(result);
 		closesocket(sockinfo->ListenSocket);
 		WSACleanup();
 		return;
 	}
-
-	freeaddrinfo(result);
 }
 
 bool ThreadedSocketServer::start(void)
