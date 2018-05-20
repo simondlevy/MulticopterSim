@@ -81,9 +81,12 @@ class AHackflightSimPawn : public APawn, public Board
 		virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
         // Hackflight::Board overrides
-        virtual bool     getQuaternion(float quat[4]) override;
-        virtual bool     getGyrometer(float gyroRates[3]) override;
-        virtual void     writeMotor(uint8_t index, float value) override;
+        virtual bool    getQuaternion(float quat[4]) override;
+        virtual bool    getGyrometer(float gyroRates[3]) override;
+        virtual void    writeMotor(uint8_t index, float value) override;
+        virtual uint8_t serialAvailableBytes(void) override;
+        virtual uint8_t serialReadByte(void) override;
+        virtual void    serialWriteByte(uint8_t c) override;
 
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }

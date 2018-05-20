@@ -221,20 +221,9 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
     propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
 
-	// Interact with socket client
-	int fps = 1 / DeltaSeconds;
-	if (server.connected()) {
-		Debug::printf("Connected (%d FPS)", fps);
-		static int count;
-		char buf[80] = "";
-		if (server.receiveBuffer(buf, 80) > 0) {
-			hf::Debug::printf("Client said: %s", buf);
-			sprintf_s(buf, "%d", count++);
-			server.sendBuffer(buf, strlen(buf));
-		}
-	}
-	else if (serverRunning) {
-		hf::Debug::printf("Listening for connection (%d FPS)", fps);
+    // Debug status of client connection
+	if (!server.connected() && serverRunning) {
+		hf::Debug::printf("Listening for connection");
 	}
 
     // Call any parent class Tick implementation
@@ -288,3 +277,36 @@ void AHackflightSimPawn::writeMotor(uint8_t index, float value)
 {
     motorvals[index] = value;
 }
+
+uint8_t AHackflightSimPawn::serialAvailableBytes(void)
+{ 
+    /*
+	if (server.connected()) {
+		Debug::printf("Connected (%d FPS)", fps);
+		static int count;
+		char buf[80] = "";
+		if (server.receiveBuffer(buf, 80) > 0) {
+			hf::Debug::printf("Client said: %s", buf);
+			sprintf_s(buf, "%d", count++);
+			server.sendBuffer(buf, strlen(buf));
+		}
+	}
+    */
+
+    hf::Debug::printf("serialAvailableBytes");
+
+    return 0; 
+}
+
+uint8_t AHackflightSimPawn::serialReadByte(void)
+{ 
+    return 0; 
+}
+
+void AHackflightSimPawn::serialWriteByte(uint8_t c)
+{ 
+    if (server.connected()) {
+        server.sendBuffer((char *)&c, 1);
+    }
+}
+
