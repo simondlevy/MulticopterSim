@@ -12,6 +12,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Engine.h"
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
@@ -20,17 +21,19 @@
 hf::Hackflight hackflight;
 
 
-// Controller input
 #ifdef _WIN32
 #include "HackflightSimReceiverWindows.h"
-#include "HackflightSimSocketClientWindows.h"
+#include "ThreadedSocketServer.h"
 #else
 #include "HackflightSimReceiverLinux.h"
 #endif
+
+// Controller
 hf::Controller controller;
 
-// Comms
-HackflightSimSocketClient socketClient;
+// Socket comms
+static const int PORT = 20000;
+ThreadedSocketServer server = ThreadedSocketServer(PORT);
 
 // Debugging
 
@@ -145,18 +148,26 @@ void AHackflightSimPawn::BeginPlay()
     // Reset previous Euler angles for gyro emulation
     eulerPrev = FVector(0, 0, 0);
 
+	// Start the server
+	server.start();
+
     Super::BeginPlay();
 }
+
+void AHackflightSimPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	// Stop the server
+	server.stop();
+	hf::Debug::printf("Disconnected");
+
+	Super::EndPlay(EndPlayReason);
+}
+
 
 void AHackflightSimPawn::Tick(float DeltaSeconds)
 {
     // Update our flight firmware
     hackflight.update();
-
-	// Check socket connection for MSP comms
-	if (!socketClient.isConnected()) {
-		socketClient.attemptConnection();
-	}
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];
@@ -196,6 +207,22 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Modulate the pitch and voume of the propeller sound
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
     propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
+
+	// Interact with socket client
+	int fps = 1 / DeltaSeconds;
+	if (server.connected()) {
+		Debug::printf("Connected (%d FPS)", fps);
+		static int count;
+		char buf[80] = "";
+		if (server.receiveBuffer(buf, 80) > 0) {
+			hf::Debug::printf("Client said: %s", buf);
+			sprintf_s(buf, "%d", count++);
+			server.sendBuffer(buf, strlen(buf));
+		}
+	}
+	else {
+		hf::Debug::printf("Listening for connection (%d FPS)", fps);
+	}
 
     // Call any parent class Tick implementation
     Super::Tick(DeltaSeconds);
