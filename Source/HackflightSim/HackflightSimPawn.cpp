@@ -20,13 +20,15 @@
 // Main firmware
 hf::Hackflight hackflight;
 
-
 #ifdef _WIN32
 #include "HackflightSimReceiverWindows.h"
 #include "ThreadedSocketServer.h"
 #else
 #include "HackflightSimReceiverLinux.h"
 #endif
+
+// MSP comms
+#include "msppg/MSPPG.h"
 
 // Controller
 hf::Controller controller;
