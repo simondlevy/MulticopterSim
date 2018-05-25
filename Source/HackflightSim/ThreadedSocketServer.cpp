@@ -29,6 +29,7 @@ typedef struct {
 
 DWORD WINAPI threadfunc(LPVOID lpParameter)
 {
+
 	socket_info_t * sockinfo = (socket_info_t *)lpParameter;
 
 	int iResult = listen(sockinfo->ListenSocket, SOMAXCONN);
@@ -41,6 +42,7 @@ DWORD WINAPI threadfunc(LPVOID lpParameter)
 
 	// Accept a client socket
 	sockinfo->ClientSocket = accept(sockinfo->ListenSocket, NULL, NULL);
+
 	if (sockinfo->ClientSocket == INVALID_SOCKET) {
 		sprintf_s(sockinfo->errmsg, "accept failed with error: %d\n", WSAGetLastError());
 		closesocket(sockinfo->ListenSocket);
@@ -54,6 +56,7 @@ DWORD WINAPI threadfunc(LPVOID lpParameter)
 	if (iResult != NO_ERROR) {
 		sprintf_s(sockinfo->errmsg, "ioctlsocket failed with error: %d\n", iResult);
 	}
+
 
 	// No longer need server socket
 	closesocket(sockinfo->ListenSocket);
@@ -71,7 +74,6 @@ ThreadedSocketServer::ThreadedSocketServer(int port, const char * host)
 	sockinfo->ListenSocket = INVALID_SOCKET;
 	sockinfo->ClientSocket = INVALID_SOCKET;
 	_sockinfo = (void *)sockinfo;
-
 }
 
 bool ThreadedSocketServer::start(void)

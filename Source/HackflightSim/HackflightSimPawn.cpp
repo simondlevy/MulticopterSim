@@ -46,8 +46,10 @@ void hf::Board::outbuf(char * buf)
 {
 	if (GEngine) {
 
-		// 0 = overwrite; 5.0f = arbitrary time to display
-		GEngine->AddOnScreenDebugMessage(0, 5.0f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
+		// -1 = no overwrite; 5.0f = arbitrary time to display; true = newer on top
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
+
+		OutputDebugStringA(buf);
 	}
 }
 
@@ -156,6 +158,7 @@ void AHackflightSimPawn::BeginPlay()
         serverError();
         serverRunning = false;
     }
+	serverAvailableBytes = 0;
 
     Super::BeginPlay();
 }
@@ -222,6 +225,11 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
 	
 	// Debug status of client connection
 	if (!server.connected() && serverRunning) {
+		//hf::Debug::printf("Server running but not connected");
+	}
+
+	if (server.connected() && serverRunning) {
+		//hf::Debug::printf("Server connected");
 	}
 
     // Call any parent class Tick implementation
@@ -278,9 +286,15 @@ void AHackflightSimPawn::writeMotor(uint8_t index, float value)
 
 uint8_t AHackflightSimPawn::serialAvailableBytes(void)
 { 
-	if (server.connected()) {
+	if (serverAvailableBytes > 0) {
+		return serverAvailableBytes;
+	}
 
+	else if (server.connected()) {
 		serverAvailableBytes = server.receiveBuffer(serverBuffer, ThreadedSocketServer::BUFLEN);
+		if (serverAvailableBytes < 0) {
+			serverAvailableBytes = 0;
+		}
 		serverByteIndex = 0;
 		return serverAvailableBytes;
 	}
@@ -290,7 +304,10 @@ uint8_t AHackflightSimPawn::serialAvailableBytes(void)
 
 uint8_t AHackflightSimPawn::serialReadByte(void)
 { 
-    return serverBuffer[serverByteIndex++]; // post-increment 
+	uint8_t byte = serverBuffer[serverByteIndex]; // post-increment 
+	serverByteIndex++;
+	serverAvailableBytes--;
+	return byte;
 }
 
 void AHackflightSimPawn::serialWriteByte(uint8_t c)
