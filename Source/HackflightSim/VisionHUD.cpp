@@ -26,9 +26,9 @@ AVisionHUD::AVisionHUD()
 	VisionRenderTarget = VisionTextureRenderTarget->GameThread_GetRenderTargetResource();
 
 	// Allocate memory for RGB image bytes
-	rows = VisionTextureRenderTarget->SizeY;
-	cols = VisionTextureRenderTarget->SizeX;
-	imagergb = new uint8_t[rows*cols * 3];
+	_rows = VisionTextureRenderTarget->SizeY;
+	_cols = VisionTextureRenderTarget->SizeX;
+	_imagergb = new uint8_t[_rows*_cols * 3];
 }
 
 
@@ -44,17 +44,17 @@ void AVisionHUD::DrawHUD()
 
 	// Convert the FColor array to an RGB byte array
 
-	for (int x = 0; x < cols; ++x) {
+	for (int x = 0; x < _cols; ++x) {
 
-		for (int y = 0; y < rows; ++y) {
+		for (int y = 0; y < _rows; ++y) {
 
-			int k = x + y * cols;
+			int k = x + y * _cols;
 
 			FColor PixelColor = VisionSurfData[k];
 
-			imagergb[k * 3] = PixelColor.R;
-			imagergb[k * 3 + 1] = PixelColor.G;
-			imagergb[k * 3 + 2] = PixelColor.B;
+			_imagergb[k * 3] = PixelColor.R;
+			_imagergb[k * 3 + 1] = PixelColor.G;
+			_imagergb[k * 3 + 2] = PixelColor.B;
 		}
 	}
 

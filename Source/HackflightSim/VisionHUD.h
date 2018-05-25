@@ -44,7 +44,7 @@ class HACKFLIGHTSIM_API AVisionHUD : public AHUD
 	TArray<FColor> VisionSurfData;
 
 	// Support for vision algorithms
-	int rows;
-	int cols;
-	uint8_t* imagergb;
+	int _rows;
+	int _cols;
+	uint8_t* _imagergb;
 };

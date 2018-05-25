@@ -54,24 +54,24 @@ class AHackflightSimPawn : public APawn, public Board
 
         // Support for spinning propellers
         const int8_t motordirs[4] = {+1, -1, -1, +1};
-        float motorvals[4];
+        float _motorvals[4];
 
         // Support for quaternions
-        FQuat quat;
+        FQuat _quat;
 
         // Support for accelerometer, gyrometer emulation
-        FVector eulerPrev;
-        FVector gyro;
+        FVector _eulerPrev;
+        FVector _gyro;
 
         // Converts a set of motor values to angular forces in body frame
         float motorsToAngularForce(int a, int b, int c, int d);
 
         // Supports MSP over socket
         void serverError(void);
-        bool serverRunning;
-		int serverAvailableBytes;
-		int serverByteIndex;
-		char serverBuffer[ThreadedSocketServer::BUFLEN];
+        bool _serverRunning;
+		int _serverAvailableBytes;
+		int _serverByteIndex;
+		char _serverBuffer[ThreadedSocketServer::BUFLEN];
 
     public:
 

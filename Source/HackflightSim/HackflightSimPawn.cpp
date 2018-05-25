@@ -44,13 +44,16 @@ static float  TEXT_SCALE = 2.f;
 
 void hf::Board::outbuf(char * buf)
 {
+	// on screen
 	if (GEngine) {
 
-		// -1 = no overwrite; 5.0f = arbitrary time to display; true = newer on top
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
-
-		OutputDebugStringA(buf);
+		// -1 = no overwrite (0 for overwrite); 5.f = arbitrary time to display; true = newer on top
+		GEngine->AddOnScreenDebugMessage(0, 5.f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
 	}
+
+	// on Visual Studio output console
+	OutputDebugStringA(buf);
+
 }
 
 // PID tuning
@@ -92,7 +95,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
-        motorvals[k] = 0;
+        _motorvals[k] = 0;
     }
 
 	// Load our Sound Cue for the propeller sound we created in the editor... 
@@ -150,15 +153,15 @@ void AHackflightSimPawn::BeginPlay()
     propellerAudioComponent->Play();
 
     // Reset previous Euler angles for gyro emulation
-    eulerPrev = FVector(0, 0, 0);
+    _eulerPrev = FVector(0, 0, 0);
 
 	// Start the server
-    serverRunning = true;
+    _serverRunning = true;
 	if (!server.start()) {
         serverError();
-        serverRunning = false;
+        _serverRunning = false;
     }
-	serverAvailableBytes = 0;
+	_serverAvailableBytes = 0;
 
     Super::BeginPlay();
 }
@@ -166,7 +169,7 @@ void AHackflightSimPawn::BeginPlay()
 void AHackflightSimPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	// Stop the server
-	if (serverRunning) {
+	if (_serverRunning) {
         if (!server.stop()) {
             serverError();
         }
@@ -196,20 +199,20 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Spin props proportionate to motor values, acumulating their sum 
     float motorSum = 0;
     for (uint8_t k=0; k<4; ++k) {
-        FRotator PropRotation(0, motorvals[k]*motordirs[k]*60, 0);
+        FRotator PropRotation(0, _motorvals[k]*motordirs[k]*60, 0);
         PropMeshes[k]->AddLocalRotation(PropRotation);
-        motorSum += motorvals[k];
+        motorSum += _motorvals[k];
     }
 
     // Get current quaternion
-    quat = this->GetActorQuat();
+    _quat = this->GetActorQuat();
 
     // Convert quaternion to Euler angles
-    FVector euler = FMath::DegreesToRadians(quat.Euler());
+    FVector euler = FMath::DegreesToRadians(_quat.Euler());
 
     // Use Euler angle first difference to emulate gyro
-    gyro = (euler - eulerPrev) / DeltaSeconds;
-    eulerPrev = euler;
+    _gyro = (euler - _eulerPrev) / DeltaSeconds;
+    _eulerPrev = euler;
  
     // Rotate Euler angles into inertial frame: http://www.chrobotics.com/library/understanding-euler-angles
     float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
@@ -224,11 +227,11 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
 	
 	// Debug status of client connection
-	if (!server.connected() && serverRunning) {
+	if (!server.connected() && _serverRunning) {
 		//hf::Debug::printf("Server running but not connected");
 	}
 
-	if (server.connected() && serverRunning) {
+	if (server.connected() && _serverRunning) {
 		//hf::Debug::printf("Server connected");
 	}
 
@@ -248,7 +251,7 @@ void AHackflightSimPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AAct
 
 float AHackflightSimPawn::motorsToAngularForce(int a, int b, int c, int d)
 {
-    float v = ((motorvals[a] + motorvals[b]) - (motorvals[c] + motorvals[d]));
+    float v = ((_motorvals[a] + _motorvals[b]) - (_motorvals[c] + _motorvals[d]));
 
     return (v<0 ? -1 : +1) * fabs(v);
 }
@@ -262,41 +265,41 @@ void AHackflightSimPawn::serverError(void)
 
 bool AHackflightSimPawn::getQuaternion(float q[4]) 
 {
-    q[0] = +quat.W;
-    q[1] = -quat.X;
-    q[2] = -quat.Y;
-    q[3] = +quat.Z;
+    q[0] = +_quat.W;
+    q[1] = -_quat.X;
+    q[2] = -_quat.Y;
+    q[3] = +_quat.Z;
 
     return true;
 }
 
 bool AHackflightSimPawn::getGyrometer(float gyroRates[3]) 
 {
-    gyroRates[0] = gyro.X;
-    gyroRates[1] = gyro.Y;
-    gyroRates[2] = gyro.Z;
+    gyroRates[0] = _gyro.X;
+    gyroRates[1] = _gyro.Y;
+    gyroRates[2] = _gyro.Z;
 
     return true;
 }
 
 void AHackflightSimPawn::writeMotor(uint8_t index, float value) 
 {
-    motorvals[index] = value;
+    _motorvals[index] = value;
 }
 
 uint8_t AHackflightSimPawn::serialAvailableBytes(void)
 { 
-	if (serverAvailableBytes > 0) {
-		return serverAvailableBytes;
+	if (_serverAvailableBytes > 0) {
+		return _serverAvailableBytes;
 	}
 
 	else if (server.connected()) {
-		serverAvailableBytes = server.receiveBuffer(serverBuffer, ThreadedSocketServer::BUFLEN);
-		if (serverAvailableBytes < 0) {
-			serverAvailableBytes = 0;
+		_serverAvailableBytes = server.receiveBuffer(_serverBuffer, ThreadedSocketServer::BUFLEN);
+		if (_serverAvailableBytes < 0) {
+			_serverAvailableBytes = 0;
 		}
-		serverByteIndex = 0;
-		return serverAvailableBytes;
+		_serverByteIndex = 0;
+		return _serverAvailableBytes;
 	}
 
 	return 0;
@@ -304,9 +307,9 @@ uint8_t AHackflightSimPawn::serialAvailableBytes(void)
 
 uint8_t AHackflightSimPawn::serialReadByte(void)
 { 
-	uint8_t byte = serverBuffer[serverByteIndex]; // post-increment 
-	serverByteIndex++;
-	serverAvailableBytes--;
+	uint8_t byte = _serverBuffer[_serverByteIndex]; // post-increment 
+	_serverByteIndex++;
+	_serverAvailableBytes--;
 	return byte;
 }
 
