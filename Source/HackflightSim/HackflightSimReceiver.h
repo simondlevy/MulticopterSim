@@ -30,6 +30,16 @@ namespace hf {
                 // We're ready after skipping initial noisy throttle
                 _ready = true;
 
+                // Don't report arming if already armed
+                if (_armed) {
+                    retval = false;
+                }
+
+                // On first arming, set already-armed flag
+                else if (retval) {
+                    _armed = true;
+                }
+
                 return retval;
             }
 
@@ -41,7 +51,6 @@ namespace hf {
 
             Controller(void)
             {
-                _ready = false;
                 _reversedVerticals = false;
                 _springyThrottle = false;
                 _useButtonForAux = false;
@@ -53,6 +62,10 @@ namespace hf {
 
             void begin(void)
             {
+                // Initialize flags for arming
+                _ready = false;
+                _armed = false;
+
                 // Set up axes based on OS and controller
                 productInit();
 
@@ -114,8 +127,9 @@ namespace hf {
 
         private:
 
-            // A hack to skip noisy throttle on startup
+            // A hack to skip noisy throttle on startup, and also support disarming via MSP
             bool     _ready;
+            bool     _armed;
 
             // Implemented differently for each OS
             void     productInit(void);
