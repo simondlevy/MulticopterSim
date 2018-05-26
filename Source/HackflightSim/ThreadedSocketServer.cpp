@@ -71,14 +71,15 @@ ThreadedSocketServer::ThreadedSocketServer(int port, const char * host)
     _port = port;
 
 	socket_info_t * sockinfo = new socket_info_t;
-	sockinfo->ListenSocket = INVALID_SOCKET;
-	sockinfo->ClientSocket = INVALID_SOCKET;
 	_sockinfo = (void *)sockinfo;
 }
 
 bool ThreadedSocketServer::start(void)
 {
 	socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
+
+	sockinfo->ListenSocket = INVALID_SOCKET;
+	sockinfo->ClientSocket = INVALID_SOCKET;
 
 	// Initialize Winsock
 	WSADATA wsaData;
@@ -116,59 +117,63 @@ bool ThreadedSocketServer::start(void)
 	return true;
 }
 
-bool ThreadedSocketServer::stop(void)
+bool ThreadedSocketServer::disconnect(void)
 {
-	socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
+    socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
 
-	int iResult = shutdown(sockinfo->ClientSocket, SD_SEND);
-	if (iResult == SOCKET_ERROR) {
-		sprintf_s(sockinfo->errmsg, "shutdown failed with error: %d\n", WSAGetLastError());
-		closesocket(sockinfo->ClientSocket);
-		WSACleanup();
-		return false;
-	}
-
-	// cleanup
-	closesocket(sockinfo->ClientSocket);
-	sockinfo->ListenSocket = INVALID_SOCKET;
-	sockinfo->ClientSocket = INVALID_SOCKET;
-	WSACleanup();
+    int iResult = shutdown(sockinfo->ClientSocket, SD_SEND);
+    if (iResult == SOCKET_ERROR) {
+        sprintf_s(sockinfo->errmsg, "shutdown failed with error: %d\n", WSAGetLastError());
+        closesocket(sockinfo->ClientSocket);
+        WSACleanup();
+        return false;
+    }
 
     return true;
 }
 
+void ThreadedSocketServer::stop(void)
+{
+    socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
+
+    closesocket(sockinfo->ClientSocket);
+    sockinfo->ListenSocket = INVALID_SOCKET;
+    sockinfo->ClientSocket = INVALID_SOCKET;
+    WSACleanup();
+}
+
 bool ThreadedSocketServer::connected(void)
 {
-	socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
+    socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
 
-	return sockinfo->ClientSocket != INVALID_SOCKET;
+    return sockinfo->ClientSocket != INVALID_SOCKET;
 }
 
 int ThreadedSocketServer::sendBuffer(char * buf, int len)
 {
-	socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
+    socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
 
-	// Echo the buffer back to the sender
-	int iSendResult = send(sockinfo->ClientSocket, buf, len, 0);
-	if (iSendResult == SOCKET_ERROR) {
-		closesocket(sockinfo->ClientSocket);
-		WSACleanup();
-		return 0;
-	}
-	return iSendResult;
+    // Echo the buffer back to the sender
+    int iSendResult = send(sockinfo->ClientSocket, buf, len, 0);
+    if (iSendResult == SOCKET_ERROR) {
+        closesocket(sockinfo->ClientSocket);
+        WSACleanup();
+        return 0;
+    }
+    return iSendResult;
 }
 
 int ThreadedSocketServer::receiveBuffer(char * buf, int len)
 {
-	socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
+    socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
 
-	return recv(sockinfo->ClientSocket, buf, len, 0);
+    return recv(sockinfo->ClientSocket, buf, len, 0);
 
 }
 
 const char * ThreadedSocketServer::lastError(void)
 {
-	socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
+    socket_info_t * sockinfo = (socket_info_t *)_sockinfo;
 
     return (const char *)sockinfo->errmsg;
 }

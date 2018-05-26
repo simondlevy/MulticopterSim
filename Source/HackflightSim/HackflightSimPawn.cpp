@@ -168,19 +168,21 @@ void AHackflightSimPawn::BeginPlay()
 
 void AHackflightSimPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	// Stop the server
-	if (_serverRunning) {
-        if (!server.stop()) {
-            serverError();
+    // Stop the server if it has a client connection
+    if (_serverRunning) {
+        if (server.connected()) {
+            if (server.disconnect()) {
+                hf::Debug::printf("Disconnected");
+            }
+            else {
+                serverError();
+            }
         }
-        else {
-            hf::Debug::printf("Disconnected");
-        }
+        server.stop();
     }
 
-	Super::EndPlay(EndPlayReason);
+    Super::EndPlay(EndPlayReason);
 }
-
 
 void AHackflightSimPawn::Tick(float DeltaSeconds)
 {
@@ -213,7 +215,7 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Use Euler angle first difference to emulate gyro
     _gyro = (euler - _eulerPrev) / DeltaSeconds;
     _eulerPrev = euler;
- 
+
     // Rotate Euler angles into inertial frame: http://www.chrobotics.com/library/understanding-euler-angles
     float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
     float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
@@ -225,15 +227,15 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Modulate the pitch and voume of the propeller sound
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
     propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
-	
-	// Debug status of client connection
-	if (!server.connected() && _serverRunning) {
-		//hf::Debug::printf("Server running but not connected");
-	}
 
-	if (server.connected() && _serverRunning) {
-		//hf::Debug::printf("Server connected");
-	}
+    // Debug status of client connection
+    if (!server.connected() && _serverRunning) {
+        //hf::Debug::printf("Server running but not connected");
+    }
+
+    if (server.connected() && _serverRunning) {
+        //hf::Debug::printf("Server connected");
+    }
 
     // Call any parent class Tick implementation
     Super::Tick(DeltaSeconds);

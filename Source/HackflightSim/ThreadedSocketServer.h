@@ -26,9 +26,11 @@ public:
 
 	bool start(void);
 
-	bool stop(void);
+	void stop(void);
 
 	bool connected(void);
+
+    bool disconnect();
 
 	int sendBuffer(char * buf, int len);
 
