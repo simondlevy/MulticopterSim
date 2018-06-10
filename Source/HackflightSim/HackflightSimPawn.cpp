@@ -33,7 +33,8 @@ hf::Hackflight hackflight;
 hf::Controller controller;
 
 // Socket comms
-static const char * HOST = "137.113.118.68";  // thales.cs.wlu.edu
+//static const char * HOST = "137.113.118.68";  // thales.cs.wlu.edu
+static const char * HOST = "129.97.45.86";      // uwaterloo ctn
 static const int PORT = 20000;
 ThreadedSocketServer server = ThreadedSocketServer(PORT, HOST);
 
@@ -322,3 +323,9 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
     }
 }
 
+bool AHackflightSimPawn::getGroundTruth(vehicleState_t & state)
+{
+	state.altitude = 77;
+	state.vario = 66;
+	return true;
+}

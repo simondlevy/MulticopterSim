@@ -92,6 +92,7 @@ class AHackflightSimPawn : public APawn, public Board
         virtual uint8_t serialAvailableBytes(void) override;
         virtual uint8_t serialReadByte(void) override;
         virtual void    serialWriteByte(uint8_t c) override;
+		virtual bool    getGroundTruth(vehicleState_t & state) override;
 
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
