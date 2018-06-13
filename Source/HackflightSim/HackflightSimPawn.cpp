@@ -40,8 +40,11 @@ ThreadedSocketServer server = ThreadedSocketServer(PORT, HOST);
 
 // Debugging
 
-static FColor TEXT_COLOR = FColor::Yellow;
-static float  TEXT_SCALE = 2.f;
+static const FColor TEXT_COLOR = FColor::Yellow;
+static const float  TEXT_SCALE = 2.f;
+
+// Scaling constant for turning motor spin to thrust
+static const float THRUST_FACTOR = 100;
 
 void hf::Board::outbuf(char * buf)
 {
@@ -231,7 +234,7 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     float z = cos(euler.Y)*cos(euler.X);
 
     // Add movement force to vehicle
-    PlaneMesh->AddForce(100*motorSum*FVector(-x, -y, z));
+    PlaneMesh->AddForce(THRUST_FACTOR*motorSum*FVector(-x, -y, z));
 
     // Modulate the pitch and voume of the propeller sound
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
