@@ -34,7 +34,8 @@ hf::Controller controller;
 
 // Socket comms
 //static const char * HOST = "137.113.118.68";  // thales.cs.wlu.edu
-static const char * HOST = "129.97.45.86";      // uwaterloo ctn
+//static const char * HOST = "129.97.45.86";      // uwaterloo ctn
+static const char * HOST = "127.0.0.1";         // localhost
 static const int PORT = 20000;
 ThreadedSocketServer server = ThreadedSocketServer(PORT, HOST);
 
