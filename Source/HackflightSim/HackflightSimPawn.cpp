@@ -17,6 +17,8 @@
 #include "Engine/StaticMesh.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 
+#include <cmath>
+
 // Main firmware
 hf::Hackflight hackflight;
 
@@ -40,12 +42,11 @@ static const int PORT = 20000;
 ThreadedSocketServer server = ThreadedSocketServer(PORT, HOST);
 
 // Debugging
-
 static const FColor TEXT_COLOR = FColor::Yellow;
 static const float  TEXT_SCALE = 2.f;
 
 // Scaling constant for turning motor spin to thrust
-static const float THRUST_FACTOR = 100;
+static const float THRUST_FACTOR = 130;
 
 void hf::Board::outbuf(char * buf)
 {
@@ -217,10 +218,10 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Get current quaternion
     _quat = this->GetActorQuat();
 
-	// Get altitude, vario
-	_altitude = this->GetActorLocation().Z;
-	_vario = (_altitude - _altitudePrev) / DeltaSeconds;
-	_altitudePrev = _altitude;
+    // Get altitude, vario
+    _altitude = this->GetActorLocation().Z;
+    _vario = (_altitude - _altitudePrev) / DeltaSeconds;
+    _altitudePrev = _altitude;
 
     // Convert quaternion to Euler angles
     FVector euler = FMath::DegreesToRadians(_quat.Euler());
@@ -234,8 +235,8 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
     float z = cos(euler.Y)*cos(euler.X);
 
-    // Add movement force to vehicle
-    PlaneMesh->AddForce(THRUST_FACTOR*motorSum*FVector(-x, -y, z));
+    // Add movement force to vehicle with simple piecewise nonlinearity
+    PlaneMesh->AddForce(motorSum*THRUST_FACTOR*FVector(-x, -y, z));
 
     // Modulate the pitch and voume of the propeller sound
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);

@@ -24,11 +24,8 @@ namespace hf {
 
             bool arming(void) override
             {
-                // Assume noisy throttle first time around; thereafter, we're arming if the throttle is positive.
-                bool retval = _ready ? rawvals[CHANNEL_THROTTLE] > 0.1 : false;
-
-                // We're ready after skipping initial noisy throttle
-                _ready = true;
+                // Return true first time around only
+                bool retval = true;
 
                 // Don't report arming if already armed
                 if (_armed) {
@@ -62,8 +59,7 @@ namespace hf {
 
             void begin(void)
             {
-                // Initialize flags for arming
-                _ready = false;
+                // Initialize flag for arming
                 _armed = false;
 
                 // Set up axes based on OS and controller
@@ -125,17 +121,9 @@ namespace hf {
             {
             }
 
-		protected:
-
-			float throttleFun(float x)
-			{
-				return x; // simple linear function (identity)
-			}
-
         private:
 
-            // A hack to skip noisy throttle on startup, and also support disarming via MSP
-            bool     _ready;
+            // A hack to support arming on startup
             bool     _armed;
 
             // Implemented differently for each OS
