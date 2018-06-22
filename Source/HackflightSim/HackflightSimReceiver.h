@@ -125,6 +125,13 @@ namespace hf {
             {
             }
 
+		protected:
+
+			float throttleFun(float x)
+			{
+				return x; // simple linear function (identity)
+			}
+
         private:
 
             // A hack to skip noisy throttle on startup, and also support disarming via MSP

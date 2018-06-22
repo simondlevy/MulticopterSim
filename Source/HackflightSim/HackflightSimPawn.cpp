@@ -335,9 +335,9 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
     }
 }
 
-bool AHackflightSimPawn::getGroundTruth(vehicleState_t & state)
+/*
+void AHackflightSimPawn::getGroundTruth(vehicleState_t & state)
 {
 	state.altitude = _altitude;
-	state.vario = _vario;
-	return true;
 }
+*/
