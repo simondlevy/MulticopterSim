@@ -161,9 +161,6 @@ void AHackflightSimPawn::BeginPlay()
     // Reset previous Euler angles for gyro emulation
     _eulerPrev = FVector(0, 0, 0);
 
-	// Reset previous altitude for vario
-	_altitudePrev = 0;
-
 	// Start the server
     _serverRunning = true;
 	if (!server.start()) {
@@ -218,10 +215,8 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Get current quaternion
     _quat = this->GetActorQuat();
 
-    // Get altitude, vario
+    // Get altitude
     _altitude = this->GetActorLocation().Z;
-    _vario = (_altitude - _altitudePrev) / DeltaSeconds;
-    _altitudePrev = _altitude;
 
     // Convert quaternion to Euler angles
     FVector euler = FMath::DegreesToRadians(_quat.Euler());
@@ -336,9 +331,7 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
     }
 }
 
-/*
-void AHackflightSimPawn::getGroundTruth(vehicleState_t & state)
+void  AHackflightSimPawn::getGroundTruth(vehicleState_t & state)  
 {
-	state.altitude = _altitude;
+    state.altitude = _altitude;
 }
-*/

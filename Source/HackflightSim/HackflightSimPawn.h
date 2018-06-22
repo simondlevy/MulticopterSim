@@ -63,10 +63,8 @@ class AHackflightSimPawn : public APawn, public Board
         FVector _eulerPrev;
         FVector _gyro;
 
-		// Support for altitude, vario
-		float _altitude;
-		float _altitudePrev;
-		float _vario;
+	// Support for ground-truth altitude
+	float _altitude;
 
         // Converts a set of motor values to angular forces in body frame
         float motorsToAngularForce(int a, int b, int c, int d);
@@ -97,8 +95,7 @@ class AHackflightSimPawn : public APawn, public Board
         virtual uint8_t serialAvailableBytes(void) override;
         virtual uint8_t serialReadByte(void) override;
         virtual void    serialWriteByte(uint8_t c) override;
-
- 		//virtual bool    getGroundTruth(vehicleState_t & state) override;
+	virtual void    getGroundTruth(vehicleState_t &state) override;
 
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
