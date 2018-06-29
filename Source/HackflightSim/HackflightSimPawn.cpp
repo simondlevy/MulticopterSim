@@ -331,7 +331,8 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
     }
 }
 
-void  AHackflightSimPawn::getGroundTruth(vehicleState_t & state)  
+bool AHackflightSimPawn::getBarometer(float & pressure)  
 {
-    state.altitude = _altitude;
+	pressure = 0;
+	return false;
 }
