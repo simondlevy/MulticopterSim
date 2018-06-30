@@ -63,9 +63,6 @@ class AHackflightSimPawn : public APawn, public Board
         FVector _eulerPrev;
         FVector _gyro;
 
-	// Support for ground-truth altitude
-	float _altitude;
-
         // Converts a set of motor values to angular forces in body frame
         float motorsToAngularForce(int a, int b, int c, int d);
 
