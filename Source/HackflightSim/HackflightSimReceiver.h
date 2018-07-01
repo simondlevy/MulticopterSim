@@ -125,7 +125,7 @@ namespace hf {
 
 			virtual bool inHoverMode(void) override
 			{
-				return _inHoverMode;
+				return _springyThrottle ? true : _inHoverMode;
 			}
 
         private:
