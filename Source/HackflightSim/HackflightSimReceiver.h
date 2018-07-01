@@ -64,9 +64,6 @@ namespace hf {
 
                 // Set up axes based on OS and controller
                 productInit();
-
-                // Useful for springy-throttle controllers (XBox, PS3)
-                _throttleDemand = -1.f;
             }
 
             bool gotNewFrame(void)
@@ -102,19 +99,6 @@ namespace hf {
                     }
                     rawvals[4] = buttonsToAux[_buttonState];
                 }
-
-                // Game-controller spring-mounted throttle requires special handling
-                if (_springyThrottle) {
-                    rawvals[0] = Filter::deadband(rawvals[0], 0.15);
-                    _throttleDemand += rawvals[0] * 0.1f; // XXX need to make this deltaT computable
-                    _throttleDemand = Filter::constrainAbs(_throttleDemand, 1);
-                }
-                else {
-                    _throttleDemand = rawvals[0];
-                }
- 
-                // Special handling for throttle
-                rawvals[0] = _throttleDemand;
             }
 
             void halt(void)
@@ -142,7 +126,6 @@ namespace hf {
             bool     _reversedVerticals;
             bool     _springyThrottle;
             bool     _useButtonForAux;
-            float    _throttleDemand;
             uint8_t  _axismap[5];   // Thr, Ael, Ele, Rud, Aux
             uint8_t  _buttonmap[3]; // Aux=0, Aux=1, Aux=2
             int      _joyid;        // Linux file descriptor or Windows joystick ID

@@ -332,8 +332,6 @@ bool AHackflightSimPawn::getBarometer(float & pressure)
 {
     float altitude = this->GetActorLocation().Z; 
 
-    Debug::printf("Altitude = %+3.3fm", altitude);
-
     //https://www.researchgate.net/file.PostFileLoader.html?id=5409cac4d5a3f2e81f8b4568&assetKey=AS%3A273593643012096%401442241215893
     pressure = 100 * pow((44331.514 - altitude) / 11880.516, 1/0.1902632);
 
