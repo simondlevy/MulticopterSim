@@ -121,6 +121,13 @@ namespace hf {
             {
             }
 
+		protected:
+
+			virtual bool inHoverMode(void) override
+			{
+				return _inHoverMode;
+			}
+
         private:
 
             // A hack to support arming on startup
