@@ -63,6 +63,7 @@ void hf::Board::outbuf(char * buf)
 }
 
 // PID tuning
+
 hf::Stabilizer stabilizer = hf::Stabilizer(
 	1.0f,       // Level P
 	.00001f,    // Gyro cyclic P
@@ -70,6 +71,8 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 	0,			// Gyro cyclic D
 	0,			// Gyro yaw P
 	0);			// Gyro yaw I
+
+hf::Hover hover = hf::Hover(1.0);
 
 // Mixer
 #include <mixers/quadx.hpp>
@@ -97,7 +100,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 	RootComponent = PlaneMesh;
 
 	// Start Hackflight firmware
-	hackflight.init(this, &controller, &mixer, &stabilizer);
+	hackflight.init(this, &controller, &mixer, &stabilizer, &hover);
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
