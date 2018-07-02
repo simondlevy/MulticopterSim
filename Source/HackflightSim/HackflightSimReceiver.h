@@ -25,7 +25,7 @@ namespace hf {
             bool arming(void) override
             {
                 // Return true first time around only
-                bool retval = true;
+                bool retval = inHoverMode() ? demands.throttleIn > THROTTLE_DEADBAND : true;
 
                 // Don't report arming if already armed
                 if (_armed) {
@@ -34,7 +34,7 @@ namespace hf {
 
                 // On first arming, set already-armed flag
                 else if (retval) {
-                    _armed = true;
+					_armed = true;
                 }
 
                 return retval;
