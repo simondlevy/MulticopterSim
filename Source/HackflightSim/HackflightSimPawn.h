@@ -93,6 +93,7 @@ class AHackflightSimPawn : public APawn, public Board
         virtual uint8_t serialReadByte(void) override;
         virtual void    serialWriteByte(uint8_t c) override;
 		virtual bool    getBarometer(float & pressure) override;
+		virtual bool    getOpticalFlow(float & x, float & y) override;
 
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }

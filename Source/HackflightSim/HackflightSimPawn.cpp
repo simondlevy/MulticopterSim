@@ -340,3 +340,11 @@ bool AHackflightSimPawn::getBarometer(float & pressure)
 
 	return true;
 }
+
+bool AHackflightSimPawn::getOpticalFlow(float & x, float & y)
+{
+	x = 0;
+	y = 0;
+
+	return true;
+}
