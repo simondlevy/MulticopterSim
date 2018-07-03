@@ -72,7 +72,7 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 	0,			// Gyro yaw P
 	0);			// Gyro yaw I
 
-hf::Hover hover = hf::Hover(
+hf::Loiter loiter = hf::Loiter(
 	1.0f,  // Vario P
 	0.2f); // Cyclic P
 
@@ -102,7 +102,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 	RootComponent = PlaneMesh;
 
 	// Start Hackflight firmware
-	hackflight.init(this, &controller, &mixer, &stabilizer, &hover);
+	hackflight.init(this, &controller, &mixer, &stabilizer, &loiter);
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {

@@ -25,7 +25,7 @@ namespace hf {
             bool arming(void) override
             {
                 // Return true first time around only
-                bool retval = inHoverMode() ? demands.throttle > STICK_DEADBAND : true;
+                bool retval = inLoiterMode() ? demands.throttle > STICK_DEADBAND : true;
 
                 // Don't report arming if already armed
                 if (_armed) {
@@ -107,9 +107,9 @@ namespace hf {
 
 		protected:
 
-			virtual bool inHoverMode(void) override
+			virtual bool inLoiterMode(void) override
 			{
-				return _springyThrottle ? true : _inHoverMode;
+				return _springyThrottle ? true : _inLoiterMode;
 			}
 
         private:
