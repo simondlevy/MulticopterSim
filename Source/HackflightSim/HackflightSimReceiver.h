@@ -25,7 +25,7 @@ namespace hf {
             bool arming(void) override
             {
                 // Return true first time around only
-                bool retval = inHoverMode() ? demands.throttle > THROTTLE_DEADBAND : true;
+                bool retval = inHoverMode() ? demands.throttle > STICK_DEADBAND : true;
 
                 // Don't report arming if already armed
                 if (_armed) {

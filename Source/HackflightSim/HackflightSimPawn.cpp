@@ -72,7 +72,9 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 	0,			// Gyro yaw P
 	0);			// Gyro yaw I
 
-hf::Hover hover = hf::Hover(0.1f); // Throttle scale
+hf::Hover hover = hf::Hover(
+	1.0f,  // Vario P
+	0.1f); // Cyclic P
 
 // Mixer
 #include <mixers/quadx.hpp>
