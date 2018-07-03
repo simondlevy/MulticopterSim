@@ -346,13 +346,12 @@ bool AHackflightSimPawn::getOpticalFlow(float & forward, float & rightward)
 	// Grab velocity and divide by 100 to get m/s
 	FVector velocity = this->GetVelocity() / 100;
 
-	// Get vehicle yaw angle
+	// Grab yaw angle
 	float psi = FMath::DegreesToRadians(this->GetActorQuat().Euler()).Z;
 
+	// Use yaw angle to rotate inertial-frame X,Y velocities into body frame forward,rightward
 	forward   =  cos(psi)*velocity.X + sin(psi)*velocity.Y;
 	rightward =  cos(psi)*velocity.Y - sin(psi)*velocity.X;
-
-	hf::Debug::printf("%+2.2f", forward);
 
 	return true;
 }
