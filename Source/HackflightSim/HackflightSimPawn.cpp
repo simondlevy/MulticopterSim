@@ -341,10 +341,18 @@ bool AHackflightSimPawn::getBarometer(float & pressure)
 	return true;
 }
 
-bool AHackflightSimPawn::getOpticalFlow(float & x, float & y)
+bool AHackflightSimPawn::getOpticalFlow(float & foreward, float & rightward)
 {
-	x = 0;
-	y = 0;
+	// Grab velocity and divide by 100 to get m/s
+	FVector velocity = this->GetVelocity() / 100;
+
+	// Get vehicle yaw angle
+	float psi = FMath::DegreesToRadians(this->GetActorQuat().Euler()).Z;
+
+	hf::Debug::printf("%+2.2f", cos(psi)*velocity.Y - sin(psi)*velocity.X);
+
+	foreward = 0;
+	rightward = 0;
 
 	return true;
 }
