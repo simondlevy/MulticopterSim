@@ -74,7 +74,7 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 
 hf::Hover hover = hf::Hover(
 	1.0f,  // Vario P
-	0.1f); // Cyclic P
+	0.2f); // Cyclic P
 
 // Mixer
 #include <mixers/quadx.hpp>
