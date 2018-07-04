@@ -296,6 +296,23 @@ bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
     return true;
 }
 
+bool AHackflightSimPawn::getAccelerometer(float accelGs[3])
+{
+	// Get Euler angles
+	FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
+
+	// Slide 50 from https://slideplayer.com/slide/2813564/
+
+	float phi   = euler.X;
+	float theta = euler.Y;
+
+	accelGs[0] = -sin(theta);
+	accelGs[1] =  sin(phi)*cos(theta);
+	accelGs[2] =  cos(phi)*cos(theta);
+
+	return true;
+}
+
 void AHackflightSimPawn::writeMotor(uint8_t index, float value) 
 {
     _motorvals[index] = value;
