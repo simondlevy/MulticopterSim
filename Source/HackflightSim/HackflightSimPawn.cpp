@@ -74,6 +74,7 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 
 hf::Loiter loiter = hf::Loiter(
 	1.0f,  // Vario P
+	0.06f, // Vario I
 	0.2f); // Cyclic P
 
 // Mixer
