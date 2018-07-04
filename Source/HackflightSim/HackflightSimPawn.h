@@ -62,6 +62,8 @@ class AHackflightSimPawn : public APawn, public Board
         // Support for accelerometer, gyrometer emulation
         FVector _eulerPrev;
         FVector _gyro;
+		float _accelZ;
+		float _varioPrev;
 
         // Converts a set of motor values to angular forces in body frame
         float motorsToAngularForce(int a, int b, int c, int d);

@@ -12,6 +12,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Engine.h"
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
@@ -164,8 +165,10 @@ void AHackflightSimPawn::BeginPlay()
     // once we start playing the sound, it will play continiously...
     propellerAudioComponent->Play();
 
-    // Reset previous Euler angles for gyro emulation
+    // Reset previous IMU simulation variables
     _eulerPrev = FVector(0, 0, 0);
+	_varioPrev = 0;
+	_accelZ = 0;
 
 	// Start the server
     _serverRunning = true;
@@ -227,6 +230,13 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Use Euler angle first difference to emulate gyro
     _gyro = (euler - _eulerPrev) / DeltaSeconds;
     _eulerPrev = euler;
+
+	// Use velocity first difference to emulate accelerometer
+	float vario = this->GetVelocity().Z / 100; // m/s
+	_accelZ = (vario - _varioPrev) / DeltaSeconds;
+	_varioPrev = vario;
+
+	hf::Debug::printf("Accel Z: %+2.2f", _accelZ);
 
     // Rotate Euler angles into inertial frame: http://www.chrobotics.com/library/understanding-euler-angles
     float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
