@@ -389,7 +389,12 @@ bool AHackflightSimPawn::getOpticalFlow(float & forward, float & rightward)
 
 bool AHackflightSimPawn::getSonar(float & distance)
 {
-	distance = this->getAltitude() - _groundAltitude;
+	float altitude = this->getAltitude() - _groundAltitude;
+
+	FVector euler = this->getEulerAngles();
+
+	// Hypoteneuse = adjacent / cosine
+	distance = altitude / (cos(euler.X) * cos(euler.Y));
 
 	return true;
 }
