@@ -225,7 +225,7 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     _quat = this->GetActorQuat();
 
     // Convert quaternion to Euler angles
-    FVector euler = FMath::DegreesToRadians(_quat.Euler());
+    FVector euler = this->getEulerAngles();
 
     // Use Euler angle first difference to emulate gyro
     _gyro = (euler - _eulerPrev) / DeltaSeconds;
@@ -310,7 +310,7 @@ bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
 bool AHackflightSimPawn::getAccelerometer(float accelGs[3])
 {
 	// Get Euler angles
-	FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
+	FVector euler = this->getEulerAngles();
 
 	// Slide 50 from https://slideplayer.com/slide/2813564/
 
@@ -378,7 +378,7 @@ bool AHackflightSimPawn::getOpticalFlow(float & forward, float & rightward)
 	FVector velocity = this->GetVelocity() / 100;
 
 	// Grab yaw angle
-	float psi = FMath::DegreesToRadians(this->GetActorQuat().Euler()).Z;
+	float psi = this->getEulerAngles().Z;
 
 	// Use yaw angle to rotate inertial-frame X,Y velocities into body frame forward,rightward
 	forward   =  cos(psi)*velocity.X + sin(psi)*velocity.Y;
@@ -405,3 +405,9 @@ float AHackflightSimPawn::getAltitude(void)
 {
 	return this->GetActorLocation().Z / 100;
 }
+
+FVector AHackflightSimPawn::getEulerAngles(void)
+{
+	return FMath::DegreesToRadians(this->GetActorQuat().Euler());
+}
+

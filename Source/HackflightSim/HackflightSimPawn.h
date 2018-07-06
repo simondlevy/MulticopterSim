@@ -79,6 +79,7 @@ class AHackflightSimPawn : public APawn, public Board
 
 		// Helpers
 		float getAltitude(void);
+		FVector getEulerAngles(void);
 
     public:
 
