@@ -59,11 +59,13 @@ class AHackflightSimPawn : public APawn, public Board
         // Support for quaternions
         FQuat _quat;
 
-        // Support for accelerometer, gyrometer emulation
+        // Support for sensor emulation
         FVector _eulerPrev;
         FVector _gyro;
 		float _accelZ;
 		float _varioPrev;
+		float _groundAltitude;
+		float _elapsedTime;
 
         // Converts a set of motor values to angular forces in body frame
         float motorsToAngularForce(int a, int b, int c, int d);
@@ -74,6 +76,9 @@ class AHackflightSimPawn : public APawn, public Board
 		int _serverAvailableBytes;
 		int _serverByteIndex;
 		char _serverBuffer[ThreadedSocketServer::BUFLEN];
+
+		// Helpers
+		float getAltitude(void);
 
     public:
 
@@ -88,15 +93,17 @@ class AHackflightSimPawn : public APawn, public Board
 		virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
         // Hackflight::Board overrides
-        virtual bool    getQuaternion(float quat[4]) override;
-        virtual bool    getGyrometer(float gyroRates[3]) override;
-		virtual bool    getAccelerometer(float accelGs[3]) override;
-        virtual void    writeMotor(uint8_t index, float value) override;
-        virtual uint8_t serialAvailableBytes(void) override;
-        virtual uint8_t serialReadByte(void) override;
-        virtual void    serialWriteByte(uint8_t c) override;
-		virtual bool    getBarometer(float & pressure) override;
-		virtual bool    getOpticalFlow(float & x, float & y) override;
+        virtual bool		getQuaternion(float quat[4]) override;
+        virtual bool		getGyrometer(float gyroRates[3]) override;
+		virtual bool		getAccelerometer(float accelGs[3]) override;
+        virtual void		writeMotor(uint8_t index, float value) override;
+        virtual uint8_t		serialAvailableBytes(void) override;
+        virtual uint8_t		serialReadByte(void) override;
+        virtual void		serialWriteByte(uint8_t c) override;
+		virtual bool		getBarometer(float & pressure) override;
+		virtual bool		getOpticalFlow(float & x, float & y) override;
+		virtual bool		getSonar(float & distance) override;
+		virtual uint32_t	getMicroseconds(void) override;
 
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }

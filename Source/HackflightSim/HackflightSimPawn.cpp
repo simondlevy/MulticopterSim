@@ -60,7 +60,6 @@ void hf::Board::outbuf(char * buf)
 
 	// on Visual Studio output console
 	OutputDebugStringA(buf);
-
 }
 
 // PID tuning
@@ -74,9 +73,9 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 	0);			// Gyro yaw I
 
 hf::Loiter loiter = hf::Loiter(
-	1.0f,  // Vario P
-	0.06f, // Vario I
-	0.2f); // Cyclic P
+	1.0f,   // Vario P
+	0.06f,  // Vario I
+	0.2f);  // Cyclic P
 
 // Mixer
 #include <mixers/quadx.hpp>
@@ -165,10 +164,11 @@ void AHackflightSimPawn::BeginPlay()
     // once we start playing the sound, it will play continiously...
     propellerAudioComponent->Play();
 
-    // Reset previous IMU simulation variables
+    // Initialize sensor simulation variables
     _eulerPrev = FVector(0, 0, 0);
 	_varioPrev = 0;
 	_accelZ = 0;
+	_groundAltitude = this->getAltitude(); 
 
 	// Start the server
     _serverRunning = true;
@@ -236,8 +236,6 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
 	_accelZ = (vario - _varioPrev) / DeltaSeconds;
 	_varioPrev = vario;
 
-	hf::Debug::printf("Accel Z: %+2.2f", _accelZ);
-
     // Rotate Euler angles into inertial frame: http://www.chrobotics.com/library/understanding-euler-angles
     float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
     float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
@@ -249,6 +247,9 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     // Modulate the pitch and voume of the propeller sound
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
     propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
+
+	// Track elapsed time
+	_elapsedTime += DeltaSeconds;
 
     // Debug status of client connection
     if (!server.connected() && _serverRunning) {
@@ -363,7 +364,7 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
 
 bool AHackflightSimPawn::getBarometer(float & pressure)  
 {
-    float altitude = this->GetActorLocation().Z; 
+	float altitude = this->getAltitude();
 
     //https://www.researchgate.net/file.PostFileLoader.html?id=5409cac4d5a3f2e81f8b4568&assetKey=AS%3A273593643012096%401442241215893
     pressure = 100 * pow((44331.514 - altitude) / 11880.516, 1/0.1902632);
@@ -384,4 +385,23 @@ bool AHackflightSimPawn::getOpticalFlow(float & forward, float & rightward)
 	rightward =  cos(psi)*velocity.Y - sin(psi)*velocity.X;
 
 	return true;
+}
+
+bool AHackflightSimPawn::getSonar(float & distance)
+{
+	distance = this->getAltitude() - _groundAltitude;
+
+	return true;
+}
+
+uint32_t AHackflightSimPawn::getMicroseconds(void)
+{
+	return (uint32_t)(_elapsedTime * 1e6);
+}
+
+// Helper methods ---------------------------------------------------------------------------------
+
+float AHackflightSimPawn::getAltitude(void)
+{
+	return this->GetActorLocation().Z / 100;
 }
