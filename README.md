@@ -65,8 +65,6 @@ Arduino library, to support its primary intended use. So the most sensible way
 to install it is to clone it into your <b>Documents/Arduino/libraries</b> folder,
 creating that folder if it doesn't exist.
 
-## Windows
-
 As with any UE4 C++ project, there are two ways to build and modify the HackflightSim code on Windows:
 <ol>
 <li> Double-click on <b>HackflightSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
