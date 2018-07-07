@@ -111,9 +111,8 @@ instruction in <b>HackflightSimBuild.cs</b>.
 2. Make sure that the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L78"><tt>PythonPath</tt></a> 
 variable is set appropriately in <b>HackflightSimBuild.cs</b>.  
 
-3. Make sure that the appropriate Python dll file file is in your
-<b>C:\Windows\System32</b> folder. For example, if you're using Python3.6,
-this will be <b>python36.dll</b>  If it is not, you can copy it to there from the folder you specified in the 
+3. Make sure that the appropriate Python dll file file (for example, <b>python36.dll</b>) is in your
+<b>C:\Windows\System32</b> folder. If it is not, you can copy it to there from the folder you specified in the 
 <tt>Pythonpath</tt> variable.
 
 
