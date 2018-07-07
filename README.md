@@ -105,7 +105,7 @@ you can copy it to there from <a href="https://github.com/simondlevy/HackflightS
 
 HackflightSim also includes support for calling Python code.  To use OpenCV with Python, you should do the following:
 
-1. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L78"><tt>LoadPython</tt></a> 
+1. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L21"><tt>LoadPython</tt></a> 
 instruction in <b>HackflightSimBuild.cs</b>.
 
 2. Make sure that the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L78"><tt>PythonPath</tt></a> 
