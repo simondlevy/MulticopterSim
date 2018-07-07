@@ -4,7 +4,7 @@
 
 HackflightSim is a simple quadcopter flight simulator using the C++ 
 [Hackflight](https://github.com/simondlevy/Hackflight) firmware and Unreal
-Engine 4.  It runs on Windows and Linux.
+Engine 4.  It runs on Windows 10.
 
 We began this project using the [V-REP
 platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
@@ -54,10 +54,6 @@ older versions of these tools (Visual Studio 2015, UE 4.16), we recommend sticki
 the differences between Visual Studio 2015 and 2017 can cause problems for UE4 if you're not careful (inability
 to generate a .sln file from a .uproject file, inability to compile source code, etc.).
 
-Linux users should follow these [instructions](https://wiki.unrealengine.com/Building\_On\_Linux).  If (like us) you like
-to build your projects from the bash command line, follow these
-[instructions](https://forums.unrealengine.com/development-discussion/c-gameplay-programming/97022-linux-how-to-compile-c-scripts-from-terminal) to add a bash-shell command allowing you to do this.
-
 # Build
 
 You should first clone the HackflightSim repository into your <b>Documents/Unreal Projects</b> folder, creating
@@ -68,12 +64,6 @@ repository.  Although Hackflight is hardware-independent, it is set up as an
 Arduino library, to support its primary intended use. So the most sensible way
 to install it is to clone it into your <b>Documents/Arduino/libraries</b> folder,
 creating that folder if it doesn't exist.
-
-At this point, Linux users should edit the lines in
-[HackflightSim/Source/HackflightSim/HackflightSim.Build.cs](https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L33-L35)
-that will tell the UnrealEditor4 compiler where to find your Hackflight source
-code.  (On Windows, as long as the code is in 
-<b>C:\Users\\<i>YOURNAME</i>\Documents\Arduino\libraries\Hackflight\src</b>, you shouldn't need to edit this file.)
 
 ## Windows
 
@@ -96,18 +86,16 @@ controller plugged in, hitting the <b>F5</b> key should build the project and
 launch Unreal Editor. 
 </ol>
 
-## Linux
+## Support for OpenCV
 
-Do the following in your bash shell:
+To enable projects using machine vision, HackflightSim includes support for the popular OpenCV package.
+To use OpenCV with HackflightSim, you should do the following:
 
-<pre>
-% cd ~/Documents/Unreal Projects/HackflightSim
-% unrealbuild HackflightSim.uproject
-</pre>
+1. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs"><tt>LoadOpenCV</tt></a> instruction in <b>HackflightSimBuild.cs</b>.
 
-Then launch UnrealEngineEditor and open <b>HackflightSim.uproject</b>.  If you're asked about making
-a copy to deal with version incompatibility, click Okay.  Once you've done that,
-it can take several minutes for the UE4 Editor to build your project.
+2. Make sure that the file <b>opencv_world340.dll</b> is in your <b>C:\Windows\System32</b> folder.  If it is not,
+you can copy it to there from <a href=""https://github.com/simondlevy/HackflightSim/tree/master/ThirdParty/OpenCV/Libraries/Win64><b>HackflightSim\ThirdParty\OpenCV\Libraries\Win64</b></a>
+
 
 # Launch and fly!
 
