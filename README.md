@@ -89,7 +89,7 @@ launch Unreal Editor.
 To enable projects using machine vision, HackflightSim includes support for the popular OpenCV package.
 To use OpenCV with HackflightSim, you should do the following:
 
-1. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs"><tt>LoadOpenCV</tt></a> instruction in <b>HackflightSimBuild.cs</b>.
+1. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L20"><tt>LoadOpenCV</tt></a> instruction in <b>HackflightSimBuild.cs</b>.
 
 2. Make sure that the file <b>opencv_world340.dll</b> is in your <b>C:\Windows\System32</b> folder.  If it is not,
 you can copy it to there from <a href=""https://github.com/simondlevy/HackflightSim/tree/master/ThirdParty/OpenCV/Libraries/Win64><b>HackflightSim\ThirdParty\OpenCV\Libraries\Win64</b></a>
