@@ -40,8 +40,7 @@ class HACKFLIGHTSIM_API AVisionHUD : public AHUD
 	
 	const FLinearColor BORDER_COLOR = FLinearColor::Yellow;
 	const float BORDER_WIDTH = 2.0f;
-
-	void drawBorder(float lx, float uy, float rx, float by);
+	void drawBorderLine(float lx, float uy, float rx, float by);
 
 	// Access to Vision camera
 	UTextureRenderTarget2D* VisionTextureRenderTarget;
@@ -55,4 +54,9 @@ class HACKFLIGHTSIM_API AVisionHUD : public AHUD
 
 	// implementation of your vision algorithm
 	class VisionAlgorithm * _algorithm;
+
+public:  // so VisionAlgorith subclasses can draw their own border
+
+	void drawBorder(float lxoff = 0);
+
 };

@@ -46,5 +46,5 @@ void VisionDownsampling::perform(cv::Mat & bgrimg)
     }
 
     // Draw a border around the pixels
-    //_hud->drawBorder(startx, _topy);
+	_hud->drawBorder(startx - IMAGE_MARGIN);
 }
