@@ -9,6 +9,9 @@
 
 #include "VisionHUD.h"
 
+// Use whatever machine-vision algorithm you like
+#include "vision/VisionDownsampling.h"
+
 AVisionHUD::AVisionHUD()
 {
 	// Get Vision render target from blueprint
@@ -28,9 +31,17 @@ AVisionHUD::AVisionHUD()
 	// Allocate memory for RGB image bytes
 	_rows = VisionTextureRenderTarget->SizeY;
 	_cols = VisionTextureRenderTarget->SizeX;
-	_imagergb = new uint8_t[_rows*_cols * 3];
+	_bgrbytes = new uint8_t[_rows*_cols * 3];
+
+	// Specify a machine-vision algorithm
+	_algorithm = new VisionDownsampling(this, LEFTX, TOPY);
 }
 
+AVisionHUD::~AVisionHUD()
+{
+	delete _bgrbytes;
+	delete _algorithm;
+}
 
 void AVisionHUD::DrawHUD()
 {
@@ -52,10 +63,17 @@ void AVisionHUD::DrawHUD()
 
 			FColor PixelColor = VisionSurfData[k];
 
-			_imagergb[k * 3] = PixelColor.R;
-			_imagergb[k * 3 + 1] = PixelColor.G;
-			_imagergb[k * 3 + 2] = PixelColor.B;
+			_bgrbytes[k * 3]     = PixelColor.B;
+			_bgrbytes[k * 3 + 1] = PixelColor.G;
+			_bgrbytes[k * 3 + 2] = PixelColor.R;
 		}
+
+		// Convert BGR bytes to OpenCV Mat
+		cv::Mat bgrimg(_rows, _cols, CV_8UC3, _bgrbytes);
+
+		// Run your vision algorithm on the OpenCV Mat
+		_algorithm->perform(bgrimg);
+
 	}
 
 	// Draw a border around the image

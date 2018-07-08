@@ -14,6 +14,10 @@
 #include "GameFramework/HUD.h"
 #include "Engine/TextureRenderTarget2D.h"
 
+#include "vision/VisionAlgorithm.h"
+
+#include <opencv2/core.hpp>
+
 #include "VisionHUD.generated.h"
 
 /**
@@ -25,6 +29,7 @@ class HACKFLIGHTSIM_API AVisionHUD : public AHUD
 	GENERATED_BODY()
 	
 	AVisionHUD();
+	~AVisionHUD();
 
 	virtual void DrawHUD() override;
 
@@ -46,5 +51,8 @@ class HACKFLIGHTSIM_API AVisionHUD : public AHUD
 	// Support for vision algorithms
 	int _rows;
 	int _cols;
-	uint8_t* _imagergb;
+	uint8_t* _bgrbytes; // OpenCV uses BGR order
+
+	// implementation of your vision algorithm
+	class VisionAlgorithm * _algorithm;
 };
