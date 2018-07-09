@@ -18,6 +18,10 @@ public:
 	PythonLoiter(float varioP, float varioI, float cyclicP);
 
 	~PythonLoiter();
+
+protected:
+
+	virtual void modifyDemands(State & state, demands_t & demands) override;
 };
 
 #endif
