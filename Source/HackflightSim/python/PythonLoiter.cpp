@@ -27,24 +27,14 @@ PythonLoiter::~PythonLoiter()
 
 void PythonLoiter::modifyDemands(State & state, demands_t & demands)
 {
-	// Reset integral if moved into stick deadband
-	bool inBandCurr = inBand(demands.throttle);
-	if (inBandCurr && !_inBandPrev) {
-		_varioIntegral = 0;
-	}
-	_inBandPrev = inBandCurr;
+	// Call the Python method with the throttle and variometer values, getting the resultant throttle
+	PyObject * pThrottle = PyObject_CallMethod(_pInstance, "modifyThrottle", "(ff)", demands.throttle, state.variometer);
 
-
-	// Throttle: inside stick deadband, adjust by variometer; outside deadband, respond weakly to stick demand
-	demands.throttle = inBandCurr ? 
-		-_varioP * state.variometer - _varioI * _varioIntegral :
-		_throttleScale * demands.throttle;
-
+	// Use the throttle value from Python to set the current throttle
+	demands.throttle = PyFloat_AsDouble(pThrottle);
+	
 	// Pitch/roll
 	demands.pitch = adjustCyclic(demands.pitch, state.velocityForward);
 	demands.roll = adjustCyclic(demands.roll, state.velocityRightward);
-
-	// Accumulate integrals
-	_varioIntegral += state.variometer;
 }
 
