@@ -11,8 +11,7 @@ from distutils.core import setup
 
 setup (name = 'python_loiter',
     version = '0.1',
-    install_requires = ['PIL'],
-    description = '',
+    description = 'requires: numpy, nengo',
     py_modules = ['python_loiter',],
     author='Simon D. Levy',
     author_email='simon.d.levy@gmail.com',
