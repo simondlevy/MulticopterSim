@@ -16,8 +16,6 @@
 
 #include "vision/VisionAlgorithm.h"
 
-#include <opencv2/core.hpp>
-
 #include "VisionHUD.generated.h"
 
 /**

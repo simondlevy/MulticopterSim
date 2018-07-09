@@ -33,14 +33,18 @@ AVisionHUD::AVisionHUD()
 	_cols = VisionTextureRenderTarget->SizeX;
 	_bgrbytes = new uint8_t[_rows*_cols * 3];
 
+#ifdef _OPENCV
 	// Specify a machine-vision algorithm
 	_algorithm = new VisionDownsampling(this, LEFTX, TOPY);
+#endif
 }
 
 AVisionHUD::~AVisionHUD()
 {
 	delete _bgrbytes;
+#ifdef _OPENCV
 	delete _algorithm;
+#endif
 }
 
 void AVisionHUD::DrawHUD()
@@ -68,11 +72,13 @@ void AVisionHUD::DrawHUD()
 			_bgrbytes[k * 3 + 2] = PixelColor.R;
 		}
 
+#ifdef _OPENCV
 		// Convert BGR bytes to OpenCV Mat
 		cv::Mat bgrimg(_rows, _cols, CV_8UC3, _bgrbytes);
 
 		// Run your vision algorithm on the OpenCV Mat
 		_algorithm->perform(bgrimg);
+#endif
 
 	}
 

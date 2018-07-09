@@ -10,6 +10,8 @@
 
 #include "VisionAlgorithm.h"
 
+#ifdef _OPENCV
+
 class VisionDownsampling : public VisionAlgorithm {
 
 public:
@@ -26,3 +28,5 @@ private:
 
     const int IMAGE_MARGIN = 20;
 };
+
+#endif

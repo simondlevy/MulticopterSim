@@ -9,7 +9,11 @@
 */
 
 #include "VisionDownsampling.h"
+
+#ifdef _OPENCV
+
 #include <opencv2/video/tracking.hpp>
+
 
 VisionDownsampling::VisionDownsampling(class AVisionHUD * hud, int leftx, int topy) : VisionAlgorithm(hud, leftx, topy)
 {
@@ -48,3 +52,4 @@ void VisionDownsampling::perform(cv::Mat & bgrimg)
     // Draw a border around the pixels
 	_hud->drawBorder(startx - IMAGE_MARGIN);
 }
+#endif

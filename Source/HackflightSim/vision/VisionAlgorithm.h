@@ -8,6 +8,10 @@
 * MIT License
 */
 
+//#define _OPENCV
+
+#ifdef _OPENCV
+
 #include "Engine.h"
 #include "VisionHUD.h"
 #include <opencv2/core.hpp>
@@ -43,4 +47,4 @@ protected:
 
 	AVisionHUD * _hud;
 };
-
+#endif
