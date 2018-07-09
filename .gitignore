@@ -3,6 +3,7 @@
 /Intermediate
 /Saved
 /Content/StarterContent
+Source/HackflightSim/python/build/
 *.sln
 *.swp
 *.VC.db

@@ -1,8 +1,18 @@
+/*
+* PythonLoiter.h: Class declaration for Python-based loiter in HackflightSim
+*
+* Copyright (C) 2018 Simon D. Levy
+*
+* MIT License
+*/
+
 #pragma once
 
-#define _PYTHON
+#include "python_class.h"
 
 #ifdef _PYTHON
+
+#include <Python.h>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -11,7 +21,7 @@
 #include <loiter.hpp>
 using namespace hf;
 
-class PythonLoiter : public hf::Loiter {
+class PythonLoiter : public hf::Loiter, public PythonClass {
 
 public:
 
@@ -22,6 +32,7 @@ public:
 protected:
 
 	virtual void modifyDemands(State & state, demands_t & demands) override;
+
 };
 
 #endif

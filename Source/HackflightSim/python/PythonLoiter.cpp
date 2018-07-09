@@ -1,11 +1,18 @@
+/*
+* PythonLoiter.cpp: Class implementation for Python-based loiter in HackflightSim
+*
+* Copyright (C) 2018 Simon D. Levy
+*
+* MIT License
+*/
+
 #include "PythonLoiter.h"
 
-
-
-PythonLoiter::PythonLoiter(float varioP, float varioI, float cyclicP) : hf::Loiter(varioP, varioI, cyclicP)
+PythonLoiter::PythonLoiter(float varioP, float varioI, float cyclicP) : 
+	hf::Loiter(varioP, varioI, cyclicP),
+	PythonClass("python_loiter", "PythonLoiter")
 {
 }
-
 
 PythonLoiter::~PythonLoiter()
 {
@@ -14,9 +21,6 @@ PythonLoiter::~PythonLoiter()
 void PythonLoiter::modifyDemands(State & state, demands_t & demands)
 {
 	hf::Debug::printf("override");
-
-	//Debug::printf("var: %+6.6f  varint: %+6.6f  for: %+4.4f   rgt: %+4.4f\n",
-	//        state.variometer, _varioIntegral, state.velocityForward, state.velocityRightward);
 
 	// Reset integral if moved into stick deadband
 	bool inBandCurr = inBand(demands.throttle);
