@@ -23,7 +23,6 @@
 // Main firmware
 hf::Hackflight hackflight;
 
-
 // MSP comms
 #include "msppg/MSPPG.h"
 
@@ -71,10 +70,17 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 	0,			// Gyro yaw P
 	0);			// Gyro yaw I
 
+#ifdef _PYTHON
+PythonLoiter loiter = PythonLoiter(
+	1.0f,   // Vario P
+	0.06f,  // Vario I
+	0.2f);  // Cyclic P);
+#else
 hf::Loiter loiter = hf::Loiter(
 	1.0f,   // Vario P
 	0.06f,  // Vario I
 	0.2f);  // Cyclic P
+#endif
 
 // Mixer
 #include <mixers/quadx.hpp>

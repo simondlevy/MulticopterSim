@@ -4,10 +4,19 @@
 
 #ifdef _PYTHON
 
-class PythonLoiter
-{
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+#include <loiter.hpp>
+using namespace hf;
+
+class PythonLoiter : public hf::Loiter {
+
 public:
-	PythonLoiter();
+
+	PythonLoiter(float varioP, float varioI, float cyclicP);
+
 	~PythonLoiter();
 };
 
