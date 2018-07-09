@@ -12,6 +12,13 @@ PythonLoiter::PythonLoiter(float varioP, float varioI, float cyclicP) :
 	hf::Loiter(varioP, varioI, cyclicP),
 	PythonClass("python_loiter", "PythonLoiter")
 {
+	// Setup args for constructor
+	PyObject * pArgs = PyTuple_New(2);
+	PyTuple_SetItem(pArgs, 0, PyFloat_FromDouble(varioP));
+	PyTuple_SetItem(pArgs, 1, PyFloat_FromDouble(varioI));
+
+	// Create class instance with args
+	_pInstance = PyObject_CallObject(_pClass, pArgs);
 }
 
 PythonLoiter::~PythonLoiter()
@@ -20,8 +27,6 @@ PythonLoiter::~PythonLoiter()
 
 void PythonLoiter::modifyDemands(State & state, demands_t & demands)
 {
-	hf::Debug::printf("override");
-
 	// Reset integral if moved into stick deadband
 	bool inBandCurr = inBand(demands.throttle);
 	if (inBandCurr && !_inBandPrev) {
@@ -31,7 +36,9 @@ void PythonLoiter::modifyDemands(State & state, demands_t & demands)
 
 
 	// Throttle: inside stick deadband, adjust by variometer; outside deadband, respond weakly to stick demand
-	demands.throttle = inBandCurr ? -_varioP * state.variometer - _varioI * _varioIntegral : _throttleScale * demands.throttle;
+	demands.throttle = inBandCurr ? 
+		-_varioP * state.variometer - _varioI * _varioIntegral :
+		_throttleScale * demands.throttle;
 
 	// Pitch/roll
 	demands.pitch = adjustCyclic(demands.pitch, state.velocityForward);
