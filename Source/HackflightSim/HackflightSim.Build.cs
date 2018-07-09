@@ -13,11 +13,10 @@ public class HackflightSim : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
         // Essential
-        //PrivateIncludePaths.Add("/home/slevy/Documents/Arduino/libraries/Hackflight/src");         // Linux
         PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src"); // Windows
 
         // Extras
-        LoadOpenCV(Target);
+        //LoadOpenCV(Target);
         //LoadPython(Target);
     }
 
