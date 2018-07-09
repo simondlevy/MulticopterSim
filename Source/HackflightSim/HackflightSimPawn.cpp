@@ -23,17 +23,16 @@
 // Main firmware
 hf::Hackflight hackflight;
 
-#ifdef _WIN32
-#include "HackflightSimReceiverWindows.h"
-#else
-#include "HackflightSimReceiverLinux.h"
-#endif
 
 // MSP comms
 #include "msppg/MSPPG.h"
 
 // Controller
+#include "HackflightSimReceiverWindows.h"
 hf::Controller controller;
+
+// Python support
+#include "python/PythonLoiter.h"
 
 // Socket comms
 //static const char * HOST = "137.113.118.68";  // thales.cs.wlu.edu

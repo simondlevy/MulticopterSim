@@ -17,7 +17,7 @@ public class HackflightSim : ModuleRules
 
         // Extras
         //LoadOpenCV(Target);
-        //LoadPython(Target);
+        LoadPython(Target);
     }
 
     private string ThirdPartyPath
