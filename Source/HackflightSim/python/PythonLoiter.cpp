@@ -8,6 +8,8 @@
 
 #include "PythonLoiter.h"
 
+#ifdef _PYTHON
+
 PythonLoiter::PythonLoiter(float varioP, float varioI, float cyclicP) : 
 	hf::Loiter(varioP, varioI, cyclicP),
 	PythonClass("nengo_picontrol", "PIController")
@@ -49,3 +51,4 @@ void PythonLoiter::start(void)
 	PyObject_CallMethod(_pInstance, "start", "()");
 }
 
+#endif
