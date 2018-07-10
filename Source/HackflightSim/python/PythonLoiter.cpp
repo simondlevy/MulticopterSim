@@ -39,7 +39,7 @@ void PythonLoiter::modifyDemands(State & state, demands_t & demands)
 		PyFloat_AsDouble(PyObject_CallMethod(_pInstance, "getCorrection", "(f)", state.variometer)) : 
 		_throttleScale*demands.throttle;
 	
-	// Pitch/roll
+	// Adjust pitch/roll using the C++ super-class
 	demands.pitch = adjustCyclic(demands.pitch, state.velocityForward);
 	demands.roll = adjustCyclic(demands.roll, state.velocityRightward);
 }

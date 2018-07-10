@@ -1,6 +1,10 @@
 '''
 Display Nengo PD controller in Nengo GUI
 
+From command line:
+
+    nengo gui_demo.py
+
 Copyright 2018 Simon D. Levy
 
 MIT License

@@ -15,10 +15,6 @@ class PIController(object):
         self.Kp = varioP
         self.Ki = varioI
 
-        self.inBandPrev = False
-
-        self.STICK_DEADBAND = 0.15
-
         self.q_value = 0
         self.q_target_value = 0
         self.output_value = 0
@@ -55,8 +51,6 @@ class PIController(object):
         
         self.in_gui = in_gui
         self.sim = None
-
-        self.inBandPrev = False
 
     def start(self):
 
