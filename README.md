@@ -120,7 +120,7 @@ variable is set appropriately in <b>HackflightSimBuild.cs</b>.
 4. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/python/python_class.h#L9"><tt>#define _PYTHON</tt></a> 
 directive in <b>python\python_class.h</b>.  
 5. Install the [Nengo neural simulator](https://www.nengo.ai/) : <tt>pip3 install nengo</tt>
-6. In the <b>python\</b> folder, do <tt>python3 setup.py install</tt> to make the Python script <b>nengo_picontrol.py</b> available to HackflightSim.
+6. In the <b>python</b> folder, do <tt>python3 setup.py install</tt> to make the Python script <b>nengo_picontrol.py</b> available to HackflightSim.
 7. Run the simulator and watch the vehicle's altitude being controlled by a spiking neural network!
 
 
