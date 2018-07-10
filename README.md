@@ -117,10 +117,12 @@ variable is set appropriately in <b>HackflightSimBuild.cs</b>.
 <b>C:\Windows\System32</b> folder. If it is not, you can copy it to there from the folder you specified in the 
 <tt>Pythonpath</tt> variable.
 
-4. To see a demonstration of Python in action, un-comment the 
-<a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/python/python_class.h#L9"><tt>#define _PYTHON</tt></a> 
-directive in <b>python\python_class.h</b>.  This will enable you to use the [Nengo neural simulator](https://www.nengo.ai/) to control the altitude of the
-vehicle in loiter mode.  So you should first install Nengo (<tt>pip3 install nengo</tt>) before running this example.
+4. To see a demonstration of Python in action:
+i. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/python/python_class.h#L9"><tt>#define _PYTHON</tt></a> 
+directive in <b>python\python_class.h</b>.  
+ii. Install the [Nengo neural simulator](https://www.nengo.ai/) : <tt>pip3 install nengo</tt>
+iii. In the <b>python\</b> folder, do <tt>python3 setup.py install</tt> to make the Python script <b>nengo_picontrol.py</b> available to HackflightSim.
+iv. Run the simulator and watch the vehicle's altitude being controlled by a spiking neural network!
 
 
 
