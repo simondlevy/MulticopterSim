@@ -9,7 +9,7 @@ import nengo
 
 class PIController(object):
 
-    def __init__(self, varioP, varioI, sim_time=.001, n_neurons=200, 
+    def __init__(self, varioP, varioI, sim_time=.01, n_neurons=500, 
             integral_synapse=0.1, integral_radius=1, seed=None, in_gui=False):
 
         self.Kp = varioP
