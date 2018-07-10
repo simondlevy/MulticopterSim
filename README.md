@@ -105,7 +105,7 @@ directive in <b>vision/VisionAlgorithm.h</b>.
 
 # Support for Python
 
-HackflightSim also includes support for calling Python code from C++.  To use HackflightSim with Python, you should do the following:
+HackflightSim also includes support for calling Python code from C++.  For an example of how to use HackflightSim with Python, you should do the following:
 
 1. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L20"><tt>LoadPython</tt></a> 
 instruction in <b>HackflightSimBuild.cs</b>.
