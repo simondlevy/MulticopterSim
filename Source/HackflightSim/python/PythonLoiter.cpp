@@ -10,7 +10,7 @@
 
 PythonLoiter::PythonLoiter(float varioP, float varioI, float cyclicP) : 
 	hf::Loiter(varioP, varioI, cyclicP),
-	PythonClass("python_loiter", "PythonLoiter")
+	PythonClass("nengo_picontrol", "PIController")
 {
 	// Setup args for constructor
 	PyObject * pArgs = PyTuple_New(2);
@@ -28,10 +28,12 @@ PythonLoiter::~PythonLoiter()
 void PythonLoiter::modifyDemands(State & state, demands_t & demands)
 {
 	// Call the Python method with the throttle and variometer values, getting the resultant throttle
-	PyObject * pThrottle = PyObject_CallMethod(_pInstance, "modifyThrottle", "(ff)", demands.throttle, state.variometer);
+	PyObject * pCorrection = PyObject_CallMethod(_pInstance, "getCorrection", "(ff)", demands.throttle, state.variometer);
+
+	hf::Debug::printf("vario: %+3.3f    correction: %+3.3f", state.variometer, PyFloat_AsDouble(pCorrection));
 
 	// Use the throttle value from Python to set the current throttle
-	demands.throttle = PyFloat_AsDouble(pThrottle);
+	demands.throttle = inBand(demands.throttle) ? PyFloat_AsDouble(pCorrection) : _throttleScale*demands.throttle;
 	
 	// Pitch/roll
 	demands.pitch = adjustCyclic(demands.pitch, state.velocityForward);

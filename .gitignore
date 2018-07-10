@@ -1,12 +1,17 @@
+# VisualStuio
 /DerivedDataCache
 /Binaries
 /Intermediate
 /Saved
 /Content/StarterContent
-Source/HackflightSim/python/build/
 *.sln
 *.swp
 *.VC.db
 *.suo
 *.opendb
 .vs
+
+# Python/Nengo
+Source/HackflightSim/python/build/
+Source/HackflightSim/python/__pycache__
+*.cfg

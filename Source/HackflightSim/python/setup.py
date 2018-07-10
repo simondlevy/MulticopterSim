@@ -9,10 +9,10 @@ MIT License
 
 from distutils.core import setup
 
-setup (name = 'python_loiter',
+setup (name = 'nengo_picontrol',
     version = '0.1',
     description = 'requires: numpy, nengo',
-    py_modules = ['python_loiter',],
+    py_modules = ['nengo_picontrol',],
     author='Simon D. Levy',
     author_email='simon.d.levy@gmail.com',
     license='MIT',

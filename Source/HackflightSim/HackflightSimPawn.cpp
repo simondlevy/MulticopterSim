@@ -72,9 +72,9 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 
 #ifdef _PYTHON
 PythonLoiter loiter = PythonLoiter(
-	1.0f,   // Vario P
-	0.06f,  // Vario I
-	0.2f);  // Cyclic P);
+	0.65,   // Vario P
+	0.75,  // Vario I
+	0.2);  // Cyclic P);
 #else
 hf::Loiter loiter = hf::Loiter(
 	1.0f,   // Vario P
