@@ -29,6 +29,8 @@ public:
 
 	~PythonLoiter();
 
+	void start(void);
+
 protected:
 
 	virtual void modifyDemands(State & state, demands_t & demands) override;

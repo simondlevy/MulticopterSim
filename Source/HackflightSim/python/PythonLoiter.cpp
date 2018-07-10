@@ -27,16 +27,25 @@ PythonLoiter::~PythonLoiter()
 
 void PythonLoiter::modifyDemands(State & state, demands_t & demands)
 {
-	// Call the Python method with the throttle and variometer values, getting the resultant throttle
-	PyObject * pCorrection = PyObject_CallMethod(_pInstance, "getCorrection", "(ff)", demands.throttle, state.variometer);
-
-	hf::Debug::printf("vario: %+3.3f    correction: %+3.3f", state.variometer, PyFloat_AsDouble(pCorrection));
+	// Reset integral if moved into stick deadband
+	bool inBandCurr = inBand(demands.throttle);
+	if (inBandCurr && !_inBandPrev) {
+		PyObject_CallMethod(_pInstance, "reset", "()");
+	}
+	_inBandPrev = inBandCurr;
 
 	// Use the throttle value from Python to set the current throttle
-	demands.throttle = inBand(demands.throttle) ? PyFloat_AsDouble(pCorrection) : _throttleScale*demands.throttle;
+	demands.throttle = inBandCurr ? 
+		PyFloat_AsDouble(PyObject_CallMethod(_pInstance, "getCorrection", "(f)", state.variometer)) : 
+		_throttleScale*demands.throttle;
 	
 	// Pitch/roll
 	demands.pitch = adjustCyclic(demands.pitch, state.velocityForward);
 	demands.roll = adjustCyclic(demands.roll, state.velocityRightward);
+}
+
+void PythonLoiter::start(void)
+{
+	PyObject_CallMethod(_pInstance, "start", "()");
 }
 

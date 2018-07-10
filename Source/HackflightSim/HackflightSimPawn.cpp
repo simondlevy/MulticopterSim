@@ -183,6 +183,11 @@ void AHackflightSimPawn::BeginPlay()
     }
 	_serverAvailableBytes = 0;
 
+	// Start Python-based loiter if indicated
+#ifdef _PYTHON
+	loiter.start();
+#endif
+
     Super::BeginPlay();
 }
 

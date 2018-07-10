@@ -58,22 +58,23 @@ class PIController(object):
 
         self.inBandPrev = False
 
-    def getCorrection(self, throttle, variometer):
+    def start(self):
 
-        # Start Nengo simulator if it isn't alredy running
-        if self.sim is None:  
-            self.sim = nengo.Simulator(self.model, progress_bar=False)  
+        self.sim = nengo.Simulator(self.model, progress_bar=False)  
+
+    def reset(self):
+
+        self.sim.reset()
+
+
+    def getCorrection(self, variometer):
 
         # Target is zero velocity
         self.q_value = variometer
         self.q_target_value = 0
 
+        # Run the Nengo simulator for one time step
         self.sim.run(self.sim_time)
 
-        # Reset integral if moved into stick deadband
-        inBandCurr = abs(throttle) < self.STICK_DEADBAND
-        if inBandCurr and not self.inBandPrev:
-            self.sim.reset()
-        self.inBandPrev = inBandCurr
-
+        # Return the correction
         return self.output_value[0]
