@@ -397,7 +397,7 @@ bool AHackflightSimPawn::getOpticalFlow(float & forward, float & rightward)
 	return true;
 }
 
-bool AHackflightSimPawn::getSonar(float & distance)
+bool AHackflightSimPawn::getRangefinder(float & distance)
 {
 	float altitude = this->getAltitude() - _groundAltitude;
 
