@@ -335,6 +335,44 @@ bool AHackflightSimPawn::getAccelerometer(float accelGs[3])
 	return true;
 }
 
+bool AHackflightSimPawn::getBarometer(float & pressure)  
+{
+	float altitude = this->getAltitude();
+
+    //https://www.researchgate.net/file.PostFileLoader.html?id=5409cac4d5a3f2e81f8b4568&assetKey=AS%3A273593643012096%401442241215893
+    pressure = 100 * pow((44331.514 - altitude) / 11880.516, 1/0.1902632);
+
+	return true;
+}
+
+bool AHackflightSimPawn::getOpticalFlow(float & forward, float & rightward)
+{
+	// Grab velocity and divide by 100 to get m/s
+	FVector velocity = this->GetVelocity() / 100;
+
+	// Grab yaw angle
+	float psi = this->getEulerAngles().Z;
+
+	// Use yaw angle to rotate inertial-frame X,Y velocities into body frame forward,rightward
+	forward   =  cos(psi)*velocity.X + sin(psi)*velocity.Y;
+	rightward =  cos(psi)*velocity.Y - sin(psi)*velocity.X;
+
+	return true;
+}
+
+bool AHackflightSimPawn::getRangefinder(float & distance)
+{
+	float altitude = this->getAltitude() - _groundAltitude;
+
+	FVector euler = this->getEulerAngles();
+
+	// Hypoteneuse = adjacent / cosine
+	distance = altitude / (cos(euler.X) * cos(euler.Y));
+
+	return true;
+}
+
+
 void AHackflightSimPawn::writeMotor(uint8_t index, float value) 
 {
     _motorvals[index] = value;
@@ -371,43 +409,6 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
     if (server.connected()) {
         server.sendBuffer((char *)&c, 1);
     }
-}
-
-bool AHackflightSimPawn::getBarometer(float & pressure)  
-{
-	float altitude = this->getAltitude();
-
-    //https://www.researchgate.net/file.PostFileLoader.html?id=5409cac4d5a3f2e81f8b4568&assetKey=AS%3A273593643012096%401442241215893
-    pressure = 100 * pow((44331.514 - altitude) / 11880.516, 1/0.1902632);
-
-	return true;
-}
-
-bool AHackflightSimPawn::getOpticalFlow(float & forward, float & rightward)
-{
-	// Grab velocity and divide by 100 to get m/s
-	FVector velocity = this->GetVelocity() / 100;
-
-	// Grab yaw angle
-	float psi = this->getEulerAngles().Z;
-
-	// Use yaw angle to rotate inertial-frame X,Y velocities into body frame forward,rightward
-	forward   =  cos(psi)*velocity.X + sin(psi)*velocity.Y;
-	rightward =  cos(psi)*velocity.Y - sin(psi)*velocity.X;
-
-	return true;
-}
-
-bool AHackflightSimPawn::getRangefinder(float & distance)
-{
-	float altitude = this->getAltitude() - _groundAltitude;
-
-	FVector euler = this->getEulerAngles();
-
-	// Hypoteneuse = adjacent / cosine
-	distance = altitude / (cos(euler.X) * cos(euler.Y));
-
-	return true;
 }
 
 uint32_t AHackflightSimPawn::getMicroseconds(void)
