@@ -12,6 +12,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include <random>
+
 #include <hackflight.hpp>
 using namespace hf;
 
@@ -93,16 +95,21 @@ class AHackflightSimPawn : public APawn, public Board
 
             private:
 
+                std::default_random_engine _generator;
+                std::normal_distribution<float> _dist;
+
+
                 uint8_t _size;
                 float   _noise;
         };
 
-        Sensor _gyroSensor  = Sensor(3, 0.01);
-        Sensor _accelSensor = Sensor(3, 0.01);
-        Sensor _quatSensor  = Sensor(4, 0.01);
-        Sensor _rangeSensor = Sensor(1, 0.01);
-        Sensor _flowSensor  = Sensor(2, 0.01);
-        Sensor _baroSensor  = Sensor(1, 0.01);
+        // Simulate Gaussian sensor noise
+        Sensor _gyroSensor  = Sensor(3, .001);  // radians / second
+        Sensor _accelSensor = Sensor(3, .001);  // Gs / second
+        Sensor _baroSensor  = Sensor(1, 5.0);   // pascals / second
+        Sensor _quatSensor  = Sensor(4, .005);  // [+/-1]
+        Sensor _rangeSensor = Sensor(1, .002);  // meters
+        Sensor _flowSensor  = Sensor(2, .001);  // meters / second
 
     public:
 
@@ -125,7 +132,7 @@ class AHackflightSimPawn : public APawn, public Board
         virtual uint8_t		serialReadByte(void) override;
         virtual void		serialWriteByte(uint8_t c) override;
         virtual bool		getBarometer(float & pressure) override;
-        virtual bool		getOpticalFlow(float & x, float & y) override;
+        virtual bool		getOpticalFlow(float flow[2]) override;
         virtual bool		getRangefinder(float & distance) override;
         virtual uint32_t	getMicroseconds(void) override;
 
