@@ -107,7 +107,7 @@ class AHackflightSimPawn : public APawn, public Board
         Sensor _gyroSensor  = Sensor(3, .001);  // radians / second
         Sensor _accelSensor = Sensor(3, .001);  // Gs / second
         Sensor _baroSensor  = Sensor(1, 5.0);   // pascals / second
-        Sensor _quatSensor  = Sensor(4, .005);  // [+/-1]
+        Sensor _quatSensor  = Sensor(4, 0);     // [+/-1]
         Sensor _rangeSensor = Sensor(1, .002);  // meters
         Sensor _flowSensor  = Sensor(2, .001);  // meters / second
 
