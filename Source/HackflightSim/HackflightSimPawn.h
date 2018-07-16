@@ -80,24 +80,29 @@ class AHackflightSimPawn : public APawn, public Board
 		// Helpers
 		float getAltitude(void);
 		FVector getEulerAngles(void);
-        //
-        // Helps us simulate sensor Output Data Rates (ODRs) and noise
+        
+        // Helps us simulate sensor noise.  XXX We should simulate ODR (output data rates) as well, but 
+        // UE4 frame rate is currently to slow to do that realistically.
         class Sensor {
 
             public:
 
-                Sensor(uint8_t divisor, float noise);
+                Sensor(uint8_t size, float noise);
 
-                bool ready(void);
+                void addNoise(float vals[]);
 
             private:
 
-                uint8_t _count;
-                uint8_t _divisor;
+                uint8_t _size;
                 float   _noise;
         };
 
-        Sensor _quatSensor = Sensor(3, 0);
+        Sensor _gyroSensor  = Sensor(3, 0.01);
+        Sensor _accelSensor = Sensor(3, 0.01);
+        Sensor _quatSensor  = Sensor(4, 0.01);
+        Sensor _rangeSensor = Sensor(1, 0.01);
+        Sensor _flowSensor  = Sensor(2, 0.01);
+        Sensor _baroSensor  = Sensor(1, 0.01);
 
     public:
 

@@ -299,39 +299,29 @@ void AHackflightSimPawn::serverError(void)
 
 // Hackflight::Board methods ---------------------------------------------------
 
-AHackflightSimPawn::Sensor::Sensor(uint8_t divisor, float noise)
+AHackflightSimPawn::Sensor::Sensor(uint8_t size, float noise)
 {
-    _divisor = divisor;
+    _size  = size;
     _noise = noise;
-    _count = 0;
 }
 
-bool AHackflightSimPawn::Sensor::ready(void)
+void AHackflightSimPawn::Sensor::addNoise(float vals[])
 {
-    _count++;
-
-    if (_count == _divisor) {
-        _count = 0;
-        return true;
+    for (uint8_t k=0; k<_size; ++k) {
+        // XXX add noise
     }
-
-    return false;
 }
 
 bool AHackflightSimPawn::getQuaternion(float q[4]) 
 {   
-    if (_quatSensor.ready()) {
+    q[0] = +_quat.W;
+    q[1] = -_quat.X;
+    q[2] = -_quat.Y;
+    q[3] = +_quat.Z;
 
-        q[0] = +_quat.W;
-        q[1] = -_quat.X;
-        q[2] = -_quat.Y;
-        q[3] = +_quat.Z;
+    _quatSensor.addNoise(q);
 
-        return true;
-
-    }
-
-    return false;
+    return true;
 }
 
 bool AHackflightSimPawn::getGyrometer(float gyroRates[3]) 
@@ -340,7 +330,9 @@ bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
     gyroRates[1] = _gyro.Y;
     gyroRates[2] = _gyro.Z;
 
-    return true;
+    _gyroSensor.addNoise(gyroRates);
+
+    return true; 
 }
 
 bool AHackflightSimPawn::getAccelerometer(float accelGs[3])
@@ -357,6 +349,8 @@ bool AHackflightSimPawn::getAccelerometer(float accelGs[3])
     accelGs[1] =  sin(phi)*cos(theta);
     accelGs[2] =  cos(phi)*cos(theta);
 
+    _accelSensor.addNoise(accelGs);
+
     return true;
 }
 
@@ -366,6 +360,8 @@ bool AHackflightSimPawn::getBarometer(float & pressure)
 
     //https://www.researchgate.net/file.PostFileLoader.html?id=5409cac4d5a3f2e81f8b4568&assetKey=AS%3A273593643012096%401442241215893
     pressure = 100 * pow((44331.514 - altitude) / 11880.516, 1/0.1902632);
+
+    _baroSensor.addNoise(&pressure);
 
     return true;
 }
@@ -382,6 +378,8 @@ bool AHackflightSimPawn::getOpticalFlow(float & forward, float & rightward)
     forward   =  cos(psi)*velocity.X + sin(psi)*velocity.Y;
     rightward =  cos(psi)*velocity.Y - sin(psi)*velocity.X;
 
+    //_flowSensor.addNoise();
+
     return true;
 }
 
@@ -393,6 +391,8 @@ bool AHackflightSimPawn::getRangefinder(float & distance)
 
     // Hypoteneuse = adjacent / cosine
     distance = altitude / (cos(euler.X) * cos(euler.Y));
+
+    _rangeSensor.addNoise(&distance);
 
     return true;
 }
