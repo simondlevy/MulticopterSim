@@ -80,6 +80,24 @@ class AHackflightSimPawn : public APawn, public Board
 		// Helpers
 		float getAltitude(void);
 		FVector getEulerAngles(void);
+        //
+        // Helps us simulate sensor Output Data Rates (ODRs) and noise
+        class Sensor {
+
+            public:
+
+                Sensor(uint8_t divisor, float noise);
+
+                bool ready(void);
+
+            private:
+
+                uint8_t _count;
+                uint8_t _divisor;
+                float   _noise;
+        };
+
+        Sensor _quatSensor = Sensor(3, 0);
 
     public:
 
@@ -91,20 +109,20 @@ class AHackflightSimPawn : public APawn, public Board
         virtual void Tick(float DeltaSeconds) override;
         virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
                 bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
-		virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+        virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
         // Hackflight::Board overrides
         virtual bool		getQuaternion(float quat[4]) override;
         virtual bool		getGyrometer(float gyroRates[3]) override;
-		virtual bool		getAccelerometer(float accelGs[3]) override;
+        virtual bool		getAccelerometer(float accelGs[3]) override;
         virtual void		writeMotor(uint8_t index, float value) override;
         virtual uint8_t		serialAvailableBytes(void) override;
         virtual uint8_t		serialReadByte(void) override;
         virtual void		serialWriteByte(uint8_t c) override;
-		virtual bool		getBarometer(float & pressure) override;
-		virtual bool		getOpticalFlow(float & x, float & y) override;
-		virtual bool		getRangefinder(float & distance) override;
-		virtual uint32_t	getMicroseconds(void) override;
+        virtual bool		getBarometer(float & pressure) override;
+        virtual bool		getOpticalFlow(float & x, float & y) override;
+        virtual bool		getRangefinder(float & distance) override;
+        virtual uint32_t	getMicroseconds(void) override;
 
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
