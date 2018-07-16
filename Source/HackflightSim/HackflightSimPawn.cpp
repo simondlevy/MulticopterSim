@@ -72,13 +72,13 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 
 #ifdef _PYTHON
 PythonLoiter loiter = PythonLoiter(
-	1.0,   // Vario P
-	1.5,  // Vario I
+	2.5f,  // Altitude P
+	5.0f,  // Altitude D
 	0.2);  // Cyclic P);
 #else
 hf::Loiter loiter = hf::Loiter(
-	1.0f,   // Vario P
-	0.06f,  // Vario I
+	0.25f,  // Altitude P
+	0.50f,  // Altitude D
 	0.2f);  // Cyclic P
 #endif
 
@@ -173,6 +173,7 @@ void AHackflightSimPawn::BeginPlay()
     _eulerPrev = FVector(0, 0, 0);
 	_varioPrev = 0;
 	_accelZ = 0;
+	_elapsedTime = 1.0; // avoid divide-by-zero
 	_groundAltitude = this->getAltitude(); 
 
 	// Start the server

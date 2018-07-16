@@ -6,7 +6,7 @@ Copyright 2018 Simon D. Levy
 MIT License
 */
 
-//#define _PYTHON
+#define _PYTHON
 
 #ifdef _PYTHON
 

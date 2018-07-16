@@ -10,14 +10,14 @@
 
 #ifdef _PYTHON
 
-PythonLoiter::PythonLoiter(float varioP, float varioI, float cyclicP) : 
-	hf::Loiter(varioP, varioI, cyclicP),
-	PythonClass("nengo_picontrol", "PIController")
+PythonLoiter::PythonLoiter(float altitudeP, float altitudeD, float cyclicP) : 
+	hf::Loiter(altitudeP, altitudeD, cyclicP),
+	PythonClass("nengo_pidcontrol", "PIDController")
 {
 	// Setup args for constructor
 	PyObject * pArgs = PyTuple_New(2);
-	PyTuple_SetItem(pArgs, 0, PyFloat_FromDouble(varioP));
-	PyTuple_SetItem(pArgs, 1, PyFloat_FromDouble(varioI));
+	PyTuple_SetItem(pArgs, 0, PyFloat_FromDouble(altitudeP));
+	PyTuple_SetItem(pArgs, 1, PyFloat_FromDouble(altitudeD));
 
 	// Create class instance with args
 	_pInstance = PyObject_CallObject(_pClass, pArgs);
@@ -32,13 +32,13 @@ void PythonLoiter::modifyDemands(State & state, demands_t & demands)
 	// Reset integral if moved into stick deadband
 	bool inBandCurr = inBand(demands.throttle);
 	if (inBandCurr && !_inBandPrev) {
-		PyObject_CallMethod(_pInstance, "reset", "()");
+		_altitudeTarget = state.altitude;
 	}
 	_inBandPrev = inBandCurr;
 
-	// Use the throttle value from Python to set the current throttle
-	demands.throttle = inBandCurr ? 
-		PyFloat_AsDouble(PyObject_CallMethod(_pInstance, "getCorrection", "(f)", state.variometer)) : 
+    // Inside throttle deadband, adjust pitch/roll demand by PD controller; outside deadband, leave it as-is
+	demands.throttle = inBand(demands.throttle) ?
+		PyFloat_AsDouble(PyObject_CallMethod(_pInstance, "getCorrection", "(ff)", _altitudeTarget, state.altitude)) :
 		_throttleScale*demands.throttle;
 	
 	// Adjust pitch/roll using the C++ super-class

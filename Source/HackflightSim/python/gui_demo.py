@@ -9,9 +9,9 @@ Copyright 2018 Simon D. Levy
 
 MIT License
 '''
-from nengo_picontrol import PIController
+from nengo_pidcontrol import PIDController
 
-controller = PIController(.1, .1, in_gui=True)
+controller = PIDController(.1, .1)
 
 with controller.model as model:
     
