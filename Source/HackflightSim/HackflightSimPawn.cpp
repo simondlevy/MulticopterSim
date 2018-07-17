@@ -78,8 +78,9 @@ PythonLoiter loiter = PythonLoiter(
 hf::Loiter loiter = hf::Loiter(
 	0.25f,  // Altitude P
 	0.50f,  // Altitude D
-	0.2f,  // Cyclic P
-	0.1f); // Throttle scale
+	0.2f,	// Cyclic P
+	0.1f,	// Throttle scale
+	0.3);	// Min altitude
 #endif
 
 // Mixer
