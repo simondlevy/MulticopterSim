@@ -18,14 +18,14 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#include <loiter.hpp>
+#include <pidcontrollers/loiter.hpp>
 using namespace hf;
 
 class PythonLoiter : public hf::Loiter, public PythonClass {
 
 public:
 
-	PythonLoiter(float varioP, float varioI, float cyclicP);
+	PythonLoiter(float altitudeP, float altitudeD, float cyclicP);
 
 	~PythonLoiter();
 
@@ -33,7 +33,7 @@ public:
 
 protected:
 
-	virtual void modifyDemands(State & state, demands_t & demands) override;
+	virtual bool modifyDemands(State & state, demands_t & demands) override;
 
 };
 

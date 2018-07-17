@@ -72,8 +72,9 @@ hf::Stabilizer stabilizer = hf::Stabilizer(
 
 #ifdef _PYTHON
 PythonLoiter loiter = PythonLoiter(
-	2.5f,  // Altitude P
-	5.0f,
+	2.5f,	// Altitude P
+	5.0f,	// Altitude D
+	0.2f);	// Cyclic P
 #else
 hf::Loiter loiter = hf::Loiter(
 	0.25f,  // Altitude P

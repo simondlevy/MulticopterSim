@@ -27,7 +27,7 @@ PythonLoiter::~PythonLoiter()
 {
 }
 
-void PythonLoiter::modifyDemands(State & state, demands_t & demands)
+bool PythonLoiter::modifyDemands(State & state, demands_t & demands)
 {
 	// Reset integral if moved into stick deadband
 	bool inBandCurr = inBand(demands.throttle);
@@ -44,6 +44,8 @@ void PythonLoiter::modifyDemands(State & state, demands_t & demands)
 	// Adjust pitch/roll using the C++ super-class
 	demands.pitch = adjustCyclic(demands.pitch, state.velocityForward);
 	demands.roll = adjustCyclic(demands.roll, state.velocityRightward);
+
+	return inBandCurr;
 }
 
 void PythonLoiter::start(void)
