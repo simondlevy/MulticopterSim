@@ -443,9 +443,9 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
     }
 }
 
-uint32_t AHackflightSimPawn::getMicroseconds(void)
+float AHackflightSimPawn::getTime(void)
 {
-	return (uint32_t)(_elapsedTime * 1e6);
+	return _elapsedTime;
 }
 
 // Helper methods ---------------------------------------------------------------------------------

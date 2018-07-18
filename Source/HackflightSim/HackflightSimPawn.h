@@ -124,17 +124,17 @@ class AHackflightSimPawn : public APawn, public Board
         virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
         // Hackflight::Board overrides
-        virtual bool		getQuaternion(float quat[4]) override;
-        virtual bool		getGyrometer(float gyroRates[3]) override;
-        virtual bool		getAccelerometer(float accelGs[3]) override;
-        virtual void		writeMotor(uint8_t index, float value) override;
-        virtual uint8_t		serialAvailableBytes(void) override;
-        virtual uint8_t		serialReadByte(void) override;
-        virtual void		serialWriteByte(uint8_t c) override;
-        virtual bool		getBarometer(float & pressure) override;
-        virtual bool		getOpticalFlow(float flow[2]) override;
-        virtual bool		getRangefinder(float & distance) override;
-        virtual uint32_t	getMicroseconds(void) override;
+        virtual bool	getQuaternion(float quat[4]) override;
+        virtual bool	getGyrometer(float gyroRates[3]) override;
+        virtual void	writeMotor(uint8_t index, float value) override;
+        virtual float   getTime(void) override;
+        virtual bool	getAccelerometer(float accelGs[3]) override;
+        virtual uint8_t	serialAvailableBytes(void) override;
+        virtual uint8_t	serialReadByte(void) override;
+        virtual void	serialWriteByte(uint8_t c) override;
+        virtual bool	getBarometer(float & pressure) override;
+        virtual bool	getOpticalFlow(float flow[2]) override;
+        virtual bool	getRangefinder(float & distance) override;
 
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
