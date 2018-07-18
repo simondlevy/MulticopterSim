@@ -25,7 +25,7 @@ namespace hf {
             bool arming(void) override
             {
                 // Return true first time around only
-                bool retval = (_mode==MODE_LOITER) ? demands.throttle > STICK_DEADBAND : true;
+                bool retval = (_auxState > 1) ? demands.throttle > STICK_DEADBAND : true;
 
                 // Don't report arming if already armed
                 if (_armed) {
@@ -107,9 +107,9 @@ namespace hf {
 
 		protected:
 
-			virtual flightmode_t flightMode(void) override
+			virtual uint8_t getAuxState(void) override
 			{
-				return _springyThrottle ? MODE_LOITER : _mode;
+				return _springyThrottle ? 2 : Receiver::getAuxState();
 			}
 
         private:

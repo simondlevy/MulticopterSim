@@ -110,7 +110,10 @@ AHackflightSimPawn::AHackflightSimPawn()
 	RootComponent = PlaneMesh;
 
 	// Start Hackflight firmware
-	hackflight.init(this, &controller, &mixer, &stabilizer, &loiter);
+	hackflight.init(this, &controller, &mixer, &stabilizer);
+
+	// Add loiter PID controller for aux switch position 2
+	hackflight.addPidController(&loiter, 2);
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
