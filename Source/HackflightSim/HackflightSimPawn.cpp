@@ -112,6 +112,9 @@ AHackflightSimPawn::AHackflightSimPawn()
 	// Start Hackflight firmware
 	hackflight.init(this, &controller, &mixer, &stabilizer);
 
+	// Add optical-flow sensor
+	hackflight.addSensor(&_flowSensor);
+
 	// Add loiter PID controller for aux switch position 2
 	hackflight.addPidController(&loiter, 2);
 
@@ -304,7 +307,7 @@ void AHackflightSimPawn::serverError(void)
 
 // Hackflight::Board methods ---------------------------------------------------
 
-AHackflightSimPawn::Sensor::Sensor(uint8_t size, float noise)
+AHackflightSimPawn::GaussianNoise::GaussianNoise(uint8_t size, float noise)
 {
     _size  = size;
     _noise = noise;
@@ -312,7 +315,7 @@ AHackflightSimPawn::Sensor::Sensor(uint8_t size, float noise)
     _dist = std::normal_distribution<float>(0, _noise);
 }
 
-void AHackflightSimPawn::Sensor::addNoise(float vals[])
+void AHackflightSimPawn::GaussianNoise::addNoise(float vals[])
 {
     for (uint8_t k=0; k<_size; ++k) {
         vals[k] += _dist(_generator);
@@ -326,70 +329,21 @@ bool AHackflightSimPawn::getQuaternion(float q[4])
     q[2] = -_quat.Y;
     q[3] = +_quat.Z;
 
-    _quatSensor.addNoise(q);
+    _quatNoise.addNoise(q);
 
     return true;
 }
 
-bool AHackflightSimPawn::getGyrometer(float gyroRates[3]) 
+bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
 {
-    gyroRates[0] = _gyro.X;
-    gyroRates[1] = _gyro.Y;
-    gyroRates[2] = _gyro.Z;
+	gyroRates[0] = _gyro.X;
+	gyroRates[1] = _gyro.Y;
+	gyroRates[2] = _gyro.Z;
 
-    //_gyroSensor.addNoise(gyroRates);
+	//_gyroSensor.addNoise(gyroRates);
 
-    return true; 
+	return true;
 }
-
-bool AHackflightSimPawn::getAccelerometer(float accelGs[3])
-{
-    // Get Euler angles
-    FVector euler = this->getEulerAngles();
-
-    // Slide 50 from https://slideplayer.com/slide/2813564/
-
-    float phi   = euler.X;
-    float theta = euler.Y;
-
-    accelGs[0] = -sin(theta);
-    accelGs[1] =  sin(phi)*cos(theta);
-    accelGs[2] =  cos(phi)*cos(theta);
-
-    //_accelSensor.addNoise(accelGs);
-
-    return true;
-}
-
-bool AHackflightSimPawn::getBarometer(float & pressure)  
-{
-    float altitude = this->getAltitude();
-
-    //https://www.researchgate.net/file.PostFileLoader.html?id=5409cac4d5a3f2e81f8b4568&assetKey=AS%3A273593643012096%401442241215893
-    pressure = 100 * pow((44331.514 - altitude) / 11880.516, 1/0.1902632);
-
-    //_baroSensor.addNoise(&pressure);
-
-    return true;
-}
-
-bool AHackflightSimPawn::getOpticalFlow(float flow[2])
-{
-    // Grab velocity and divide by 100 to get m/s
-    FVector velocity = this->GetVelocity() / 100;
-
-    // Grab yaw angle
-    float psi = this->getEulerAngles().Z;
-
-    // Use yaw angle to rotate inertial-frame X,Y velocities into body frame forward,rightward
-    flow[0]   =  cos(psi)*velocity.X + sin(psi)*velocity.Y;
-    flow[1] =  cos(psi)*velocity.Y - sin(psi)*velocity.X;
-
-    //_flowSensor.addNoise(flow);
-
-    return true;
-}
-
 bool AHackflightSimPawn::getRangefinder(float & distance)
 {
     float altitude = this->getAltitude() - _groundAltitude;
@@ -399,7 +353,7 @@ bool AHackflightSimPawn::getRangefinder(float & distance)
     // Hypoteneuse = adjacent / cosine
     distance = altitude / (cos(euler.X) * cos(euler.Y));
 
-    //_rangeSensor.addNoise(&distance);
+    //_rangeNoise.addNoise(&distance);
 
     return true;
 }

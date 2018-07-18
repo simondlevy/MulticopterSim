@@ -12,12 +12,15 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+// Support for adding Gaussian noise to sensors
 #include <random>
 
 #include <hackflight.hpp>
 using namespace hf;
 
 #include "ThreadedSocketServer.h"
+
+#include <sensors/HackflightSimOpticalFlow.h>
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -82,14 +85,17 @@ class AHackflightSimPawn : public APawn, public Board
 		// Helpers
 		float getAltitude(void);
 		FVector getEulerAngles(void);
+
+		// Support for optical flow
+		HackflightSimOpticalFlow _flowSensor = HackflightSimOpticalFlow(this);
         
         // Helps us simulate sensor noise.  XXX We should simulate ODR (output data rates) as well, but 
         // UE4 frame rate is currently to slow to do that realistically.
-        class Sensor {
+        class GaussianNoise {
 
             public:
 
-                Sensor(uint8_t size, float noise);
+                GaussianNoise(uint8_t size, float noise);
 
                 void addNoise(float vals[]);
 
@@ -104,12 +110,12 @@ class AHackflightSimPawn : public APawn, public Board
         };
 
         // Simulate Gaussian sensor noise
-        Sensor _gyroSensor  = Sensor(3, .001);  // radians / second
-        Sensor _accelSensor = Sensor(3, .001);  // Gs / second
-        Sensor _baroSensor  = Sensor(1, 5.0);   // pascals / second
-        Sensor _quatSensor  = Sensor(4, 0);     // [+/-1]
-        Sensor _rangeSensor = Sensor(1, .002);  // meters
-        Sensor _flowSensor  = Sensor(2, .001);  // meters / second
+        GaussianNoise _gyroNoise  = GaussianNoise(3, .001);  // radians / second
+        GaussianNoise _accelNoise = GaussianNoise(3, .001);  // Gs / second
+        GaussianNoise _baroNoise  = GaussianNoise(1, 5.0);   // pascals / second
+        GaussianNoise _quatNoise  = GaussianNoise(4, 0);     // [+/-1]
+        GaussianNoise _rangeNoise = GaussianNoise(1, .002);  // meters
+        GaussianNoise _flowNoise  = GaussianNoise(2, .001);  // meters / second
 
     public:
 
@@ -128,12 +134,9 @@ class AHackflightSimPawn : public APawn, public Board
         virtual bool	getGyrometer(float gyroRates[3]) override;
         virtual void	writeMotor(uint8_t index, float value) override;
         virtual float   getTime(void) override;
-        virtual bool	getAccelerometer(float accelGs[3]) override;
         virtual uint8_t	serialAvailableBytes(void) override;
         virtual uint8_t	serialReadByte(void) override;
         virtual void	serialWriteByte(uint8_t c) override;
-        virtual bool	getBarometer(float & pressure) override;
-        virtual bool	getOpticalFlow(float flow[2]) override;
         virtual bool	getRangefinder(float & distance) override;
 
         // Returns PlaneMesh subobject 
