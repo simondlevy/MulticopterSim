@@ -19,6 +19,8 @@ public:
 
 protected:
 
+	FVector getEulerAngles(void);
+
 	APawn * _pawn;
 };
 

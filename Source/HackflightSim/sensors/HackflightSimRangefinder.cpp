@@ -21,7 +21,7 @@ bool HackflightSimRangefinder::distanceAvailable(float & distance)
 {
 	float altitude = getAltitude() - _groundAltitude;
 
-	FVector euler = FMath::DegreesToRadians(_pawn->GetActorQuat().Euler());
+	FVector euler = getEulerAngles();
 
 	// Hypoteneuse = adjacent / cosine
 	distance = altitude / (cos(euler.X) * cos(euler.Y));

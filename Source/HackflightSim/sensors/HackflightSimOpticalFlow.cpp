@@ -18,7 +18,7 @@ void HackflightSimOpticalFlow::getFlow(float flow[2])
 	FVector velocity = _pawn->GetVelocity() / 100;
 
 	// Grab yaw angle
-	float psi = FMath::DegreesToRadians(_pawn->GetActorQuat().Euler()).Z;
+	float psi = getEulerAngles().Z;
 
 	// Use yaw angle to rotate inertial-frame X,Y velocities into body frame forward,rightward
 	flow[0] = cos(psi)*velocity.X + sin(psi)*velocity.Y;

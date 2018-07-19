@@ -12,3 +12,8 @@ HackflightSimSensor::HackflightSimSensor(APawn * pawn)
 {
 	_pawn = pawn;
 }
+
+FVector HackflightSimSensor::getEulerAngles(void) 
+{
+	return FMath::DegreesToRadians(_pawn->GetActorQuat().Euler());
+}
