@@ -77,8 +77,8 @@ PythonLoiter loiter = PythonLoiter(
 	0.2f);	// Cyclic P
 #else
 hf::Loiter loiter = hf::Loiter(
-	0.25f,  // Altitude P
-	0.50f,  // Altitude D
+	0.1f,  // Altitude P
+	0.2f,  // Altitude D
 	0.2f,	// Cyclic P
 	0.1f,	// Throttle scale
 	0.3);	// Min altitude
@@ -114,6 +114,9 @@ AHackflightSimPawn::AHackflightSimPawn()
 
 	// Add optical-flow sensor
 	hackflight.addSensor(&_flowSensor);
+
+	// Add rangefinder
+	hackflight.addSensor(&_rangefinder);
 
 	// Add loiter PID controller for aux switch position 2
 	hackflight.addPidController(&loiter, 2);
@@ -182,7 +185,9 @@ void AHackflightSimPawn::BeginPlay()
 	_varioPrev = 0;
 	_accelZ = 0;
 	_elapsedTime = 1.0; // avoid divide-by-zero
-	_groundAltitude = this->getAltitude(); 
+
+	// Initialize sensors
+	_rangefinder.init();
 
 	// Start the server
     _serverRunning = true;
@@ -344,20 +349,6 @@ bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
 
 	return true;
 }
-bool AHackflightSimPawn::getRangefinder(float & distance)
-{
-    float altitude = this->getAltitude() - _groundAltitude;
-
-    FVector euler = this->getEulerAngles();
-
-    // Hypoteneuse = adjacent / cosine
-    distance = altitude / (cos(euler.X) * cos(euler.Y));
-
-    //_rangeNoise.addNoise(&distance);
-
-    return true;
-}
-
 
 void AHackflightSimPawn::writeMotor(uint8_t index, float value) 
 {
@@ -403,11 +394,6 @@ float AHackflightSimPawn::getTime(void)
 }
 
 // Helper methods ---------------------------------------------------------------------------------
-
-float AHackflightSimPawn::getAltitude(void)
-{
-	return this->GetActorLocation().Z / 100;
-}
 
 FVector AHackflightSimPawn::getEulerAngles(void)
 {

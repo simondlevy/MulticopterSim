@@ -21,6 +21,7 @@ using namespace hf;
 #include "ThreadedSocketServer.h"
 
 #include <sensors/HackflightSimOpticalFlow.h>
+#include <sensors/HackflightSimRangefinder.h>
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -83,11 +84,13 @@ class AHackflightSimPawn : public APawn, public Board
 		char _serverBuffer[ThreadedSocketServer::BUFLEN];
 
 		// Helpers
-		float getAltitude(void);
 		FVector getEulerAngles(void);
 
 		// Support for optical flow
 		HackflightSimOpticalFlow _flowSensor = HackflightSimOpticalFlow(this);
+
+		// Support for rangefinder
+		HackflightSimRangefinder _rangefinder = HackflightSimRangefinder(this);
         
         // Helps us simulate sensor noise.  XXX We should simulate ODR (output data rates) as well, but 
         // UE4 frame rate is currently to slow to do that realistically.
@@ -137,7 +140,6 @@ class AHackflightSimPawn : public APawn, public Board
         virtual uint8_t	serialAvailableBytes(void) override;
         virtual uint8_t	serialReadByte(void) override;
         virtual void	serialWriteByte(uint8_t c) override;
-        virtual bool	getRangefinder(float & distance) override;
 
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
