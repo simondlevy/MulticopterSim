@@ -8,9 +8,8 @@
 
 #include "HackflightSimRangefinder.h"
 
-HackflightSimRangefinder::HackflightSimRangefinder(APawn * pawn)
+HackflightSimRangefinder::HackflightSimRangefinder(APawn * pawn) : HackflightSimSensor(pawn)
 {
-	_pawn = pawn;
 }
 
 void HackflightSimRangefinder::init(void)

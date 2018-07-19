@@ -13,10 +13,11 @@
 #endif
 
 #include <sensors/opticalflow.hpp>
+#include <HackflightSimSensor.h>
 
 #include "GameFramework/Pawn.h"
 
-class HackflightSimOpticalFlow : public hf::OpticalFlow
+class HackflightSimOpticalFlow : public hf::OpticalFlow, public HackflightSimSensor
 {
 public:
 
@@ -25,9 +26,5 @@ public:
 protected:
 
 	virtual void getFlow(float flow[2]) override;
-
-private:
-
-	APawn * _pawn;
 };
 

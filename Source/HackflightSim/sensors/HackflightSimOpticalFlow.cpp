@@ -8,9 +8,8 @@
 
 #include "HackflightSimOpticalFlow.h"
 
-HackflightSimOpticalFlow::HackflightSimOpticalFlow(APawn * pawn)
+HackflightSimOpticalFlow::HackflightSimOpticalFlow(APawn * pawn) : HackflightSimSensor(pawn)
 {
-	_pawn = pawn;
 }
 
 void HackflightSimOpticalFlow::getFlow(float flow[2])

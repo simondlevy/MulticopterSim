@@ -13,10 +13,10 @@
 #endif
 
 #include <sensors/rangefinder.hpp>
-
+#include <HackflightSimSensor.h>
 #include "GameFramework/Pawn.h"
 
-class HackflightSimRangefinder : public hf::Rangefinder
+class HackflightSimRangefinder : public hf::Rangefinder, public HackflightSimSensor
 {
 public:
 
@@ -29,8 +29,6 @@ protected:
 	virtual bool distanceAvailable(float &distance) override;
 
 private:
-
-	APawn * _pawn;
 
 	float _groundAltitude;
 
