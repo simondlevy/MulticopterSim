@@ -26,6 +26,9 @@ hf::Hackflight hackflight;
 // MSP comms
 #include "msppg/MSPPG.h"
 
+// Loiter support
+#include <pidcontrollers/loiter.hpp>
+
 // Controller
 #include "HackflightSimReceiverWindows.h"
 hf::Controller controller;
