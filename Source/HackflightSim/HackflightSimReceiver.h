@@ -22,30 +22,6 @@ namespace hf {
 
         public:
 
-            bool arming(void) override
-            {
-                // Return true first time around only
-                bool retval = (_auxState > 1) ? demands.throttle > STICK_DEADBAND : true;
-
-                // Don't report arming if already armed
-                if (_armed) {
-                    retval = false;
-                }
-
-                // On first arming, set already-armed flag
-                else if (retval) {
-					_armed = true;
-                }
-
-                return retval;
-            }
-
-            // Once armed, sim never disarms
-            bool disarming(void) override
-            {
-                return false;
-            }
-
             Controller(void) 
             {
                 _reversedVerticals = false;
@@ -107,9 +83,14 @@ namespace hf {
 
 		protected:
 
-			virtual uint8_t getAuxState(void) override
+			virtual uint8_t getAux1State(void) override
 			{
-				return _springyThrottle ? 2 : Receiver::getAuxState();
+				return _springyThrottle ? 2 : Receiver::getAux1State();
+			}
+
+			virtual uint8_t getAux2State(void) override
+			{
+				return 1; // always armed!
 			}
 
         private:

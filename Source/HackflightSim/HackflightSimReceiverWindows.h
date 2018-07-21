@@ -49,11 +49,11 @@ void hf::Controller::productInit(void)
                 _axismap[4] =   3;
             }
             else { // Spektrum
-                _axismap[0] =   1;
-                _axismap[1] =   2;
-                _axismap[2] =   5;
-                _axismap[3] =   0;
-                _axismap[4] =   4;
+                _axismap[0] = 1;
+                _axismap[1] = 2;
+                _axismap[2] = 5;
+                _axismap[3] = 0;
+                _axismap[4] = 4;
             }
         }
 
@@ -115,10 +115,7 @@ void hf::Controller::productPoll(int32_t axes[6], uint8_t & buttons)
     axes[2] = joyState.dwZpos;
     axes[3] = joyState.dwRpos;
     axes[4] = joyState.dwUpos;
-    axes[5] = joyState.dwVpos;
-
-	//hf::Debug::printf("0: %5d  1:%5d  2: %5d  3: %5d  4: %5d   5: %5d\n",
-	//	axes[0], axes[1], axes[2], axes[3], axes[4], axes[5]);
+	axes[5] = joyState.dwVpos;
 
     buttons = joyState.dwButtons;
 }

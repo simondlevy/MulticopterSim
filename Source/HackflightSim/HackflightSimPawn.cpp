@@ -112,8 +112,8 @@ AHackflightSimPawn::AHackflightSimPawn()
 	PlaneMesh->SetStaticMesh(ConstructorStatics.PlaneMesh.Get());	// Set static mesh
 	RootComponent = PlaneMesh;
 
-	// Start Hackflight firmware
-	hackflight.init(this, &controller, &mixer, &stabilizer);
+	// Start Hackflight firmware, indicating already armed
+	hackflight.init(this, &controller, &mixer, &stabilizer, true);
 
 	// Add optical-flow sensor
 	hackflight.addSensor(&_flowSensor);
