@@ -109,13 +109,16 @@ void hf::Controller::productPoll(int32_t axes[6], uint8_t & buttons)
     joyState.dwSize=sizeof(joyState);
     joyState.dwFlags=JOY_RETURNALL | JOY_RETURNPOVCTS | JOY_RETURNCENTERED | JOY_USEDEADZONE;
     joyGetPosEx(_joyid, &joyState);
-
+	
     axes[0] = joyState.dwXpos;
     axes[1] = joyState.dwYpos;
     axes[2] = joyState.dwZpos;
     axes[3] = joyState.dwRpos;
     axes[4] = joyState.dwUpos;
     axes[5] = joyState.dwVpos;
+
+	//hf::Debug::printf("0: %5d  1:%5d  2: %5d  3: %5d  4: %5d   5: %5d\n",
+	//	axes[0], axes[1], axes[2], axes[3], axes[4], axes[5]);
 
     buttons = joyState.dwButtons;
 }

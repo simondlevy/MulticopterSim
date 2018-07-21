@@ -46,7 +46,7 @@ namespace hf {
                 return false;
             }
 
-            Controller(void)
+            Controller(void) : Receiver((uint8_t *)CHANNEL_MAP)
             {
                 _reversedVerticals = false;
                 _springyThrottle = false;
@@ -136,6 +136,8 @@ namespace hf {
 
             // Helps mock up periodic availability of new data frame (output data rate; ODR)
             uint64_t _cycle;          
+
+			static constexpr uint8_t CHANNEL_MAP[6] = { 0, 1, 2, 3, 4, 5 };
 
     }; // class Controller
 
