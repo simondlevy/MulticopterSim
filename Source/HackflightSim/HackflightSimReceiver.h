@@ -46,7 +46,7 @@ namespace hf {
                 return false;
             }
 
-            Controller(void) : Receiver((uint8_t *)CHANNEL_MAP)
+            Controller(void) : Receiver(CHANNEL_MAP)
             {
                 _reversedVerticals = false;
                 _springyThrottle = false;
