@@ -2,6 +2,7 @@
 * HackflightSimPawn.cpp: Class implementation for pawn class in HackflightSim
 *
 * Copyright (C) 2018 Simon D. Levy
+* Worked on by Alec Singer - Winter 2018
 *
 * MIT License
 */
