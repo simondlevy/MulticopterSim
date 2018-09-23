@@ -6,3 +6,5 @@
 IMPLEMENT_PRIMARY_GAME_MODULE(FDefaultGameModuleImpl, HackflightSim, "HackflightSim");
 
 DEFINE_LOG_CATEGORY(LogFlying)
+  
+/* George was here */
