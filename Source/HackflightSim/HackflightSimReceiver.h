@@ -35,9 +35,6 @@ namespace hf {
 
             void begin(void)
             {
-                // Initialize flag for arming
-                _armed = false;
-
                 // Set up axes based on OS and controller
                 productInit();
             }
@@ -94,9 +91,6 @@ namespace hf {
 			}
 
         private:
-
-            // A hack to support arming on startup
-            bool     _armed;
 
             // Implemented differently for each OS
             void     productInit(void);
