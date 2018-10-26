@@ -1,5 +1,5 @@
 /*
-   stabilizer.hpp : PID-based stabilization 
+   rate.hpp : PID-based stabilization 
 
    Copyright (c) 2018 Simon D. Levy
 
@@ -41,7 +41,7 @@ namespace hf {
         AXIS_YAW
     };
 
-    class Stabilizer : public PID_Controller {
+    class Rate : public PID_Controller {
 
         friend class Hackflight;
 
@@ -152,7 +152,7 @@ namespace hf {
 
         public:
 
-            Stabilizer(float levelP, float gyroCyclicP, float gyroCyclicI, float gyroCyclicD, float gyroYawP, float gyroYawI) :
+            Rate(float levelP, float gyroCyclicP, float gyroCyclicI, float gyroCyclicD, float gyroYawP, float gyroYawI) :
                 _levelP(levelP), 
                 _gyroCyclicP(gyroCyclicP), 
                 _gyroCyclicI(gyroCyclicI), 

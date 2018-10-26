@@ -66,7 +66,7 @@ void hf::Board::outbuf(char * buf)
 
 // PID tuning
 
-hf::Stabilizer stabilizer = hf::Stabilizer(
+hf::Rate ratePid = hf::Rate(
 	1.0f,       // Level P
 	.00001f,    // Gyro cyclic P
 	0,			// Gyro cyclic I
@@ -114,7 +114,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 	RootComponent = PlaneMesh;
 
 	// Start Hackflight firmware, indicating already armed
-	hackflight.init(this, &controller, &mixer, &stabilizer, true);
+	hackflight.init(this, &controller, &mixer, &ratePid, true);
 
 	// Add optical-flow sensor
 	hackflight.addSensor(&_flowSensor);
