@@ -1,16 +1,18 @@
 /*
-   rate.hpp : PID-based stabilization 
+   simrate.hpp : PID-based stabilization for simulator
+
+   XXX should eventually be replaced by Rate PID controller in main Hackflight repository
 
    Copyright (c) 2018 Simon D. Levy
 
-   This file is part of Hackflight.
+   This file is part of HackflightSim.
 
-   Hackflight is free software: you can redistribute it and/or modify
+   HackflightSim is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
 
-   Hackflight is distributed in the hope that it will be useful,
+   HackflightSim is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
@@ -48,7 +50,7 @@ namespace hf {
         private: 
 
             // Arbitrary constants
-            const float GYRO_WINDUP_MAX             = 16.0f;
+            const float GYRO_WINDUP_MAX             = 6.0f;
             const float BIG_GYRO_DEGREES_PER_SECOND = 40.0f; 
             const float BIG_YAW_DEMAND              = 0.1f;
             const float MAX_ARMING_ANGLE_DEGREES    = 25.0f;         
