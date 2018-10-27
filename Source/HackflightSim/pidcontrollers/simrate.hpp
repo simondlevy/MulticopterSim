@@ -81,6 +81,7 @@ namespace hf {
             }
 
             // PID constants set in constructor
+            float _demandsToRate;
             float _gyroYawP; 
             float _gyroYawI;
 
@@ -142,12 +143,17 @@ namespace hf {
                 // We've always gotta do this!
                 return true;
             }
+        private:
+
+            // Arrays of PID constants for pitch and roll
+            float _PConstants[2];
+            float _IConstants[2];
+            float _DConstants[2];
+
             // ===================================================
 
-        private:
             
             // PID constants set in constructor
-            float _demandsToRate;
             float _gyroCyclicI;
             float _gyroCyclicD; 
 
@@ -196,12 +202,45 @@ namespace hf {
 
         public:
 
-            Rate(float demandsToRate, float gyroCyclicI, float gyroCyclicD, float gyroYawP, float gyroYawI) :
-                _demandsToRate(demandsToRate), 
-                _gyroCyclicI(gyroCyclicI), 
-                _gyroCyclicD(gyroCyclicD), 
+            Rate(float gyroRollP, float gyroRollI, float gyroRollD,
+                       float gyroPitchP, float gyroPitchI, float gyroPitchD,
+                       float gyroYawP, float gyroYawI, float demandsToRate = 1.0f) :
+                _demandsToRate(demandsToRate),
                 _gyroYawP(gyroYawP), 
                 _gyroYawI(gyroYawI) 
+            {
+                init();
+                // Constants arrays
+                _PConstants[0] = gyroRollP;
+                _PConstants[1] = gyroPitchP;
+                _IConstants[0] = gyroRollI;
+                _IConstants[1] = gyroPitchI;
+                _DConstants[0] = gyroRollD;
+                _DConstants[1] = gyroPitchD;
+            }
+            
+            Rate(float gyroRollPitchP, float gyroRollPitchI, float gyroRollPitchD,
+                       float gyroYawP, float gyroYawI, float demandsToRate = 1.0f) :
+                _demandsToRate(demandsToRate),
+                _gyroYawP(gyroYawP), 
+                _gyroYawI(gyroYawI) 
+            {
+                init();
+                // Constants arrays
+                _PConstants[0] = gyroRollPitchP;
+                _PConstants[1] = gyroRollPitchP;
+                _IConstants[0] = gyroRollPitchI;
+                _IConstants[1] = gyroRollPitchI;
+                _DConstants[0] = gyroRollPitchD;
+                _DConstants[1] = gyroRollPitchD;
+            }
+
+            Rate(float demandsToRate) :
+                _demandsToRate(demandsToRate), 
+                _gyroCyclicI(0), 
+                _gyroCyclicD(0), 
+                _gyroYawP(0), 
+                _gyroYawI(0) 
             {                
                 init();
             }
