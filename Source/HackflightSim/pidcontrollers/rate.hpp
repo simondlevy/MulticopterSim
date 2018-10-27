@@ -105,7 +105,7 @@ namespace hf {
             // Computes leveling PID for pitch or roll
             void computeCyclicPTerm(float demand, float eulerAngles[3], uint8_t imuAxis, uint8_t auxState)
             {
-                if (auxState == 0) {
+                if (auxState == 0) { // rate mode
                     _PTerm[imuAxis] = demand; 
                 }
 
@@ -174,7 +174,7 @@ namespace hf {
                 resetIntegral();
             }
 
-            void updateEulerAngles(float eulerAngles[3], uint8_t auxState)
+            void simUpdate(float eulerAngles[3], uint8_t auxState)
             {
                 computeCyclicPTerm(_demandRoll,  eulerAngles, 0, auxState);
                 computeCyclicPTerm(_demandPitch, eulerAngles, 1, auxState);
@@ -192,7 +192,6 @@ namespace hf {
                 if (throttleIsDown) {
                     resetIntegral();
                 }
-
             }
 
             bool modifyDemands(state_t & state, demands_t & demands, float currentTime)
