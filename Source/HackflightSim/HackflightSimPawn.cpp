@@ -68,7 +68,7 @@ void hf::Board::outbuf(char * buf)
 // PID tuning
 
 hf::Rate ratePid = hf::Rate(
-	.00001f,    // Gyro cyclic P
+	.00001f,    // Demands to rate
 	0,			// Gyro cyclic I
 	0,			// Gyro cyclic D
 	0,			// Gyro yaw P

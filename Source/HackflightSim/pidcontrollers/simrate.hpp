@@ -147,7 +147,7 @@ namespace hf {
         private:
             
             // PID constants set in constructor
-            float _gyroCyclicP;
+            float _demandsToRate;
             float _gyroCyclicI;
             float _gyroCyclicD; 
 
@@ -177,27 +177,27 @@ namespace hf {
             // Computes leveling PID for pitch or roll
             float computeCyclicPid(float rcCommand, float gyro[3], uint8_t imuAxis)
             {
-                float error = rcCommand*_gyroCyclicP - gyro[imuAxis];
+                float error = rcCommand * _demandsToRate - gyro[imuAxis];
 
                 // I
-                float ITerm = computeITermGyro(_gyroCyclicP, _gyroCyclicI, rcCommand, gyro, imuAxis);
+                float ITerm = computeITermGyro(error, _gyroCyclicI, rcCommand, gyro, imuAxis);
                 ITerm *= _proportionalCyclicDemand;
 
                 // D
-                float _gyroDelta = gyro[imuAxis] - _lastError[imuAxis];
+                float gyroDeltaError = gyro[imuAxis] - _lastError[imuAxis];
                 _lastError[imuAxis] = gyro[imuAxis];
-                float _gyroDeltaSum = _gyroDeltaError1[imuAxis] + _gyroDeltaError2[imuAxis] + _gyroDelta;
+                float gyroDeltaErrorSum = _gyroDeltaError1[imuAxis] + _gyroDeltaError2[imuAxis] + gyroDeltaError;
                 _gyroDeltaError2[imuAxis] = _gyroDeltaError1[imuAxis];
-                _gyroDeltaError1[imuAxis] = _gyroDelta;
-                float DTerm = _gyroDeltaSum * _gyroCyclicD; 
+                _gyroDeltaError1[imuAxis] = gyroDeltaError;
+                float DTerm = gyroDeltaErrorSum * _gyroCyclicD; 
 
-                return computePid(_gyroCyclicP, _PTerm[imuAxis], ITerm, DTerm, gyro, imuAxis);
+                return computePid(_demandsToRate, _PTerm[imuAxis], ITerm, DTerm, gyro, imuAxis);
             }
 
         public:
 
-            Rate(float gyroCyclicP, float gyroCyclicI, float gyroCyclicD, float gyroYawP, float gyroYawI) :
-                _gyroCyclicP(gyroCyclicP), 
+            Rate(float demandsToRate, float gyroCyclicI, float gyroCyclicD, float gyroYawP, float gyroYawI) :
+                _demandsToRate(demandsToRate), 
                 _gyroCyclicI(gyroCyclicI), 
                 _gyroCyclicD(gyroCyclicD), 
                 _gyroYawP(gyroYawP), 
