@@ -27,8 +27,9 @@ hf::Hackflight hackflight;
 // MSP comms
 #include "msppg/MSPPG.h"
 
-// Loiter support
+// PID controllers
 #include <pidcontrollers/loiter.hpp>
+#include <pidcontrollers/level.hpp>
 
 // Controller
 #include "HackflightSimReceiverWindows.h"
@@ -73,6 +74,8 @@ hf::Rate ratePid = hf::Rate(
 	0,			// Gyro cyclic D
 	0,			// Gyro yaw P
 	0);			// Gyro yaw I
+
+hf::Level level = hf::Level(0.20f);
 
 #ifdef _PYTHON
 PythonLoiter loiter = PythonLoiter(
@@ -121,6 +124,9 @@ AHackflightSimPawn::AHackflightSimPawn()
 
 	// Add rangefinder
 	hackflight.addSensor(&_rangefinder);
+
+	// Add level PID controller for aux switch position 1
+	hackflight.addPidController(&level, 1);
 
 	// Add loiter PID controller for aux switch position 2
 	hackflight.addPidController(&loiter, 2);

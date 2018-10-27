@@ -49,6 +49,11 @@ namespace hf {
 
         private: 
 
+            float degreesToRadians(float deg)
+            {
+                return M_PI * deg / 180.;
+            }
+
             // Arbitrary constants
             const float GYRO_WINDUP_MAX             = 6.0f;
             const float BIG_GYRO_DEGREES_PER_SECOND = 40.0f; 
@@ -77,11 +82,6 @@ namespace hf {
             float _proportionalCyclicDemand;
 
             float _bigGyroRate;
-
-            float degreesToRadians(float deg)
-            {
-                return M_PI * deg / 180.;
-            }
 
             float computeITermGyro(float rateP, float rateI, float rcCommand, float gyro[3], uint8_t axis)
             {
@@ -215,6 +215,6 @@ namespace hf {
                 return true;
             }
 
-    };  // class Stabilize
+    };  // class Rate
 
 } // namespace
