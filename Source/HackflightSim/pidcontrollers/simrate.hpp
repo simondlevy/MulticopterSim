@@ -61,7 +61,6 @@ namespace hf {
             const float MAX_ARMING_ANGLE_DEGREES    = 25.0f;         
 
             // PID constants set in constructor
-            float _levelP;
             float _gyroCyclicP;
             float _gyroCyclicI;
             float _gyroCyclicD; 
@@ -113,8 +112,7 @@ namespace hf {
 
                 else {
 
-                    _PTerm[imuAxis] = (demand - eulerAngles[imuAxis]) * _levelP;  
-                    _PTerm[imuAxis] = Filter::complementary(demand, _PTerm[imuAxis], _proportionalCyclicDemand); 
+                    _PTerm[imuAxis] = Filter::complementary(demand, 0, _proportionalCyclicDemand); 
                 }
             }
 
@@ -154,8 +152,7 @@ namespace hf {
 
         public:
 
-            Rate(float levelP, float gyroCyclicP, float gyroCyclicI, float gyroCyclicD, float gyroYawP, float gyroYawI) :
-                _levelP(levelP), 
+            Rate(float gyroCyclicP, float gyroCyclicI, float gyroCyclicD, float gyroYawP, float gyroYawI) :
                 _gyroCyclicP(gyroCyclicP), 
                 _gyroCyclicI(gyroCyclicI), 
                 _gyroCyclicD(gyroCyclicD), 
