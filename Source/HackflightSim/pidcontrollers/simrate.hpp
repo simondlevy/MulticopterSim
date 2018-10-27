@@ -80,19 +80,44 @@ namespace hf {
                 return (_errorGyroI[axis] * rateI);
             }
 
+            // PID constants set in constructor
+            float _gyroYawP; 
+            float _gyroYawI;
+
+        protected:
+
+            float maxArmingAngle;
+
+        private:
+
+            void init(void)
+            {
+                // Zero-out previous values for D term
+                for (uint8_t axis=0; axis<2; ++axis) {
+                    _lastError[axis] = 0;
+                    _gyroDeltaError1[axis] = 0;
+                    _gyroDeltaError2[axis] = 0;
+                }
+
+                // Convert degree parameters to radians for use later
+                _bigGyroRate = degreesToRadians(BIG_GYRO_DEGREES_PER_SECOND);
+                maxArmingAngle = degreesToRadians(MAX_ARMING_ANGLE_DEGREES);
+
+                // Initialize gyro error integral
+                resetIntegral();
+            }
+
+            float _lastError[2];
+            float _gyroDeltaError1[2]; 
+            float _gyroDeltaError2[2];
+            float _errorGyroI[3];
+
             // ===================================================
             
             // PID constants set in constructor
             float _gyroCyclicP;
             float _gyroCyclicI;
             float _gyroCyclicD; 
-            float _gyroYawP; 
-            float _gyroYawI;
-
-            float _lastGyro[2];
-            float _gyroDelta1[2]; 
-            float _gyroDelta2[2];
-            float _errorGyroI[3];
 
             float _demandRoll;
             float _demandPitch;
@@ -127,11 +152,11 @@ namespace hf {
                 ITerm *= _proportionalCyclicDemand;
 
                 // D
-                float _gyroDelta = gyro[imuAxis] - _lastGyro[imuAxis];
-                _lastGyro[imuAxis] = gyro[imuAxis];
-                float _gyroDeltaSum = _gyroDelta1[imuAxis] + _gyroDelta2[imuAxis] + _gyroDelta;
-                _gyroDelta2[imuAxis] = _gyroDelta1[imuAxis];
-                _gyroDelta1[imuAxis] = _gyroDelta;
+                float _gyroDelta = gyro[imuAxis] - _lastError[imuAxis];
+                _lastError[imuAxis] = gyro[imuAxis];
+                float _gyroDeltaSum = _gyroDeltaError1[imuAxis] + _gyroDeltaError2[imuAxis] + _gyroDelta;
+                _gyroDeltaError2[imuAxis] = _gyroDeltaError1[imuAxis];
+                _gyroDeltaError1[imuAxis] = _gyroDelta;
                 float DTerm = _gyroDeltaSum * _gyroCyclicD; 
 
                 return computePid(_gyroCyclicP, _PTerm[imuAxis], ITerm, DTerm, gyro, imuAxis);
@@ -149,10 +174,6 @@ namespace hf {
                 _errorGyroI[AXIS_YAW] = 0;
             }
 
-        protected:
-
-            float maxArmingAngle;
-
         public:
 
             Rate(float gyroCyclicP, float gyroCyclicI, float gyroCyclicD, float gyroYawP, float gyroYawI) :
@@ -161,19 +182,8 @@ namespace hf {
                 _gyroCyclicD(gyroCyclicD), 
                 _gyroYawP(gyroYawP), 
                 _gyroYawI(gyroYawI) 
-            {                // Zero-out previous values for D term
-                for (uint8_t axis=0; axis<2; ++axis) {
-                    _lastGyro[axis] = 0;
-                    _gyroDelta1[axis] = 0;
-                    _gyroDelta2[axis] = 0;
-                }
-
-                // Convert degree parameters to radians for use later
-                _bigGyroRate = degreesToRadians(BIG_GYRO_DEGREES_PER_SECOND);
-                maxArmingAngle = degreesToRadians(MAX_ARMING_ANGLE_DEGREES);
-
-                // Initialize gyro error integral
-                resetIntegral();
+            {                
+                init();
             }
 
             void simUpdate(float eulerAngles[3], uint8_t auxState)
