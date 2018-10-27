@@ -194,11 +194,6 @@ namespace hf {
                 return computePid(_gyroCyclicP, _PTerm[imuAxis], ITerm, DTerm, gyro, imuAxis);
             }
 
-            float constrainCyclicDemand(float eulerAngle, float demand)
-            {
-                return demand * (1 - fabs(eulerAngle)/maxArmingAngle);
-            }
-
         public:
 
             Rate(float gyroCyclicP, float gyroCyclicI, float gyroCyclicD, float gyroYawP, float gyroYawI) :
