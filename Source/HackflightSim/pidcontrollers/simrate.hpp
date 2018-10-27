@@ -60,6 +60,28 @@ namespace hf {
             const float BIG_YAW_DEMAND              = 0.1f;
             const float MAX_ARMING_ANGLE_DEGREES    = 25.0f;         
 
+            // For PTerm computation
+            float _PTerm[2]; // roll, pitch
+
+            // proportion of cyclic demand compared to its maximum
+            float _proportionalCyclicDemand;
+
+            float _bigGyroRate;
+
+            float computeITermGyro(float error, float rateI, float rcCommand, float gyro[3], uint8_t axis)
+            {
+                // Avoid integral windup
+                _errorGyroI[axis] = Filter::constrainAbs(_errorGyroI[axis] + error, GYRO_WINDUP_MAX);
+
+                // Reset integral on quick gyro change or large gyroYaw command
+                if ((fabs(gyro[axis]) > _bigGyroRate) || ((axis == AXIS_YAW) && (fabs(rcCommand) > BIG_YAW_DEMAND)))
+                    _errorGyroI[axis] = 0;
+
+                return (_errorGyroI[axis] * rateI);
+            }
+
+            // ===================================================
+            
             // PID constants set in constructor
             float _gyroCyclicP;
             float _gyroCyclicI;
@@ -72,29 +94,8 @@ namespace hf {
             float _gyroDelta2[2];
             float _errorGyroI[3];
 
-            // For PTerm computation
-            float _PTerm[2]; // roll, pitch
             float _demandRoll;
             float _demandPitch;
-
-            // proportion of cyclic demand compared to its maximum
-            float _proportionalCyclicDemand;
-
-            float _bigGyroRate;
-
-            float computeITermGyro(float rateP, float rateI, float rcCommand, float gyro[3], uint8_t axis)
-            {
-                float error = rcCommand*rateP - gyro[axis];
-
-                // Avoid integral windup
-                _errorGyroI[axis] = Filter::constrainAbs(_errorGyroI[axis] + error, GYRO_WINDUP_MAX);
-
-                // Reset integral on quick gyro change or large gyroYaw command
-                if ((fabs(gyro[axis]) > _bigGyroRate) || ((axis == AXIS_YAW) && (fabs(rcCommand) > BIG_YAW_DEMAND)))
-                    _errorGyroI[axis] = 0;
-
-                return (_errorGyroI[axis] * rateI);
-            }
 
             float computePid(float rateP, float PTerm, float ITerm, float DTerm, float gyro[3], uint8_t axis)
             {
@@ -119,6 +120,8 @@ namespace hf {
             // Computes leveling PID for pitch or roll
             float computeCyclicPid(float rcCommand, float gyro[3], uint8_t imuAxis)
             {
+                float error = rcCommand*_gyroCyclicP - gyro[imuAxis];
+
                 // I
                 float ITerm = computeITermGyro(_gyroCyclicP, _gyroCyclicI, rcCommand, gyro, imuAxis);
                 ITerm *= _proportionalCyclicDemand;
