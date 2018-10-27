@@ -15,7 +15,7 @@
 // Support for adding Gaussian noise to sensors
 #include <random>
 
-
+#define _SIM
 #include <hackflight.hpp>
 using namespace hf;
 
