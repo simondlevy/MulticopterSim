@@ -67,7 +67,13 @@ void hf::Board::outbuf(char * buf)
 
 // PID tuning
 
-hf::Rate ratePid = hf::Rate(.00001f);    // Demands to rate
+hf::Rate ratePid = hf::Rate(
+	0,		    // Roll/Pitch P
+	0,		    // Roll/Pitch I
+	0,		    // Roll/Pitch D
+	0,		    // Yaw P
+	0,			// Yaw I
+	.00001f);   // Demands to rate
 
 
 hf::Level level = hf::Level(0.20f);

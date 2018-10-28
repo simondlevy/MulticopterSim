@@ -122,6 +122,39 @@ namespace hf {
 
         public:
 
+            Rate(float gyroRollP, float gyroRollI, float gyroRollD,
+                       float gyroPitchP, float gyroPitchI, float gyroPitchD,
+                       float gyroYawP, float gyroYawI, float demandsToRate = 1.0f) :
+                _demandsToRate(demandsToRate),
+                _gyroYawP(gyroYawP), 
+                _gyroYawI(gyroYawI) 
+            {
+                init();
+                // Constants arrays
+                _PConstants[0] = gyroRollP;
+                _PConstants[1] = gyroPitchP;
+                _IConstants[0] = gyroRollI;
+                _IConstants[1] = gyroPitchI;
+                _DConstants[0] = gyroRollD;
+                _DConstants[1] = gyroPitchD;
+            }
+            
+            Rate(float gyroRollPitchP, float gyroRollPitchI, float gyroRollPitchD,
+                       float gyroYawP, float gyroYawI, float demandsToRate = 1.0f) :
+                _demandsToRate(demandsToRate),
+                _gyroYawP(gyroYawP), 
+                _gyroYawI(gyroYawI) 
+            {
+                init();
+                // Constants arrays
+                _PConstants[0] = gyroRollPitchP;
+                _PConstants[1] = gyroRollPitchP;
+                _IConstants[0] = gyroRollPitchI;
+                _IConstants[1] = gyroRollPitchI;
+                _DConstants[0] = gyroRollPitchD;
+                _DConstants[1] = gyroRollPitchD;
+            }
+
             bool modifyDemands(state_t & state, demands_t & demands, float currentTime)
             {
                 (void)currentTime;
@@ -186,7 +219,7 @@ namespace hf {
                 float error = rcCommand * _demandsToRate - gyro[imuAxis];
 
                 // I
-                float ITerm = computeITermGyro(error, _gyroCyclicI, rcCommand, gyro, imuAxis);
+                float ITerm = computeITermGyro(error, _IConstants[imuAxis], rcCommand, gyro, imuAxis);
                 ITerm *= _proportionalCyclicDemand;
 
                 // D
@@ -195,55 +228,12 @@ namespace hf {
                 float gyroDeltaErrorSum = _gyroDeltaError1[imuAxis] + _gyroDeltaError2[imuAxis] + gyroDeltaError;
                 _gyroDeltaError2[imuAxis] = _gyroDeltaError1[imuAxis];
                 _gyroDeltaError1[imuAxis] = gyroDeltaError;
-                float DTerm = gyroDeltaErrorSum * _gyroCyclicD; 
+                float DTerm = gyroDeltaErrorSum * _DConstants[imuAxis]; 
 
                 return computePid(_demandsToRate, _PTerm[imuAxis], ITerm, DTerm, gyro, imuAxis);
             }
 
         public:
-
-            Rate(float gyroRollP, float gyroRollI, float gyroRollD,
-                       float gyroPitchP, float gyroPitchI, float gyroPitchD,
-                       float gyroYawP, float gyroYawI, float demandsToRate = 1.0f) :
-                _demandsToRate(demandsToRate),
-                _gyroYawP(gyroYawP), 
-                _gyroYawI(gyroYawI) 
-            {
-                init();
-                // Constants arrays
-                _PConstants[0] = gyroRollP;
-                _PConstants[1] = gyroPitchP;
-                _IConstants[0] = gyroRollI;
-                _IConstants[1] = gyroPitchI;
-                _DConstants[0] = gyroRollD;
-                _DConstants[1] = gyroPitchD;
-            }
-            
-            Rate(float gyroRollPitchP, float gyroRollPitchI, float gyroRollPitchD,
-                       float gyroYawP, float gyroYawI, float demandsToRate = 1.0f) :
-                _demandsToRate(demandsToRate),
-                _gyroYawP(gyroYawP), 
-                _gyroYawI(gyroYawI) 
-            {
-                init();
-                // Constants arrays
-                _PConstants[0] = gyroRollPitchP;
-                _PConstants[1] = gyroRollPitchP;
-                _IConstants[0] = gyroRollPitchI;
-                _IConstants[1] = gyroRollPitchI;
-                _DConstants[0] = gyroRollPitchD;
-                _DConstants[1] = gyroRollPitchD;
-            }
-
-            Rate(float demandsToRate) :
-                _demandsToRate(demandsToRate), 
-                _gyroCyclicI(0), 
-                _gyroCyclicD(0), 
-                _gyroYawP(0), 
-                _gyroYawI(0) 
-            {                
-                init();
-            }
 
             void simUpdate(float eulerAngles[3], uint8_t auxState)
             {
