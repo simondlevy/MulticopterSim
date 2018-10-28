@@ -206,8 +206,6 @@ namespace hf {
             // ===================================================
 
             
-            float _demandRoll;
-            float _demandPitch;
 
             float computePid(float rateP, float PTerm, float ITerm, float DTerm, float gyro[3], uint8_t axis)
             {
@@ -221,11 +219,8 @@ namespace hf {
 
             void updateReceiver(demands_t & demands, bool throttleIsDown)
             {
-                _demandRoll  = demands.roll;
-                _demandPitch = demands.pitch;
-
-                _PTerm[0] = _demandRoll;
-                _PTerm[1] = _demandPitch;
+                _PTerm[0] = demands.roll;
+                _PTerm[1] = demands.pitch;
 
                 // Compute proportion of cyclic demand compared to its maximum
                 _proportionalCyclicDemand = Filter::max(fabs(demands.roll), fabs(demands.pitch)) / 0.5f;
