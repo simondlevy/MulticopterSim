@@ -183,36 +183,6 @@ namespace hf {
             float _IConstants[2];
             float _DConstants[2];
 
-            // ===================================================
-
-            
-            // PID constants set in constructor
-            float _gyroCyclicI;
-            float _gyroCyclicD; 
-
-            float _demandRoll;
-            float _demandPitch;
-
-            float computePid(float rateP, float PTerm, float ITerm, float DTerm, float gyro[3], uint8_t axis)
-            {
-                PTerm -= gyro[axis] * rateP; 
-
-                return PTerm + ITerm - DTerm;
-            }
-
-            // Computes leveling PID for pitch or roll
-            void computeCyclicPTerm(float demand, float eulerAngles[3], uint8_t imuAxis, uint8_t auxState)
-            {
-                if (auxState == 0) { // rate mode
-                    _PTerm[imuAxis] = demand; 
-                }
-
-                else {
-
-                    _PTerm[imuAxis] = Filter::complementary(demand, 0, _proportionalCyclicDemand); 
-                }
-            }
-
             // Computes leveling PID for pitch or roll
             float computeCyclicPid(float rcCommand, float gyro[3], uint8_t imuAxis)
             {
@@ -233,18 +203,29 @@ namespace hf {
                 return computePid(_demandsToRate, _PTerm[imuAxis], ITerm, DTerm, gyro, imuAxis);
             }
 
-        public:
+            // ===================================================
 
-            void simUpdate(float eulerAngles[3], uint8_t auxState)
+            
+            float _demandRoll;
+            float _demandPitch;
+
+            float computePid(float rateP, float PTerm, float ITerm, float DTerm, float gyro[3], uint8_t axis)
             {
-                computeCyclicPTerm(_demandRoll,  eulerAngles, 0, auxState);
-                computeCyclicPTerm(_demandPitch, eulerAngles, 1, auxState);
+                PTerm -= gyro[axis] * rateP; 
+
+                return PTerm + ITerm - DTerm;
             }
+
+
+        public:
 
             void updateReceiver(demands_t & demands, bool throttleIsDown)
             {
                 _demandRoll  = demands.roll;
                 _demandPitch = demands.pitch;
+
+                _PTerm[0] = _demandRoll;
+                _PTerm[1] = _demandPitch;
 
                 // Compute proportion of cyclic demand compared to its maximum
                 _proportionalCyclicDemand = Filter::max(fabs(demands.roll), fabs(demands.pitch)) / 0.5f;
