@@ -1,16 +1,16 @@
 /*
-   loiter.hpp : PID-based loiter
+   simposhold.hpp : temporary PID-based position hold for simulator
 
    Copyright (c) 2018 Simon D. Levy
 
-   This file is part of Hackflight.
+   This file is part of HackflightSim.
 
-   Hackflight is free software: you can redistribute it and/or modify
+   HackflightSim is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
 
-   Hackflight is distributed in the hope that it will be useful,
+   HackflightSim is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
@@ -28,22 +28,15 @@
 namespace hf {
 
 
-    class Loiter : public PID_Controller {
+    class PositionHold : public PID_Controller {
 
         friend class Hackflight;
 
         public:
 
-        Loiter(float altitudeP, float altitudeD, float cyclicP, 
-                float throttleScale=1.f, float minAltitude=0.5)
+        PositionHold(float cyclicP) 
         {
-            _altitudeP     = altitudeP;
-            _altitudeD     = altitudeD;
-            _cyclicP       = cyclicP;
-            _throttleScale = throttleScale;
-            _minAltitude   = minAltitude;
-
-            _inBandPrev = false;
+            _cyclicP = cyclicP;
         }
 
         protected:
@@ -52,26 +45,11 @@ namespace hf {
         {
             (void)currentTime;
 
-            // Don't do anything till we've reached sufficient altitude
-            if (state.altitude < _minAltitude) return false;
-
-            // Reset altitude target if moved into stick deadband
-            bool inBandCurr = inBand(demands.throttle);
-            if (inBandCurr && !_inBandPrev) {
-                _altitudeTarget = state.altitude;
-            }
-            _inBandPrev = inBandCurr;
-
-            // Throttle: inside stick deadband, adjust by PID; outside deadband, respond to stick demand
-            demands.throttle = inBandCurr ?  
-                _altitudeP * (_altitudeTarget-state.altitude) - _altitudeD * state.variometer: 
-                _throttleScale*demands.throttle;
-
             // Pitch/roll
             demands.pitch = adjustCyclic(demands.pitch, state.velocityForward);
             demands.roll  = adjustCyclic(demands.roll,  state.velocityRightward);
 
-            return inBandCurr;
+            return true;
         }
 
         virtual bool shouldFlashLed(void) override 
@@ -91,16 +69,8 @@ namespace hf {
         }
 
         // set by constructor
-        float _altitudeP;
-        float _altitudeD;
         float _cyclicP;
-        float _throttleScale;
-        float _minAltitude;
 
-        // modified in-flight
-        float _altitudeTarget;
-        bool  _inBandPrev;
+    };  // class PositionHold
 
-    };  // class Loiter
-
-} // namespace
+} // namespace hf

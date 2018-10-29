@@ -28,8 +28,9 @@ hf::Hackflight hackflight;
 #include "msppg/MSPPG.h"
 
 // PID controllers
-#include <pidcontrollers/loiter.hpp>
 #include <pidcontrollers/level.hpp>
+#include <pidcontrollers/simalthold.hpp>
+#include <pidcontrollers/simposhold.hpp>
 
 // Controller
 #include "HackflightSimReceiverWindows.h"
@@ -84,12 +85,15 @@ PythonLoiter loiter = PythonLoiter(
 	1.0f,	// Altitude D
 	0.2f);	// Cyclic P
 #else
-hf::Loiter loiter = hf::Loiter(
+
+hf::AltitudeHold althold = hf::AltitudeHold(
 	0.1f,  // Altitude P
 	0.2f,  // Altitude D
-	0.2f,	// Cyclic P
 	0.1f,	// Throttle scale
 	0.3);	// Min altitude
+
+hf::PositionHold poshold = hf::PositionHold(0.2f); // Roll/pitch P
+
 #endif
 
 // Mixer
@@ -129,8 +133,9 @@ AHackflightSimPawn::AHackflightSimPawn()
 	// Add level PID controller for aux switch position 1
 	hackflight.addPidController(&level, 1);
 
-	// Add loiter PID controller for aux switch position 2
-	hackflight.addPidController(&loiter, 2);
+	// Add loiter PID controllers for aux switch position 2
+	hackflight.addPidController(&althold, 2);
+	hackflight.addPidController(&poshold, 2);
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
