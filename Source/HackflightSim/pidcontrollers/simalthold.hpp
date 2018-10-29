@@ -30,7 +30,8 @@ namespace hf {
 
         virtual float correctedThrottle(state_t & state, float dt) override
         {
-            return _altHoldP * (_altitudeTarget-state.altitude) - _altHoldVelP * state.variometer;
+			float velocityTarget = (_altitudeTarget - state.altitude) * _altHoldP;
+            return velocityTarget - _altHoldVelP * state.variometer;
         }
 
         public:
