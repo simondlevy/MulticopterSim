@@ -73,7 +73,7 @@ hf::Rate ratePid = hf::Rate(
 	0.01,		    // Roll/Pitch D
 	0.5,		    // Yaw P
 	0.0,			// Yaw I
-	4.f);			// Demands to rate
+	8.f);			// Demands to rate
 
 
 hf::Level level = hf::Level(0.20f);
@@ -354,7 +354,7 @@ bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
 {
 	gyroRates[0] = _gyro.X;
 	gyroRates[1] = _gyro.Y;
-	gyroRates[2] = _gyro.Z / 100;
+	gyroRates[2] = 0; // _gyro.Z; // XXX zero-out gyro Z (yaw) for now
 
 	//_gyroSensor.addNoise(gyroRates);
 
