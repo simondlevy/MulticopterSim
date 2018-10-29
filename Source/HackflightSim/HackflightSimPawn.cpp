@@ -28,7 +28,6 @@ hf::Hackflight hackflight;
 #include "msppg/MSPPG.h"
 
 // PID controllers
-#include <pidcontrollers/simrate.hpp>
 #include <pidcontrollers/loiter.hpp>
 #include <pidcontrollers/level.hpp>
 
@@ -68,13 +67,13 @@ void hf::Board::outbuf(char * buf)
 
 // PID tuning
 
-hf::SimRate ratePid = hf::SimRate(
-	0,		    // Roll/Pitch P
-	0,		    // Roll/Pitch I
-	0,		    // Roll/Pitch D
-	0,		    // Yaw P
-	0,			// Yaw I
-	1.f);   // Demands to rate
+hf::Rate ratePid = hf::Rate(
+	0.01,		    // Roll/Pitch P
+	0.01,		    // Roll/Pitch I
+	0.01,		    // Roll/Pitch D
+	0.5,		    // Yaw P
+	0.0,			// Yaw I
+	4.f);			// Demands to rate
 
 
 hf::Level level = hf::Level(0.20f);
@@ -355,7 +354,7 @@ bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
 {
 	gyroRates[0] = _gyro.X;
 	gyroRates[1] = _gyro.Y;
-	gyroRates[2] = _gyro.Z;
+	gyroRates[2] = _gyro.Z / 100;
 
 	//_gyroSensor.addNoise(gyroRates);
 
