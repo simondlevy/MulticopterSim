@@ -33,10 +33,13 @@ namespace hf {
 
         public:
 
-        SimAltitudeHold(float altitudeP, float altitudeD)
+        SimAltitudeHold(float altitudeP, float altitudeD, float minAltitude=0.1)
         {
-            _altitudeP     = altitudeP;
-            _altitudeD     = altitudeD;
+            _altitudeP   = altitudeP;
+            _altitudeD   = altitudeD;
+            _minAltitude = minAltitude;
+
+            _previousTime = 0;
 
             _inBandPrev = false;
         }
@@ -45,7 +48,13 @@ namespace hf {
 
         virtual bool modifyDemands(state_t & state, demands_t & demands, float currentTime) 
         {
-            (void)currentTime;
+            // Don't do anything till we've reached sufficient altitude
+            if (state.altitude < _minAltitude) return false;
+
+            // Don't do anything until we have a positive dt
+            float dt = currentTime - _previousTime;
+            _previousTime = currentTime;
+            if (dt == currentTime) return false;
 
             // Reset altitude target if moved into stick deadband
             bool inBandCurr = inBand(demands.throttle);
@@ -74,10 +83,12 @@ namespace hf {
         // set by constructor
         float _altitudeP;
         float _altitudeD;
+        float _minAltitude;
 
         // modified in-flight
         float _altitudeTarget;
         bool  _inBandPrev;
+        float _previousTime;
 
     };  // class SimAltitudeHold
 
