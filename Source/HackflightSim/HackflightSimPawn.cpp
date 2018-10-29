@@ -28,6 +28,7 @@ hf::Hackflight hackflight;
 #include "msppg/MSPPG.h"
 
 // PID controllers
+#include <pidcontrollers/simrate.hpp>
 #include <pidcontrollers/loiter.hpp>
 #include <pidcontrollers/level.hpp>
 
@@ -67,7 +68,7 @@ void hf::Board::outbuf(char * buf)
 
 // PID tuning
 
-hf::Rate ratePid = hf::Rate(
+hf::SimRate ratePid = hf::SimRate(
 	0,		    // Roll/Pitch P
 	0,		    // Roll/Pitch I
 	0,		    // Roll/Pitch D
