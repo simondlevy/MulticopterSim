@@ -29,6 +29,7 @@ hf::Hackflight hackflight;
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
+#include <pidcontrollers/althold.hpp>
 #include <pidcontrollers/simalthold.hpp>
 #include <pidcontrollers/simposhold.hpp>
 
@@ -86,13 +87,13 @@ PythonLoiter loiter = PythonLoiter(
 	0.2f);	// Cyclic P
 #else
 
-hf::AltitudeHold althold = hf::AltitudeHold(
+hf::SimAltitudeHold althold = hf::SimAltitudeHold(
 	0.1f,  // Altitude P
 	0.2f,  // Altitude D
 	0.1f,	// Throttle scale
 	0.3);	// Min altitude
 
-hf::PositionHold poshold = hf::PositionHold(0.2f); // Roll/pitch P
+hf::SimPositionHold poshold = hf::SimPositionHold(0.2f); // Roll/pitch P
 
 #endif
 

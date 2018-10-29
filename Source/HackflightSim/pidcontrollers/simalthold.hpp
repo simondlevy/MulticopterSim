@@ -27,13 +27,13 @@
 
 namespace hf {
 
-    class AltitudeHold : public PID_Controller {
+    class SimAltitudeHold : public PID_Controller {
 
         friend class Hackflight;
 
         public:
 
-        AltitudeHold(float altitudeP, float altitudeD, float throttleScale=1.f, float minAltitude=0.5)
+        SimAltitudeHold(float altitudeP, float altitudeD, float throttleScale=1.f, float minAltitude=0.5)
         {
             _altitudeP     = altitudeP;
             _altitudeD     = altitudeD;
@@ -87,6 +87,6 @@ namespace hf {
         float _altitudeTarget;
         bool  _inBandPrev;
 
-    };  // class AltitudeHold
+    };  // class SimAltitudeHold
 
 } // namespace hf

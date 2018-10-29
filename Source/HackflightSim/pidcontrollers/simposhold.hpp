@@ -28,13 +28,13 @@
 namespace hf {
 
 
-    class PositionHold : public PID_Controller {
+    class SimPositionHold : public PID_Controller {
 
         friend class Hackflight;
 
         public:
 
-        PositionHold(float cyclicP) 
+        SimPositionHold(float cyclicP) 
         {
             _cyclicP = cyclicP;
         }
@@ -71,6 +71,6 @@ namespace hf {
         // set by constructor
         float _cyclicP;
 
-    };  // class PositionHold
+    };  // class SimPositionHold
 
 } // namespace hf
