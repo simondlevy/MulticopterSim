@@ -74,8 +74,6 @@ namespace hf {
         // set by constructor
         float _altitudeP;
         float _altitudeD;
-        float _throttleScale;
-        float _minAltitude;
 
         // modified in-flight
         float _altitudeTarget;
