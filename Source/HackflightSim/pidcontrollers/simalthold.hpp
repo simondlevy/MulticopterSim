@@ -33,20 +33,41 @@ namespace hf {
 
         private:
 
-        bool inBand(float demand)
-        {
-            return fabs(demand) < Receiver::STICK_DEADBAND; 
-        }
+        // Arbitrary constants
+        const float WINDUP_MAX      = 0.40f;
+        const float HOVER_THROTTLE  = 0.05f;
 
         // set by constructor
-        float _altitudeP;
+        float _altHoldP;
         float _altitudeD;
         float _minAltitude;
 
         // modified in-flight
         float _altitudeTarget;
         bool  _inBandPrev;
+        float _lastError;
+        float _deltaError;
+        float _integralError;
+        float _velocityTarget;
         float _previousTime;
+
+        bool inBand(float demand)
+        {
+            return fabs(demand) < Receiver::STICK_DEADBAND; 
+        }
+
+        void resetErrors(void)
+        {
+            _lastError = 0;
+            _deltaError = 0;
+            _integralError = 0;
+        }
+
+
+        virtual float correctedThrottle(state_t & state, float dt)
+        {
+            return _altHoldP * (_altitudeTarget-state.altitude) - _altitudeD * state.variometer;
+        }
 
         protected:
 
@@ -67,9 +88,10 @@ namespace hf {
             }
             _inBandPrev = inBandCurr;
 
-            // Throttle: inside stick deadband, adjust by PID; outside deadband, respond to stick demand
-            demands.throttle = inBandCurr ?  
-                _altitudeP * (_altitudeTarget-state.altitude) - _altitudeD * state.variometer: demands.throttle;
+
+            // Throttle: inside stick deadband, adjust by P(PID);
+            // outside deadband, respond to stick demand
+            demands.throttle = inBandCurr ? correctedThrottle(state, dt) : demands.throttle;
 
             return inBandCurr;
         }
@@ -81,14 +103,14 @@ namespace hf {
 
         public:
 
-        SimAltitudeHold(float altitudeP, float altitudeD, float minAltitude=0.1)
+        SimAltitudeHold(float altHoldP, float altitudeD, float minAltitude=0.1)
         {
-            _altitudeP   = altitudeP;
+            _altHoldP   = altHoldP;
             _altitudeD   = altitudeD;
             _minAltitude = minAltitude;
 
+            resetErrors();
             _previousTime = 0;
-
             _inBandPrev = false;
         }
 
