@@ -74,7 +74,7 @@ hf::SimRate ratePid = hf::SimRate(
 	0,		    // Roll/Pitch D
 	0,		    // Yaw P
 	0,			// Yaw I
-	.00001f);   // Demands to rate
+	1.f);   // Demands to rate
 
 
 hf::Level level = hf::Level(0.20f);
