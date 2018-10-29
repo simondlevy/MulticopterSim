@@ -20,99 +20,26 @@
 
 #pragma once
 
-#include "debug.hpp"
-#include "datatypes.hpp"
-#include "receiver.hpp"
-#include "pidcontroller.hpp"
+#include "pidcontrollers/althold.hpp"
 
 namespace hf {
 
-    class SimAltitudeHold : public PID_Controller {
-
-        friend class Hackflight;
+    class SimAltitudeHold : public AltitudeHold {
 
         private:
 
-        // Arbitrary constants
-        const float WINDUP_MAX      = 0.40f;
-        const float HOVER_THROTTLE  = 0.05f;
-
-        // set by constructor
-        float _altHoldP;
-        float _altitudeD;
-        float _minAltitude;
-
-        // modified in-flight
-        float _altitudeTarget;
-        bool  _inBandPrev;
-        float _lastError;
-        float _deltaError;
-        float _integralError;
-        float _velocityTarget;
-        float _previousTime;
-
-        bool inBand(float demand)
+        virtual float correctedThrottle(state_t & state, float dt) override
         {
-            return fabs(demand) < Receiver::STICK_DEADBAND; 
-        }
-
-        void resetErrors(void)
-        {
-            _lastError = 0;
-            _deltaError = 0;
-            _integralError = 0;
-        }
-
-
-        virtual float correctedThrottle(state_t & state, float dt)
-        {
-            return _altHoldP * (_altitudeTarget-state.altitude) - _altitudeD * state.variometer;
-        }
-
-        protected:
-
-        virtual bool modifyDemands(state_t & state, demands_t & demands, float currentTime) 
-        {
-            // Don't do anything till we've reached sufficient altitude
-            if (state.altitude < _minAltitude) return false;
-
-            // Don't do anything until we have a positive dt
-            float dt = currentTime - _previousTime;
-            _previousTime = currentTime;
-            if (dt == currentTime) return false;
-
-            // Reset altitude target if moved into stick deadband
-            bool inBandCurr = inBand(demands.throttle);
-            if (inBandCurr && !_inBandPrev) {
-                _altitudeTarget = state.altitude;
-            }
-            _inBandPrev = inBandCurr;
-
-
-            // Throttle: inside stick deadband, adjust by P(PID);
-            // outside deadband, respond to stick demand
-            demands.throttle = inBandCurr ? correctedThrottle(state, dt) : demands.throttle;
-
-            return inBandCurr;
-        }
-
-        virtual bool shouldFlashLed(void) override 
-        {
-            return true;
+            return _altHoldP * (_altitudeTarget-state.altitude) - _altHoldVelP * state.variometer;
         }
 
         public:
 
-        SimAltitudeHold(float altHoldP, float altitudeD, float minAltitude=0.1)
-        {
-            _altHoldP   = altHoldP;
-            _altitudeD   = altitudeD;
-            _minAltitude = minAltitude;
+        SimAltitudeHold(float altHoldP, float altHoldVelP) :
+            AltitudeHold(altHoldP, altHoldVelP, 0, 0) 
+		{
+		}
 
-            resetErrors();
-            _previousTime = 0;
-            _inBandPrev = false;
-        }
 
     };  // class SimAltitudeHold
 
