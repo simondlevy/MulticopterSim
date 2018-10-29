@@ -31,18 +31,22 @@ namespace hf {
 
         friend class Hackflight;
 
-        public:
+        private:
 
-        SimAltitudeHold(float altitudeP, float altitudeD, float minAltitude=0.1)
+        bool inBand(float demand)
         {
-            _altitudeP   = altitudeP;
-            _altitudeD   = altitudeD;
-            _minAltitude = minAltitude;
-
-            _previousTime = 0;
-
-            _inBandPrev = false;
+            return fabs(demand) < Receiver::STICK_DEADBAND; 
         }
+
+        // set by constructor
+        float _altitudeP;
+        float _altitudeD;
+        float _minAltitude;
+
+        // modified in-flight
+        float _altitudeTarget;
+        bool  _inBandPrev;
+        float _previousTime;
 
         protected:
 
@@ -75,20 +79,18 @@ namespace hf {
             return true;
         }
 
-        bool inBand(float demand)
+        public:
+
+        SimAltitudeHold(float altitudeP, float altitudeD, float minAltitude=0.1)
         {
-            return fabs(demand) < Receiver::STICK_DEADBAND; 
+            _altitudeP   = altitudeP;
+            _altitudeD   = altitudeD;
+            _minAltitude = minAltitude;
+
+            _previousTime = 0;
+
+            _inBandPrev = false;
         }
-
-        // set by constructor
-        float _altitudeP;
-        float _altitudeD;
-        float _minAltitude;
-
-        // modified in-flight
-        float _altitudeTarget;
-        bool  _inBandPrev;
-        float _previousTime;
 
     };  // class SimAltitudeHold
 
