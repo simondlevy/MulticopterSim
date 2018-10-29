@@ -33,12 +33,10 @@ namespace hf {
 
         public:
 
-        SimAltitudeHold(float altitudeP, float altitudeD, float throttleScale=1.f, float minAltitude=0.5)
+        SimAltitudeHold(float altitudeP, float altitudeD)
         {
             _altitudeP     = altitudeP;
             _altitudeD     = altitudeD;
-            _throttleScale = throttleScale;
-            _minAltitude   = minAltitude;
 
             _inBandPrev = false;
         }
@@ -49,9 +47,6 @@ namespace hf {
         {
             (void)currentTime;
 
-            // Don't do anything till we've reached sufficient altitude
-            if (state.altitude < _minAltitude) return false;
-
             // Reset altitude target if moved into stick deadband
             bool inBandCurr = inBand(demands.throttle);
             if (inBandCurr && !_inBandPrev) {
@@ -61,8 +56,7 @@ namespace hf {
 
             // Throttle: inside stick deadband, adjust by PID; outside deadband, respond to stick demand
             demands.throttle = inBandCurr ?  
-                _altitudeP * (_altitudeTarget-state.altitude) - _altitudeD * state.variometer: 
-                _throttleScale*demands.throttle;
+                _altitudeP * (_altitudeTarget-state.altitude) - _altitudeD * state.variometer: demands.throttle;
 
             return inBandCurr;
         }
