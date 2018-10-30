@@ -30,7 +30,7 @@ hf::Hackflight hackflight;
 // PID controllers
 #include <pidcontrollers/level.hpp>
 #include <pidcontrollers/althold.hpp>
-#include <pidcontrollers/simposhold.hpp>
+#include <pidcontrollers/poshold.hpp>
 
 // Controller
 #include "HackflightSimReceiverWindows.h"
@@ -92,7 +92,10 @@ hf::AltitudeHold althold = hf::AltitudeHold(
 	0.01f,  // altHoldVelI
 	0.10f); // altHoldVelD
 
-hf::SimPositionHold poshold = hf::SimPositionHold(0.2f); // Roll/pitch P
+hf::PositionHold poshold = hf::PositionHold(
+	0.0f,	// posP
+	0.2f,	// posrP
+	0.0f);	// posrI
 
 #endif
 
