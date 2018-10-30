@@ -69,12 +69,12 @@ void hf::Board::outbuf(char * buf)
 // PID tuning
 
 hf::Rate ratePid = hf::Rate(
-	0.01,		    // Roll/Pitch P
-	0.01,		    // Roll/Pitch I
-	0.01,		    // Roll/Pitch D
-	0.5,		    // Yaw P
-	0.0,			// Yaw I
-	8.f);			// Demands to rate
+	0.01,	// Roll/Pitch P
+	0.01,	// Roll/Pitch I
+	0.01,	// Roll/Pitch D
+	0.5,	// Yaw P
+	0.0,	// Yaw I
+	8.f);	// Demands to rate
 
 
 hf::Level level = hf::Level(0.20f);
@@ -89,9 +89,8 @@ PythonLoiter loiter = PythonLoiter(
 hf::AltitudeHold althold = hf::AltitudeHold(
 	1.00f,  // altHoldP
 	0.50f,  // altHoldVelP
-	0.01f,   // altHoldVelI
-	0.10f);  // altHoldVelD
-
+	0.01f,  // altHoldVelI
+	0.10f); // altHoldVelD
 
 hf::SimPositionHold poshold = hf::SimPositionHold(0.2f); // Roll/pitch P
 
