@@ -36,7 +36,7 @@ class AHackflightSimPawn : public APawn, public Board
 {
     private:
 
-        GENERATED_BODY()
+		GENERATED_BODY()
 
         // StaticMesh component that will be the visuals for our flying pawn 
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

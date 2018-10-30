@@ -29,7 +29,7 @@ hf::Hackflight hackflight;
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
-#include <pidcontrollers/simalthold.hpp>
+#include <pidcontrollers/althold.hpp>
 #include <pidcontrollers/simposhold.hpp>
 
 // Controller
@@ -86,9 +86,12 @@ PythonLoiter loiter = PythonLoiter(
 	0.2f);	// Cyclic P
 #else
 
-hf::SimAltitudeHold althold = hf::SimAltitudeHold(
-	0.1f,  // altHoldP
-	0.2f); // altHoldVelP
+hf::AltitudeHold althold = hf::AltitudeHold(
+	1.00f,  // altHoldP
+	0.50f,  // altHoldVelP
+	0.01f,   // altHoldVelI
+	0.10f);  // altHoldVelD
+
 
 hf::SimPositionHold poshold = hf::SimPositionHold(0.2f); // Roll/pitch P
 
@@ -286,9 +289,6 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
     propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
 
-	// Track elapsed time
-	_elapsedTime += DeltaSeconds;
-
     // Debug status of client connection
     if (!server.connected() && _serverRunning) {
         //hf::Debug::printf("Server running but not connected");
@@ -404,6 +404,9 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
 
 float AHackflightSimPawn::getTime(void)
 {
+	// Track elapsed time
+	_elapsedTime += .01; // Assume 100Hz clock
+
 	return _elapsedTime;
 }
 
