@@ -12,12 +12,12 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#include <sensors/opticalflow.hpp>
+#include <sensors/peripheral.hpp>
 #include <HackflightSimSensor.h>
 
 #include "GameFramework/Pawn.h"
 
-class HackflightSimOpticalFlow : public hf::OpticalFlow, public HackflightSimSensor
+class HackflightSimOpticalFlow : public hf::PeripheralSensor, public HackflightSimSensor
 {
 public:
 
@@ -25,6 +25,8 @@ public:
 	
 protected:
 
-	virtual void getFlow(float flow[2]) override;
+	virtual void modifyState(state_t & state, float time) override;
+
+	virtual bool ready(float time) override;
 };
 

@@ -12,8 +12,10 @@ HackflightSimOpticalFlow::HackflightSimOpticalFlow(APawn * pawn) : HackflightSim
 {
 }
 
-void HackflightSimOpticalFlow::getFlow(float flow[2])
+void HackflightSimOpticalFlow::modifyState(state_t & state, float time)
 {
+	(void)time;
+
 	// Grab velocity and divide by 100 to get m/s
 	FVector velocity = _pawn->GetVelocity() / 100;
 
@@ -21,6 +23,12 @@ void HackflightSimOpticalFlow::getFlow(float flow[2])
 	float psi = getEulerAngles().Z;
 
 	// Use yaw angle to rotate inertial-frame X,Y velocities into body frame forward,rightward
-	flow[0] = cos(psi)*velocity.X + sin(psi)*velocity.Y;
-	flow[1] = cos(psi)*velocity.Y - sin(psi)*velocity.X;
+	state.velocityForward   = cos(psi)*velocity.X + sin(psi)*velocity.Y;
+	state.velocityRightward = cos(psi)*velocity.Y - sin(psi)*velocity.X;
+}
+
+bool HackflightSimOpticalFlow::ready(float time)
+{
+	(void)time;
+	return true;
 }
