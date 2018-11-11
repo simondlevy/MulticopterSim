@@ -14,11 +14,13 @@
 #pragma comment(lib, "Shlwapi.lib")
 #include <conio.h>
 
-static const uint16_t VENDOR_SONY      = 0x0e8f;
-static const uint16_t VENDOR_STM       = 0x0483;
-static const uint16_t VENDOR_LOGITECH  = 0x046d;
-static const uint16_t VENDOR_MICROSOFT = 0x24c6;
-static const uint16_t PRODUCT_TARANIS  = 0x5710;
+static const uint16_t VENDOR_STM			= 0x0483;
+
+static const uint16_t PRODUCT_TARANIS		= 0x5710;
+static const uint16_t PRODUCT_PS3_CLONE		= 0x0003;
+static const uint16_t PRODUCT_XBOX360_CLONE	= 0xfafe;
+static const uint16_t PRODUCT_EXTREMEPRO3D	= 0xc215;
+static const uint16_t PRODUCT_PS4			= 0x09cc;
 
 void hf::Controller::productInit(void)
 {
@@ -61,9 +63,9 @@ void hf::Controller::productInit(void)
 
             _reversedVerticals = true;
 
-            switch (vendorId) {
+            switch (productId) {
 
-                case VENDOR_SONY:      // PS3
+                case PRODUCT_PS3_CLONE:      
                     _axismap[0] = 1;
                     _axismap[1] = 2;
                     _axismap[2] = 3;
@@ -75,7 +77,7 @@ void hf::Controller::productInit(void)
                     _buttonmap[2] = 4;
                     break;
 
-                case VENDOR_MICROSOFT: // XBox 360
+                case PRODUCT_XBOX360_CLONE: 
                     _axismap[0] = 1;
                     _axismap[1] = 4;
                     _axismap[2] = 3;
@@ -87,7 +89,7 @@ void hf::Controller::productInit(void)
                     _buttonmap[2] = 1;
                     break;
 
-                case VENDOR_LOGITECH:  // Extreme Pro 3D
+                case PRODUCT_EXTREMEPRO3D:  
                     _axismap[0] = 2;
                     _axismap[1] = 0;
                     _axismap[2] = 1;
