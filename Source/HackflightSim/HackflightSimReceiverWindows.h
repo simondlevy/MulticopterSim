@@ -77,7 +77,19 @@ void hf::Controller::productInit(void)
                     _buttonmap[2] = 4;
                     break;
 
-                case PRODUCT_XBOX360_CLONE: 
+				case PRODUCT_PS4:
+					_axismap[0] = 1;
+					_axismap[1] = 2;
+					_axismap[2] = 3;
+					_axismap[3] = 0;
+					_springyThrottle = true;
+					_useButtonForAux = true;
+					_buttonmap[0] = 1;
+					_buttonmap[1] = 2;
+					_buttonmap[2] = 4;
+					break;
+				
+				case PRODUCT_XBOX360_CLONE:
                     _axismap[0] = 1;
                     _axismap[1] = 4;
                     _axismap[2] = 3;

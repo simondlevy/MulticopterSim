@@ -33,8 +33,9 @@ actual micro quadcopter, we do not support flying by keyboard. We are currently 
 controllers:
 * FrSky Taranis TX9 RC transmitter with mini USB cable 
 * Spektrum transmitter with WS1000 wireless simulator dongle
-* XBox 360 controller
-* PS3 controller
+* PS4 controller
+* XBox 360 controller clone
+* PS3 controller clone
 * Logitech Extreme Pro 3D joystick
 
 ## Toolchain
