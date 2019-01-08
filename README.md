@@ -16,7 +16,7 @@ HackflightSim differs from AirSim in a few important ways:
 * HackfightSim uses the same simple flight-control 
 [firmware](https://github.com/simondlevy/Hackflight/tree/master/src) that we fly on our real-world 
 [quadcopters](http://diydrones.com/profiles/blogs/flight-of-the-ladybug).
-* HackflightSim is tiny, using a couple thousand lines of C++ code for the simulator and firmware.
+* HackflightSim is tiny, using a few thousand lines of C++ code for the simulator and firmware.
 * HackflightSim focuses exclusively on multirotor firmware, whereas AirSim
   supports deep learning and different kinds of vehicles.
 
