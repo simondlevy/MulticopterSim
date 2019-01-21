@@ -35,7 +35,7 @@ public class HackflightSim : ModuleRules
 
         // Get Library Path 
         string LibPath = "";
-        bool isdebug = Target.Configuration == UnrealTargetConfiguration.Debug && BuildConfiguration.bDebugBuildsActuallyUseDebugCRT;
+        bool isdebug = Target.Configuration == UnrealTargetConfiguration.Debug && Target.bDebugBuildsActuallyUseDebugCRT;
         if (Target.Platform == UnrealTargetPlatform.Win64)
         {
             LibPath = Path.Combine(OpenCVPath, "Libraries", "Win64");
@@ -63,7 +63,7 @@ public class HackflightSim : ModuleRules
             PublicDelayLoadDLLs.Add("opencv_ffmpeg340_64.dll");
         }
 
-        Definitions.Add(string.Format("WITH_OPENCV_BINDING={0}", isLibrarySupported ? 1 : 0));
+        PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING={0}", isLibrarySupported ? 1 : 0));
 
         return isLibrarySupported;
     }
@@ -78,7 +78,7 @@ public class HackflightSim : ModuleRules
 
         // Get Library Path 
         string LibPath = "";
-        bool isdebug = Target.Configuration == UnrealTargetConfiguration.Debug && BuildConfiguration.bDebugBuildsActuallyUseDebugCRT;
+        bool isdebug = Target.Configuration == UnrealTargetConfiguration.Debug && Target.bDebugBuildsActuallyUseDebugCRT;
         if (Target.Platform == UnrealTargetPlatform.Win64)
         {
             LibPath = Path.Combine(PythonPath, "libs");
@@ -105,7 +105,7 @@ public class HackflightSim : ModuleRules
             PublicDelayLoadDLLs.Add("python36.dll");
         }
 
-        Definitions.Add(string.Format("WITH_PYTHON_BINDING={0}", isLibrarySupported ? 1 : 0));
+        PublicDefinitions.Add(string.Format("WITH_PYTHON_BINDING={0}", isLibrarySupported ? 1 : 0));
 
         return isLibrarySupported;
     }
