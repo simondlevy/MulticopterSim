@@ -14,13 +14,13 @@
 #pragma comment(lib, "Shlwapi.lib")
 #include <conio.h>
 
-static const uint16_t VENDOR_STM			= 0x0483;
+static const uint16_t VENDOR_STM	        = 0x0483;
 
 static const uint16_t PRODUCT_TARANIS		= 0x5710;
 static const uint16_t PRODUCT_PS3_CLONE		= 0x0003;
 static const uint16_t PRODUCT_XBOX360_CLONE	= 0xfafe;
 static const uint16_t PRODUCT_EXTREMEPRO3D	= 0xc215;
-static const uint16_t PRODUCT_PS4			= 0x09cc;
+static const uint16_t PRODUCT_PS4	        = 0x09cc;
 
 void hf::Controller::productInit(void)
 {
@@ -66,6 +66,7 @@ void hf::Controller::productInit(void)
             switch (productId) {
 
                 case PRODUCT_PS3_CLONE:      
+		case PRODUCT_PS4:
                     _axismap[0] = 1;
                     _axismap[1] = 2;
                     _axismap[2] = 3;
@@ -77,19 +78,8 @@ void hf::Controller::productInit(void)
                     _buttonmap[2] = 4;
                     break;
 
-				case PRODUCT_PS4:
-					_axismap[0] = 1;
-					_axismap[1] = 2;
-					_axismap[2] = 3;
-					_axismap[3] = 0;
-					_springyThrottle = true;
-					_useButtonForAux = true;
-					_buttonmap[0] = 1;
-					_buttonmap[1] = 2;
-					_buttonmap[2] = 4;
-					break;
 				
-				case PRODUCT_XBOX360_CLONE:
+                case PRODUCT_XBOX360_CLONE:
                     _axismap[0] = 1;
                     _axismap[1] = 4;
                     _axismap[2] = 3;
