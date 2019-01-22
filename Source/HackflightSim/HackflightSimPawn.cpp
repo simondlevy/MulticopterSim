@@ -93,7 +93,7 @@ hf::AltitudeHold althold = hf::AltitudeHold(
 	0.10f); // altHoldVelD
 
 hf::PositionHold poshold = hf::PositionHold(
-	0.0f,	// posP
+	0.2,	// posP
 	0.2f,	// posrP
 	0.0f);	// posrI
 
@@ -128,7 +128,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 	hackflight.init(this, &controller, &mixer, &ratePid, true);
 
 	// Add optical-flow sensor
-	//hackflight.addSensor(&_flowSensor);
+	hackflight.addSensor(&_flowSensor);
 
 	// Add rangefinder
 	hackflight.addSensor(&_rangefinder);
