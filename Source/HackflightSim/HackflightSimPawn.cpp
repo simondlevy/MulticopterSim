@@ -138,7 +138,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 
 	// Add loiter PID controllers for aux switch position 2
 	hackflight.addPidController(&althold, 2);
-	hackflight.addPidController(&poshold, 2);
+	//hackflight.addPidController(&poshold, 2);
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
@@ -244,6 +244,8 @@ void AHackflightSimPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AHackflightSimPawn::Tick(float DeltaSeconds)
 {
+    hf::Debug::printf("%d FPS", (uint16_t)(1/DeltaSeconds));
+            
     // Update our flight firmware
     hackflight.update();
 
