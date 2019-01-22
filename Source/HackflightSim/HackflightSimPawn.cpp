@@ -32,9 +32,9 @@ hf::Hackflight hackflight;
 #include <pidcontrollers/althold.hpp>
 #include <pidcontrollers/poshold.hpp>
 
-// Controller
+// SimReceiver
 #include "HackflightSimReceiverWindows.h"
-hf::Controller controller;
+hf::SimReceiver receiver;
 
 // Python support
 #include "python/PythonLoiter.h"
@@ -125,7 +125,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 	RootComponent = PlaneMesh;
 
 	// Start Hackflight firmware, indicating already armed
-	hackflight.init(this, &controller, &mixer, &ratePid, true);
+	hackflight.init(this, &receiver, &mixer, &ratePid, true);
 
 	// Add optical-flow sensor
 	hackflight.addSensor(&_flowSensor);
@@ -328,8 +328,6 @@ void AHackflightSimPawn::serverError(void)
     hf::Debug::printf("MSP server error: %s", server.lastError());
 }
 
-// Hackflight::Board methods ---------------------------------------------------
-
 AHackflightSimPawn::GaussianNoise::GaussianNoise(uint8_t size, float noise)
 {
     _size  = size;
@@ -344,6 +342,8 @@ void AHackflightSimPawn::GaussianNoise::addNoise(float vals[])
         vals[k] += _dist(_generator);
     }
 }
+
+// Hackflight::Board methods ---------------------------------------------------
 
 bool AHackflightSimPawn::getQuaternion(float q[4]) 
 {   
@@ -371,6 +371,14 @@ bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
 void AHackflightSimPawn::writeMotor(uint8_t index, float value) 
 {
     _motorvals[index] = value;
+}
+
+float AHackflightSimPawn::getTime(void)
+{
+	// Track elapsed time
+	_elapsedTime += .01; // Assume 100Hz clock
+
+	return _elapsedTime;
 }
 
 uint8_t AHackflightSimPawn::serialAvailableBytes(void)
@@ -406,13 +414,7 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
     }
 }
 
-float AHackflightSimPawn::getTime(void)
-{
-	// Track elapsed time
-	_elapsedTime += .01; // Assume 100Hz clock
 
-	return _elapsedTime;
-}
 
 // Helper methods ---------------------------------------------------------------------------------
 

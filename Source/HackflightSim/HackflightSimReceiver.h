@@ -18,11 +18,11 @@
 
 namespace hf {
 
-    class Controller : public Receiver {
+    class SimReceiver : public Receiver {
 
         public:
 
-            Controller(void) 
+            SimReceiver(void) 
             {
                 _reversedVerticals = false;
                 _springyThrottle = false;
@@ -115,6 +115,6 @@ namespace hf {
             // Helps mock up periodic availability of new data frame (output data rate; ODR)
             uint64_t _cycle;          
 
-    }; // class Controller
+    }; // class SimReceiver
 
 } // namespace hf

@@ -25,7 +25,7 @@ static const uint16_t PRODUCT_EXTREMEPRO3D	= 0xc215;
 static const uint16_t PRODUCT_F310	        = 0xc21d;
 static const uint16_t PRODUCT_PS4	        = 0x09cc;
 
-void hf::Controller::productInit(void)
+void hf::SimReceiver::productInit(void)
 {
     JOYCAPS joycaps;
 
@@ -120,7 +120,7 @@ void hf::Controller::productInit(void)
     }
 }
 
-void hf::Controller::productPoll(int32_t axes[6], uint8_t & buttons)
+void hf::SimReceiver::productPoll(int32_t axes[6], uint8_t & buttons)
 {
 	JOYINFOEX joyState;
     joyState.dwSize=sizeof(joyState);
@@ -137,7 +137,7 @@ void hf::Controller::productPoll(int32_t axes[6], uint8_t & buttons)
     buttons = joyState.dwButtons;
 }
 
-int32_t hf::Controller::productGetBaseline(void)
+int32_t hf::SimReceiver::productGetBaseline(void)
 {
     return 32767;
 }
