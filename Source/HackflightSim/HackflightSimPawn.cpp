@@ -128,10 +128,10 @@ AHackflightSimPawn::AHackflightSimPawn()
 	hackflight.init(this, &controller, &mixer, &ratePid, true);
 
 	// Add optical-flow sensor
-	hackflight.addSensor(&_flowSensor);
+	//hackflight.addSensor(&_flowSensor);
 
 	// Add rangefinder
-	hackflight.addSensor(&_rangefinder);
+	//hackflight.addSensor(&_rangefinder);
 
 	// Add level PID controller for aux switch position 1
 	hackflight.addPidController(&level, 1);
@@ -206,7 +206,7 @@ void AHackflightSimPawn::BeginPlay()
 	_elapsedTime = 1.0; // avoid divide-by-zero
 
 	// Initialize sensors
-	_rangefinder.init();
+	//_rangefinder.init();
 
 	// Start the server
     _serverRunning = true;

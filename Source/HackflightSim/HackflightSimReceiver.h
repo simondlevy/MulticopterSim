@@ -78,17 +78,17 @@ namespace hf {
             {
             }
 
-		protected:
+        protected:
 
-			virtual uint8_t getAux1State(void) override
-			{
-				return _springyThrottle ? 2 : Receiver::getAux1State();
-			}
+            virtual uint8_t getAux1State(void) override
+            {
+                return _springyThrottle ? 2 : Receiver::getAux1State();
+            }
 
-			virtual uint8_t getAux2State(void) override
-			{
-				return 1; // always armed!
-			}
+            virtual uint8_t getAux2State(void) override
+            {
+                return 1; // always armed!
+            }
 
         private:
 

@@ -9,8 +9,9 @@
 #pragma once
 
 #include "GameFramework/Pawn.h"
+#include <sensor.hpp>
 
-class HackflightSimSensor
+class HackflightSimSensor : public hf::Sensor
 {
 
 public:
