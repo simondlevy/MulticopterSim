@@ -131,7 +131,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 	//hackflight.addSensor(&_flowSensor);
 
 	// Add rangefinder
-	//hackflight.addSensor(&_rangefinder);
+	hackflight.addSensor(&_rangefinder);
 
 	// Add level PID controller for aux switch position 1
 	hackflight.addPidController(&level, 1);

@@ -12,21 +12,24 @@ HackflightSimRangefinder::HackflightSimRangefinder(APawn * pawn) : HackflightSim
 {
 }
 
-void HackflightSimRangefinder::init(void)
-{
-	_groundAltitude = getAltitude();
-}
-
-bool HackflightSimRangefinder::distanceAvailable(float & distance)
+void HackflightSimRangefinder::modifyState(state_t & state, float time)
 {
 	float altitude = getAltitude() - _groundAltitude;
 
 	FVector euler = getEulerAngles();
 
 	// Hypoteneuse = adjacent / cosine
-	distance = altitude / (cos(euler.X) * cos(euler.Y));
+	state.altitude = altitude / (cos(euler.X) * cos(euler.Y));
+}
 
-	//_rangeNoise.addNoise(&distance);
+bool HackflightSimRangefinder::ready(float time)
+{
+	(void)time;
+
+    if (!_ready) { // XXX should use an init() method
+        _groundAltitude = getAltitude();
+        _ready = true;
+    }
 
 	return true;
 }

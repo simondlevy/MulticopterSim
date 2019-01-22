@@ -93,7 +93,7 @@ class AHackflightSimPawn : public APawn, public Board
 		HackflightSimOpticalFlow _flowSensor = HackflightSimOpticalFlow(this);
 
 		// Support for rangefinder
-		//HackflightSimRangefinder _rangefinder = HackflightSimRangefinder(this);
+		HackflightSimRangefinder _rangefinder = HackflightSimRangefinder(this);
         
         // Helps us simulate sensor noise.  XXX We should simulate ODR (output data rates) as well, but 
         // UE4 frame rate is currently to slow to do that realistically.

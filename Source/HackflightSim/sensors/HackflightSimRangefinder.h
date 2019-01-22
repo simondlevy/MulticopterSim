@@ -16,19 +16,21 @@
 #include <HackflightSimSensor.h>
 #include "GameFramework/Pawn.h"
 
-class HackflightSimRangefinder : public hf::Rangefinder, public HackflightSimSensor
+class HackflightSimRangefinder : public HackflightSimSensor
 {
 public:
 
 	HackflightSimRangefinder(APawn * pawn);
 
-	void init(void);
-	
 protected:
 
-	virtual bool distanceAvailable(float &distance) override;
+	virtual void modifyState(state_t & state, float time) override;
+
+	virtual bool ready(float time) override;
 
 private:
+
+    bool _ready = false;
 
 	float _groundAltitude;
 
