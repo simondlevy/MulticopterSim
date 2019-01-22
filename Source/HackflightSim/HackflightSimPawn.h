@@ -63,6 +63,9 @@ class AHackflightSimPawn : public APawn, public Board
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
             class USpringArmComponent* fpvSpringArm;
 
+        // Abstract controller
+        HackflightSimController * controller;
+
         // Support for spinning propellers
         const int8_t motordirs[4] = {+1, -1, -1, +1};
         float _motorvals[4];

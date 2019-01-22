@@ -8,10 +8,19 @@
 
 #include "HackflightSimController.h"
 
-HackflightSimController::HackflightSimController()
+HackflightSimController::HackflightSimController(void)
 {
 }
 
-HackflightSimController::~HackflightSimController()
+HackflightSimController::~HackflightSimController(void)
 {
+}
+
+void HackflightSimController::update(void)
+{
+}
+
+HackflightSimController * HackflightSimController::createController(void)
+{
+    return new HackflightSimController();
 }

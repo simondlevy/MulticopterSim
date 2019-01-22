@@ -124,6 +124,9 @@ AHackflightSimPawn::AHackflightSimPawn()
 	PlaneMesh->SetStaticMesh(ConstructorStatics.PlaneMesh.Get());	// Set static mesh
 	RootComponent = PlaneMesh;
 
+    // Create controller
+    controller = HackflightSimController::createController();
+
 	// Start Hackflight firmware, indicating already armed
 	hackflight.init(this, &receiver, &mixer, &ratePid, true);
 

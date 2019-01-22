@@ -14,9 +14,15 @@
 /**
  * 
  */
-class HACKFLIGHTSIM_API HackflightSimController
-{
+class HACKFLIGHTSIM_API HackflightSimController {
+
 public:
-	HackflightSimController();
-	~HackflightSimController();
+
+	HackflightSimController(void);
+
+	~HackflightSimController(void);
+
+    void update(void);
+
+    static HackflightSimController * createController(void);
 };
