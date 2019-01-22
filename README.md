@@ -6,7 +6,7 @@ HackflightSim is a simple quadcopter flight simulator using the C++
 [Hackflight](https://github.com/simondlevy/Hackflight) firmware and Unreal
 Engine 4.  It runs on Windows 10.
 
-We began this project using the [V-REP
+I began this project using the [V-REP
 platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
 UnrealEngine after seeing the kinds of beautiful, real-time simulations that
 Microsoft was able to get with its
@@ -24,12 +24,12 @@ HackflightSim differs from AirSim in a few important ways:
 
 ## Hardware
 
-We are currently developing HackflightSim on an HP Z440 workstation with 32GB RAM and NVIDIA GeForce GTX 1080 Ti, running Windows 10. It may however be possible to develop on a less &ldquo;loaded&rdquo;
+I are currently developing HackflightSim on an HP Z440 workstation with 32GB RAM and NVIDIA GeForce GTX 1080 Ti, running Windows 10. It may however be possible to develop on a less &ldquo;loaded&rdquo;
 machine &ndash; see [here](https://docs.unrealengine.com/latest/INT/GettingStarted/RecommendedSpecifications/)
 for the minimum requirements recommended by Unreal Engine.
 
 You will also need some sort of game controller. Because HackflightSim is meant to simulate flying an
-actual micro quadcopter, we do not support flying by keyboard. We are currently supporting the following
+actual micro quadcopter, HackflightSim does not support flying by keyboard. We are currently supporting the following
 controllers:
 * FrSky Taranis TX9 RC transmitter with mini USB cable 
 * Spektrum transmitter with WS1000 wireless simulator dongle
@@ -37,10 +37,11 @@ controllers:
 * XBox 360 controller clone
 * PS3 controller clone
 * Logitech Extreme Pro 3D joystick
+* Logitech F310 gamepad
 
 ## Toolchain
 
-You will need Unreal Engine 4 (UE4). We are attempting to use the latest version, which as of the time of this
+You will need Unreal Engine 4 (UE4). I am attempting to use the latest version, which as of the time of this
 writing is UE4.21.1.  
 
 Windows users will need Visual Studio Community (we're using the latest version, 2017).
@@ -62,24 +63,11 @@ Arduino library, to support its primary intended use. So the most sensible way
 to install it is to clone it into your <b>Documents/Arduino/libraries</b> folder,
 creating that folder if it doesn't exist.
 
-As with any UE4 C++ project, there are two ways to build and modify the HackflightSim code on Windows:
-<ol>
-<li> Double-click on <b>HackflightSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
+Now double-click on <b>HackflightSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
 You can then use your favorite code editor (ours is 
 <a href="https://www.vim.org">vim</a>) to edit the source code in <b>Source/HackflightSim</b>.
-<li> Right-click on <b>HackflightSim.uproject</b>, and select the menu item
-<b>Generate Visual Studio project files</b>.  This should create a file
-<b>HackflightSim.sln</b> and some new folders.  If you don't get the new .sln
-file, it's probably because UE4 cannot find a C++ compiler for the version of
-Visual Studio you've installed (see this
-<a href="https://docs.unrealengine.com/latest/INT/Programming/Development/VisualStudioSetup/#beforesetting-upyourue4-to-vsworkflow">discussion</a> 
-for tips).
-Double-clicking on the .sln file should launch Visual Studio.  The first time
-you launch Visual Studio, it can take several minutes to parse up all the C++
-source code for the UE4 engine.  Once you've got the project built and your
-controller plugged in, hitting the <b>F5</b> key should build the project and
-launch Unreal Editor. 
-</ol>
+Because of the difficulty I have had using VisualStudio to compile the code after a UE4 upgrade, I no 
+longer recommend using VisualStudio to build the simulator.
 
 # Launch and fly!
 

@@ -110,9 +110,9 @@ void hf::Controller::productInit(void)
                     _axismap[2] = 3;
                     _axismap[3] = 0;
                     _useButtonForAux = true;
-                    _buttonmap[0] = 1;
-                    _buttonmap[1] = 2;
-                    _buttonmap[2] = 4;
+                    _buttonmap[0] = 1;  // XXX untested
+                    _buttonmap[1] = 2;  // XXX untested
+                    _buttonmap[2] = 4;  // XXX untested
                     break;
             }
 
