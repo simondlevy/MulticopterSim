@@ -16,7 +16,7 @@ public class HackflightSim : ModuleRules
         PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src"); // Windows
 
         // Extras
-        //LoadOpenCV(Target);
+        LoadOpenCV(Target);
         //LoadPython(Target);
     }
 

@@ -33,8 +33,6 @@ class HACKFLIGHTSIM_API AVisionHUD : public AHUD
 
 	const float LEFTX  = 20;
 	const float TOPY   = 40;
-	const float WIDTH  = 256;
-	const float HEIGHT = 128;
 	
 	const FLinearColor BORDER_COLOR = FLinearColor::Yellow;
 	const float BORDER_WIDTH = 2.0f;

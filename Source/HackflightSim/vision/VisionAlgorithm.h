@@ -8,7 +8,7 @@
 * MIT License
 */
 
-//#define _OPENCV
+#define _OPENCV
 
 #ifdef _OPENCV
 

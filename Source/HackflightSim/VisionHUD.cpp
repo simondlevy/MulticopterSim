@@ -6,11 +6,12 @@
 * MIT License
 */
 
-
 #include "VisionHUD.h"
 
 // Use whatever machine-vision algorithm you like
 #include "vision/VisionDownsampling.h"
+
+#include <debug.hpp>
 
 AVisionHUD::AVisionHUD()
 {
@@ -59,6 +60,8 @@ void AVisionHUD::DrawHUD()
 
 	// Convert the FColor array to an RGB byte array
 
+    //hf::Debug::printf("%d X %d", _cols, _rows);
+
 	for (int x = 0; x < _cols; ++x) {
 
 		for (int y = 0; y < _rows; ++y) {
@@ -74,10 +77,10 @@ void AVisionHUD::DrawHUD()
 
 #ifdef _OPENCV
 		// Convert BGR bytes to OpenCV Mat
-		cv::Mat bgrimg(_rows, _cols, CV_8UC3, _bgrbytes);
+		//cv::Mat bgrimg(_rows, _cols, CV_8UC3, _bgrbytes);
 
 		// Run your vision algorithm on the OpenCV Mat
-		_algorithm->perform(bgrimg);
+		//_algorithm->perform(bgrimg);
 #endif
 
 	}
@@ -89,8 +92,8 @@ void AVisionHUD::DrawHUD()
 void AVisionHUD::drawBorder(float lxoff)
 {
 	float leftx   = LEFTX + lxoff;
-	float rightx  = leftx + WIDTH;
-	float bottomy = TOPY + HEIGHT;
+	float rightx  = leftx + _cols;
+	float bottomy = TOPY + _rows;
 
 	drawBorderLine(leftx,  TOPY,    rightx, TOPY);
 	drawBorderLine(rightx, TOPY,    rightx, bottomy);

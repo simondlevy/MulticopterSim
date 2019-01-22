@@ -245,7 +245,7 @@ void AHackflightSimPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AHackflightSimPawn::Tick(float DeltaSeconds)
 {
     hf::Debug::printf("%d FPS", (uint16_t)(1/DeltaSeconds));
-            
+
     // Update our flight firmware
     hackflight.update();
 
