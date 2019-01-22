@@ -23,6 +23,8 @@ using namespace hf;
 
 #include "ThreadedSocketServer.h"
 
+#include "HackflightSimController.h"
+
 #include <sensors/HackflightSimOpticalFlow.h>
 #include <sensors/HackflightSimRangefinder.h>
 
