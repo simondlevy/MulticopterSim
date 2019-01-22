@@ -36,8 +36,8 @@ void hf::Controller::productInit(void)
 
     if (_joyid < 16) {
 
-		uint16_t vendorId = 0;//  joycaps.wMid;
-		uint16_t productId = 0;// joycaps.wPid;
+		uint16_t vendorId = joycaps.wMid;
+		uint16_t productId = joycaps.wPid;
 
         // axes: 0=Thr 1=Ael 2=Ele 3=Rud 4=Aux
         // JOYINFOEX: 0=dwXpos 1=dwYpos 2=dwZpos 3=dwRpos 4=dwUpos 5=dwVpos
@@ -93,23 +93,22 @@ void hf::Controller::productInit(void)
                     _buttonmap[2] = 1;
                     break;
 
-                case PRODUCT_F310:
-                    _axismap[0] = 1;
-                    _axismap[1] = 4;
-                    _axismap[2] = 3;
-                    _axismap[3] = 0;
-                    _springyThrottle = true;
-                    _useButtonForAux = true;
-                    _buttonmap[0] = 8;
-                    _buttonmap[1] = 2;
-                    _buttonmap[2] = 1;
-                    break;
-
                 case PRODUCT_EXTREMEPRO3D:  
                     _axismap[0] = 2;
                     _axismap[1] = 0;
                     _axismap[2] = 1;
                     _axismap[3] = 3;
+                    _useButtonForAux = true;
+                    _buttonmap[0] = 1;
+                    _buttonmap[1] = 2;
+                    _buttonmap[2] = 4;
+                    break;
+
+                case PRODUCT_F310:
+                    _axismap[0] = 1;
+                    _axismap[1] = 4;
+                    _axismap[2] = 3;
+                    _axismap[3] = 0;
                     _useButtonForAux = true;
                     _buttonmap[0] = 1;
                     _buttonmap[1] = 2;
