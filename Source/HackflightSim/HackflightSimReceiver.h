@@ -16,6 +16,17 @@
 
 #include <receiver.hpp>
 
+#include "joystickapi.h"
+
+static const uint16_t VENDOR_STM	        = 0x0483;
+
+static const uint16_t PRODUCT_TARANIS		= 0x5710;
+static const uint16_t PRODUCT_PS3_CLONE		= 0x0003;
+static const uint16_t PRODUCT_XBOX360_CLONE	= 0xfafe;
+static const uint16_t PRODUCT_EXTREMEPRO3D	= 0xc215;
+static const uint16_t PRODUCT_F310	        = 0xc21d;
+static const uint16_t PRODUCT_PS4	        = 0x09cc;
+
 namespace hf {
 
     class SimReceiver : public Receiver {
