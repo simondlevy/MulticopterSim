@@ -12,7 +12,6 @@
 
 #include <shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
-#include <conio.h>
 
 #include "joystickapi.h"
 
