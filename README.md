@@ -1,35 +1,34 @@
-<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="media/HackflightSim2.png" width=800></a>
+<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="media/MulticopterSim2.png" width=800></a>
 
 # About
 
-HackflightSim is a simple quadcopter flight simulator using the C++ 
-[Hackflight](https://github.com/simondlevy/Hackflight) firmware and Unreal
-Engine 4.  It runs on Windows 10.
+MulticopterSim is a simple quadcopter flight simulator using the Unreal Engine 4.  It runs on Windows 10.
 
-I began this project using the [V-REP
-platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
+I began this project using the [V-REP platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
 UnrealEngine after seeing the kinds of beautiful, real-time simulations that
 Microsoft was able to get with its
 [AirSim](https://github.com/Microsoft/AirSim) program. 
 
-HackflightSim differs from AirSim in a few important ways:
-* HackfightSim uses the same simple flight-control 
+MulticopterSim differs from AirSim in a few important ways:
+* MulticopterSim can be used with the same simple flight-control 
 [firmware](https://github.com/simondlevy/Hackflight/tree/master/src) that we fly on our real-world 
 [quadcopters](http://diydrones.com/profiles/blogs/flight-of-the-ladybug).
-* HackflightSim is tiny, using a few thousand lines of C++ code for the simulator and firmware.
-* HackflightSim focuses exclusively on multirotor firmware, whereas AirSim
+* MulticopterSim is tiny, using a few thousand lines of C++ code for the simulator and firmware.
+* MulticopterSim focuses exclusively on multirotor firmware, whereas AirSim
   supports deep learning and different kinds of vehicles.
 
 # Prerequisites
 
 ## Hardware
 
-I are currently developing HackflightSim on an HP Z440 workstation with 32GB RAM and NVIDIA GeForce GTX 1080 Ti, running Windows 10. It may however be possible to develop on a less &ldquo;loaded&rdquo;
-machine &ndash; see [here](https://docs.unrealengine.com/latest/INT/GettingStarted/RecommendedSpecifications/)
+I are currently developing MulticopterSim on an HP Z440 workstation with 32GB
+RAM and NVIDIA GeForce GTX 1080 Ti, running Windows 10. It may however be
+possible to develop on a less &ldquo;loaded&rdquo; machine &ndash; see
+[here](https://docs.unrealengine.com/latest/INT/GettingStarted/RecommendedSpecifications/)
 for the minimum requirements recommended by Unreal Engine.
 
-You will also need some sort of game controller. Because HackflightSim is meant to simulate flying an
-actual micro quadcopter, HackflightSim does not support flying by keyboard. We are currently supporting the following
+You will also need some sort of game controller. Because MulticopterSim is meant to simulate flying an
+actual micro quadcopter, MulticopterSim does not support flying by keyboard. We are currently supporting the following
 controllers:
 * FrSky Taranis TX9 RC transmitter with mini USB cable 
 * Spektrum transmitter with WS1000 wireless simulator dongle
@@ -54,18 +53,18 @@ to generate a .sln file from a .uproject file, inability to compile source code,
 
 # Build
 
-You should first clone the HackflightSim repository into your <b>Documents/Unreal Projects</b> folder, creating
+You should first clone the MulticopterSim repository into your <b>Documents/Unreal Projects</b> folder, creating
 that folder if it doesn't already exist.
 
-In addition to cloning HackflightSim, you will need the [Hackflight](https://github.com/simondlevy/Hackflight) 
+In addition to cloning MulticopterSim, you will need the [Hackflight](https://github.com/simondlevy/Hackflight) 
 repository.  Although Hackflight is hardware-independent, it is set up as an
 Arduino library, to support its primary intended use. So the most sensible way
 to install it is to clone it into your <b>Documents/Arduino/libraries</b> folder,
 creating that folder if it doesn't exist.
 
-Now double-click on <b>HackflightSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
+Now double-click on <b>MulticopterSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
 You can then use your favorite code editor (ours is 
-<a href="https://www.vim.org">vim</a>) to edit the source code in <b>Source/HackflightSim</b>.
+<a href="https://www.vim.org">vim</a>) to edit the source code in <b>Source/MulticopterSim</b>.
 Because of the difficulty I have had using VisualStudio to compile the code after a UE4 upgrade, I no 
 longer recommend using VisualStudio to build the simulator.
 
@@ -76,36 +75,36 @@ use the spacebar to switch between the ground camera and FPV camera.
 
 # Support for OpenCV
 
-To enable projects using machine vision, HackflightSim includes support for the popular OpenCV package.
-To use OpenCV with HackflightSim, you should do the following:
+To enable projects using machine vision, MulticopterSim includes support for the popular OpenCV package.
+To use OpenCV with MulticopterSim, you should do the following:
 
-1. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L20"><tt>LoadOpenCV</tt></a> 
-instruction in <b>HackflightSimBuild.cs</b>.
+1. Un-comment the <a href="https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L20"><tt>LoadOpenCV</tt></a> 
+instruction in <b>MulticopterSimBuild.cs</b>.
 
 2. Make sure that the file <b>opencv_world340.dll</b> is in your <b>C:\Windows\System32</b> folder.  If it is not,
-you can copy it to there from <a href="https://github.com/simondlevy/HackflightSim/tree/master/ThirdParty/OpenCV/Libraries/Win64"><b>HackflightSim\ThirdParty\OpenCV\Libraries\Win64</b></a>
+you can copy it to there from <a href="https://github.com/simondlevy/MulticopterSim/tree/master/ThirdParty/OpenCV/Libraries/Win64"><b>MulticopterSim\ThirdParty\OpenCV\Libraries\Win64</b></a>
 
-3. To see a demonstration of OpenCV in action, un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/vision/VisionAlgorithm.h#L11"><tt>#define _OPENCV</tt></a> 
+3. To see a demonstration of OpenCV in action, un-comment the <a href="https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/vision/VisionAlgorithm.h#L11"><tt>#define _OPENCV</tt></a> 
 directive in <b>vision/VisionAlgorithm.h</b>.
 
 # Support for Python
 
-HackflightSim also includes support for calling Python code from C++.  For an example of how to use HackflightSim with Python, you should do the following:
+MulticopterSim also includes support for calling Python code from C++.  For an example of how to use MulticopterSim with Python, you should do the following:
 
-1. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L20"><tt>LoadPython</tt></a> 
-instruction in <b>HackflightSimBuild.cs</b>.
+1. Un-comment the <a href="https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L20"><tt>LoadPython</tt></a> 
+instruction in <b>MulticopterSimBuild.cs</b>.
 
-2. Make sure that the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L77"><tt>PythonPath</tt></a> 
-variable is set appropriately in <b>HackflightSimBuild.cs</b>.  
+2. Make sure that the <a href="https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L77"><tt>PythonPath</tt></a> 
+variable is set appropriately in <b>MulticopterSimBuild.cs</b>.  
 
 3. Make sure that the appropriate Python dll file file (for example, <b>python36.dll</b>) is in your
 <b>C:\Windows\System32</b> folder. If it is not, you can copy it to there from the folder you specified in the 
 <tt>Pythonpath</tt> variable.
 
-4. Un-comment the <a href="https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/python/python_class.h#L9"><tt>#define _PYTHON</tt></a> 
+4. Un-comment the <a href="https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/python/python_class.h#L9"><tt>#define _PYTHON</tt></a> 
 directive in <b>python\python_class.h</b>.  
 5. Install the [Nengo neural simulator](https://www.nengo.ai/) : <tt>pip3 install nengo</tt>
-6. In the <b>python</b> folder, do <tt>python3 setup.py install</tt> to make the Python script <b>nengo_picontrol.py</b> available to HackflightSim.
+6. In the <b>python</b> folder, do <tt>python3 setup.py install</tt> to make the Python script <b>nengo_picontrol.py</b> available to MulticopterSim.
 7. Run the simulator and watch the vehicle's altitude being controlled by a spiking neural network!
 
 
