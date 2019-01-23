@@ -26,7 +26,7 @@ using namespace hf;
 
 #include "ThreadedSocketServer.h"
 
-#include "HackflightSimController.h"
+#include "SimFlightController.h"
 
 #include <sensors/SimOpticalFlow.h>
 #include <sensors/SimRangefinder.h>
@@ -67,7 +67,7 @@ class AHackflightSimPawn : public APawn, public Board
             class USpringArmComponent* fpvSpringArm;
 
         // Abstract controller
-        HackflightSimController * controller;
+        SimFlightController * flightController;
 
         // Receiver (joystick)
         hf::SimReceiver * receiver;

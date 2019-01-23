@@ -124,7 +124,7 @@ AHackflightSimPawn::AHackflightSimPawn()
 	RootComponent = PlaneMesh;
 
     // Create controller
-    controller = HackflightSimController::createController();
+    flightController = SimFlightController::createSimFlightController();
 
     // Create receiver (joystick)
     joystickInit();
