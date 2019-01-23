@@ -1,12 +1,12 @@
 /*
-* HackflightSimReceiver.cpp : Support USB controller for flight simulators
+* SimReceiver.cpp : Support USB controller for flight simulators
 *
 * Copyright (C) 2018 Simon D. Levy
 *
 * MIT License
 */
 
-#include "HackflightSimReceiver.h"
+#include "SimReceiver.h"
 
 hf::SimReceiver::SimReceiver(uint8_t axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux)
 {

@@ -1,5 +1,5 @@
 /*
- * HackflightSimReceiver.h : Support USB controller for flight simulators
+ * SimReceiver.h : Support USB controller for flight simulators
  *
  * Copyright (C) 2018 Simon D. Levy
  *

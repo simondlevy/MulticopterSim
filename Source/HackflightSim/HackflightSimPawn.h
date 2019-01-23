@@ -22,7 +22,7 @@
 using namespace hf;
 
 // SimReceiver
-#include "HackflightSimReceiver.h"
+#include "SimReceiver.h"
 
 #include "ThreadedSocketServer.h"
 
