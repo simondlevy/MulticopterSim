@@ -8,7 +8,7 @@
 
 #include "SimRangefinder.h"
 
-SimRangefinder::SimRangefinder(APawn * pawn) : HackflightSimSensor(pawn)
+SimRangefinder::SimRangefinder(APawn * pawn) : SimSensor(pawn)
 {
 }
 

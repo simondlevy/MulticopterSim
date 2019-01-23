@@ -12,11 +12,11 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#include <HackflightSimSensor.h>
+#include <SimSensor.h>
 
 #include "GameFramework/Pawn.h"
 
-class SimOpticalFlow : public HackflightSimSensor
+class SimOpticalFlow : public SimSensor
 {
 public:
 

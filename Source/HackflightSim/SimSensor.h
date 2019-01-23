@@ -1,5 +1,5 @@
 /*
-* HackflightSimSensor.h: Superclass declaration for sensor classes in HackflightSim
+* SimSensor.h: Superclass declaration for sensor classes in HackflightSim
 *
 * Copyright(C) 2018 Simon D.Levy
 *
@@ -11,12 +11,12 @@
 #include "GameFramework/Pawn.h"
 #include <sensor.hpp>
 
-class HackflightSimSensor : public hf::Sensor
+class SimSensor : public hf::Sensor
 {
 
 public:
 
-	HackflightSimSensor(APawn * pawn);
+	SimSensor(APawn * pawn);
 
 protected:
 

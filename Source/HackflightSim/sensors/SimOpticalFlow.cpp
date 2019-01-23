@@ -10,7 +10,7 @@
 
 #include <debug.hpp>
 
-SimOpticalFlow::SimOpticalFlow(APawn * pawn) : HackflightSimSensor(pawn)
+SimOpticalFlow::SimOpticalFlow(APawn * pawn) : SimSensor(pawn)
 {
 }
 
