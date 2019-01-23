@@ -11,7 +11,6 @@
 #include "HackflightSimReceiver.h"
 
 #include <shlwapi.h>
-#pragma comment(lib, "Shlwapi.lib")
 #include "joystickapi.h"
 
 namespace hf {
