@@ -28,7 +28,7 @@ using namespace hf;
 
 #include "HackflightSimController.h"
 
-#include <sensors/HackflightSimOpticalFlow.h>
+#include <sensors/SimOpticalFlow.h>
 #include <sensors/HackflightSimRangefinder.h>
 
 #include "CoreMinimal.h"
@@ -101,7 +101,7 @@ class AHackflightSimPawn : public APawn, public Board
 		FVector getEulerAngles(void);
 
 		// Support for optical flow
-		HackflightSimOpticalFlow _flowSensor = HackflightSimOpticalFlow(this);
+		SimOpticalFlow _flowSensor = SimOpticalFlow(this);
 
 		// Support for rangefinder
 		HackflightSimRangefinder _rangefinder = HackflightSimRangefinder(this);

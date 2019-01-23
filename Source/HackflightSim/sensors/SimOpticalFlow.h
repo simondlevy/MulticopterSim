@@ -1,5 +1,5 @@
 /*
-* HackflightSimOpticalFlow.h: Class declaration for OpticalFlow class in HackflightSim
+* SimOpticalFlow.h: Class declaration for OpticalFlow class in HackflightSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
@@ -16,11 +16,11 @@
 
 #include "GameFramework/Pawn.h"
 
-class HackflightSimOpticalFlow : public HackflightSimSensor
+class SimOpticalFlow : public HackflightSimSensor
 {
 public:
 
-	HackflightSimOpticalFlow(APawn * pawn);
+	SimOpticalFlow(APawn * pawn);
 	
 protected:
 

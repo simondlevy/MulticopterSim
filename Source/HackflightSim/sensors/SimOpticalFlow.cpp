@@ -1,20 +1,20 @@
 /*
-* HackflightSimOpticalFlow.cpp: Class implementation for OpticalFlow class in HackflightSim
+* SimOpticalFlow.cpp: Class implementation for OpticalFlow class in HackflightSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
 * MIT License
 */
 
-#include "HackflightSimOpticalFlow.h"
+#include "SimOpticalFlow.h"
 
 #include <debug.hpp>
 
-HackflightSimOpticalFlow::HackflightSimOpticalFlow(APawn * pawn) : HackflightSimSensor(pawn)
+SimOpticalFlow::SimOpticalFlow(APawn * pawn) : HackflightSimSensor(pawn)
 {
 }
 
-void HackflightSimOpticalFlow::modifyState(state_t & state, float time)
+void SimOpticalFlow::modifyState(state_t & state, float time)
 {
 	(void)time;
 
@@ -33,7 +33,7 @@ void HackflightSimOpticalFlow::modifyState(state_t & state, float time)
     state.positionY += state.velocityForward;
 }
 
-bool HackflightSimOpticalFlow::ready(float time)
+bool SimOpticalFlow::ready(float time)
 {
     (void)time;
     return true;
