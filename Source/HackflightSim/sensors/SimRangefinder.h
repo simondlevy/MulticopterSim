@@ -1,5 +1,5 @@
 /*
-* HackflightSimRangefinder.h: Class declaration for Rangefinder class in HackflightSim
+* SimRangefinder.h: Class declaration for Rangefinder class in HackflightSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
@@ -16,11 +16,11 @@
 #include <HackflightSimSensor.h>
 #include "GameFramework/Pawn.h"
 
-class HackflightSimRangefinder : public HackflightSimSensor
+class SimRangefinder : public HackflightSimSensor
 {
 public:
 
-	HackflightSimRangefinder(APawn * pawn);
+	SimRangefinder(APawn * pawn);
 
 protected:
 

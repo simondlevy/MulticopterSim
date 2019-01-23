@@ -29,7 +29,7 @@ using namespace hf;
 #include "HackflightSimController.h"
 
 #include <sensors/SimOpticalFlow.h>
-#include <sensors/HackflightSimRangefinder.h>
+#include <sensors/SimRangefinder.h>
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -104,7 +104,7 @@ class AHackflightSimPawn : public APawn, public Board
 		SimOpticalFlow _flowSensor = SimOpticalFlow(this);
 
 		// Support for rangefinder
-		HackflightSimRangefinder _rangefinder = HackflightSimRangefinder(this);
+		SimRangefinder _rangefinder = SimRangefinder(this);
 
         // Joystick support -------------------------------------------------------
 

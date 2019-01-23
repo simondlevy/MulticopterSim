@@ -1,18 +1,18 @@
 /*
-* HackflightSimRangefinder.cpp: Class implementation for Rangefinder class in HackflightSim
+* SimRangefinder.cpp: Class implementation for Rangefinder class in HackflightSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
 * MIT License
 */
 
-#include "HackflightSimRangefinder.h"
+#include "SimRangefinder.h"
 
-HackflightSimRangefinder::HackflightSimRangefinder(APawn * pawn) : HackflightSimSensor(pawn)
+SimRangefinder::SimRangefinder(APawn * pawn) : HackflightSimSensor(pawn)
 {
 }
 
-void HackflightSimRangefinder::modifyState(state_t & state, float time)
+void SimRangefinder::modifyState(state_t & state, float time)
 {
 	float altitude = getAltitude() - _groundAltitude;
 
@@ -22,7 +22,7 @@ void HackflightSimRangefinder::modifyState(state_t & state, float time)
 	state.altitude = altitude / (cos(euler.X) * cos(euler.Y));
 }
 
-bool HackflightSimRangefinder::ready(float time)
+bool SimRangefinder::ready(float time)
 {
 	(void)time;
 
@@ -34,7 +34,7 @@ bool HackflightSimRangefinder::ready(float time)
 	return true;
 }
 
-float HackflightSimRangefinder::getAltitude(void)
+float SimRangefinder::getAltitude(void)
 {
 	return _pawn->GetActorLocation().Z / 100; // cm => m
 }
