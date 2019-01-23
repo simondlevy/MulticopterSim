@@ -22,7 +22,7 @@
  * 
  */
 UCLASS()
-class HACKFLIGHTSIM_API AVisionHUD : public AHUD
+class AVisionHUD : public AHUD
 {
 	GENERATED_BODY()
 	
