@@ -1,4 +1,4 @@
-<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="HackflightSim2.png" width=800></a>
+<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="media/HackflightSim2.png" width=800></a>
 
 # About
 
