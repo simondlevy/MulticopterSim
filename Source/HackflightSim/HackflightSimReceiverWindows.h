@@ -10,11 +10,11 @@
 
 #include "HackflightSimReceiver.h"
 
-namespace hf {
-
 #include <shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 #include "joystickapi.h"
+
+namespace hf {
 
     class SimReceiverWindows : public SimReceiver {
 

@@ -21,9 +21,6 @@
 
 #include <cmath>
 
-//#include <shlwapi.h>
-//#pragma comment(lib, "Shlwapi.lib")
-
 // Main firmware
 hf::Hackflight hackflight;
 
