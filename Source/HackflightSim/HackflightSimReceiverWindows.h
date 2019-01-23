@@ -10,7 +10,9 @@
 
 #include "HackflightSimReceiver.h"
 
-void hf::SimReceiver::productInit(void)
+namespace hf {
+
+void SimReceiver::productInit(void)
 {
     JOYCAPS joycaps;
 
@@ -105,7 +107,7 @@ void hf::SimReceiver::productInit(void)
     }
 }
 
-void hf::SimReceiver::productPoll(int32_t axes[6], uint8_t & buttons)
+void SimReceiver::productPoll(int32_t axes[6], uint8_t & buttons)
 {
 	JOYINFOEX joyState;
     joyState.dwSize=sizeof(joyState);
@@ -122,7 +124,9 @@ void hf::SimReceiver::productPoll(int32_t axes[6], uint8_t & buttons)
     buttons = joyState.dwButtons;
 }
 
-int32_t hf::SimReceiver::productGetBaseline(void)
+int32_t SimReceiver::productGetBaseline(void)
 {
     return 32767;
+}
+
 }
