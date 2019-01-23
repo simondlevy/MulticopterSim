@@ -37,7 +37,7 @@ hf::Hackflight hackflight;
 
 // SimReceiver
 #include "HackflightSimReceiver.h"
-hf::SimReceiver receiver;
+hf::SimReceiverWindows receiver;
 
 // Python support
 #include "python/PythonLoiter.h"

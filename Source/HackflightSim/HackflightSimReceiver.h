@@ -1,10 +1,10 @@
 /*
-* HackflightSimReceiver.h : Support USB controller for flight simulators
-*
-* Copyright (C) 2018 Simon D. Levy
-*
-* MIT License
-*/
+ * HackflightSimReceiver.h : Support USB controller for flight simulators
+ *
+ * Copyright (C) 2018 Simon D. Levy
+ *
+ * MIT License
+ */
 
 #pragma once
 
@@ -15,20 +15,6 @@
 #include <fcntl.h>
 
 #include <receiver.hpp>
-
-#include <shlwapi.h>
-#pragma comment(lib, "Shlwapi.lib")
-
-#include "joystickapi.h"
-
-static const uint16_t VENDOR_STM	        = 0x0483;
-
-static const uint16_t PRODUCT_TARANIS		= 0x5710;
-static const uint16_t PRODUCT_PS3_CLONE		= 0x0003;
-static const uint16_t PRODUCT_XBOX360_CLONE	= 0xfafe;
-static const uint16_t PRODUCT_EXTREMEPRO3D	= 0xc215;
-static const uint16_t PRODUCT_F310	        = 0xc21d;
-static const uint16_t PRODUCT_PS4	        = 0x09cc;
 
 namespace hf {
 
@@ -107,7 +93,9 @@ namespace hf {
                 return 1; // always armed!
             }
 
-        private:
+            virtual void productInit(void) = 0;
+            virtual void productPoll(int32_t axes[6], uint8_t & buttons) = 0;
+            virtual int32_t productGetBaseline(void) = 0;
 
             // Determined dynamically based on controller
             bool     _reversedVerticals;
@@ -124,7 +112,28 @@ namespace hf {
             // Helps mock up periodic availability of new data frame (output data rate; ODR)
             uint64_t _cycle;          
 
-            void productInit(void)
+    }; // class SimReceiver
+
+#include <shlwapi.h>
+#pragma comment(lib, "Shlwapi.lib")
+#include "joystickapi.h"
+
+    class SimReceiverWindows : public SimReceiver {
+
+        private:
+
+            static const uint16_t VENDOR_STM	        = 0x0483;
+
+            static const uint16_t PRODUCT_TARANIS		= 0x5710;
+            static const uint16_t PRODUCT_PS3_CLONE		= 0x0003;
+            static const uint16_t PRODUCT_XBOX360_CLONE	= 0xfafe;
+            static const uint16_t PRODUCT_EXTREMEPRO3D	= 0xc215;
+            static const uint16_t PRODUCT_F310	        = 0xc21d;
+            static const uint16_t PRODUCT_PS4	        = 0x09cc;
+
+        protected:
+
+            virtual void productInit(void) override
             {
                 JOYCAPS joycaps;
 
@@ -219,7 +228,7 @@ namespace hf {
                 }
             }
 
-            void productPoll(int32_t axes[6], uint8_t & buttons)
+            virtual void productPoll(int32_t axes[6], uint8_t & buttons) override
             {
                 JOYINFOEX joyState;
                 joyState.dwSize=sizeof(joyState);
@@ -236,11 +245,11 @@ namespace hf {
                 buttons = joyState.dwButtons;
             }
 
-            int32_t productGetBaseline(void)
+            virtual int32_t productGetBaseline(void) override
             {
                 return 32767;
             }
 
-    }; // class SimReceiver
+    }; // class SimReceiverWindows
 
 } // namespace hf
