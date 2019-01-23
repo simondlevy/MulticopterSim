@@ -19,6 +19,9 @@
 #include "Engine/StaticMesh.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 
+#include <shlwapi.h>
+#include "joystickapi.h"
+
 #include <cmath>
 
 // Main firmware

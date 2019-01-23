@@ -43,7 +43,7 @@ void hf::SimReceiver::readRawvals(void)
 
     // Normalize the axes to demands in [-1,+1]
     for (uint8_t k=0; k<5; ++k) {
-        rawvals[k] = (axes[_axismap[k]] - productGetBaseline()) / 32767.f;
+        rawvals[k] = (axes[_axismap[k]] - 32767) / 32767.f;
     }
 
     // Invert throttle, pitch if indicated

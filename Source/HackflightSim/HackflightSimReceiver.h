@@ -40,7 +40,6 @@ namespace hf {
 
             virtual void productInit(void) = 0;
             virtual void productPoll(int32_t axes[6], uint8_t & buttons) = 0;
-            virtual int32_t productGetBaseline(void) = 0;
 
             // Determined dynamically based on controller
             bool     _reversedVerticals;

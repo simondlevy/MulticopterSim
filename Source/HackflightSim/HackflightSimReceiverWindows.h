@@ -142,11 +142,6 @@ namespace hf {
                 buttons = joyState.dwButtons;
             }
 
-            virtual int32_t productGetBaseline(void) override
-            {
-                return 32767;
-            }
-
     }; // class SimReceiverWindows
 
 } // namespace hf
