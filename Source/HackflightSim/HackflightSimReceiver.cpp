@@ -8,21 +8,21 @@
 
 #include "HackflightSimReceiver.h"
 
-hf::SimReceiver::SimReceiver(void) 
+hf::SimReceiver::SimReceiver(uint8_t axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux)
 {
-    _reversedVerticals = false;
-    _springyThrottle = false;
-    _useButtonForAux = false;
-    _joyid = 0;
-    _cycle = 0;
+    memcpy(_axismap, axismap, 5);
+    memcpy(_buttonmap, buttonmap, 3);
 
+    _reversedVerticals = reversedVerticals;
+    _springyThrottle = springyThrottle;
+    _useButtonForAux = useButtonForAux;
+
+    _cycle = 0;
     _buttonState = 0;
 }
 
 void hf::SimReceiver::begin(void)
 {
-    // Set up axes based on OS and controller
-    productInit();
 }
 
 bool hf::SimReceiver::gotNewFrame(void)
@@ -32,18 +32,12 @@ bool hf::SimReceiver::gotNewFrame(void)
 
 void hf::SimReceiver::readRawvals(void)
 {
-    static int32_t axes[6];
-    static uint8_t buttons;
-
-    // Grab the axis values in an OS-specific way
-    productPoll(axes, buttons);
-
     // Display axes (helps debug new controllers)
     //hf::Debug::printf("0:%d  1:%d  2:%d 3:%d  4:%d  5:%d", axes[0], axes[1], axes[2], axes[3], axes[4], axes[5]);
 
     // Normalize the axes to demands in [-1,+1]
     for (uint8_t k=0; k<5; ++k) {
-        rawvals[k] = (axes[_axismap[k]] - 32767) / 32767.f;
+        rawvals[k] = (_axes[_axismap[k]] - 32767) / 32767.f;
     }
 
     // Invert throttle, pitch if indicated
@@ -55,7 +49,7 @@ void hf::SimReceiver::readRawvals(void)
     // For game controllers, use buttons to fake up values in a three-position aux switch
     if (_useButtonForAux) {
         for (uint8_t k=0; k<3; ++k) {
-            if (buttons == _buttonmap[k]) {
+            if (_buttons == _buttonmap[k]) {
                 _buttonState = k;
             }
         }
@@ -79,3 +73,8 @@ uint8_t hf::SimReceiver::getAux2State(void)
 }
 
 
+void hf::SimReceiver::update(int32_t axes[6], uint8_t buttons)
+{
+    memcpy(_axes, axes, 6*sizeof(int32_t));
+    _buttons = buttons;
+}

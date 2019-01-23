@@ -35,10 +35,6 @@ hf::Hackflight hackflight;
 #include <pidcontrollers/althold.hpp>
 #include <pidcontrollers/poshold.hpp>
 
-// SimReceiver
-#include "HackflightSimReceiverWindows.h"
-hf::SimReceiverWindows receiver;
-
 // Python support
 #include "python/PythonLoiter.h"
 
@@ -130,8 +126,11 @@ AHackflightSimPawn::AHackflightSimPawn()
     // Create controller
     controller = HackflightSimController::createController();
 
+    // Create receiver (joystick)
+    joystickInit();
+
 	// Start Hackflight firmware, indicating already armed
-	hackflight.init(this, &receiver, &mixer, &ratePid, true);
+	hackflight.init(this, receiver, &mixer, &ratePid, true);
 
 	// Add optical-flow sensor
 	hackflight.addSensor(&_flowSensor);
@@ -252,6 +251,9 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
 {
     hf::Debug::printf("%d FPS", (uint16_t)(1/DeltaSeconds));
 
+    // Poll the joystick, updating the SimReceiver
+    joystickPoll();
+
     // Update our flight firmware
     hackflight.update();
 
@@ -349,6 +351,135 @@ void AHackflightSimPawn::GaussianNoise::addNoise(float vals[])
     }
 }
 
+
+// Joystick support ---------------------------------------------------------------------
+
+void AHackflightSimPawn::joystickInit(void)
+{
+    JOYCAPS joycaps;
+
+    uint8_t axismap[5];
+    uint8_t buttonmap[5];
+
+    bool springyThrottle = false;
+    bool useButtonForAux = false;
+    bool reversedVerticals = false;
+
+    // Grab the first available joystick
+    for (_joyid=0; _joyid<16; _joyid++)
+        if (joyGetDevCaps(_joyid, &joycaps, sizeof(joycaps)) == JOYERR_NOERROR)
+            break;
+
+    if (_joyid < 16) {
+
+        uint16_t vendorId = joycaps.wMid;
+        uint16_t productId = joycaps.wPid;
+
+        // axes: 0=Thr 1=Ael 2=Ele 3=Rud 4=Aux
+        // JOYINFOEX: 0=dwXpos 1=dwYpos 2=dwZpos 3=dwRpos 4=dwUpos 5=dwVpos
+
+        // R/C transmitter
+        if (vendorId == VENDOR_STM) {
+
+            if (productId == PRODUCT_TARANIS) {
+                axismap[0] =   0;
+                axismap[1] =   1;
+                axismap[2] =   2;
+                axismap[3] =   5;
+                axismap[4] =   3;
+            }
+            else { // Spektrum
+                axismap[0] = 1;
+                axismap[1] = 2;
+                axismap[2] = 5;
+                axismap[3] = 0;
+                axismap[4] = 4;
+            }
+        }
+
+        else {
+
+            reversedVerticals = true;
+
+            switch (productId) {
+
+                case PRODUCT_PS3_CLONE:      
+                case PRODUCT_PS4:
+                    axismap[0] = 1;
+                    axismap[1] = 2;
+                    axismap[2] = 3;
+                    axismap[3] = 0;
+                    springyThrottle = true;
+                    useButtonForAux = true;
+                    buttonmap[0] = 1;
+                    buttonmap[1] = 2;
+                    buttonmap[2] = 4;
+                    break;
+
+
+                case PRODUCT_XBOX360_CLONE:
+                    axismap[0] = 1;
+                    axismap[1] = 4;
+                    axismap[2] = 3;
+                    axismap[3] = 0;
+                    springyThrottle = true;
+                    useButtonForAux = true;
+                    buttonmap[0] = 8;
+                    buttonmap[1] = 2;
+                    buttonmap[2] = 1;
+                    break;
+
+                case PRODUCT_EXTREMEPRO3D:  
+                    axismap[0] = 2;
+                    axismap[1] = 0;
+                    axismap[2] = 1;
+                    axismap[3] = 3;
+                    useButtonForAux = true;
+                    buttonmap[0] = 1;
+                    buttonmap[1] = 2;
+                    buttonmap[2] = 4;
+                    break;
+
+                case PRODUCT_F310:
+                    axismap[0] = 1;
+                    axismap[1] = 4;
+                    axismap[2] = 3;
+                    axismap[3] = 0;
+                    springyThrottle = true;
+                    useButtonForAux = true;
+                    buttonmap[0] = 8;
+                    buttonmap[1] = 2;
+                    buttonmap[2] = 1;
+                    break;
+            }
+        }
+    }
+
+    receiver = new SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
+
+} // joystickInit
+
+void AHackflightSimPawn::joystickPoll(void)
+{
+    JOYINFOEX joyState;
+    joyState.dwSize=sizeof(joyState);
+    joyState.dwFlags=JOY_RETURNALL | JOY_RETURNPOVCTS | JOY_RETURNCENTERED | JOY_USEDEADZONE;
+    joyGetPosEx(_joyid, &joyState);
+
+    int32_t axes[6];
+    axes[0] = joyState.dwXpos;
+    axes[1] = joyState.dwYpos;
+    axes[2] = joyState.dwZpos;
+    axes[3] = joyState.dwRpos;
+    axes[4] = joyState.dwUpos;
+    axes[5] = joyState.dwVpos;
+
+    uint8_t buttons = joyState.dwButtons;
+
+    receiver->update(axes, buttons);
+}
+
+
 // Hackflight::Board methods ---------------------------------------------------
 
 bool AHackflightSimPawn::getQuaternion(float q[4]) 
@@ -365,13 +496,13 @@ bool AHackflightSimPawn::getQuaternion(float q[4])
 
 bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
 {
-	gyroRates[0] = _gyro.X;
-	gyroRates[1] = _gyro.Y;
-	gyroRates[2] = 0; // _gyro.Z; // XXX zero-out gyro Z (yaw) for now
+    gyroRates[0] = _gyro.X;
+    gyroRates[1] = _gyro.Y;
+    gyroRates[2] = 0; // _gyro.Z; // XXX zero-out gyro Z (yaw) for now
 
-	//_gyroSensor.addNoise(gyroRates);
+    //_gyroSensor.addNoise(gyroRates);
 
-	return true;
+    return true;
 }
 
 void AHackflightSimPawn::writeMotor(uint8_t index, float value) 
@@ -381,10 +512,10 @@ void AHackflightSimPawn::writeMotor(uint8_t index, float value)
 
 float AHackflightSimPawn::getTime(void)
 {
-	// Track elapsed time
-	_elapsedTime += .01; // Assume 100Hz clock
+    // Track elapsed time
+    _elapsedTime += .01; // Assume 100Hz clock
 
-	return _elapsedTime;
+    return _elapsedTime;
 }
 
 uint8_t AHackflightSimPawn::serialAvailableBytes(void)
@@ -407,10 +538,10 @@ uint8_t AHackflightSimPawn::serialAvailableBytes(void)
 
 uint8_t AHackflightSimPawn::serialReadByte(void)
 { 
-	uint8_t byte = _serverBuffer[_serverByteIndex]; // post-increment 
-	_serverByteIndex++;
-	_serverAvailableBytes--;
-	return byte;
+    uint8_t byte = _serverBuffer[_serverByteIndex]; // post-increment 
+    _serverByteIndex++;
+    _serverAvailableBytes--;
+    return byte;
 }
 
 void AHackflightSimPawn::serialWriteByte(uint8_t c)
@@ -426,6 +557,6 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
 
 FVector AHackflightSimPawn::getEulerAngles(void)
 {
-	return FMath::DegreesToRadians(this->GetActorQuat().Euler());
+    return FMath::DegreesToRadians(this->GetActorQuat().Euler());
 }
 

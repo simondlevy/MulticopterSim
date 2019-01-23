@@ -21,6 +21,9 @@
 #include <hackflight.hpp>
 using namespace hf;
 
+// SimReceiver
+#include "HackflightSimReceiver.h"
+
 #include "ThreadedSocketServer.h"
 
 #include "HackflightSimController.h"
@@ -66,6 +69,9 @@ class AHackflightSimPawn : public APawn, public Board
         // Abstract controller
         HackflightSimController * controller;
 
+        // Receiver (joystick)
+        hf::SimReceiver * receiver;
+
         // Support for spinning propellers
         const int8_t motordirs[4] = {+1, -1, -1, +1};
         float _motorvals[4];
@@ -99,8 +105,26 @@ class AHackflightSimPawn : public APawn, public Board
 
 		// Support for rangefinder
 		HackflightSimRangefinder _rangefinder = HackflightSimRangefinder(this);
-        
-        // Helps us simulate sensor noise.  XXX We should simulate ODR (output data rates) as well, but 
+
+        // Joystick support -------------------------------------------------------
+
+        static const uint16_t VENDOR_STM	        = 0x0483;
+
+        static const uint16_t PRODUCT_TARANIS		= 0x5710;
+        static const uint16_t PRODUCT_PS3_CLONE		= 0x0003;
+        static const uint16_t PRODUCT_XBOX360_CLONE	= 0xfafe;
+        static const uint16_t PRODUCT_EXTREMEPRO3D	= 0xc215;
+        static const uint16_t PRODUCT_F310	        = 0xc21d;
+        static const uint16_t PRODUCT_PS4	        = 0x09cc;
+
+        int  _joyid;
+
+        void joystickInit();
+        void joystickPoll(void);
+
+
+         // Helps us simulate sensor noise.   -------------------------------------
+         // XXX We should simulate ODR (output data rates) as well, but 
         // UE4 frame rate is currently to slow to do that realistically.
         class GaussianNoise {
 

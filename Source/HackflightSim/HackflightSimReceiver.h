@@ -22,7 +22,7 @@ namespace hf {
 
         public:
 
-            SimReceiver(void);
+            SimReceiver(uint8_t  _axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux);
 
             void begin(void);
 
@@ -32,22 +32,23 @@ namespace hf {
 
             void halt(void);
 
+            void update(int32_t axes[6], uint8_t buttons);
+
         protected:
 
             virtual uint8_t getAux1State(void) override;
 
             virtual uint8_t getAux2State(void) override;
 
-            virtual void productInit(void) = 0;
-            virtual void productPoll(int32_t axes[6], uint8_t & buttons) = 0;
+            //virtual void productInit(void) = 0;
+            //virtual void productPoll(int32_t axes[6], uint8_t & buttons) = 0;
 
             // Determined dynamically based on controller
+            uint8_t  _axismap[5];   // Thr, Ael, Ele, Rud, Aux
+            uint8_t  _buttonmap[3]; // Aux=0, Aux=1, Aux=2
             bool     _reversedVerticals;
             bool     _springyThrottle;
             bool     _useButtonForAux;
-            uint8_t  _axismap[5];   // Thr, Ael, Ele, Rud, Aux
-            uint8_t  _buttonmap[3]; // Aux=0, Aux=1, Aux=2
-            int      _joyid;        // Linux file descriptor or Windows joystick ID
 
             // Simulate auxiliary switch via pushbuttons
             uint8_t _buttonState;
@@ -55,6 +56,12 @@ namespace hf {
 
             // Helps mock up periodic availability of new data frame (output data rate; ODR)
             uint64_t _cycle;          
+
+
+        private:
+
+            int32_t _axes[6];
+            uint8_t _buttons;
 
     }; // class SimReceiver
 
