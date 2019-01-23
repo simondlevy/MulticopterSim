@@ -36,7 +36,7 @@ hf::Hackflight hackflight;
 #include <pidcontrollers/poshold.hpp>
 
 // SimReceiver
-#include "HackflightSimReceiver.h"
+#include "HackflightSimReceiverOld.h"
 hf::SimReceiver receiver;
 
 // Python support
