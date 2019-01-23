@@ -16,6 +16,9 @@
 
 #include <receiver.hpp>
 
+#include <shlwapi.h>
+#pragma comment(lib, "Shlwapi.lib")
+
 #include "joystickapi.h"
 
 static const uint16_t VENDOR_STM	        = 0x0483;
