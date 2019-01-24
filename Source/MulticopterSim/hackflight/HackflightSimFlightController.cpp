@@ -26,8 +26,8 @@
 #include <pidcontrollers/poshold.hpp>
 
 // Additional sensors
-#include <sensors/SimOpticalFlow.h>
-#include <sensors/SimRangefinder.h>
+#include "hackflight/sensors/SimOpticalFlow.h"
+#include "hackflight/sensors/SimRangefinder.h"
 
 // Main firmware
 static hf::Hackflight hackflight;

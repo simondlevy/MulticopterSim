@@ -13,7 +13,7 @@
 #endif
 
 #include <sensors/rangefinder.hpp>
-#include <SimSensor.h>
+#include "hackflight/SimSensor.h"
 #include "GameFramework/Pawn.h"
 
 class SimRangefinder : public SimSensor
