@@ -1,5 +1,5 @@
 /*
-* SimSensor.cpp: Superclass methods for sensor classes in HackflightSim
+* SimSensor.cpp: Superclass methods for sensor classes in MulticopterSim
 *
 * Copyright(C) 2018 Simon D.Levy
 *

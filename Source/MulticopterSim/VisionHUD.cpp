@@ -1,5 +1,5 @@
 /*
-* VisionHud.h: Class implementation for Vision HUD in HackflightSim
+* VisionHud.h: Class implementation for Vision HUD in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
