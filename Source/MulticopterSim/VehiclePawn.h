@@ -147,6 +147,9 @@ class AVehiclePawn : public APawn
                 bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
         virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+        // Debugging support
+        static void outbuf(char * buf);
+
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
 };

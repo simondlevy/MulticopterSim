@@ -6,6 +6,8 @@
  * MIT License
  */
 
+#include "VehiclePawn.h"
+
 #include "SimFlightController.h"
 
 // Math support
@@ -169,7 +171,13 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
 }; // HackflightSimFlightController
 
-// Factor method
+// Debugging
+void hf::Board::outbuf(char * buf)
+{
+    AVehiclePawn::outbuf(buf);
+}
+
+// Factory method
 SimFlightController * SimFlightController::createSimFlightController(void)
 {
     return new HackflightSimFlightController();

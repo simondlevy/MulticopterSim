@@ -166,7 +166,7 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AVehiclePawn::Tick(float DeltaSeconds)
 {
-    debug("%d FPS", (uint16_t)(1/DeltaSeconds));
+    //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
     // Poll the joystick
     joystickPoll();
@@ -273,6 +273,11 @@ void AVehiclePawn::debug(char * fmt, ...)
     vsnprintf(buf, 200, fmt, ap); 
     va_end(ap);
 
+    outbuf(buf);
+}
+
+void AVehiclePawn::outbuf(char * buf)
+{
     // on screen
     if (GEngine) {
 
