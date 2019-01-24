@@ -66,7 +66,7 @@ void hf::Board::outbuf(char * buf)
 
 // PID tuning
 
-hf::Rate ratePid = hf::Rate(
+static hf::Rate ratePid = hf::Rate(
 	0.01,	// Roll/Pitch P
 	0.01,	// Roll/Pitch I
 	0.01,	// Roll/Pitch D
@@ -75,22 +75,22 @@ hf::Rate ratePid = hf::Rate(
 	8.f);	// Demands to rate
 
 
-hf::Level level = hf::Level(0.20f);
+static hf::Level level = hf::Level(0.20f);
 
 #ifdef _PYTHON
-PythonLoiter loiter = PythonLoiter(
+static PythonLoiter loiter = PythonLoiter(
 	0.5f,	// Altitude P
 	1.0f,	// Altitude D
 	0.2f);	// Cyclic P
 #else
 
-hf::AltitudeHold althold = hf::AltitudeHold(
+static hf::AltitudeHold althold = hf::AltitudeHold(
 	1.00f,  // altHoldP
 	0.50f,  // altHoldVelP
 	0.01f,  // altHoldVelI
 	0.10f); // altHoldVelD
 
-hf::PositionHold poshold = hf::PositionHold(
+static hf::PositionHold poshold = hf::PositionHold(
 	0.2,	// posP
 	0.2f,	// posrP
 	0.0f);	// posrI
@@ -99,8 +99,7 @@ hf::PositionHold poshold = hf::PositionHold(
 
 // Mixer
 #include <mixers/quadx.hpp>
-MixerQuadX mixer;
-
+static MixerQuadX mixer;
 
 // APawn methods ---------------------------------------------------
 
