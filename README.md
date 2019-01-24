@@ -1,4 +1,4 @@
-<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="media/MulticopterSim.png" width=800></a>
+<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="media/IndoorScene.png" width=800></a>
 
 # About
 
