@@ -102,7 +102,7 @@ SimFlightController::SimFlightController(void)
 {
 }
 
-void SimFlightController::initReceiver(uint8_t  axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux)
+void SimFlightController::init(uint8_t  axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux)
 {
     receiver = new hf::SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
 }

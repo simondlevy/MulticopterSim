@@ -453,7 +453,7 @@ void AVehiclePawn::joystickInit(SimFlightController * flightController)
         }
     }
 
-    flightController->initReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
+    flightController->init(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
 
     receiver = new SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
 
