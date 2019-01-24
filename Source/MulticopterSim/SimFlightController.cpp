@@ -70,10 +70,12 @@ class SimBoard : public hf::Board {
 
     virtual bool getQuaternion(float quat[4]) override
     {
+        return false;
     }
 
     virtual bool getGyrometer(float gyroRates[3]) override
     {
+        return false;
     }
 
     virtual void writeMotor(uint8_t index, float value) override
@@ -82,14 +84,17 @@ class SimBoard : public hf::Board {
 
     virtual float getTime(void) override
     {
+        return 0;
     }
 
     virtual uint8_t	serialAvailableBytes(void) override
     {
+        return 0;
     }
     
     virtual uint8_t	serialReadByte(void) override
     {
+        return 0;
     }
 
     virtual void serialWriteByte(uint8_t c) override
@@ -97,6 +102,7 @@ class SimBoard : public hf::Board {
     }
 };
 
+static SimBoard board;
 
 SimFlightController::SimFlightController(void)
 {
@@ -105,6 +111,23 @@ SimFlightController::SimFlightController(void)
 void SimFlightController::init(uint8_t  axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux)
 {
     receiver = new hf::SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
+   
+	// Start Hackflight firmware, indicating already armed
+	//hackflight.init(&board, receiver, &mixer, &ratePid, true);
+
+	// Add optical-flow sensor
+	//hackflight.addSensor(&_flowSensor);
+
+	// Add rangefinder
+	//hackflight.addSensor(&_rangefinder);
+
+	// Add level PID controller for aux switch position 1
+	hackflight.addPidController(&level, 1);
+
+	// Add loiter PID controllers for aux switch position 2
+	hackflight.addPidController(&althold, 2);
+	//hackflight.addPidController(&poshold, 2);
+
 }
 
 SimFlightController::~SimFlightController(void)
