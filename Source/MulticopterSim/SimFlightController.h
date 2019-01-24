@@ -22,6 +22,8 @@ public:
 
 	~SimFlightController(void);
 
+    void initReceiver(uint8_t  axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux);
+
     void update(void);
 
     static SimFlightController * createSimFlightController(void);

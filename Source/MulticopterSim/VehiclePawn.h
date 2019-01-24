@@ -116,7 +116,7 @@ class AVehiclePawn : public APawn, public Board
 
         int  _joyid;
 
-        void joystickInit();
+        void joystickInit(SimFlightController * flightController);
         void joystickPoll(void);
 
 

@@ -122,11 +122,11 @@ AVehiclePawn::AVehiclePawn()
 	PlaneMesh->SetStaticMesh(ConstructorStatics.PlaneMesh.Get());	// Set static mesh
 	RootComponent = PlaneMesh;
 
-    // Create controller
+    // Create flight controller
     flightController = SimFlightController::createSimFlightController();
 
-    // Create receiver (joystick)
-    joystickInit();
+    // Create joystick, passing it the flight controller
+    joystickInit(flightController);
 
 	// Start Hackflight firmware, indicating already armed
 	hackflight.init(this, receiver, &mixer, &ratePid, true);
@@ -353,7 +353,7 @@ void AVehiclePawn::GaussianNoise::addNoise(float vals[])
 
 // Joystick support ---------------------------------------------------------------------
 
-void AVehiclePawn::joystickInit(void)
+void AVehiclePawn::joystickInit(SimFlightController * flightController)
 {
     JOYCAPS joycaps;
 
@@ -453,6 +453,8 @@ void AVehiclePawn::joystickInit(void)
             }
         }
     }
+
+    flightController->initReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
 
     receiver = new SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
 
