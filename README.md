@@ -56,11 +56,12 @@ to generate a .sln file from a .uproject file, inability to compile source code,
 You should first clone the MulticopterSim repository into your <b>Documents/Unreal Projects</b> folder, creating
 that folder if it doesn't already exist.
 
-In addition to cloning MulticopterSim, you will need the [Hackflight](https://github.com/simondlevy/Hackflight) 
-repository.  Although Hackflight is hardware-independent, it is set up as an
-Arduino library, to support its primary intended use. So the most sensible way
-to install it is to clone it into your <b>Documents/Arduino/libraries</b> folder,
-creating that folder if it doesn't exist.
+Although MulticopterSim is designed to work with any flight-control software
+you like, it is set up to work with the
+[Hackflight](https://github.com/simondlevy/Hackflight) software by default.
+Since Hackflight is it is set up as an Arduino library, the most sensible way
+to install it is to clone it into your <b>Documents/Arduino/libraries</b>
+folder, creating that folder if it doesn't exist.
 
 Now double-click on <b>MulticopterSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
 You can then use your favorite code editor (ours is 
