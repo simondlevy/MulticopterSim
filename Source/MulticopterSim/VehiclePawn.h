@@ -17,16 +17,9 @@
 // Support for adding Gaussian noise to sensors
 #include <random>
 
-#include <hackflight.hpp>
-using namespace hf;
-#include "SimReceiver.h"
-
 #include "ThreadedSocketServer.h"
 
 #include "SimFlightController.h"
-
-#include <sensors/SimOpticalFlow.h>
-#include <sensors/SimRangefinder.h>
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -35,8 +28,7 @@ using namespace hf;
 #include "VehiclePawn.generated.h"
 
 UCLASS(Config=Game)
-// Override both APawn and Hackflight::Board to simplify the API
-class AVehiclePawn : public APawn, public Board
+class AVehiclePawn : public APawn
 {
     private:
 
@@ -66,9 +58,6 @@ class AVehiclePawn : public APawn, public Board
         // Abstract controller
         SimFlightController * flightController;
 
-        // Receiver (joystick)
-        hf::SimReceiver * receiver;
-
         // Support for spinning propellers
         const int8_t motordirs[4] = {+1, -1, -1, +1};
         float _motorvals[4];
@@ -97,11 +86,8 @@ class AVehiclePawn : public APawn, public Board
 		// Helpers
 		FVector getEulerAngles(void);
 
-		// Support for optical flow
-		SimOpticalFlow _flowSensor = SimOpticalFlow(this);
-
-		// Support for rangefinder
-		SimRangefinder _rangefinder = SimRangefinder(this);
+        // Debugging
+        void debug(char * fmt, ...);
 
         // Joystick support -------------------------------------------------------
 
@@ -160,15 +146,6 @@ class AVehiclePawn : public APawn, public Board
         virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
                 bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
         virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-        // Hackflight::Board overrides
-        virtual bool	getQuaternion(float quat[4]) override;
-        virtual bool	getGyrometer(float gyroRates[3]) override;
-        virtual void	writeMotor(uint8_t index, float value) override;
-        virtual float   getTime(void) override;
-        virtual uint8_t	serialAvailableBytes(void) override;
-        virtual uint8_t	serialReadByte(void) override;
-        virtual void	serialWriteByte(uint8_t c) override;
 
         // Returns PlaneMesh subobject 
         FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }

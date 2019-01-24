@@ -23,6 +23,10 @@
 #include <pidcontrollers/althold.hpp>
 #include <pidcontrollers/poshold.hpp>
 
+// Additional sensors
+#include <sensors/SimOpticalFlow.h>
+#include <sensors/SimRangefinder.h>
+
 // Main firmware
 static hf::Hackflight hackflight;
 
@@ -66,83 +70,102 @@ static hf::PositionHold poshold = hf::PositionHold(
 #include <mixers/quadx.hpp>
 static hf::MixerQuadX mixer;
 
+
 class HackflightSimFlightController : public SimFlightController, public hf::Board {
 
     protected:
 
-    // Hackflight::Board method implementation -------------------------------------
+        // Hackflight::Board method implementation -------------------------------------
 
-    virtual bool getQuaternion(float quat[4]) override
-    {
-        memcpy(quat, _quat, 4*sizeof(float));
-        return true;
-    }
+        virtual bool getQuaternion(float quat[4]) override
+        {
+            memcpy(quat, _quat, 4*sizeof(float));
+            return true;
+        }
 
-    virtual bool getGyrometer(float gyro[3]) override
-    {
-        memcpy(gyro, _gyro, 3*sizeof(float));
-        return true;
-    }
+        virtual bool getGyrometer(float gyro[3]) override
+        {
+            memcpy(gyro, _gyro, 3*sizeof(float));
+            return true;
+        }
 
-    virtual void writeMotor(uint8_t index, float value) override
-    {
-    }
+        virtual void writeMotor(uint8_t index, float value) override
+        {
+            _motorvals[index] = value;
+        }
 
-    virtual float getTime(void) override
-    {
-        return 0;
-    }
+        virtual float getTime(void) override
+        {
+            // Track elapsed time
+            _elapsedTime += .01; // Assume 100Hz clock
 
-    virtual uint8_t	serialAvailableBytes(void) override
-    {
-        return 0;
-    }
+            return _elapsedTime;
+        }
 
-    virtual uint8_t	serialReadByte(void) override
-    {
-        return 0;
-    }
+        virtual uint8_t	serialAvailableBytes(void) override
+        {
+            return 0; // XXX
+        }
 
-    virtual void serialWriteByte(uint8_t c) override
-    {
-    }
+        virtual uint8_t	serialReadByte(void) override
+        {
+            return 0; // XXX
+        }
 
-    // SimFlightController method implementation -----------------------------------
+        virtual void serialWriteByte(uint8_t c) override
+        { // XXX
+        }
 
-    virtual void init(uint8_t  axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux) override
-    {
-        receiver = new hf::SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
+        // SimFlightController method implementation -----------------------------------
 
-        // Start Hackflight firmware, indicating already armed
-        hackflight.init(this, receiver, &mixer, &ratePid, true);
+        virtual void init(uint8_t  axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux) override
+        {
+            receiver = new hf::SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
 
-        // Add optical-flow sensor
-        //hackflight.addSensor(&_flowSensor);
+            // Start Hackflight firmware, indicating already armed
+            hackflight.init(this, receiver, &mixer, &ratePid, true);
 
-        // Add rangefinder
-        //hackflight.addSensor(&_rangefinder);
+            // Add optical-flow sensor
+            //hackflight.addSensor(&_flowSensor);
 
-        // Add level PID controller for aux switch position 1
-        hackflight.addPidController(&level, 1);
+            // Add rangefinder
+            //hackflight.addSensor(&_rangefinder);
 
-        // Add loiter PID controllers for aux switch position 2
-        hackflight.addPidController(&althold, 2);
-        //hackflight.addPidController(&poshold, 2);
+            // Add level PID controller for aux switch position 1
+            hackflight.addPidController(&level, 1);
 
-    }
+            // Add loiter PID controllers for aux switch position 2
+            hackflight.addPidController(&althold, 2);
+            //hackflight.addPidController(&poshold, 2);
 
-    virtual void update(int32_t axes[6], uint8_t buttons, float quat[4], float gyro[3]) override
-    {
-        receiver->update(axes, buttons);
+            // Initialize time to a positive value to avod divide-by-zero
+            _elapsedTime = 1.0;
+        }
 
-        memcpy(_quat, quat, 4*sizeof(float));
-        memcpy(_gyro, gyro, 3*sizeof(float));
-    }
+        virtual void update(int32_t axes[6], uint8_t buttons, float quat[4], float gyro[3], float motorvals[4]) override
+        {
+            receiver->update(axes, buttons);
+
+            hackflight.update();
+
+            memcpy(_quat, quat, 4*sizeof(float));
+            memcpy(_gyro, gyro, 3*sizeof(float));
+
+            memcpy(motorvals, _motorvals, 4*sizeof(float));
+        }
 
     private:
 
-    float _quat[4];
-    float _gyro[3];
+        float _elapsedTime;
+
+        float _quat[4];
+        float _gyro[3];
+
+        float _motorvals[3];
+
+        // Support for additional sensors
+        //SimOpticalFlow _flowSensor = SimOpticalFlow(this);
+        //SimRangefinder _rangefinder = SimRangefinder(this);
 
 }; // HackflightSimFlightController
 

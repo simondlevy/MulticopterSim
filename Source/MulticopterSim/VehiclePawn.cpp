@@ -22,20 +22,7 @@
 #include "joystickapi.h"
 
 #include <cmath>
-
-// Main firmware
-static hf::Hackflight hackflight;
-
-// MSP comms
-#include "msppg/MSPPG.h"
-
-// PID controllers
-#include <pidcontrollers/level.hpp>
-#include <pidcontrollers/althold.hpp>
-#include <pidcontrollers/poshold.hpp>
-
-// Python support
-#include "python/PythonLoiter.h"
+#include <stdarg.h>
 
 // Socket comms
 //static const char * HOST = "137.113.118.68";  // thales.cs.wlu.edu
@@ -50,58 +37,6 @@ static const float  TEXT_SCALE = 2.f;
 
 // Scaling constant for turning motor spin to thrust
 static const float THRUST_FACTOR = 130;
-
-void hf::Board::outbuf(char * buf)
-{
-	// on screen
-	if (GEngine) {
-
-		// -1 = no overwrite (0 for overwrite); 5.f = arbitrary time to display; true = newer on top
-		GEngine->AddOnScreenDebugMessage(0, 5.f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
-	}
-
-	// on Visual Studio output console
-	OutputDebugStringA(buf);
-}
-
-// PID tuning
-
-static hf::Rate ratePid = hf::Rate(
-	0.01,	// Roll/Pitch P
-	0.01,	// Roll/Pitch I
-	0.01,	// Roll/Pitch D
-	0.5,	// Yaw P
-	0.0,	// Yaw I
-	8.f);	// Demands to rate
-
-
-static hf::Level level = hf::Level(0.20f);
-
-#ifdef _PYTHON
-static PythonLoiter loiter = PythonLoiter(
-	0.5f,	// Altitude P
-	1.0f,	// Altitude D
-	0.2f);	// Cyclic P
-#else
-
-static hf::AltitudeHold althold = hf::AltitudeHold(
-	1.00f,  // altHoldP
-	0.50f,  // altHoldVelP
-	0.01f,  // altHoldVelI
-	0.10f); // altHoldVelD
-
-static hf::PositionHold poshold = hf::PositionHold(
-	0.2,	// posP
-	0.2f,	// posrP
-	0.0f);	// posrI
-
-#endif
-
-// Mixer
-#include <mixers/quadx.hpp>
-static MixerQuadX mixer;
-
-// APawn methods ---------------------------------------------------
 
 AVehiclePawn::AVehiclePawn()
 {
@@ -126,22 +61,6 @@ AVehiclePawn::AVehiclePawn()
 
     // Create joystick, passing it the flight controller
     joystickInit(flightController);
-
-	// Start Hackflight firmware, indicating already armed
-	hackflight.init(this, receiver, &mixer, &ratePid, true);
-
-	// Add optical-flow sensor
-	hackflight.addSensor(&_flowSensor);
-
-	// Add rangefinder
-	hackflight.addSensor(&_rangefinder);
-
-	// Add level PID controller for aux switch position 1
-	hackflight.addPidController(&level, 1);
-
-	// Add loiter PID controllers for aux switch position 2
-	hackflight.addPidController(&althold, 2);
-	//hackflight.addPidController(&poshold, 2);
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
@@ -233,7 +152,7 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
     if (_serverRunning) {
         if (server.connected()) {
             if (server.disconnect()) {
-                hf::Debug::printf("Disconnected");
+                debug("Disconnected");
             }
             else {
                 serverError();
@@ -247,13 +166,10 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AVehiclePawn::Tick(float DeltaSeconds)
 {
-    hf::Debug::printf("%d FPS", (uint16_t)(1/DeltaSeconds));
+    debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
-    // Poll the joystick, updating the SimReceiver
+    // Poll the joystick
     joystickPoll();
-
-    // Update our flight firmware
-    hackflight.update();
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];
@@ -282,10 +198,10 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     _gyro = (euler - _eulerPrev) / DeltaSeconds;
     _eulerPrev = euler;
 
-	// Use velocity first difference to emulate accelerometer
-	float vario = this->GetVelocity().Z / 100; // m/s
-	_accelZ = (vario - _varioPrev) / DeltaSeconds;
-	_varioPrev = vario;
+    // Use velocity first difference to emulate accelerometer
+    float vario = this->GetVelocity().Z / 100; // m/s
+    _accelZ = (vario - _varioPrev) / DeltaSeconds;
+    _varioPrev = vario;
 
     // Rotate Euler angles into inertial frame: http://www.chrobotics.com/library/understanding-euler-angles
     float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
@@ -301,11 +217,11 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     // Debug status of client connection
     if (!server.connected() && _serverRunning) {
-        //hf::Debug::printf("Server running but not connected");
+        //debug("Server running but not connected");
     }
 
     if (server.connected() && _serverRunning) {
-        //hf::Debug::printf("Server connected");
+        //debug("Server connected");
     }
 
     // Call any parent class Tick implementation
@@ -331,7 +247,7 @@ float AVehiclePawn::motorsToAngularForce(int a, int b, int c, int d)
 
 void AVehiclePawn::serverError(void)
 {
-    hf::Debug::printf("MSP server error: %s", server.lastError());
+    //debug("MSP server error: %s", server.lastError());
 }
 
 AVehiclePawn::GaussianNoise::GaussianNoise(uint8_t size, float noise)
@@ -349,6 +265,24 @@ void AVehiclePawn::GaussianNoise::addNoise(float vals[])
     }
 }
 
+void AVehiclePawn::debug(char * fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    char buf[200];
+    vsnprintf(buf, 200, fmt, ap); 
+    va_end(ap);
+
+    // on screen
+    if (GEngine) {
+
+        // -1 = no overwrite (0 for overwrite); 5.f = arbitrary time to display; true = newer on top
+        GEngine->AddOnScreenDebugMessage(0, 5.f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
+    }
+
+    // on Visual Studio output console
+    OutputDebugStringA(buf);
+}
 
 // Joystick support ---------------------------------------------------------------------
 
@@ -455,8 +389,6 @@ void AVehiclePawn::joystickInit(SimFlightController * flightController)
 
     flightController->init(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
 
-    receiver = new SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
-
 } // joystickInit
 
 void AVehiclePawn::joystickPoll(void)
@@ -483,50 +415,11 @@ void AVehiclePawn::joystickPoll(void)
     // XXX zero-out gyro Z (yaw) for now
     float gyro[3] = {_gyro.X, _gyro.Y, 0 /* _gyro.Z */};
 
-    flightController->update(axes, buttons, quat, gyro);
-
-    receiver->update(axes, buttons);
+    flightController->update(axes, buttons, quat, gyro, _motorvals);
 }
 
 
-// Hackflight::Board methods ---------------------------------------------------
-
-bool AVehiclePawn::getQuaternion(float q[4]) 
-{   
-    q[0] = +_quat.W;
-    q[1] = -_quat.X;
-    q[2] = -_quat.Y;
-    q[3] = +_quat.Z;
-
-    _quatNoise.addNoise(q);
-
-    return true;
-}
-
-bool AVehiclePawn::getGyrometer(float gyroRates[3])
-{
-    gyroRates[0] = _gyro.X;
-    gyroRates[1] = _gyro.Y;
-    gyroRates[2] = 0; // _gyro.Z; // XXX zero-out gyro Z (yaw) for now
-
-    //_gyroSensor.addNoise(gyroRates);
-
-    return true;
-}
-
-void AVehiclePawn::writeMotor(uint8_t index, float value) 
-{
-    _motorvals[index] = value;
-}
-
-float AVehiclePawn::getTime(void)
-{
-    // Track elapsed time
-    _elapsedTime += .01; // Assume 100Hz clock
-
-    return _elapsedTime;
-}
-
+/*
 uint8_t AVehiclePawn::serialAvailableBytes(void)
 { 
     if (_serverAvailableBytes > 0) {
@@ -559,7 +452,7 @@ void AVehiclePawn::serialWriteByte(uint8_t c)
         server.sendBuffer((char *)&c, 1);
     }
 }
-
+*/
 
 
 // Helper methods ---------------------------------------------------------------------------------
