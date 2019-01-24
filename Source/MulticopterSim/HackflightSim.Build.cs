@@ -1,4 +1,11 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+/*
+* HackflightSimBuild.cs: Build script for MulticopterSim
+*
+* Copyright (C) 2018 Simon D. Levy
+*
+* MIT License
+*/
+
 
 using UnrealBuildTool;
 using System;
@@ -13,7 +20,7 @@ public class HackflightSim : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
         // Essential
-        PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src"); // Windows
+        PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src");
 
         // Extras
         LoadOpenCV(Target);
