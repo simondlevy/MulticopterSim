@@ -1,10 +1,10 @@
 /*
-* SimFlightController.cpp: Abstract flight-control class for MulticopterSim
-*
-* Copyright (C) 2019 Simon D. Levy
-*
-* MIT License
-*/
+ * SimFlightController.cpp: Abstract flight-control class for MulticopterSim
+ *
+ * Copyright (C) 2019 Simon D. Levy
+ *
+ * MIT License
+ */
 
 #include "SimFlightController.h"
 
@@ -32,33 +32,33 @@ static hf::SimReceiver * receiver;
 // PID tuning
 
 static hf::Rate ratePid = hf::Rate(
-	0.01,	// Roll/Pitch P
-	0.01,	// Roll/Pitch I
-	0.01,	// Roll/Pitch D
-	0.5,	// Yaw P
-	0.0,	// Yaw I
-	8.f);	// Demands to rate
+        0.01,	// Roll/Pitch P
+        0.01,	// Roll/Pitch I
+        0.01,	// Roll/Pitch D
+        0.5,	// Yaw P
+        0.0,	// Yaw I
+        8.f);	// Demands to rate
 
 
 hf::Level level = hf::Level(0.20f);
 
 #ifdef _PYTHON
 static PythonLoiter loiter = PythonLoiter(
-	0.5f,	// Altitude P
-	1.0f,	// Altitude D
-	0.2f);	// Cyclic P
+        0.5f,	// Altitude P
+        1.0f,	// Altitude D
+        0.2f);	// Cyclic P
 #else
 
 static hf::AltitudeHold althold = hf::AltitudeHold(
-	1.00f,  // altHoldP
-	0.50f,  // altHoldVelP
-	0.01f,  // altHoldVelI
-	0.10f); // altHoldVelD
+        1.00f,  // altHoldP
+        0.50f,  // altHoldVelP
+        0.01f,  // altHoldVelI
+        0.10f); // altHoldVelD
 
 static hf::PositionHold poshold = hf::PositionHold(
-	0.2,	// posP
-	0.2f,	// posrP
-	0.0f);	// posrI
+        0.2,	// posP
+        0.2f,	// posrP
+        0.0f);	// posrI
 
 #endif
 
@@ -66,7 +66,9 @@ static hf::PositionHold poshold = hf::PositionHold(
 #include <mixers/quadx.hpp>
 static hf::MixerQuadX mixer;
 
-class SimBoard : public hf::Board {
+class HackflightSimFlightController : public SimFlightController, public hf::Board {
+
+    // Hackflight::Board method implementation -------------------------------------
 
     virtual bool getQuaternion(float quat[4]) override
     {
@@ -91,7 +93,7 @@ class SimBoard : public hf::Board {
     {
         return 0;
     }
-    
+
     virtual uint8_t	serialReadByte(void) override
     {
         return 0;
@@ -100,45 +102,39 @@ class SimBoard : public hf::Board {
     virtual void serialWriteByte(uint8_t c) override
     {
     }
-};
 
-static SimBoard board;
+    // SimFlightController method implementation -----------------------------------
 
-SimFlightController::SimFlightController(void)
-{
-}
+    virtual void init(uint8_t  axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux) override
+    {
+        receiver = new hf::SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
 
-void SimFlightController::init(uint8_t  axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux)
-{
-    receiver = new hf::SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
-   
-	// Start Hackflight firmware, indicating already armed
-	hackflight.init(&board, receiver, &mixer, &ratePid, true);
+        // Start Hackflight firmware, indicating already armed
+        hackflight.init(this, receiver, &mixer, &ratePid, true);
 
-	// Add optical-flow sensor
-	//hackflight.addSensor(&_flowSensor);
+        // Add optical-flow sensor
+        //hackflight.addSensor(&_flowSensor);
 
-	// Add rangefinder
-	//hackflight.addSensor(&_rangefinder);
+        // Add rangefinder
+        //hackflight.addSensor(&_rangefinder);
 
-	// Add level PID controller for aux switch position 1
-	hackflight.addPidController(&level, 1);
+        // Add level PID controller for aux switch position 1
+        hackflight.addPidController(&level, 1);
 
-	// Add loiter PID controllers for aux switch position 2
-	hackflight.addPidController(&althold, 2);
-	//hackflight.addPidController(&poshold, 2);
+        // Add loiter PID controllers for aux switch position 2
+        hackflight.addPidController(&althold, 2);
+        //hackflight.addPidController(&poshold, 2);
 
-}
+    }
 
-SimFlightController::~SimFlightController(void)
-{
-}
+    virtual void update(int32_t axes[6], uint8_t buttons, float quat[4], float gyro[3]) override
+    {
+    }
 
-void SimFlightController::update(int32_t axes[6], uint8_t buttons, float quat[4], float gyro[3])
-{
-}
+}; // HackflightSimFlightController
 
+// Factor method
 SimFlightController * SimFlightController::createSimFlightController(void)
 {
-    return new SimFlightController();
+    return new HackflightSimFlightController();
 }
