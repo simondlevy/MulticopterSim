@@ -68,16 +68,20 @@ static hf::MixerQuadX mixer;
 
 class HackflightSimFlightController : public SimFlightController, public hf::Board {
 
+    protected:
+
     // Hackflight::Board method implementation -------------------------------------
 
     virtual bool getQuaternion(float quat[4]) override
     {
-        return false;
+        memcpy(quat, _quat, 4*sizeof(float));
+        return true;
     }
 
-    virtual bool getGyrometer(float gyroRates[3]) override
+    virtual bool getGyrometer(float gyro[3]) override
     {
-        return false;
+        memcpy(gyro, _gyro, 3*sizeof(float));
+        return true;
     }
 
     virtual void writeMotor(uint8_t index, float value) override
@@ -129,7 +133,16 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
     virtual void update(int32_t axes[6], uint8_t buttons, float quat[4], float gyro[3]) override
     {
+        receiver->update(axes, buttons);
+
+        memcpy(_quat, quat, 4*sizeof(float));
+        memcpy(_gyro, gyro, 3*sizeof(float));
     }
+
+    private:
+
+    float _quat[4];
+    float _gyro[3];
 
 }; // HackflightSimFlightController
 
