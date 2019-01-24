@@ -1,7 +1,7 @@
 #pragma once
 
 /*
-* VisionDownsampling.cpp: OpenCV downsampling implementation for HackflightSim vision
+* VisionDownsampling.cpp: OpenCV downsampling implementation for MulticopterSim vision
 *
 * Copyright (C) 2017 Simon D. Levy
 *

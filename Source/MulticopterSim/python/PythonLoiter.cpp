@@ -1,5 +1,5 @@
 /*
-* PythonLoiter.cpp: Class implementation for Python-based loiter in HackflightSim
+* PythonLoiter.cpp: Class implementation for Python-based loiter in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *

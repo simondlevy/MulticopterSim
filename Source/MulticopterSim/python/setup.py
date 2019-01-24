@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-Python distutils setup for HackflightSim Python loiter
+Python distutils setup for MulticopterSim Python loiter
 
 Copyright 2018 Simon D. Levy
 

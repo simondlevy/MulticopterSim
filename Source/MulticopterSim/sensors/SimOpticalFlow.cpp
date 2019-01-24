@@ -1,5 +1,5 @@
 /*
-* SimOpticalFlow.cpp: Class implementation for OpticalFlow class in HackflightSim
+* SimOpticalFlow.cpp: Class implementation for OpticalFlow class in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *

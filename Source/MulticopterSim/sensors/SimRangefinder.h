@@ -1,5 +1,5 @@
 /*
-* SimRangefinder.h: Class declaration for Rangefinder class in HackflightSim
+* SimRangefinder.h: Class declaration for Rangefinder class in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *

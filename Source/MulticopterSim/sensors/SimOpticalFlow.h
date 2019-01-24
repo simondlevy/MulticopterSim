@@ -1,5 +1,5 @@
 /*
-* SimOpticalFlow.h: Class declaration for OpticalFlow class in HackflightSim
+* SimOpticalFlow.h: Class declaration for OpticalFlow class in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *

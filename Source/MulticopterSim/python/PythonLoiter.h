@@ -1,5 +1,5 @@
 /*
-* PythonLoiter.h: Class declaration for Python-based loiter in HackflightSim
+* PythonLoiter.h: Class declaration for Python-based loiter in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *

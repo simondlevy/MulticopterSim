@@ -1,5 +1,5 @@
 /*
-* HackflightSimPawn.h: Class declaration for pawn class in HackflightSim
+* HackflightSimPawn.h: Class declaration for pawn class in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *

@@ -1,5 +1,5 @@
 /*
-* SimFlightController.h: Abstract flight-control class for HackflightSim
+* SimFlightController.h: Abstract flight-control class for MulticopterSim
 *
 * Copyright (C) 2019 Simon D. Levy
 *

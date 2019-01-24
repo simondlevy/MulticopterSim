@@ -1,5 +1,5 @@
 /*
-* SimRangefinder.cpp: Class implementation for Rangefinder class in HackflightSim
+* SimRangefinder.cpp: Class implementation for Rangefinder class in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
