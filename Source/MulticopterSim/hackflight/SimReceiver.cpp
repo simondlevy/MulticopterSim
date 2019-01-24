@@ -57,11 +57,6 @@ void hf::SimReceiver::readRawvals(void)
     }
 }
 
-void hf::SimReceiver::halt(void)
-{
-}
-
-
 uint8_t hf::SimReceiver::getAux1State(void) 
 {
     return _springyThrottle ? 2 : Receiver::getAux1State();

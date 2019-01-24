@@ -30,8 +30,6 @@ namespace hf {
 
             void readRawvals(void);
 
-            void halt(void);
-
             void update(int32_t axes[6], uint8_t buttons);
 
         protected:
