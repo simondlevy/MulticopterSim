@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "HackflightSimGameMode.generated.h"
+#include "MulticopterSimGameMode.generated.h"
 
 UCLASS(MinimalAPI)
-class AHackflightSimGameMode : public AGameModeBase
+class AMulticopterSimGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	AHackflightSimGameMode();
+	AMulticopterSimGameMode();
 };
 
 

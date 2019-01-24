@@ -1,9 +1,9 @@
 // Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
 
-#include "HackflightSimGameMode.h"
+#include "MulticopterSimGameMode.h"
 #include "HackflightSimPawn.h"
 
-AHackflightSimGameMode::AHackflightSimGameMode()
+AMulticopterSimGameMode::AMulticopterSimGameMode()
 {
 	// set default pawn class to our flying pawn
 	DefaultPawnClass = AHackflightSimPawn::StaticClass();
