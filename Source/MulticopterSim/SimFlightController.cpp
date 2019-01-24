@@ -8,6 +8,17 @@
 
 #include "SimFlightController.h"
 
+// Math support
+#define _USE_MATH_DEFINES
+#include <math.h>
+
+#include <hackflight.hpp>
+using namespace hf;
+#include "SimReceiver.h"
+
+// Main firmware
+static hf::Hackflight hackflight;
+
 SimFlightController::SimFlightController(void)
 {
 }

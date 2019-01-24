@@ -24,7 +24,7 @@
 #include <cmath>
 
 // Main firmware
-hf::Hackflight hackflight;
+static hf::Hackflight hackflight;
 
 // MSP comms
 #include "msppg/MSPPG.h"
