@@ -476,20 +476,22 @@ void AVehiclePawn::joystickPoll(void)
 
     uint8_t buttons = joyState.dwButtons;
 
-    float q[4] = {0,0,0,0};
+    float quat[4] = {0,0,0,0};
 
-    q[0] = +_quat.W;
-    q[1] = -_quat.X;
-    q[2] = -_quat.Y;
-    q[3] = +_quat.Z;
+    quat[0] = +_quat.W;
+    quat[1] = -_quat.X;
+    quat[2] = -_quat.Y;
+    quat[3] = +_quat.Z;
 
-    _quatNoise.addNoise(q);
+    _quatNoise.addNoise(quat);
 
-    float g[3] = {0,0,0};
+    float gyro[3] = {0,0,0};
 
-    g[0] = _gyro.X;
-    g[1] = _gyro.Y;
-    g[2] = 0; // _gyro.Z; // XXX zero-out gyro Z (yaw) for now
+    gyro[0] = _gyro.X;
+    gyro[1] = _gyro.Y;
+    gyro[2] = 0; // _gyro.Z; // XXX zero-out gyro Z (yaw) for now
+
+    flightController->update(axes, buttons, quat, gyro);
 
     receiver->update(axes, buttons);
 }

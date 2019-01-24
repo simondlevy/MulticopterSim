@@ -134,7 +134,7 @@ SimFlightController::~SimFlightController(void)
 {
 }
 
-void SimFlightController::update(float axes[6], uint8_t buttons, float quat[4], float gyro[3])
+void SimFlightController::update(int32_t axes[6], uint8_t buttons, float quat[4], float gyro[3])
 {
 }
 
