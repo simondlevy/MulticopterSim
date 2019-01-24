@@ -3,11 +3,11 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class HackflightSimTarget : TargetRules
+public class MulticopterSimTarget : TargetRules
 {
-	public HackflightSimTarget(TargetInfo Target) : base(Target)
+	public MulticopterSimTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		ExtraModuleNames.Add("HackflightSim");
+		ExtraModuleNames.Add("MulticopterSim");
 	}
 }

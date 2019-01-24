@@ -1,5 +1,5 @@
 /*
-* HackflightSimBuild.cs: Build script for MulticopterSim
+* MulticopterSimBuild.cs: Build script for MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
@@ -11,9 +11,9 @@ using UnrealBuildTool;
 using System;
 using System.IO;
 
-public class HackflightSim : ModuleRules
+public class MulticopterSim : ModuleRules
 {
-	public HackflightSim(ReadOnlyTargetRules Target) : base(Target)
+	public MulticopterSim(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 

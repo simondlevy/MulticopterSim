@@ -14,7 +14,7 @@
 /**
  * 
  */
-class HACKFLIGHTSIM_API SimFlightController {
+class MULTICOPTERSIM_API SimFlightController {
 
 public:
 
