@@ -113,7 +113,7 @@ void SimFlightController::init(uint8_t  axismap[5], uint8_t buttonmap[3], bool r
     receiver = new hf::SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
    
 	// Start Hackflight firmware, indicating already armed
-	//hackflight.init(&board, receiver, &mixer, &ratePid, true);
+	hackflight.init(&board, receiver, &mixer, &ratePid, true);
 
 	// Add optical-flow sensor
 	//hackflight.addSensor(&_flowSensor);
