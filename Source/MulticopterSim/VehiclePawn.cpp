@@ -1,12 +1,12 @@
 /*
-* HackflightSimPawn.cpp: Class implementation for pawn class in MulticopterSim
+* VehiclePawn.cpp: Class implementation for pawn class in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
 * MIT License
 */
 
-#include "HackflightSimPawn.h"
+#include "VehiclePawn.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -104,7 +104,7 @@ MixerQuadX mixer;
 
 // APawn methods ---------------------------------------------------
 
-AHackflightSimPawn::AHackflightSimPawn()
+AVehiclePawn::AVehiclePawn()
 {
 	// Structure to hold one-time initialization
 	struct FConstructorStatics
@@ -175,7 +175,7 @@ AHackflightSimPawn::AHackflightSimPawn()
     fpvCamera ->SetupAttachment(fpvSpringArm, USpringArmComponent::SocketName); 
 }
 
-void AHackflightSimPawn::PostInitializeComponents()
+void AVehiclePawn::PostInitializeComponents()
 {
 	if (propellerAudioCue->IsValidLowLevelFast()) {
 		propellerAudioComponent->SetSound(propellerAudioCue);
@@ -197,7 +197,7 @@ void AHackflightSimPawn::PostInitializeComponents()
 	Super::PostInitializeComponents();
 }
 
-void AHackflightSimPawn::BeginPlay()
+void AVehiclePawn::BeginPlay()
 {
     // Start playing the sound.  Note that because the Cue Asset is set to loop the sound,
     // once we start playing the sound, it will play continiously...
@@ -228,7 +228,7 @@ void AHackflightSimPawn::BeginPlay()
     Super::BeginPlay();
 }
 
-void AHackflightSimPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     // Stop the server if it has a client connection
     if (_serverRunning) {
@@ -246,7 +246,7 @@ void AHackflightSimPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 }
 
-void AHackflightSimPawn::Tick(float DeltaSeconds)
+void AVehiclePawn::Tick(float DeltaSeconds)
 {
     hf::Debug::printf("%d FPS", (uint16_t)(1/DeltaSeconds));
 
@@ -313,7 +313,7 @@ void AHackflightSimPawn::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 }
 
-void AHackflightSimPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
+void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
         bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
@@ -323,19 +323,19 @@ void AHackflightSimPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AAct
     SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
 }
 
-float AHackflightSimPawn::motorsToAngularForce(int a, int b, int c, int d)
+float AVehiclePawn::motorsToAngularForce(int a, int b, int c, int d)
 {
     float v = ((_motorvals[a] + _motorvals[b]) - (_motorvals[c] + _motorvals[d]));
 
     return (v<0 ? -1 : +1) * fabs(v);
 }
 
-void AHackflightSimPawn::serverError(void)
+void AVehiclePawn::serverError(void)
 {
     hf::Debug::printf("MSP server error: %s", server.lastError());
 }
 
-AHackflightSimPawn::GaussianNoise::GaussianNoise(uint8_t size, float noise)
+AVehiclePawn::GaussianNoise::GaussianNoise(uint8_t size, float noise)
 {
     _size  = size;
     _noise = noise;
@@ -343,7 +343,7 @@ AHackflightSimPawn::GaussianNoise::GaussianNoise(uint8_t size, float noise)
     _dist = std::normal_distribution<float>(0, _noise);
 }
 
-void AHackflightSimPawn::GaussianNoise::addNoise(float vals[])
+void AVehiclePawn::GaussianNoise::addNoise(float vals[])
 {
     for (uint8_t k=0; k<_size; ++k) {
         vals[k] += _dist(_generator);
@@ -353,7 +353,7 @@ void AHackflightSimPawn::GaussianNoise::addNoise(float vals[])
 
 // Joystick support ---------------------------------------------------------------------
 
-void AHackflightSimPawn::joystickInit(void)
+void AVehiclePawn::joystickInit(void)
 {
     JOYCAPS joycaps;
 
@@ -458,7 +458,7 @@ void AHackflightSimPawn::joystickInit(void)
 
 } // joystickInit
 
-void AHackflightSimPawn::joystickPoll(void)
+void AVehiclePawn::joystickPoll(void)
 {
     JOYINFOEX joyState;
     joyState.dwSize=sizeof(joyState);
@@ -481,7 +481,7 @@ void AHackflightSimPawn::joystickPoll(void)
 
 // Hackflight::Board methods ---------------------------------------------------
 
-bool AHackflightSimPawn::getQuaternion(float q[4]) 
+bool AVehiclePawn::getQuaternion(float q[4]) 
 {   
     q[0] = +_quat.W;
     q[1] = -_quat.X;
@@ -493,7 +493,7 @@ bool AHackflightSimPawn::getQuaternion(float q[4])
     return true;
 }
 
-bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
+bool AVehiclePawn::getGyrometer(float gyroRates[3])
 {
     gyroRates[0] = _gyro.X;
     gyroRates[1] = _gyro.Y;
@@ -504,12 +504,12 @@ bool AHackflightSimPawn::getGyrometer(float gyroRates[3])
     return true;
 }
 
-void AHackflightSimPawn::writeMotor(uint8_t index, float value) 
+void AVehiclePawn::writeMotor(uint8_t index, float value) 
 {
     _motorvals[index] = value;
 }
 
-float AHackflightSimPawn::getTime(void)
+float AVehiclePawn::getTime(void)
 {
     // Track elapsed time
     _elapsedTime += .01; // Assume 100Hz clock
@@ -517,7 +517,7 @@ float AHackflightSimPawn::getTime(void)
     return _elapsedTime;
 }
 
-uint8_t AHackflightSimPawn::serialAvailableBytes(void)
+uint8_t AVehiclePawn::serialAvailableBytes(void)
 { 
     if (_serverAvailableBytes > 0) {
         return _serverAvailableBytes;
@@ -535,7 +535,7 @@ uint8_t AHackflightSimPawn::serialAvailableBytes(void)
     return 0;
 }
 
-uint8_t AHackflightSimPawn::serialReadByte(void)
+uint8_t AVehiclePawn::serialReadByte(void)
 { 
     uint8_t byte = _serverBuffer[_serverByteIndex]; // post-increment 
     _serverByteIndex++;
@@ -543,7 +543,7 @@ uint8_t AHackflightSimPawn::serialReadByte(void)
     return byte;
 }
 
-void AHackflightSimPawn::serialWriteByte(uint8_t c)
+void AVehiclePawn::serialWriteByte(uint8_t c)
 { 
     if (server.connected()) {
         server.sendBuffer((char *)&c, 1);
@@ -554,7 +554,7 @@ void AHackflightSimPawn::serialWriteByte(uint8_t c)
 
 // Helper methods ---------------------------------------------------------------------------------
 
-FVector AHackflightSimPawn::getEulerAngles(void)
+FVector AVehiclePawn::getEulerAngles(void)
 {
     return FMath::DegreesToRadians(this->GetActorQuat().Euler());
 }

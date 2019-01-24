@@ -1,5 +1,5 @@
 /*
-* HackflightSimPawn.h: Class declaration for pawn class in MulticopterSim
+* VehiclePawn.h: Class declaration for pawn class in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
@@ -35,11 +35,11 @@ using namespace hf;
 #include "GameFramework/Pawn.h"
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
-#include "HackflightSimPawn.generated.h"
+#include "VehiclePawn.generated.h"
 
 UCLASS(Config=Game)
 // Override both APawn and Hackflight::Board to simplify the API
-class AHackflightSimPawn : public APawn, public Board
+class AVehiclePawn : public APawn, public Board
 {
     private:
 
@@ -154,7 +154,7 @@ class AHackflightSimPawn : public APawn, public Board
 
     public:
 
-        AHackflightSimPawn();
+        AVehiclePawn();
 
         // AActor overrides
         virtual void BeginPlay() override;
