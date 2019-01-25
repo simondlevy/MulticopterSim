@@ -119,5 +119,20 @@ void Joystick::init(void)
 
 void Joystick::poll(void)
 {
+    JOYINFOEX joyState;
+    joyState.dwSize=sizeof(joyState);
+    joyState.dwFlags=JOY_RETURNALL | JOY_RETURNPOVCTS | JOY_RETURNCENTERED | JOY_USEDEADZONE;
+    joyGetPosEx(_id, &joyState);
+
+    int32_t axes[6];
+    axes[0] = joyState.dwXpos;
+    axes[1] = joyState.dwYpos;
+    axes[2] = joyState.dwZpos;
+    axes[3] = joyState.dwRpos;
+    axes[4] = joyState.dwUpos;
+    axes[5] = joyState.dwVpos;
+
+    uint8_t buttons = joyState.dwButtons;
+
 }
 
