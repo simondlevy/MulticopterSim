@@ -54,12 +54,13 @@ void hf::SimReceiver::readRawvals(void)
 
 uint8_t hf::SimReceiver::getAux1State(void) 
 {
-    return joystick.springyThrottle ? 2 : Receiver::getAux1State();
+    return Receiver::getAux1State();
 }
 
 uint8_t hf::SimReceiver::getAux2State(void)
 {
-    return 1; // always armed!
+    // Always armed!
+    return 1;
 }
 
 
