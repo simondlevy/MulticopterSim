@@ -28,6 +28,9 @@ class MULTICOPTERSIM_API Joystick {
         bool useButtonForAux = false;
         bool reversedVerticals = false;
 
+        int32_t axes[6];
+        uint8_t buttons;
+
     private:
 
         static const uint16_t VENDOR_STM	        = 0x0483;
