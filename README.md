@@ -58,11 +58,8 @@ You should first clone the MulticopterSim repository into your <b>Documents/Unre
 that folder if it doesn't already exist.
 
 Although MulticopterSim is designed to work with any flight-control software
-you like, it is set up to work with the
-[Hackflight](https://github.com/simondlevy/Hackflight) software by default.
-Since Hackflight is it is set up as an Arduino library, the most sensible way
-to install it is to clone it into your <b>Documents/Arduino/libraries</b>
-folder, creating that folder if it doesn't exist.
+you like, the easiest way to get started isp o work with the
+[Hackflight](https://github.com/simondlevy/Hackflight) software, by switching to this branch.
 
 Now double-click on <b>MulticopterSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
 You can then use your favorite code editor (ours is 
