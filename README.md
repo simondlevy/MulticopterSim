@@ -91,5 +91,10 @@ directive in <b>vision/VisionAlgorithm.h</b>.
 
 # Support for other flight-control software
 
-MulticopterSim has a simple API for interfacing with other flight-control software.
+MulticopterSim has a simple API for interfacing with other flight-control software: create a subclass of the 
+abstract [SimFlightController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/SimFlightController.h#L17-L26) 
+class, implementing its virtual ```init``` and ```update``` methods, as well as the ```createSimFlightController``` factory method. 
+Here is an
+[example](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/hackflight/SimFlightController.cpp)
+subclass that uses the [Hackflight](https://github.com/simondlevy/Hackflight) firmware.
 
