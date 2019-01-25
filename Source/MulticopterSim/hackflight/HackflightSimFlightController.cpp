@@ -79,6 +79,50 @@ static Joystick joystick;
 
 class HackflightSimFlightController : public SimFlightController, public hf::Board {
 
+    // SimFlightController method implementation -----------------------------------
+
+    public:
+
+        virtual void init(void) override
+        {
+            joystick.init();
+
+            receiver = new hf::SimReceiver(joystick.axismap, joystick.buttonmap, joystick.reversedVerticals, joystick.springyThrottle, joystick.useButtonForAux);
+
+            // Start Hackflight firmware, indicating already armed
+            hackflight.init(this, receiver, &mixer, &ratePid, true);
+
+            // Add optical-flow sensor
+            //hackflight.addSensor(&_flowSensor);
+
+            // Add rangefinder
+            //hackflight.addSensor(&_rangefinder);
+
+            // Add level PID controller for aux switch position 1
+            hackflight.addPidController(&level, 1);
+
+            // Add loiter PID controllers for aux switch position 2
+            hackflight.addPidController(&althold, 2);
+            //hackflight.addPidController(&poshold, 2);
+
+            // Initialize time to a positive value to avod divide-by-zero
+            _elapsedTime = 1.0;
+        }
+
+        virtual void update(float quat[4], float gyro[3], float motorvals[4]) override
+        {
+            joystick.poll();
+
+            receiver->update(joystick.axes, joystick.buttons);
+
+            hackflight.update();
+
+            memcpy(_quat, quat, 4*sizeof(float));
+            memcpy(_gyro, gyro, 3*sizeof(float));
+
+            memcpy(motorvals, _motorvals, 4*sizeof(float));
+        }
+
     protected:
 
         // Hackflight::Board method implementation -------------------------------------
@@ -120,48 +164,6 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
         virtual void serialWriteByte(uint8_t c) override
         { // XXX
-        }
-
-        // SimFlightController method implementation -----------------------------------
-
-        virtual void init(void) override
-        {
-            joystick.init();
-
-            receiver = new hf::SimReceiver(joystick.axismap, joystick.buttonmap, joystick.reversedVerticals, joystick.springyThrottle, joystick.useButtonForAux);
-
-            // Start Hackflight firmware, indicating already armed
-            hackflight.init(this, receiver, &mixer, &ratePid, true);
-
-            // Add optical-flow sensor
-            //hackflight.addSensor(&_flowSensor);
-
-            // Add rangefinder
-            //hackflight.addSensor(&_rangefinder);
-
-            // Add level PID controller for aux switch position 1
-            hackflight.addPidController(&level, 1);
-
-            // Add loiter PID controllers for aux switch position 2
-            hackflight.addPidController(&althold, 2);
-            //hackflight.addPidController(&poshold, 2);
-
-            // Initialize time to a positive value to avod divide-by-zero
-            _elapsedTime = 1.0;
-        }
-
-        virtual void update(float quat[4], float gyro[3], float motorvals[4]) override
-        {
-            joystick.poll();
-
-            receiver->update(joystick.axes, joystick.buttons);
-
-            hackflight.update();
-
-            memcpy(_quat, quat, 4*sizeof(float));
-            memcpy(_gyro, gyro, 3*sizeof(float));
-
-            memcpy(motorvals, _motorvals, 4*sizeof(float));
         }
 
     private:
