@@ -31,44 +31,69 @@
 #include "hackflight/sensors/SimOpticalFlow.h"
 #include "hackflight/sensors/SimRangefinder.h"
 
-// PID tuning
-
-static hf::Rate ratePid = hf::Rate(
-        0.01,	// Roll/Pitch P
-        0.01,	// Roll/Pitch I
-        0.01,	// Roll/Pitch D
-        0.5,	// Yaw P
-        0.0,	// Yaw I
-        8.f);	// Demands to rate
-
-
-hf::Level level = hf::Level(0.20f);
-
-#ifdef _PYTHON
-static PythonLoiter loiter = PythonLoiter(
-        0.5f,	// Altitude P
-        1.0f,	// Altitude D
-        0.2f);	// Cyclic P
-#else
-
-static hf::AltitudeHold althold = hf::AltitudeHold(
-        1.00f,  // altHoldP
-        0.50f,  // altHoldVelP
-        0.01f,  // altHoldVelI
-        0.10f); // altHoldVelD
-
-static hf::PositionHold poshold = hf::PositionHold(
-        0.2,	// posP
-        0.2f,	// posrP
-        0.0f);	// posrI
-
-#endif
-
 #include <mixers/quadx.hpp>
 
 class HackflightSimFlightController : public SimFlightController, public hf::Board {
 
-    // SimFlightController method implementation -----------------------------------
+    private:
+
+        // PID tuning
+
+        hf::Rate ratePid = hf::Rate(
+                0.01,	// Roll/Pitch P
+                0.01,	// Roll/Pitch I
+                0.01,	// Roll/Pitch D
+                0.5,	// Yaw P
+                0.0,	// Yaw I
+                8.f);	// Demands to rate
+
+
+        hf::Level level = hf::Level(0.20f);
+
+#ifdef _PYTHON
+        PythonLoiter loiter = PythonLoiter(
+                0.5f,	// Altitude P
+                1.0f,	// Altitude D
+                0.2f);	// Cyclic P
+#else
+
+        hf::AltitudeHold althold = hf::AltitudeHold(
+                1.00f,  // altHoldP
+                0.50f,  // altHoldVelP
+                0.01f,  // altHoldVelI
+                0.10f); // altHoldVelD
+
+        hf::PositionHold poshold = hf::PositionHold(
+                0.2,	// posP
+                0.2f,	// posrP
+                0.0f);	// posrI
+
+#endif
+
+        // Main firmware
+        hf::Hackflight hackflight;
+
+        // Receiver (joystick)
+        hf::SimReceiver * receiver;
+
+        // Mixer
+        hf::MixerQuadX mixer;
+
+        // Joystick
+        Joystick joystick;
+
+        float _elapsedTime;
+
+        float _quat[4];
+        float _gyro[3];
+
+        float _motorvals[3];
+
+        // Support for additional sensors
+        //SimOpticalFlow _flowSensor = SimOpticalFlow(this);
+        //SimRangefinder _rangefinder = SimRangefinder(this);
+
+        // SimFlightController method implementation -----------------------------------
 
     public:
 
@@ -154,31 +179,6 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
         virtual void serialWriteByte(uint8_t c) override
         { // XXX
         }
-
-    private:
-
-        // Main firmware
-        hf::Hackflight hackflight;
-
-        // Receiver (joystick)
-        hf::SimReceiver * receiver;
-
-        // Mixer
-        hf::MixerQuadX mixer;
-
-        // Joystick
-        Joystick joystick;
-
-        float _elapsedTime;
-
-        float _quat[4];
-        float _gyro[3];
-
-        float _motorvals[3];
-
-        // Support for additional sensors
-        //SimOpticalFlow _flowSensor = SimOpticalFlow(this);
-        //SimRangefinder _rangefinder = SimRangefinder(this);
 
 }; // HackflightSimFlightController
 
