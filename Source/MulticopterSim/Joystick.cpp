@@ -14,7 +14,6 @@
 #include <shlwapi.h>
 #include "joystickapi.h"
 
-
 void Joystick::init(void)
 {
     JOYCAPS joycaps;

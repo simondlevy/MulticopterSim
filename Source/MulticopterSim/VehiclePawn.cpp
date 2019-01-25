@@ -19,7 +19,6 @@
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 
 #include <shlwapi.h>
-#include "joystickapi.h"
 
 #include <cmath>
 #include <stdarg.h>
@@ -60,8 +59,8 @@ AVehiclePawn::AVehiclePawn()
     flightController = SimFlightController::createSimFlightController();
 
     // Create joystick connection
-    joystickInit(flightController);
     _joystick.init();
+    flightController->init(_joystick.axismap, _joystick.buttonmap, _joystick.reversedVerticals, _joystick.springyThrottle, _joystick.useButtonForAux);
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
@@ -169,8 +168,14 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 {
     //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
-    // Poll the joystick
-    joystickPoll();
+    // Update the flight controller with the current IMU and joystick
+    float quat[4] = {+_quat.W, -_quat.X, -_quat.Y, +_quat.Z};
+    _quatNoise.addNoise(quat);
+    // XXX zero-out gyro Z (yaw) for now
+    float gyro[3] = {_gyro.X, _gyro.Y, 0 /* _gyro.Z */};
+    _joystick.poll();
+    flightController->update(_joystick.axes, _joystick.buttons, quat, gyro, _motorvals);
+
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];
@@ -288,140 +293,6 @@ void AVehiclePawn::outbuf(char * buf)
 
     // on Visual Studio output console
     OutputDebugStringA(buf);
-}
-
-// Joystick support ---------------------------------------------------------------------
-
-void AVehiclePawn::joystickInit(SimFlightController * flightController)
-{
-    JOYCAPS joycaps;
-
-    uint8_t axismap[5];
-    uint8_t buttonmap[5];
-
-    bool springyThrottle = false;
-    bool useButtonForAux = false;
-    bool reversedVerticals = false;
-
-    // Grab the first available joystick
-    for (_joyid=0; _joyid<16; _joyid++)
-        if (joyGetDevCaps(_joyid, &joycaps, sizeof(joycaps)) == JOYERR_NOERROR)
-            break;
-
-    if (_joyid < 16) {
-
-        uint16_t vendorId = joycaps.wMid;
-        uint16_t productId = joycaps.wPid;
-
-        // axes: 0=Thr 1=Ael 2=Ele 3=Rud 4=Aux
-        // JOYINFOEX: 0=dwXpos 1=dwYpos 2=dwZpos 3=dwRpos 4=dwUpos 5=dwVpos
-
-        // R/C transmitter
-        if (vendorId == VENDOR_STM) {
-
-            if (productId == PRODUCT_TARANIS) {
-                axismap[0] =   0;
-                axismap[1] =   1;
-                axismap[2] =   2;
-                axismap[3] =   5;
-                axismap[4] =   3;
-            }
-            else { // Spektrum
-                axismap[0] = 1;
-                axismap[1] = 2;
-                axismap[2] = 5;
-                axismap[3] = 0;
-                axismap[4] = 4;
-            }
-        }
-
-        else {
-
-            reversedVerticals = true;
-
-            switch (productId) {
-
-                case PRODUCT_PS3_CLONE:      
-                case PRODUCT_PS4:
-                    axismap[0] = 1;
-                    axismap[1] = 2;
-                    axismap[2] = 3;
-                    axismap[3] = 0;
-                    springyThrottle = true;
-                    useButtonForAux = true;
-                    buttonmap[0] = 1;
-                    buttonmap[1] = 2;
-                    buttonmap[2] = 4;
-                    break;
-
-
-                case PRODUCT_XBOX360_CLONE:
-                    axismap[0] = 1;
-                    axismap[1] = 4;
-                    axismap[2] = 3;
-                    axismap[3] = 0;
-                    springyThrottle = true;
-                    useButtonForAux = true;
-                    buttonmap[0] = 8;
-                    buttonmap[1] = 2;
-                    buttonmap[2] = 1;
-                    break;
-
-                case PRODUCT_EXTREMEPRO3D:  
-                    axismap[0] = 2;
-                    axismap[1] = 0;
-                    axismap[2] = 1;
-                    axismap[3] = 3;
-                    useButtonForAux = true;
-                    buttonmap[0] = 1;
-                    buttonmap[1] = 2;
-                    buttonmap[2] = 4;
-                    break;
-
-                case PRODUCT_F310:
-                    axismap[0] = 1;
-                    axismap[1] = 4;
-                    axismap[2] = 3;
-                    axismap[3] = 0;
-                    springyThrottle = true;
-                    useButtonForAux = true;
-                    buttonmap[0] = 8;
-                    buttonmap[1] = 2;
-                    buttonmap[2] = 1;
-                    break;
-            }
-        }
-    }
-
-    flightController->init(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
-
-} // joystickInit
-
-void AVehiclePawn::joystickPoll(void)
-{
-    JOYINFOEX joyState;
-    joyState.dwSize=sizeof(joyState);
-    joyState.dwFlags=JOY_RETURNALL | JOY_RETURNPOVCTS | JOY_RETURNCENTERED | JOY_USEDEADZONE;
-    joyGetPosEx(_joyid, &joyState);
-
-    int32_t axes[6];
-    axes[0] = joyState.dwXpos;
-    axes[1] = joyState.dwYpos;
-    axes[2] = joyState.dwZpos;
-    axes[3] = joyState.dwRpos;
-    axes[4] = joyState.dwUpos;
-    axes[5] = joyState.dwVpos;
-
-    uint8_t buttons = joyState.dwButtons;
-
-    float quat[4] = {+_quat.W, -_quat.X, -_quat.Y, +_quat.Z};
-
-    _quatNoise.addNoise(quat);
-
-    // XXX zero-out gyro Z (yaw) for now
-    float gyro[3] = {_gyro.X, _gyro.Y, 0 /* _gyro.Z */};
-
-    flightController->update(axes, buttons, quat, gyro, _motorvals);
 }
 
 
