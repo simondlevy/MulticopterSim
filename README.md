@@ -59,7 +59,8 @@ that folder if it doesn't already exist.
 
 Although MulticopterSim is designed to work with any flight-control software
 you like, the easiest way to get started isp o work with the
-[Hackflight](https://github.com/simondlevy/Hackflight) software, by switching to this branch.
+[Hackflight](https://github.com/simondlevy/Hackflight) software, by switching to
+[this branch](https://github.com/simondlevy/MulticopterSim/tree/Hackflight) and continuing where you left off.
 
 Now double-click on <b>MulticopterSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
 You can then use your favorite code editor (ours is 
