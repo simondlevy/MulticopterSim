@@ -10,13 +10,15 @@
 
 #include <receiver.hpp>
 
+#include "Joystick.h"
+
 namespace hf {
 
     class SimReceiver : public Receiver {
 
         public:
 
-            SimReceiver(uint8_t  _axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux);
+            SimReceiver(void);
 
             void begin(void);
 
@@ -24,23 +26,13 @@ namespace hf {
 
             void readRawvals(void);
 
-            void update(int32_t axes[6], uint8_t buttons);
+            void update(void);
 
         protected:
 
             virtual uint8_t getAux1State(void) override;
 
             virtual uint8_t getAux2State(void) override;
-
-            //virtual void productInit(void) = 0;
-            //virtual void productPoll(int32_t axes[6], uint8_t & buttons) = 0;
-
-            // Determined dynamically based on controller
-            uint8_t  _axismap[5];   // Thr, Ael, Ele, Rud, Aux
-            uint8_t  _buttonmap[3]; // Aux=0, Aux=1, Aux=2
-            bool     _reversedVerticals;
-            bool     _springyThrottle;
-            bool     _useButtonForAux;
 
             // Simulate auxiliary switch via pushbuttons
             uint8_t _buttonState;
@@ -51,6 +43,8 @@ namespace hf {
 
 
         private:
+
+            Joystick joystick;
 
             int32_t _axes[6];
             uint8_t _buttons;

@@ -74,14 +74,11 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
         // Main firmware
         hf::Hackflight hackflight;
 
-        // Receiver (joystick)
+        // "Receiver" (joystick/gamepad)
         hf::SimReceiver * receiver;
 
         // Mixer
         hf::MixerQuadX mixer;
-
-        // Joystick
-        Joystick joystick;
 
         float _elapsedTime;
 
@@ -100,9 +97,9 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
         virtual void init(void) override
         {
-            joystick.init();
 
-            receiver = new hf::SimReceiver(joystick.axismap, joystick.buttonmap, joystick.reversedVerticals, joystick.springyThrottle, joystick.useButtonForAux);
+            // Start the "receiver" (joystick/gamepad)
+            receiver = new hf::SimReceiver();
 
             // Start Hackflight firmware, indicating already armed
             hackflight.init(this, receiver, &mixer, &ratePid, true);
@@ -126,9 +123,7 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
         virtual void update(float quat[4], float gyro[3], float motorvals[4]) override
         {
-            joystick.poll();
-
-            receiver->update(joystick.axes, joystick.buttons);
+            receiver->update();
 
             hackflight.update();
 

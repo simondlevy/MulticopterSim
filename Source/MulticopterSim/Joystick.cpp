@@ -109,7 +109,7 @@ void Joystick::init(void)
     }
 }
 
-void Joystick::poll(void)
+void Joystick::poll(int32_t axes[6], uint8_t & buttons)
 {
     JOYINFOEX joyState;
     joyState.dwSize=sizeof(joyState);

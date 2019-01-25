@@ -8,14 +8,9 @@
 
 #include "SimReceiver.h"
 
-hf::SimReceiver::SimReceiver(uint8_t axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux)
+hf::SimReceiver::SimReceiver(void)
 {
-    memcpy(_axismap, axismap, 5);
-    memcpy(_buttonmap, buttonmap, 3);
-
-    _reversedVerticals = reversedVerticals;
-    _springyThrottle = springyThrottle;
-    _useButtonForAux = useButtonForAux;
+    joystick.init();
 
     _cycle = 0;
     _buttonState = 0;
@@ -37,19 +32,19 @@ void hf::SimReceiver::readRawvals(void)
 
     // Normalize the axes to demands in [-1,+1]
     for (uint8_t k=0; k<5; ++k) {
-        rawvals[k] = (_axes[_axismap[k]] - 32767) / 32767.f;
+        rawvals[k] = (_axes[joystick.axismap[k]] - 32767) / 32767.f;
     }
 
     // Invert throttle, pitch if indicated
-    if (_reversedVerticals) {
+    if (joystick.reversedVerticals) {
         rawvals[0] = -rawvals[0];
         rawvals[2] = -rawvals[2];
     }
 
     // For game controllers, use buttons to fake up values in a three-position aux switch
-    if (_useButtonForAux) {
+    if (joystick.useButtonForAux) {
         for (uint8_t k=0; k<3; ++k) {
-            if (_buttons == _buttonmap[k]) {
+            if (_buttons == joystick.buttonmap[k]) {
                 _buttonState = k;
             }
         }
@@ -59,7 +54,7 @@ void hf::SimReceiver::readRawvals(void)
 
 uint8_t hf::SimReceiver::getAux1State(void) 
 {
-    return _springyThrottle ? 2 : Receiver::getAux1State();
+    return joystick.springyThrottle ? 2 : Receiver::getAux1State();
 }
 
 uint8_t hf::SimReceiver::getAux2State(void)
@@ -68,8 +63,7 @@ uint8_t hf::SimReceiver::getAux2State(void)
 }
 
 
-void hf::SimReceiver::update(int32_t axes[6], uint8_t buttons)
+void hf::SimReceiver::update(void)
 {
-    memcpy(_axes, axes, 6*sizeof(int32_t));
-    _buttons = buttons;
+    joystick.poll(_axes, _buttons);
 }
