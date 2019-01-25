@@ -28,7 +28,8 @@ possible to develop on a less &ldquo;loaded&rdquo; machine &ndash; see
 for the minimum requirements recommended by Unreal Engine.
 
 For a realistic flying experience, you will also likely want some sort of game
-controller or R/C transmitter.  We are currently supporting the following controllers:
+controller or R/C transmitter.  MulticopterSim currently supporting the following controllers
+through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/Joystick.h) class:
 
 * PS4 controller
 * XBox 360 controller clone
