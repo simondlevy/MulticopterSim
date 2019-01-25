@@ -21,6 +21,8 @@
 
 #include "SimFlightController.h"
 
+#include "Joystick.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"
@@ -126,6 +128,9 @@ class AVehiclePawn : public APawn
                 uint8_t _size;
                 float   _noise;
         };
+
+        // Support joysticks, gamepads, etc.
+        Joystick _joystick;
 
         // Simulate Gaussian sensor noise
         GaussianNoise _gyroNoise  = GaussianNoise(3, .001);  // radians / second

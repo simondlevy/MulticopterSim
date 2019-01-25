@@ -15,10 +15,11 @@
 #include "joystickapi.h"
 
 
-Joystick::Joystick()
+void Joystick::init(void)
 {
 }
 
-Joystick::~Joystick()
+void Joystick::poll(void)
 {
 }
+
