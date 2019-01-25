@@ -10,6 +10,8 @@
 
 #include "SimFlightController.h"
 
+#include "Joystick.h"
+
 // Math support
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -72,6 +74,8 @@ static hf::PositionHold poshold = hf::PositionHold(
 #include <mixers/quadx.hpp>
 static hf::MixerQuadX mixer;
 
+// Joystick
+static Joystick joystick;
 
 class HackflightSimFlightController : public SimFlightController, public hf::Board {
 
@@ -120,9 +124,11 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
         // SimFlightController method implementation -----------------------------------
 
-        virtual void init(uint8_t  axismap[5], uint8_t buttonmap[3], bool reversedVerticals, bool springyThrottle, bool useButtonForAux) override
+        virtual void init(void) override
         {
-            receiver = new hf::SimReceiver(axismap, buttonmap, reversedVerticals, springyThrottle, useButtonForAux);
+            joystick.init();
+
+            receiver = new hf::SimReceiver(joystick.axismap, joystick.buttonmap, joystick.reversedVerticals, joystick.springyThrottle, joystick.useButtonForAux);
 
             // Start Hackflight firmware, indicating already armed
             hackflight.init(this, receiver, &mixer, &ratePid, true);
@@ -144,9 +150,11 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
             _elapsedTime = 1.0;
         }
 
-        virtual void update(int32_t axes[6], uint8_t buttons, float quat[4], float gyro[3], float motorvals[4]) override
+        virtual void update(float quat[4], float gyro[3], float motorvals[4]) override
         {
-            receiver->update(axes, buttons);
+            joystick.poll();
+
+            receiver->update(joystick.axes, joystick.buttons);
 
             hackflight.update();
 

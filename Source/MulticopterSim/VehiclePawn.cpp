@@ -57,10 +57,7 @@ AVehiclePawn::AVehiclePawn()
 
     // Create flight-control support
     flightController = SimFlightController::createSimFlightController();
-
-    // Create joystick connection
-    _joystick.init();
-    flightController->init(_joystick.axismap, _joystick.buttonmap, _joystick.reversedVerticals, _joystick.springyThrottle, _joystick.useButtonForAux);
+    flightController->init();
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
@@ -168,13 +165,12 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 {
     //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
-    // Update the flight controller with the current IMU and joystick
+    // Update the flight controller with the current IMU readings
     float quat[4] = {+_quat.W, -_quat.X, -_quat.Y, +_quat.Z};
     _quatNoise.addNoise(quat);
     // XXX zero-out gyro Z (yaw) for now
     float gyro[3] = {_gyro.X, _gyro.Y, 0 /* _gyro.Z */};
-    _joystick.poll();
-    flightController->update(_joystick.axes, _joystick.buttons, quat, gyro, _motorvals);
+    flightController->update(quat, gyro, _motorvals);
 
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
