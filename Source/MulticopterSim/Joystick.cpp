@@ -62,7 +62,6 @@ void Joystick::init(void)
                     axismap[1] = 2;
                     axismap[2] = 3;
                     axismap[3] = 0;
-                    springyThrottle = true;
                     useButtonForAux = true;
                     buttonmap[0] = 1;
                     buttonmap[1] = 2;
@@ -71,11 +70,11 @@ void Joystick::init(void)
 
 
                 case PRODUCT_XBOX360_CLONE:
+                case PRODUCT_F310:
                     axismap[0] = 1;
                     axismap[1] = 4;
                     axismap[2] = 3;
                     axismap[3] = 0;
-                    springyThrottle = true;
                     useButtonForAux = true;
                     buttonmap[0] = 8;
                     buttonmap[1] = 2;
@@ -91,18 +90,6 @@ void Joystick::init(void)
                     buttonmap[0] = 1;
                     buttonmap[1] = 2;
                     buttonmap[2] = 4;
-                    break;
-
-                case PRODUCT_F310:
-                    axismap[0] = 1;
-                    axismap[1] = 4;
-                    axismap[2] = 3;
-                    axismap[3] = 0;
-                    springyThrottle = true;
-                    useButtonForAux = true;
-                    buttonmap[0] = 8;
-                    buttonmap[1] = 2;
-                    buttonmap[2] = 1;
                     break;
             }
         }

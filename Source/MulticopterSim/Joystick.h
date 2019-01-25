@@ -24,7 +24,6 @@ class MULTICOPTERSIM_API Joystick {
         uint8_t axismap[5];
         uint8_t buttonmap[5];
 
-        bool springyThrottle = false;
         bool useButtonForAux = false;
         bool reversedVerticals = false;
 
