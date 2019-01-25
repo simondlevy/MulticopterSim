@@ -21,6 +21,13 @@ class MULTICOPTERSIM_API Joystick {
 
         void poll(void);
 
+        uint8_t axismap[5];
+        uint8_t buttonmap[5];
+
+        bool springyThrottle = false;
+        bool useButtonForAux = false;
+        bool reversedVerticals = false;
+
     private:
 
         static const uint16_t VENDOR_STM	        = 0x0483;

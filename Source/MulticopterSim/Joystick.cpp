@@ -19,13 +19,6 @@ void Joystick::init(void)
 {
     JOYCAPS joycaps;
 
-    uint8_t axismap[5];
-    uint8_t buttonmap[5];
-
-    bool springyThrottle = false;
-    bool useButtonForAux = false;
-    bool reversedVerticals = false;
-
     // Grab the first available joystick
     for (_id=0; _id<16; _id++)
         if (joyGetDevCaps(_id, &joycaps, sizeof(joycaps)) == JOYERR_NOERROR)
