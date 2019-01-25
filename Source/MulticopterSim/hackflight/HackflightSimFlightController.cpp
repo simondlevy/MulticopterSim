@@ -64,12 +64,7 @@ static hf::PositionHold poshold = hf::PositionHold(
 
 #endif
 
-// Mixer
 #include <mixers/quadx.hpp>
-static hf::MixerQuadX mixer;
-
-// Joystick
-static Joystick joystick;
 
 class HackflightSimFlightController : public SimFlightController, public hf::Board {
 
@@ -167,6 +162,12 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
         // Receiver (joystick)
         hf::SimReceiver * receiver;
+
+        // Mixer
+        hf::MixerQuadX mixer;
+
+        // Joystick
+        Joystick joystick;
 
         float _elapsedTime;
 
