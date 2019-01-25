@@ -27,16 +27,16 @@ possible to develop on a less &ldquo;loaded&rdquo; machine &ndash; see
 [here](https://docs.unrealengine.com/latest/INT/GettingStarted/RecommendedSpecifications/)
 for the minimum requirements recommended by Unreal Engine.
 
-You will also need some sort of game controller. Because MulticopterSim is meant to simulate flying an
-actual micro quadcopter, MulticopterSim does not support flying by keyboard. We are currently supporting the following
-controllers:
-* FrSky Taranis TX9 RC transmitter with mini USB cable 
-* Spektrum transmitter with WS1000 wireless simulator dongle
+For a realistic flying experience, you will also likely want some sort of game
+controller or R/C transmitter.  We are currently supporting the following controllers:
+
 * PS4 controller
 * XBox 360 controller clone
 * PS3 controller clone
 * Logitech Extreme Pro 3D joystick
 * Logitech F310 gamepad
+* FrSky Taranis TX9 RC transmitter with mini USB cable 
+* Spektrum transmitter with WS1000 wireless simulator dongle
 
 ## Toolchain
 
