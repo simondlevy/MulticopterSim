@@ -8,12 +8,6 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <math.h>
-#include <fcntl.h>
-
 #include <receiver.hpp>
 
 namespace hf {
