@@ -11,8 +11,6 @@
 // Use whatever machine-vision algorithm you like
 #include "vision/VisionDownsampling.h"
 
-#include <debug.hpp>
-
 AVisionHUD::AVisionHUD()
 {
 	// Get Vision render target from blueprint
@@ -59,9 +57,6 @@ void AVisionHUD::DrawHUD()
 	VisionRenderTarget->ReadPixels(VisionSurfData);
 
 	// Convert the FColor array to an RGB byte array
-
-    //hf::Debug::printf("%d X %d", _cols, _rows);
-
 	for (int x = 0; x < _cols; ++x) {
 
 		for (int y = 0; y < _rows; ++y) {
