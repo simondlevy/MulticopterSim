@@ -56,11 +56,12 @@ AVehiclePawn::AVehiclePawn()
 	PlaneMesh->SetStaticMesh(ConstructorStatics.PlaneMesh.Get());	// Set static mesh
 	RootComponent = PlaneMesh;
 
-    // Create flight controller
+    // Create flight-control support
     flightController = SimFlightController::createSimFlightController();
 
-    // Create joystick, passing it the flight controller
+    // Create joystick connection
     joystickInit(flightController);
+    _joystick.init();
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
