@@ -31,12 +31,6 @@
 #include "hackflight/sensors/SimOpticalFlow.h"
 #include "hackflight/sensors/SimRangefinder.h"
 
-// Main firmware
-static hf::Hackflight hackflight;
-
-// Receiver (joystick)
-static hf::SimReceiver * receiver;
-
 // PID tuning
 
 static hf::Rate ratePid = hf::Rate(
@@ -167,6 +161,12 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
         }
 
     private:
+
+        // Main firmware
+        hf::Hackflight hackflight;
+
+        // Receiver (joystick)
+        hf::SimReceiver * receiver;
 
         float _elapsedTime;
 
