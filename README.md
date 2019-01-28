@@ -69,12 +69,13 @@ the Hackflight software.)
 Now double-click on <b>MulticopterSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
 You can then use your favorite code editor (ours is 
 <a href="https://www.vim.org">vim</a>) to edit the source code in <b>Source/MulticopterSim</b>.
-Because of the difficulty I have had using VisualStudio to compile the code after a UE4 upgrade, I no 
-longer recommend using VisualStudio to build the simulator.
+If you have any difficulty doing this, you can right-click on the <b>MulticopterSim.uproject</b> 
+file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file, which will
+launch Visual Studio with a double-click.
 
 # Launch and fly!
 
-Click the play button and you're ready to begin. Throttle up to fly.  You can
+In UnrealEditor, click the play button and you're ready to begin. Throttle up to fly.  You can
 use the spacebar to switch between the ground camera and FPV camera.
 
 # Support for OpenCV
