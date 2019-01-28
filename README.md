@@ -58,9 +58,13 @@ You should first clone the MulticopterSim repository into your <b>Documents/Unre
 that folder if it doesn't already exist.
 
 Although MulticopterSim is designed to work with any flight-control software
-you like, the easiest way to get started isp o work with the
-[Hackflight](https://github.com/simondlevy/Hackflight) software, by switching to
-[this branch](https://github.com/simondlevy/MulticopterSim/tree/Hackflight) and continuing where you left off.
+you like, it is set up to work with the
+[Hackflight](https://github.com/simondlevy/Hackflight) software by default. So to get started, you should 
+clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your <b>Arduino/libraries</b>
+folder, first creating that folder if it doesn't already exist.  (You don't need to install Arduino; this is
+simply where MulticopterSim 
+[looks for](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L21-L24) 
+the Hackflight software.)
 
 Now double-click on <b>MulticopterSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
 You can then use your favorite code editor (ours is 
@@ -92,7 +96,7 @@ directive in <b>vision/VisionAlgorithm.h</b>.
 MulticopterSim has a simple API for interfacing with other flight-control software: create a subclass of the 
 abstract [SimFlightController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/SimFlightController.h#L17-L39) 
 class, implementing its virtual ```init``` and ```update``` methods, as well as the ```createSimFlightController``` factory method. 
-Here is an
-[example](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/hackflight/SimFlightController.cpp)
-subclass that uses the [Hackflight](https://github.com/simondlevy/Hackflight) firmware.
+Here is default the
+[subclass](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/hackflight/SimFlightController.cpp)
+that uses the [Hackflight](https://github.com/simondlevy/Hackflight) firmware.
 
