@@ -86,9 +86,6 @@ class AVehiclePawn : public APawn
 		// Helpers
 		FVector getEulerAngles(void);
 
-        // Debugging
-        void debug(char * fmt, ...);
-
 
          // Helps us simulate sensor noise.   -------------------------------------
          // XXX We should simulate ODR (output data rates) as well, but 
@@ -132,6 +129,7 @@ class AVehiclePawn : public APawn
         virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
         // Debugging support
+        static void debug(char * fmt, ...);
         static void outbuf(char * buf);
 
         // Returns PlaneMesh subobject 
