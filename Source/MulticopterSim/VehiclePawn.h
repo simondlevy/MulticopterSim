@@ -93,6 +93,10 @@ class AVehiclePawn : public APawn
         GaussianNoise _rangeNoise = GaussianNoise(1, .002);  // meters
         GaussianNoise _flowNoise  = GaussianNoise(2, .001);  // meters / second
 
+    protected:
+
+        void computeAngularForces(float forces[3]);
+
     public:
 
         AVehiclePawn();

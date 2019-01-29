@@ -175,9 +175,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];
-    forces[0] = motorsToAngularForce(2, 3, 0, 1);
-    forces[1] = motorsToAngularForce(1, 3, 0, 2); 
-    forces[2] = motorsToAngularForce(1, 2, 0, 3); 
+    computeAngularForces(forces);
 
     // Rotate vehicle
     AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
@@ -238,6 +236,13 @@ void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Ot
     // Deflect along the surface when we collide.
     FRotator CurrentRotation = GetActorRotation();
     SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
+}
+
+void AVehiclePawn::computeAngularForces(float forces[3])
+{
+    forces[0] = motorsToAngularForce(2, 3, 0, 1);
+    forces[1] = motorsToAngularForce(1, 3, 0, 2); 
+    forces[2] = motorsToAngularForce(1, 2, 0, 3); 
 }
 
 float AVehiclePawn::motorsToAngularForce(int a, int b, int c, int d)
