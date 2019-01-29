@@ -57,7 +57,6 @@ AVehiclePawn::AVehiclePawn()
 
     // Create flight-control support
     flightController = SimFlightController::createSimFlightController();
-    flightController->init();
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
@@ -122,6 +121,9 @@ void AVehiclePawn::PostInitializeComponents()
 
 void AVehiclePawn::BeginPlay()
 {
+    // Start the flight controller
+    flightController->init();
+
     // Start playing the sound.  Note that because the Cue Asset is set to loop the sound,
     // once we start playing the sound, it will play continiously...
     propellerAudioComponent->Play();

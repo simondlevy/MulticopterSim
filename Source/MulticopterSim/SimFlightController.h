@@ -33,6 +33,11 @@ public:
      virtual void update(float quat[4], float gyro[3], float motorvals[4]) = 0;
 
     /**
+     *  Performs any necessary shutdown for your subclass implementation.
+     */
+    virtual void halt(void) { }
+
+    /**
      *  Factory method.
      */
      static SimFlightController * createSimFlightController(void);
