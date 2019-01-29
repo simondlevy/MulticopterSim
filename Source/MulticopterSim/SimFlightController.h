@@ -21,7 +21,7 @@ public:
     /**
      *  Performs any necessary initialization for your subclass implementation.
      */
-    virtual void init(void) = 0;
+    virtual void init(void) { }
 
     /**
      * Updates the flight controller with the current quaternion and gyrometer,
