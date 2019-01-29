@@ -19,9 +19,14 @@ class MULTICOPTERSIM_API SimFlightController {
 public:
 
     /**
-     *  Performs any necessary initialization for your subclass implementation.
+     *  Called by AVehiclePawn::BeginPlay() when Play button is pressed
      */
-    virtual void init(void) { }
+    virtual void start(void) { }
+
+    /**
+     *  Called by AVehiclePawn::EndPlay() when Stop button is pressed
+     */
+    virtual void stop(void) { }
 
     /**
      * Updates the flight controller with the current quaternion and gyrometer,

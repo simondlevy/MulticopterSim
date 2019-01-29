@@ -56,7 +56,7 @@ AVehiclePawn::AVehiclePawn()
 	RootComponent = PlaneMesh;
 
     // Create flight-control support
-    flightController = SimFlightController::createSimFlightController();
+    _flightController = SimFlightController::createSimFlightController();
 
     // Initialize the motor-spin values
     for (uint8_t k=0; k<4; ++k) {
@@ -122,8 +122,8 @@ void AVehiclePawn::PostInitializeComponents()
 void AVehiclePawn::BeginPlay()
 {
     // Start the flight controller
-    flightController->init();
-
+    _flightController->start();
+    
     // Start playing the sound.  Note that because the Cue Asset is set to loop the sound,
     // once we start playing the sound, it will play continiously...
     propellerAudioComponent->Play();
@@ -155,6 +155,9 @@ void AVehiclePawn::BeginPlay()
 
 void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+    // Stop the flight controller
+    _flightController->stop();
+
     // Stop the server if it has a client connection
     if (_serverRunning) {
         if (server.connected()) {
@@ -179,7 +182,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     float quat[4] = {+_quat.W, -_quat.X, -_quat.Y, +_quat.Z};
     _quatNoise.addNoise(quat);
     float gyro[3] = {_gyro.X, _gyro.Y, 0 /* _gyro.Z */}; // XXX zero-out gyro Z (yaw) for now
-    flightController->update(quat, gyro, _motorvals);
+    _flightController->update(quat, gyro, _motorvals);
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];

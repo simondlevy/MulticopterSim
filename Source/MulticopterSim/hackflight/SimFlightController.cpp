@@ -95,9 +95,8 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
     public:
 
-        virtual void init(void) override
+        HackflightSimFlightController(void)
         {
-
             // Start the "receiver" (joystick/gamepad)
             receiver = new hf::SimReceiver();
 
@@ -116,7 +115,10 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
             // Add loiter PID controllers for aux switch position 2
             hackflight.addPidController(&althold, 2);
             //hackflight.addPidController(&poshold, 2);
+        }
 
+        virtual void start(void) override
+        {
             // Initialize time to a positive value to avod divide-by-zero
             _elapsedTime = 1.0;
         }

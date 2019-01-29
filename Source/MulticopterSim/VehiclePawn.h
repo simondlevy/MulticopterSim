@@ -56,7 +56,7 @@ class AVehiclePawn : public APawn
             class USpringArmComponent* fpvSpringArm;
 
         // Abstract controller
-        SimFlightController * flightController;
+        SimFlightController * _flightController;
 
         // Support for spinning propellers
         const int8_t motordirs[4] = {+1, -1, -1, +1};
