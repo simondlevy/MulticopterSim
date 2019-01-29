@@ -19,7 +19,7 @@
 
 void Joystick::init(void)
 {
-    JOYCAPS joycaps;
+    JOYCAPS joycaps = {0};
 
     _productId = 0;
 
