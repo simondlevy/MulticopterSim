@@ -252,21 +252,6 @@ void AVehiclePawn::serverError(void)
     //debug("MSP server error: %s", server.lastError());
 }
 
-AVehiclePawn::GaussianNoise::GaussianNoise(uint8_t size, float noise)
-{
-    _size  = size;
-    _noise = noise;
-
-    _dist = std::normal_distribution<float>(0, _noise);
-}
-
-void AVehiclePawn::GaussianNoise::addNoise(float vals[])
-{
-    for (uint8_t k=0; k<_size; ++k) {
-        vals[k] += _dist(_generator);
-    }
-}
-
 void AVehiclePawn::debug(char * fmt, ...)
 {
     va_list ap;

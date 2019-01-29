@@ -14,12 +14,11 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-// Support for adding Gaussian noise to sensors
-#include <random>
 
 #include "ThreadedSocketServer.h"
 
 #include "SimFlightController.h"
+#include "GaussianNoise.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -85,28 +84,6 @@ class AVehiclePawn : public APawn
 
 		// Helpers
 		FVector getEulerAngles(void);
-
-
-         // Helps us simulate sensor noise.   -------------------------------------
-         // XXX We should simulate ODR (output data rates) as well, but 
-        // UE4 frame rate is currently to slow to do that realistically.
-        class GaussianNoise {
-
-            public:
-
-                GaussianNoise(uint8_t size, float noise);
-
-                void addNoise(float vals[]);
-
-            private:
-
-                std::default_random_engine _generator;
-                std::normal_distribution<float> _dist;
-
-
-                uint8_t _size;
-                float   _noise;
-        };
 
         // Simulate Gaussian sensor noise
         GaussianNoise _gyroNoise  = GaussianNoise(3, .001);  // radians / second
