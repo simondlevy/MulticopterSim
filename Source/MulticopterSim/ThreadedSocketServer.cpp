@@ -27,7 +27,7 @@ typedef struct {
 
 } socket_info_t;
 
-DWORD WINAPI threadfunc(LPVOID lpParameter)
+static DWORD WINAPI threadfunc(LPVOID lpParameter)
 {
 
 	socket_info_t * sockinfo = (socket_info_t *)lpParameter;
