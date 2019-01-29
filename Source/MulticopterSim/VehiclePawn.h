@@ -19,6 +19,7 @@
 
 #include "SimFlightController.h"
 #include "GaussianNoise.h"
+#include "VehiclePhysics.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -59,6 +60,8 @@ class AVehiclePawn : public APawn
 
         // Support for spinning propellers
         const int8_t motordirs[4] = {+1, -1, -1, +1};
+
+        // These get converted to physical forces
         float _motorvals[4];
 
         // Support for quaternions
@@ -93,13 +96,14 @@ class AVehiclePawn : public APawn
         GaussianNoise _rangeNoise = GaussianNoise(1, .002);  // meters
         GaussianNoise _flowNoise  = GaussianNoise(2, .001);  // meters / second
 
-    protected:
-
-        void computeAngularForces(float forces[3]);
+        // Support various models of vehicle physics
+        VehiclePhysics * _vehiclePhysics;
 
     public:
 
         AVehiclePawn();
+
+        ~AVehiclePawn();
 
         // AActor overrides
         virtual void BeginPlay() override;
