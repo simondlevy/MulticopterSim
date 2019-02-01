@@ -185,9 +185,10 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 	float gyro[3] = { _gyro.X, _gyro.Y, _gyro.Z  }; 
 	FVector location = this->GetActorLocation() / 100; // cm to m
 	float position[3] = { location.X, location.Y, location.Z };
-    float velocity[3] = {0,0,0}; // XXX
-	_flightController->update(_elapsedTime, position, velocity, quat, gyro, _motorvals);
-	debug("%+3.3f %+3.3f %+3.3f", position[0], position[1], position[2]);
+	FVector velocity = this->GetVelocity() / 100; // cm/s to ms/c
+	float vel[3] = { velocity.X, velocity.Y, velocity.Z };
+	_flightController->update(_elapsedTime, position, vel, quat, gyro, _motorvals);
+	debug("%+3.3f %+3.3f %+3.3f", vel[0], vel[1], vel[2]);
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];
