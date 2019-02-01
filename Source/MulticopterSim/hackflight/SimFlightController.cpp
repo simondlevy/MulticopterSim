@@ -123,8 +123,13 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
             _elapsedTime = 1.0;
         }
 
-        virtual void update(float timestamp, float position[3], float velocity[3], float quat[4], float gyro[3], float motorvals[4]) override
+        virtual void update(float timestamp, float position[3], float velocity[3], float quat[4], float gyro[3], float accel[3], float motorvals[4]) override
         {
+            // Unused for Hackflight
+            (void)timestamp;
+            (void)velocity;
+            (void)accel;
+
             receiver->update();
 
             hackflight.update();

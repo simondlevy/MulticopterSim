@@ -36,9 +36,10 @@ public:
      * @velocity current velocity in meters per second
      * @param quat current quaternion
      * @param gyro current gyrometer rates in radians/sec
+     * @param accel current acceleromter values in Gs
      * @param motorvals motor values between 0 and 1 output by your implementation
      */
-     virtual void update(float timestamp, float position[3], float velocity[3], float quat[4], float gyro[3], float motorvals[4]) = 0;
+     virtual void update(float timestamp, float position[3], float velocity[3], float quat[4], float gyro[3], float accel[3], float motorvals[4]) = 0;
 
     /**
      *  Performs any necessary shutdown for your subclass implementation.

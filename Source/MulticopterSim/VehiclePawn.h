@@ -100,6 +100,8 @@ class AVehiclePawn : public APawn
         // Support various models of vehicle physics
         VehiclePhysics * _vehiclePhysics;
 
+        void getAccelerometer(float accelGs[3]);
+
     public:
 
         AVehiclePawn();

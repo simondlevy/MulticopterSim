@@ -186,8 +186,10 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 	FVector velocity = this->GetVelocity() / 100; // cm/s to ms/c
 	float vel[3] = { velocity.X, velocity.Y, velocity.Z };
     float quat[4] = {_quat.W, _quat.X, _quat.Y, _quat.Z};
-	_flightController->update(_elapsedTime, position, vel, quat, gyro, _motorvals);
-	debug("%+3.3f %+3.3f %+3.3f", vel[0], vel[1], vel[2]);
+    float accel[3] = {0,0,0};
+    getAccelerometer(accel);
+	_flightController->update(_elapsedTime, position, vel, quat, gyro, accel, _motorvals);
+	debug("%+3.3f %+3.3f %+3.3f", accel[0], accel[1], accel[2]);
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];
@@ -260,6 +262,21 @@ void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Ot
     // Deflect along the surface when we collide.
     FRotator CurrentRotation = GetActorRotation();
     SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
+}
+
+void AVehiclePawn::getAccelerometer(float accelGs[3])
+{
+	// Get Euler angles
+	FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
+
+ 	// Slide 50 from https://slideplayer.com/slide/2813564/
+
+ 	float phi   = euler.X;
+	float theta = euler.Y;
+
+ 	accelGs[0] = -sin(theta);
+	accelGs[1] =  sin(phi)*cos(theta);
+	accelGs[2] =  cos(phi)*cos(theta);
 }
 
 void AVehiclePawn::serverError(void)
