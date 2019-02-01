@@ -180,13 +180,12 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
     // Update the flight controller with the current IMU readings
-    float quat[4] = {+_quat.W, -_quat.X, -_quat.Y, +_quat.Z};
-    _quatNoise.addNoise(quat);
 	float gyro[3] = { _gyro.X, _gyro.Y, _gyro.Z  }; 
 	FVector location = this->GetActorLocation() / 100; // cm to m
 	float position[3] = { location.X, location.Y, location.Z };
 	FVector velocity = this->GetVelocity() / 100; // cm/s to ms/c
 	float vel[3] = { velocity.X, velocity.Y, velocity.Z };
+    float quat[4] = {_quat.W, _quat.X, _quat.Y, _quat.Z};
 	_flightController->update(_elapsedTime, position, vel, quat, gyro, _motorvals);
 	debug("%+3.3f %+3.3f %+3.3f", vel[0], vel[1], vel[2]);
 
@@ -208,8 +207,10 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     PropMeshes[_propIndex]->AddLocalRotation(PropRotation);
     _propIndex = (_propIndex+1) % 4;
 
-    // Get current quaternion
+    // Get current quaternion and convert it to our format (XXX)
     _quat = this->GetActorQuat();
+    _quat.X = -_quat.X;
+    _quat.Y = -_quat.Y;
 
     // Convert quaternion to Euler angles
     FVector euler = this->getEulerAngles();
