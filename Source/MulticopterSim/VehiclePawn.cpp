@@ -182,8 +182,8 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     // Update the flight controller with the current IMU readings
     float quat[4] = {+_quat.W, -_quat.X, -_quat.Y, +_quat.Z};
     _quatNoise.addNoise(quat);
-    float gyro[3] = {_gyro.X, _gyro.Y, 0 /* _gyro.Z */}; // XXX zero-out gyro Z (yaw) for now
-    _flightController->update(quat, gyro, _motorvals);
+	float gyro[3] = { _gyro.X, _gyro.Y, _gyro.Z  }; 
+	_flightController->update(quat, gyro, _motorvals);
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];
