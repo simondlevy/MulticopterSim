@@ -128,11 +128,12 @@ void AVehiclePawn::BeginPlay()
     // once we start playing the sound, it will play continiously...
     propellerAudioComponent->Play();
 
-    // Initialize sensor simulation variables
+    // Initialize simulation variables
     _eulerPrev = FVector(0, 0, 0);
 	_varioPrev = 0;
 	_accelZ = 0;
 	_elapsedTime = 1.0; // avoid divide-by-zero
+    _propIndex = 0;
 
 	// Initialize sensors
 	//_rangefinder.init();
@@ -191,13 +192,16 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     // Rotate vehicle
     AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
 
-    // Spin props proportionate to motor values, acumulating their sum 
+    // Sum over motor values to get overall thrust
     float motorSum = 0;
     for (uint8_t k=0; k<4; ++k) {
-        FRotator PropRotation(0, _motorvals[k]*motordirs[k]*60, 0);
-        PropMeshes[k]->AddLocalRotation(PropRotation);
         motorSum += _motorvals[k];
     }
+
+    // Rotate one prop per tick
+    FRotator PropRotation(0, _motorvals[_propIndex]*motordirs[_propIndex]*240, 0);
+    PropMeshes[_propIndex]->AddLocalRotation(PropRotation);
+    _propIndex = (_propIndex+1) % 4;
 
     // Get current quaternion
     _quat = this->GetActorQuat();

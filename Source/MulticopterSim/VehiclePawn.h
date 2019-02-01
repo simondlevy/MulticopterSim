@@ -59,6 +59,7 @@ class AVehiclePawn : public APawn
         SimFlightController * _flightController;
 
         // Support for spinning propellers
+        uint8_t _propIndex;
         const int8_t motordirs[4] = {+1, -1, -1, +1};
 
         // These get converted to physical forces

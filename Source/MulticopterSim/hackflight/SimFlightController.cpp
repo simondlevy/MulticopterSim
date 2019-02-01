@@ -125,6 +125,10 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
         virtual void update(float quat[4], float gyro[3], float motorvals[4]) override
         {
+            for (uint8_t k=0; k<4; ++k) {
+                motorvals[k] = 0.525;
+            }
+            /*
             receiver->update();
 
             hackflight.update();
@@ -133,6 +137,7 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
             memcpy(_gyro, gyro, 3*sizeof(float));
 
             memcpy(motorvals, _motorvals, 4*sizeof(float));
+            */
         }
 
     protected:
