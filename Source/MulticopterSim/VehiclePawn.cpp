@@ -189,14 +189,14 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     float accel[3] = {0,0,0};
     getAccelerometer(accel);
 	_flightController->update(_elapsedTime, position, vel, quat, gyro, accel, _motorvals);
-	debug("%+3.3f %+3.3f %+3.3f", accel[0], accel[1], accel[2]);
+	//debug("%+3.3f %+3.3f %+3.3f", accel[0], accel[1], accel[2]);
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     float forces[3];
     _vehiclePhysics->computeAngularForces(_motorvals, forces);
 
     // Rotate vehicle
-    AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
+    //AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
 
     // Sum over motor values to get overall thrust
     float motorSum = 0;
@@ -226,12 +226,14 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     _accelZ = (vario - _varioPrev) / DeltaSeconds;
     _varioPrev = vario;
 
+    debug("%+3.3f", _accelZ);
+
     // Rotate Euler angles into inertial frame: http://www.chrobotics.com/library/understanding-euler-angles
     float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
     float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
     float z = cos(euler.Y)*cos(euler.X);
 
-    // Add movement force to vehicle with simple piecewise nonlinearity
+    // Add movement force to vehicle 
     PlaneMesh->AddForce(motorSum*THRUST_FACTOR*FVector(-x, -y, z));
 
     // Modulate the pitch and voume of the propeller sound
