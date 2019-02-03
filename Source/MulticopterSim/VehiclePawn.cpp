@@ -196,7 +196,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     _vehiclePhysics->computeAngularForces(_motorvals, forces);
 
     // Rotate vehicle
-    //AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
+    AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
 
     // Sum over motor values to get overall thrust
     float motorSum = 0;
