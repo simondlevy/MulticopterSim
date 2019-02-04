@@ -23,20 +23,6 @@
 #include <cmath>
 #include <stdarg.h>
 
-// Socket comms
-//static const char * HOST = "137.113.118.68";  // thales.cs.wlu.edu
-//static const char * HOST = "129.97.45.86";      // uwaterloo ctn
-static const char * HOST = "127.0.0.1";         // localhost
-static const int PORT = 20000;
-ThreadedSocketServer server = ThreadedSocketServer(PORT, HOST);
-
-// Debugging
-static const FColor TEXT_COLOR = FColor::Yellow;
-static const float  TEXT_SCALE = 2.f;
-
-// Scaling constant for turning motor spin to thrust
-static const float THRUST_FACTOR = 130;
-
 AVehiclePawn::AVehiclePawn()
 {
 	// Structure to hold one-time initialization
@@ -138,18 +124,6 @@ void AVehiclePawn::BeginPlay()
 	// Initialize sensors
 	//_rangefinder.init();
 
-	// Start the server
-    _serverRunning = true;
-	if (!server.start()) {
-        serverError();
-        _serverRunning = false;
-    }
-	_serverAvailableBytes = 0;
-
-	// Start Python-based loiter if indicated
-#ifdef _PYTHON
-	loiter.start();
-#endif
 
     Super::BeginPlay();
 }
@@ -158,19 +132,6 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     // Stop the flight controller
     _flightController->stop();
-
-    // Stop the server if it has a client connection
-    if (_serverRunning) {
-        if (server.connected()) {
-            if (server.disconnect()) {
-                debug("Disconnected");
-            }
-            else {
-                serverError();
-            }
-        }
-        server.stop();
-    }
 
     Super::EndPlay(EndPlayReason);
 }
@@ -196,7 +157,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     _vehiclePhysics->computeAngularForces(_motorvals, forces);
 
     // Rotate vehicle
-    AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
+    //AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
 
     // Sum over motor values to get overall thrust
     float motorSum = 0;
@@ -206,7 +167,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     // Rotate one prop per tick
     FRotator PropRotation(0, _motorvals[_propIndex]*motordirs[_propIndex]*240, 0);
-    PropMeshes[_propIndex]->AddLocalRotation(PropRotation);
+    //PropMeshes[_propIndex]->AddLocalRotation(PropRotation);
     _propIndex = (_propIndex+1) % 4;
 
     // Get current quaternion and convert it to our format (XXX)
@@ -234,20 +195,11 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     float z = cos(euler.Y)*cos(euler.X);
 
     // Add movement force to vehicle 
-    PlaneMesh->AddForce(motorSum*THRUST_FACTOR*FVector(-x, -y, z));
+    //PlaneMesh->AddForce(motorSum*THRUST_FACTOR*FVector(-x, -y, z));
 
     // Modulate the pitch and voume of the propeller sound
     propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
     propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
-
-    // Debug status of client connection
-    if (!server.connected() && _serverRunning) {
-        //debug("Server running but not connected");
-    }
-
-    if (server.connected() && _serverRunning) {
-        //debug("Server connected");
-    }
 
 	// Accumulate elapsed time
 	_elapsedTime += DeltaSeconds;
@@ -281,11 +233,6 @@ void AVehiclePawn::getAccelerometer(float accelGs[3])
 	accelGs[2] =  cos(phi)*cos(theta);
 }
 
-void AVehiclePawn::serverError(void)
-{
-    //debug("MSP server error: %s", server.lastError());
-}
-
 void AVehiclePawn::debug(char * fmt, ...)
 {
     va_list ap;
@@ -309,43 +256,6 @@ void AVehiclePawn::outbuf(char * buf)
     // on Visual Studio output console
     OutputDebugStringA(buf);
 }
-
-
-/*
-uint8_t AVehiclePawn::serialAvailableBytes(void)
-{ 
-    if (_serverAvailableBytes > 0) {
-        return _serverAvailableBytes;
-    }
-
-    else if (server.connected()) {
-        _serverAvailableBytes = server.receiveBuffer(_serverBuffer, ThreadedSocketServer::BUFLEN);
-        if (_serverAvailableBytes < 0) {
-            _serverAvailableBytes = 0;
-        }
-        _serverByteIndex = 0;
-        return _serverAvailableBytes;
-    }
-
-    return 0;
-}
-
-uint8_t AVehiclePawn::serialReadByte(void)
-{ 
-    uint8_t byte = _serverBuffer[_serverByteIndex]; // post-increment 
-    _serverByteIndex++;
-    _serverAvailableBytes--;
-    return byte;
-}
-
-void AVehiclePawn::serialWriteByte(uint8_t c)
-{ 
-    if (server.connected()) {
-        server.sendBuffer((char *)&c, 1);
-    }
-}
-*/
-
 
 // Helper methods ---------------------------------------------------------------------------------
 

@@ -14,7 +14,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-
 #include "ThreadedSocketServer.h"
 
 #include "SimFlightController.h"
@@ -34,9 +33,16 @@ class AVehiclePawn : public APawn
 
 		GENERATED_BODY()
 
+        // Text properties for debugging
+        static const FColor TEXT_COLOR = FColor::Yellow;
+        static const float  TEXT_SCALE = 2.f;
+
+        // Scaling constant for turning motor spin to thrust
+        static const float THRUST_FACTOR = 130;
+
         // StaticMesh component that will be the visuals for our flying pawn 
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-        class UStaticMeshComponent* PlaneMesh;
+            class UStaticMeshComponent* PlaneMesh;
 
         // Propeller meshes for spinning
         class UStaticMeshComponent* PropMeshes[4];
@@ -71,10 +77,10 @@ class AVehiclePawn : public APawn
         // Support for sensor emulation
         FVector _eulerPrev;
         FVector _gyro;
-		float _accelZ;
-		float _varioPrev;
-		float _groundAltitude;
-		float _elapsedTime;
+        float _accelZ;
+        float _varioPrev;
+        float _groundAltitude;
+        float _elapsedTime;
 
         // Converts a set of motor values to angular forces in body frame
         float motorsToAngularForce(int a, int b, int c, int d);
@@ -82,12 +88,12 @@ class AVehiclePawn : public APawn
         // Supports MSP over socket
         void serverError(void);
         bool _serverRunning;
-		int _serverAvailableBytes;
-		int _serverByteIndex;
-		char _serverBuffer[ThreadedSocketServer::BUFLEN];
+        int _serverAvailableBytes;
+        int _serverByteIndex;
+        char _serverBuffer[ThreadedSocketServer::BUFLEN];
 
-		// Helpers
-		FVector getEulerAngles(void);
+        // Helpers
+        FVector getEulerAngles(void);
 
         // Simulate Gaussian sensor noise
         GaussianNoise _gyroNoise  = GaussianNoise(3, .001);  // radians / second
