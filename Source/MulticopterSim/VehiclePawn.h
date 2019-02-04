@@ -33,12 +33,8 @@ class AVehiclePawn : public APawn
 
 		GENERATED_BODY()
 
-        // Text properties for debugging
-        static const FColor TEXT_COLOR = FColor::Yellow;
-        static const float  TEXT_SCALE = 2.f;
-
         // Scaling constant for turning motor spin to thrust
-        static const float THRUST_FACTOR = 130;
+        static constexpr float THRUST_FACTOR = 130;
 
         // StaticMesh component that will be the visuals for our flying pawn 
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -94,6 +90,9 @@ class AVehiclePawn : public APawn
 
         // Helpers
         FVector getEulerAngles(void);
+
+        // Animation effects (sound, spinning props)
+        void addAnimationEffects(float motorSum);
 
         // Simulate Gaussian sensor noise
         GaussianNoise _gyroNoise  = GaussianNoise(3, .001);  // radians / second

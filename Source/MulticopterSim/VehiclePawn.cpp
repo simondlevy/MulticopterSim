@@ -156,19 +156,12 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     float forces[3];
     _vehiclePhysics->computeAngularForces(_motorvals, forces);
 
-    // Rotate vehicle
-    //AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
 
     // Sum over motor values to get overall thrust
     float motorSum = 0;
     for (uint8_t k=0; k<4; ++k) {
         motorSum += _motorvals[k];
     }
-
-    // Rotate one prop per tick
-    FRotator PropRotation(0, _motorvals[_propIndex]*motordirs[_propIndex]*240, 0);
-    //PropMeshes[_propIndex]->AddLocalRotation(PropRotation);
-    _propIndex = (_propIndex+1) % 4;
 
     // Get current quaternion and convert it to our format (XXX)
     _quat = this->GetActorQuat();
@@ -194,18 +187,30 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
     float z = cos(euler.Y)*cos(euler.X);
 
-    // Add movement force to vehicle 
-    //PlaneMesh->AddForce(motorSum*THRUST_FACTOR*FVector(-x, -y, z));
+    // Add movement forces and rotation to vehicle 
+    PlaneMesh->AddForce(motorSum*THRUST_FACTOR*FVector(-x, -y, z));
+    AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
 
-    // Modulate the pitch and voume of the propeller sound
-    propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
-    propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
+    // Add animation effects (prop rotation, sound)
+    addAnimationEffects(motorSum);
 
 	// Accumulate elapsed time
 	_elapsedTime += DeltaSeconds;
 
     // Call any parent class Tick implementation
     Super::Tick(DeltaSeconds);
+}
+
+void AVehiclePawn::addAnimationEffects(float motorSum)
+{
+    // Modulate the pitch and voume of the propeller sound
+    propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
+    propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
+
+    // Rotate one prop per tick
+    FRotator PropRotation(0, _motorvals[_propIndex]*motordirs[_propIndex]*240, 0);
+    PropMeshes[_propIndex]->AddLocalRotation(PropRotation);
+    _propIndex = (_propIndex+1) % 4;
 }
 
 void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
@@ -246,6 +251,10 @@ void AVehiclePawn::debug(char * fmt, ...)
 
 void AVehiclePawn::outbuf(char * buf)
 {
+    // Text properties for debugging
+    FColor TEXT_COLOR = FColor::Yellow;
+    constexpr float  TEXT_SCALE = 2.f;
+
     // on screen
     if (GEngine) {
 
