@@ -76,8 +76,9 @@ launch Visual Studio with a double-click.
 
 # Launch and fly!
 
-In UnrealEditor, click the play button and you're ready to begin. Throttle up to fly.  You can
-use the spacebar to switch between the ground camera and FPV camera.
+In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Click
+the play button and you're ready to begin. Throttle up to fly.  You can use the
+spacebar to switch between the ground camera and FPV camera.
 
 # Support for OpenCV
 
