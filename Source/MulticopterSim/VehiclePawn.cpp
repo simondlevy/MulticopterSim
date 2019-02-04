@@ -23,13 +23,6 @@
 #include <cmath>
 #include <stdarg.h>
 
-// Debugging
-static const FColor TEXT_COLOR = FColor::Yellow;
-static const float  TEXT_SCALE = 2.f;
-
-// Scaling constant for turning motor spin to thrust
-static const float THRUST_FACTOR = 130;
-
 AVehiclePawn::AVehiclePawn()
 {
 	// Structure to hold one-time initialization
