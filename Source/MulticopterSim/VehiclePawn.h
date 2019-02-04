@@ -14,8 +14,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include "ThreadedSocketServer.h"
-
 #include "SimFlightController.h"
 #include "GaussianNoise.h"
 #include "VehiclePhysics.h"
