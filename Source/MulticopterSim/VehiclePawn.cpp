@@ -142,7 +142,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     FVector gyro  = getGyrometer(euler, DeltaSeconds);
     FQuat   quat  = getQuaternion();
 
-    debug("%+6.6f", accel.Z);
+    debug("Acceleromter X: %+3.3f    Y: %+3.3f    Z: %+3.3f", accel.X, accel.Y, accel.Z);
 
     // Send state to flight controller, dividing by 100 to convert cm to m
 	TArray<float> motorvals = _flightController->update(_elapsedTime, GetActorLocation()/100, GetVelocity()/100, quat, gyro, accel);
