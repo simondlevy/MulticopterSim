@@ -61,35 +61,14 @@ class AVehiclePawn : public APawn
         uint8_t _propIndex;
         const int8_t MOTORDIRS[4] = {+1, -1, -1, +1};
 
-        // These get converted to physical forces
-        float _motorvals[4];
-
-        // Support for quaternions
-        FQuat _quat;
-
-        // Support for sensor emulation
+        // Support for sensor emulation via first differencing
         FVector _eulerPrev;
-        FVector _gyro;
-        float _accelZ;
         float _varioPrev;
         float _groundAltitude;
         float _elapsedTime;
 
-        // Converts a set of motor values to angular forces in body frame
-        float motorsToAngularForce(int a, int b, int c, int d);
-
-        // Supports MSP over socket
-        void serverError(void);
-        bool _serverRunning;
-        int _serverAvailableBytes;
-        int _serverByteIndex;
-        char _serverBuffer[ThreadedSocketServer::BUFLEN];
-
-        // Helpers
-        FVector getEulerAngles(void);
-
         // Animation effects (sound, spinning props)
-        void addAnimationEffects(float overallThrust);
+        void addAnimationEffects(TArray<float> motorvals, float overallThrust);
 
         // Simulate Gaussian sensor noise
         GaussianNoise _gyroNoise  = GaussianNoise(3, .001);  // radians / second
@@ -102,7 +81,10 @@ class AVehiclePawn : public APawn
         // Support various models of vehicle physics
         VehiclePhysics * _vehiclePhysics;
 
-        void getAccelerometer(float accelGs[3]);
+        // Simulate IMU via ground-truth
+        FVector getAccelerometer(float DeltaSeconds);
+        FVector getGyrometer(FVector & euler, float DeltaSeconds);
+        FQuat   getQuaternion(void);
 
     public:
 

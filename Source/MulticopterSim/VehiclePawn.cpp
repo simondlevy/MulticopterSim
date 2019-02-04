@@ -44,11 +44,6 @@ AVehiclePawn::AVehiclePawn()
     // Create flight-control support
     _flightController = SimFlightController::createSimFlightController();
 
-    // Initialize the motor-spin values
-    for (uint8_t k=0; k<4; ++k) {
-        _motorvals[k] = 0;
-    }
-
 	// Load our Sound Cue for the propeller sound we created in the editor... 
 	// note your path may be different depending
 	// on where you store the asset on disk.
@@ -117,7 +112,6 @@ void AVehiclePawn::BeginPlay()
     // Initialize simulation variables
     _eulerPrev = FVector(0, 0, 0);
 	_varioPrev = 0;
-	_accelZ = 0;
 	_elapsedTime = 1.0; // avoid divide-by-zero
     _propIndex = 0;
 
@@ -140,41 +134,21 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 {
     //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
-    // Update the flight controller with the current IMU readings to get the motor values
-	float gyro[3] = { _gyro.X, _gyro.Y, _gyro.Z  }; 
-	FVector location = this->GetActorLocation() / 100; // cm to m
-	float position[3] = { location.X, location.Y, location.Z };
-	FVector velocity = this->GetVelocity() / 100; // cm/s to ms/c
-	float vel[3] = { velocity.X, velocity.Y, velocity.Z };
-    float quat[4] = {_quat.W, _quat.X, _quat.Y, _quat.Z};
-    float accel[3] = {0,0,0};
-    getAccelerometer(accel);
-	_flightController->update(_elapsedTime, position, vel, quat, gyro, accel, _motorvals);
-	//debug("%+3.3f %+3.3f %+3.3f", accel[0], accel[1], accel[2]);
-
-    // Compute body-frame roll, pitch, yaw velocities based on differences between motors
-    float rotationalForces[3] = {0,0,0};
-    float overallThrust = 0;
-    _vehiclePhysics->computeAngularForces(_motorvals, rotationalForces, overallThrust);
-
-    // Get current quaternion and convert it to our format (XXX)
-    _quat = this->GetActorQuat();
-    _quat.X = -_quat.X;
-    _quat.Y = -_quat.Y;
-
     // Convert quaternion to Euler angles
-    FVector euler = this->getEulerAngles();
+    FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
 
-    // Use Euler angle first difference to emulate gyro
-    _gyro = (euler - _eulerPrev) / DeltaSeconds;
-    _eulerPrev = euler;
+    // Get the simulated IMU readings
+    FVector accel = getAccelerometer(DeltaSeconds);
+    FVector gyro  = getGyrometer(euler, DeltaSeconds);
+    FQuat   quat  = getQuaternion();
 
-    // Use velocity first difference to emulate accelerometer
-    float vario = this->GetVelocity().Z / 100; // m/s
-    _accelZ = (vario - _varioPrev) / DeltaSeconds;
-    _varioPrev = vario;
-
-    debug("%+3.3f", _accelZ);
+    // Send state to flight controller, dividing by 100 to convert cm to m
+	TArray<float> motorvals = _flightController->update(_elapsedTime, GetActorLocation()/100, GetVelocity()/100, quat, gyro, accel);
+    
+    // Compute body-frame roll, pitch, yaw velocities based on differences between motors
+    FVector rotationalForces = {0,0,0};
+    float overallThrust = 0;
+    _vehiclePhysics->computeAngularForces(motorvals, rotationalForces, overallThrust);
 
     // Rotate Euler angles into inertial frame: http://www.chrobotics.com/library/understanding-euler-angles
     float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
@@ -183,10 +157,10 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     // Add movement rotationalForces and rotation to vehicle 
     PlaneMesh->AddForce(overallThrust*FVector(-x, -y, z));
-    AddActorLocalRotation(DeltaSeconds * FRotator(rotationalForces[1], rotationalForces[2], rotationalForces[0]) * (180 / M_PI));
+    AddActorLocalRotation(DeltaSeconds * FRotator(rotationalForces.Y, rotationalForces.Z, rotationalForces.X) * (180 / M_PI));
 
     // Add animation effects (prop rotation, sound)
-    addAnimationEffects(overallThrust);
+    addAnimationEffects(motorvals, overallThrust);
 
 	// Accumulate elapsed time
 	_elapsedTime += DeltaSeconds;
@@ -195,7 +169,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 }
 
-void AVehiclePawn::addAnimationEffects(float overallThrust)
+void AVehiclePawn::addAnimationEffects(TArray<float> motorvals, float overallThrust)
 {
     // Modulate the pitch and voume of the propeller sound
     overallThrust /= 500;
@@ -203,7 +177,7 @@ void AVehiclePawn::addAnimationEffects(float overallThrust)
     propellerAudioComponent->SetFloatParameter(FName("volume"), overallThrust);
 
     // Rotate one prop per tick
-    FRotator PropRotation(0, _motorvals[_propIndex]*MOTORDIRS[_propIndex]*240, 0);
+    FRotator PropRotation(0, motorvals[_propIndex]*MOTORDIRS[_propIndex]*240, 0);
     PropMeshes[_propIndex]->AddLocalRotation(PropRotation);
     _propIndex = (_propIndex+1) % 4;
 }
@@ -218,7 +192,7 @@ void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Ot
     SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
 }
 
-void AVehiclePawn::getAccelerometer(float accelGs[3])
+FVector AVehiclePawn::getAccelerometer(float DeltaSeconds)
 {
 	// Get Euler angles
 	FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
@@ -228,9 +202,30 @@ void AVehiclePawn::getAccelerometer(float accelGs[3])
  	float phi   = euler.X;
 	float theta = euler.Y;
 
- 	accelGs[0] = -sin(theta);
-	accelGs[1] =  sin(phi)*cos(theta);
-	accelGs[2] =  cos(phi)*cos(theta);
+    // Use velocity first difference to emulate accelerometer
+    float vario = this->GetVelocity().Z / 100; // m/s
+    float accelZ = (vario - _varioPrev) / DeltaSeconds;
+    _varioPrev = vario;
+    debug("%+3.3f", accelZ);
+
+    return FVector(-sin(theta), sin(phi)*cos(theta), cos(phi)*cos(theta));
+}
+
+FVector AVehiclePawn::getGyrometer(FVector & euler, float DeltaSeconds)
+{
+    // Use Euler angle first difference to emulate gyro
+    FVector gyro = (euler - _eulerPrev) / DeltaSeconds;
+    _eulerPrev = euler;
+    return gyro;
+}
+
+FQuat AVehiclePawn::getQuaternion(void)
+{
+    // Get current quaternion and convert it to our format (XXX necessary?
+    FQuat quat = this->GetActorQuat();
+    quat.X = -quat.X;
+    quat.Y = -quat.Y;
+    return quat;
 }
 
 void AVehiclePawn::debug(char * fmt, ...)
@@ -260,11 +255,3 @@ void AVehiclePawn::outbuf(char * buf)
     // on Visual Studio output console
     OutputDebugStringA(buf);
 }
-
-// Helper methods ---------------------------------------------------------------------------------
-
-FVector AVehiclePawn::getEulerAngles(void)
-{
-    return FMath::DegreesToRadians(this->GetActorQuat().Euler());
-}
-

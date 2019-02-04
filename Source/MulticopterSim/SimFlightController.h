@@ -37,9 +37,9 @@ public:
      * @param quat current quaternion
      * @param gyro current gyrometer rates in radians/sec
      * @param accel current acceleromter values in Gs
-     * @param motorvals motor values between 0 and 1 output by your implementation
+     * @return motorvals motor values between 0 and 1 output by your implementation
      */
-     virtual void update(float timestamp, float position[3], float velocity[3], float quat[4], float gyro[3], float accel[3], float motorvals[4]) = 0;
+     virtual TArray<float> update(float timestamp, FVector position, FVector velocity, FQuat quat, FVector gyro, FVector accel) = 0;
 
     /**
      *  Performs any necessary shutdown for your subclass implementation.

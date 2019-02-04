@@ -123,9 +123,10 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
             _elapsedTime = 1.0;
         }
 
-        virtual void update(float timestamp, float position[3], float velocity[3], float quat[4], float gyro[3], float accel[3], float motorvals[4]) override
+        virtual TArray<float> update(float timestamp, FVector position, FVector velocity, FQuat quat, FVector gyro, FVector accel) override
         {
             // Unused for Hackflight
+            (void)position;
             (void)timestamp;
             (void)velocity;
             (void)accel;
@@ -134,11 +135,18 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
             hackflight.update();
 
-            memcpy(_quat, quat, 4*sizeof(float));
-            memcpy(_gyro, gyro, 3*sizeof(float));
+            // Store quaternion and gyro values for Hackflight::Board methods below
+            _quat[0] = quat.W;
+            _quat[1] = quat.X;
+            _quat[2] = quat.Y;
+            _quat[3] = quat.Z;
+            _gyro[0] = gyro.X;
+            _gyro[1] = gyro.Y;
 			_gyro[2] = 0; // zero-out gyro Z for now
 
-            memcpy(motorvals, _motorvals, 4*sizeof(float));
+            TArray<float> motorvals = {_motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3]};
+            return motorvals;
+
         }
 
     protected:
