@@ -142,6 +142,8 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     FVector gyro  = getGyrometer(euler, DeltaSeconds);
     FQuat   quat  = getQuaternion();
 
+    debug("%+6.6f", accel.Z);
+
     // Send state to flight controller, dividing by 100 to convert cm to m
 	TArray<float> motorvals = _flightController->update(_elapsedTime, GetActorLocation()/100, GetVelocity()/100, quat, gyro, accel);
     
@@ -197,18 +199,16 @@ FVector AVehiclePawn::getAccelerometer(float DeltaSeconds)
 	// Get Euler angles from quaternion
 	FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
 
- 	// Slide 50 from https://slideplayer.com/slide/2813564/
- 	float phi   = euler.X;
-	float theta = euler.Y;
-
     // Use velocity first difference to emulate G force on vehicle in inertial frame
     float vario = GetVelocity().Z / 100; // m/s
     float gs = ((vario - _varioPrev) / DeltaSeconds + G) / G;
     _varioPrev = vario;
 
-    debug("%+6.6f", gs);
-
-    return FVector(-sin(theta), sin(phi)*cos(theta), cos(phi)*cos(theta));
+ 	// Convert inertial frame to body frame
+    // See slide 50 from https://slideplayer.com/slide/2813564/
+ 	float phi   = euler.X;
+	float theta = euler.Y;
+    return gs * FVector(-sin(theta), sin(phi)*cos(theta), cos(phi)*cos(theta));
 }
 
 FVector AVehiclePawn::getGyrometer(FVector & euler, float DeltaSeconds)
