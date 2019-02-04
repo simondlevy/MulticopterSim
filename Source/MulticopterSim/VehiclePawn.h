@@ -31,6 +31,9 @@ class AVehiclePawn : public APawn
 
 		GENERATED_BODY()
 
+        // Earth's gravity
+        static constexpr float G = 9.80665f;
+
         // StaticMesh component that will be the visuals for our flying pawn 
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
             class UStaticMeshComponent* PlaneMesh;

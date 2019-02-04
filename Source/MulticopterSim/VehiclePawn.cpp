@@ -156,11 +156,11 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     float z = cos(euler.Y)*cos(euler.X);
 
     // Add movement rotationalForces and rotation to vehicle 
-    PlaneMesh->AddForce(overallThrust*FVector(-x, -y, z));
-    AddActorLocalRotation(DeltaSeconds * FRotator(rotationalForces.Y, rotationalForces.Z, rotationalForces.X) * (180 / M_PI));
+    //PlaneMesh->AddForce(overallThrust*FVector(-x, -y, z));
+    //AddActorLocalRotation(DeltaSeconds * FRotator(rotationalForces.Y, rotationalForces.Z, rotationalForces.X) * (180 / M_PI));
 
     // Add animation effects (prop rotation, sound)
-    addAnimationEffects(motorvals, overallThrust);
+    //addAnimationEffects(motorvals, overallThrust);
 
 	// Accumulate elapsed time
 	_elapsedTime += DeltaSeconds;
@@ -194,19 +194,19 @@ void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Ot
 
 FVector AVehiclePawn::getAccelerometer(float DeltaSeconds)
 {
-	// Get Euler angles
+	// Get Euler angles from quaternion
 	FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
 
  	// Slide 50 from https://slideplayer.com/slide/2813564/
-
  	float phi   = euler.X;
 	float theta = euler.Y;
 
-    // Use velocity first difference to emulate accelerometer
-    float vario = this->GetVelocity().Z / 100; // m/s
-    float accelZ = (vario - _varioPrev) / DeltaSeconds;
+    // Use velocity first difference to emulate G force on vehicle in inertial frame
+    float vario = GetVelocity().Z / 100; // m/s
+    float gs = ((vario - _varioPrev) / DeltaSeconds + G) / G;
     _varioPrev = vario;
-    debug("%+3.3f", accelZ);
+
+    debug("%+6.6f", gs);
 
     return FVector(-sin(theta), sin(phi)*cos(theta), cos(phi)*cos(theta));
 }
