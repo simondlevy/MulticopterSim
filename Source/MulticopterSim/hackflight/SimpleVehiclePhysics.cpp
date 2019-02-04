@@ -12,7 +12,7 @@ class SimpleVehiclePhysics : public VehiclePhysics {
 
     protected:
 
-        virtual void computeAngularForces(TArray<float> motorvals, FVector & forces, float & overallThrust) override
+        virtual void computeAngularForces(TArray<float> motorvals, FVector & forces) override
         {
             // Sum over motor values to get overall thrust
             float motorSum = 0;
@@ -24,7 +24,7 @@ class SimpleVehiclePhysics : public VehiclePhysics {
             forces.Y = motorsToAngularForce(motorvals, 1, 3, 0, 2); 
             forces.Z = motorsToAngularForce(motorvals, 1, 2, 0, 3); 
 
-            overallThrust = motorSum * THRUST_FACTOR;
+            float overallThrust = motorSum * THRUST_FACTOR;
         }
 
     private:
