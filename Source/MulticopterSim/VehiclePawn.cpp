@@ -143,8 +143,6 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     //debug("Acceleromter X: %+3.3f    Y: %+3.3f    Z: %+3.3f", accel.X, accel.Y, accel.Z);
 
-    debug("Benchmarking: %d", _benchmarking);
-
     // Send state to flight controller, dividing by 100 to convert cm to m
     TArray<float> motorvals = _flightController->update(_elapsedTime, GetActorLocation()/100, GetVelocity()/100, quat, gyro, accel);
 
@@ -158,15 +156,19 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
     float z = cos(euler.Y)*cos(euler.X);
 
-    // Add movement rotationalForces and rotation to vehicle 
-    //PlaneMesh->AddForce(overallThrust*FVector(-x, -y, z));
-    //AddActorLocalRotation(DeltaSeconds * FRotator(rotationalForces.Y, rotationalForces.Z, rotationalForces.X) * (180 / M_PI));
+    // Turn off controlled movement in benmark mode
+    if (!_benchmarking) {
 
-    // Add animation effects (prop rotation, sound)
-    //addAnimationEffects(motorvals, overallThrust);
+        // Add movement rotationalForces and rotation to vehicle 
+        PlaneMesh->AddForce(overallThrust*FVector(-x, -y, z));
+        AddActorLocalRotation(DeltaSeconds * FRotator(rotationalForces.Y, rotationalForces.Z, rotationalForces.X) * (180 / M_PI));
 
-	// Accumulate elapsed time
-	_elapsedTime += DeltaSeconds;
+        // Add animation effects (prop rotation, sound)
+        addAnimationEffects(motorvals, overallThrust);
+    }
+
+    // Accumulate elapsed time
+    _elapsedTime += DeltaSeconds;
 
     // Call any parent class Tick implementation
     Super::Tick(DeltaSeconds);
@@ -197,18 +199,18 @@ void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Ot
 
 FVector AVehiclePawn::getAccelerometer(float DeltaSeconds)
 {
-	// Get Euler angles from quaternion
-	FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
+    // Get Euler angles from quaternion
+    FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
 
     // Use velocity first difference to emulate G force on vehicle in inertial frame
     float vario = GetVelocity().Z / 100; // m/s
     float gs = ((vario - _varioPrev) / DeltaSeconds + G) / G;
     _varioPrev = vario;
 
- 	// Convert inertial frame to body frame
+    // Convert inertial frame to body frame
     // See slide 50 from https://slideplayer.com/slide/2813564/
- 	float phi   = euler.X;
-	float theta = euler.Y;
+    float phi   = euler.X;
+    float theta = euler.Y;
     return gs * FVector(-sin(theta), sin(phi)*cos(theta), cos(phi)*cos(theta));
 }
 
