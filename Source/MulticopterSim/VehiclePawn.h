@@ -82,6 +82,9 @@ class AVehiclePawn : public APawn
         // Support various models of vehicle physics
         VehiclePhysics * _vehiclePhysics;
 
+        // Flag for benchmarking map
+        bool _benchmarking;
+
         // Simulate IMU via ground-truth
         FVector getAccelerometer(float DeltaSeconds);
         FVector getGyrometer(FVector & euler, float DeltaSeconds);

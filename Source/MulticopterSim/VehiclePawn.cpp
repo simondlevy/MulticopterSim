@@ -115,9 +115,8 @@ void AVehiclePawn::BeginPlay()
 	_elapsedTime = 1.0; // avoid divide-by-zero
     _propIndex = 0;
 
-	// Initialize sensors
-	//_rangefinder.init();
-
+    // Check whether benchmarking
+    _benchmarking = GetWorld()->GetMapName().Contains(TEXT("Benchmark"));
 
     Super::BeginPlay();
 }
@@ -142,11 +141,13 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     FVector gyro  = getGyrometer(euler, DeltaSeconds);
     FQuat   quat  = getQuaternion();
 
-    debug("Acceleromter X: %+3.3f    Y: %+3.3f    Z: %+3.3f", accel.X, accel.Y, accel.Z);
+    //debug("Acceleromter X: %+3.3f    Y: %+3.3f    Z: %+3.3f", accel.X, accel.Y, accel.Z);
+
+    debug("Benchmarking: %d", _benchmarking);
 
     // Send state to flight controller, dividing by 100 to convert cm to m
-	TArray<float> motorvals = _flightController->update(_elapsedTime, GetActorLocation()/100, GetVelocity()/100, quat, gyro, accel);
-    
+    TArray<float> motorvals = _flightController->update(_elapsedTime, GetActorLocation()/100, GetVelocity()/100, quat, gyro, accel);
+
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
     FVector rotationalForces = {0,0,0};
     float overallThrust = 0;
