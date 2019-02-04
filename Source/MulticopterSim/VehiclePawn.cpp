@@ -140,7 +140,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 {
     //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
-    // Update the flight controller with the current IMU readings
+    // Update the flight controller with the current IMU readings to get the motor values
 	float gyro[3] = { _gyro.X, _gyro.Y, _gyro.Z  }; 
 	FVector location = this->GetActorLocation() / 100; // cm to m
 	float position[3] = { location.X, location.Y, location.Z };
@@ -153,15 +153,9 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 	//debug("%+3.3f %+3.3f %+3.3f", accel[0], accel[1], accel[2]);
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
-    float forces[3];
-    _vehiclePhysics->computeAngularForces(_motorvals, forces);
-
-
-    // Sum over motor values to get overall thrust
-    float motorSum = 0;
-    for (uint8_t k=0; k<4; ++k) {
-        motorSum += _motorvals[k];
-    }
+    float rotationalForces[3] = {0,0,0};
+    float overallThrust = 0;
+    _vehiclePhysics->computeAngularForces(_motorvals, rotationalForces, overallThrust);
 
     // Get current quaternion and convert it to our format (XXX)
     _quat = this->GetActorQuat();
@@ -187,12 +181,12 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
     float z = cos(euler.Y)*cos(euler.X);
 
-    // Add movement forces and rotation to vehicle 
-    PlaneMesh->AddForce(motorSum*THRUST_FACTOR*FVector(-x, -y, z));
-    AddActorLocalRotation(DeltaSeconds * FRotator(forces[1], forces[2], forces[0]) * (180 / M_PI));
+    // Add movement rotationalForces and rotation to vehicle 
+    PlaneMesh->AddForce(overallThrust*FVector(-x, -y, z));
+    AddActorLocalRotation(DeltaSeconds * FRotator(rotationalForces[1], rotationalForces[2], rotationalForces[0]) * (180 / M_PI));
 
     // Add animation effects (prop rotation, sound)
-    addAnimationEffects(motorSum);
+    addAnimationEffects(overallThrust);
 
 	// Accumulate elapsed time
 	_elapsedTime += DeltaSeconds;
@@ -201,14 +195,15 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 }
 
-void AVehiclePawn::addAnimationEffects(float motorSum)
+void AVehiclePawn::addAnimationEffects(float overallThrust)
 {
     // Modulate the pitch and voume of the propeller sound
-    propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
-    propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
+    overallThrust /= 500;
+    propellerAudioComponent->SetFloatParameter(FName("pitch"), overallThrust);
+    propellerAudioComponent->SetFloatParameter(FName("volume"), overallThrust);
 
     // Rotate one prop per tick
-    FRotator PropRotation(0, _motorvals[_propIndex]*motordirs[_propIndex]*240, 0);
+    FRotator PropRotation(0, _motorvals[_propIndex]*MOTORDIRS[_propIndex]*240, 0);
     PropMeshes[_propIndex]->AddLocalRotation(PropRotation);
     _propIndex = (_propIndex+1) % 4;
 }

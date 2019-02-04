@@ -33,9 +33,6 @@ class AVehiclePawn : public APawn
 
 		GENERATED_BODY()
 
-        // Scaling constant for turning motor spin to thrust
-        static constexpr float THRUST_FACTOR = 130;
-
         // StaticMesh component that will be the visuals for our flying pawn 
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
             class UStaticMeshComponent* PlaneMesh;
@@ -60,9 +57,9 @@ class AVehiclePawn : public APawn
         // Abstract controller
         SimFlightController * _flightController;
 
-        // Support for spinning propellers
+        // Support for simulating spinning propellers
         uint8_t _propIndex;
-        const int8_t motordirs[4] = {+1, -1, -1, +1};
+        const int8_t MOTORDIRS[4] = {+1, -1, -1, +1};
 
         // These get converted to physical forces
         float _motorvals[4];
@@ -92,7 +89,7 @@ class AVehiclePawn : public APawn
         FVector getEulerAngles(void);
 
         // Animation effects (sound, spinning props)
-        void addAnimationEffects(float motorSum);
+        void addAnimationEffects(float overallThrust);
 
         // Simulate Gaussian sensor noise
         GaussianNoise _gyroNoise  = GaussianNoise(3, .001);  // radians / second
