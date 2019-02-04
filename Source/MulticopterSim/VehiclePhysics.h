@@ -17,7 +17,8 @@ class MULTICOPTERSIM_API VehiclePhysics
 {
     public:
 
-        virtual void computeAngularForces(TArray<float> motorvals, FVector & rotationalForces) = 0;
+        virtual void computeForces(float deltaSeconds, TArray<float> motorValues, FVector & eulerAngles, 
+                FVector & rotationalForce, FVector & translationForce) = 0;
 
         /**
          *  Factory method.

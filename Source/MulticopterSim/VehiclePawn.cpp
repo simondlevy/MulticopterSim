@@ -143,19 +143,11 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     // Send state to flight controller, dividing by 100 to convert cm to m
     TArray<float> motorvals = _flightController->update(_elapsedTime, GetActorLocation()/100, GetVelocity()/100, quat, gyro, accel);
-    float motorsum = 0;
-    for (uint8_t k=0; k<4; ++k) {
-        motorsum += motorvals[k];
-    }
 
-    // Compute body-frame roll, pitch, yaw velocities based on differences between motors
-    FVector angularForces = {0,0,0};
-    _vehiclePhysics->computeAngularForces(motorvals, angularForces);
-
-    // Rotate Euler angles into inertial frame: http://www.chrobotics.com/library/understanding-euler-angles
-    float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
-    float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
-    float z = cos(euler.Y)*cos(euler.X);
+    // Use physics model to compute rotation and translation forces on vehicle
+    FVector rotationForce = {0,0,0};
+    FVector translationForce = {0,0,0};
+    _vehiclePhysics->computeForces(DeltaSeconds, motorvals, euler, rotationForce, translationForce);
 
     // Turn off controlled movement in benchmark mode
     if (_benchmarking) {
@@ -166,10 +158,10 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     else {
 
         // Add movement force vector to vehicle 
-        PlaneMesh->AddForce(130*motorsum*FVector(-x, -y, z));
+        PlaneMesh->AddForce(translationForce);
 
         // Add rotation to vehicle 
-        AddActorLocalRotation(DeltaSeconds * FRotator(angularForces.Y, angularForces.Z, angularForces.X) * (180 / M_PI));
+        AddActorLocalRotation(DeltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
 
         // Add animation effects (prop rotation, sound)
         addAnimationEffects(motorvals);
