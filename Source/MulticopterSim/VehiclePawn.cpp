@@ -115,8 +115,12 @@ void AVehiclePawn::BeginPlay()
 	_elapsedTime = 1.0; // avoid divide-by-zero
     _propIndex = 0;
 
-    // Check whether benchmarking
-    _benchmarking = GetWorld()->GetMapName().Contains(TEXT("Benchmark"));
+    // Make sure a map has been selected
+	FString mapName = GetWorld()->GetMapName();
+	_mapSelected = !mapName.Contains("Untitled");
+
+	// Check whether benchmarking
+    _benchmarking = mapName.Contains(TEXT("Benchmark"));
 
     Super::BeginPlay();
 }
@@ -131,6 +135,13 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AVehiclePawn::Tick(float DeltaSeconds)
 {
+	// D'oh!
+	if (!_mapSelected) {
+		debug("NO MAP SELECTED");
+		Super::Tick(DeltaSeconds);
+		return;
+	}
+
     //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
     // Convert quaternion to Euler angles
