@@ -70,6 +70,8 @@ class AVehiclePawn : public APawn
 
         // Animation effects (sound, spinning props)
         void addAnimationEffects(TArray<float> motorvals);
+        void setAudioPitchAndVolume(float value);
+        void silenceAudio(void);
 
         // Simulate Gaussian sensor noise
         GaussianNoise _gyroNoise  = GaussianNoise(3, .001);  // radians / second

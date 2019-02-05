@@ -149,10 +149,12 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     FVector translationForce = {0,0,0};
     _vehiclePhysics->computeForces(DeltaSeconds, motorvals, euler, rotationForce, translationForce);
 
-    // Turn off controlled movement in benchmark mode
+    // Turn off sound and controlled movement in benchmark mode
     if (_benchmarking) {
 
         debug("Acceleromter X: %+3.3f    Y: %+3.3f    Z: %+3.3f", accel.X, accel.Y, accel.Z);
+
+        silenceAudio();
     }
 
     else {
@@ -177,14 +179,23 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
 {
     // Modulate the pitch and voume of the propeller sound
-    float maxMotorValue = motorvals.Max() / 100;
-    propellerAudioComponent->SetFloatParameter(FName("pitch"), maxMotorValue);
-    propellerAudioComponent->SetFloatParameter(FName("volume"), maxMotorValue);
+    setAudioPitchAndVolume(motorvals.Max());
 
     // Rotate one prop per tick
     FRotator PropRotation(0, motorvals[_propIndex]*MOTORDIRS[_propIndex]*240, 0);
     PropMeshes[_propIndex]->AddLocalRotation(PropRotation);
     _propIndex = (_propIndex+1) % 4;
+}
+
+void AVehiclePawn::silenceAudio(void)
+{
+    setAudioPitchAndVolume(0);
+}
+
+void AVehiclePawn::setAudioPitchAndVolume(float value)
+{
+    propellerAudioComponent->SetFloatParameter(FName("pitch"), value);
+    propellerAudioComponent->SetFloatParameter(FName("volume"), value);
 }
 
 void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
