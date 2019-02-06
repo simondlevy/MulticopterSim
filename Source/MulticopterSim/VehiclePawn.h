@@ -59,8 +59,9 @@ class AVehiclePawn : public APawn
         SimFlightController * _flightController;
 
         // Support for simulating spinning propellers
-        uint8_t _propIndex;
-        const int8_t MOTORDIRS[4] = {+1, -1, -1, +1};
+        uint8_t _tickCycle;
+        static constexpr int8_t MOTORDIRS[4] = {+1, -1, -1, +1};
+		static constexpr uint8_t PROP_UPDATE = 5;
 
         // Support for sensor emulation via first differencing
         FVector _eulerPrev;

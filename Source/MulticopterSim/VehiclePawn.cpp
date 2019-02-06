@@ -112,8 +112,8 @@ void AVehiclePawn::BeginPlay()
     // Initialize simulation variables
     _eulerPrev = FVector(0, 0, 0);
 	_varioPrev = 0;
-	_elapsedTime = 1.0; // avoid divide-by-zero
-    _propIndex = 0;
+	_elapsedTime = 0; 
+    _tickCycle = 0;
 
     // Make sure a map has been selected
 	FString mapName = GetWorld()->GetMapName();
@@ -192,10 +192,14 @@ void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
     // Modulate the pitch and voume of the propeller sound
     setAudioPitchAndVolume(motorvals.Max());
 
-    // Rotate one prop per tick
-    FRotator PropRotation(0, motorvals[_propIndex]*MOTORDIRS[_propIndex]*240, 0);
-    PropMeshes[_propIndex]->AddLocalRotation(PropRotation);
-    _propIndex = (_propIndex+1) % 4;
+    // Rotate one props periodically (not every tick)
+	if (_tickCycle == 0) {
+		for (uint8_t k = 0; k < 4; ++k) {
+			FRotator PropRotation(0, motorvals[k] * MOTORDIRS[k] * 240, 0);
+			PropMeshes[k]->AddLocalRotation(PropRotation);
+		}
+	}
+    _tickCycle = (_tickCycle+1) % PROP_UPDATE;
 }
 
 void AVehiclePawn::silenceAudio(void)
