@@ -91,9 +91,6 @@ instruction in <b>MulticopterSimBuild.cs</b>.
 2. Make sure that the file <b>opencv_world340.dll</b> is in your <b>C:\Windows\System32</b> folder.  If it is not,
 you can copy it to there from <a href="https://github.com/simondlevy/MulticopterSim/tree/master/ThirdParty/OpenCV/Libraries/Win64"><b>MulticopterSim\ThirdParty\OpenCV\Libraries\Win64</b></a>
 
-3. To see a demonstration of OpenCV in action, un-comment the <a href="https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/vision/VisionAlgorithm.h#L11"><tt>#define _OPENCV</tt></a> 
-directive in <b>vision/VisionAlgorithm.h</b>.
-
 # Support for other flight-control software
 
 MulticopterSim has a simple API for interfacing with other flight-control software: create a subclass of the 
