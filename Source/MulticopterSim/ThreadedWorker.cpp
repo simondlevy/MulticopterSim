@@ -10,8 +10,6 @@
 
 
 #include "ThreadedWorker.h"
-#include "VehiclePawn.h"
-
 
 FThreadedWorker::FThreadedWorker()
 {
@@ -25,7 +23,6 @@ FThreadedWorker::~FThreadedWorker()
 
 bool FThreadedWorker::Init()
 {
-	_count = 0;
 	_running = false;
 
 	return true;
@@ -39,7 +36,7 @@ uint32_t FThreadedWorker::Run()
 	_running = true;
 
 	while (_running) {
-		_count++;
+        performTask();
 		FPlatformProcess::Sleep(.0005); // Wait a bit to allow other threads to run
 	}
 
@@ -49,12 +46,4 @@ uint32_t FThreadedWorker::Run()
 void FThreadedWorker::Stop()
 {
 	_running = false;
-	_count = 0;
 }
-
-uint32_t FThreadedWorker::getCount(void)
-{
-	return _count;
-}
-
-

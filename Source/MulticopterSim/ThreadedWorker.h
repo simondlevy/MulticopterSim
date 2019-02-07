@@ -21,7 +21,10 @@ private:
 	FRunnableThread* _thread;
 
 	bool _running;
-	uint32_t _count;
+
+protected:
+
+    virtual void performTask(void) = 0;
 
 public:
 
