@@ -214,23 +214,6 @@ void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Ot
     SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
 }
 
-FVector AVehiclePawn::getAccelerometer(float DeltaSeconds)
-{
-    // Get Euler angles from quaternion
-    FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
-
-    // Use velocity first difference to emulate G force on vehicle in inertial frame
-    float vario = GetVelocity().Z / 100; // m/s
-    float gs = ((vario - _varioPrev) / DeltaSeconds + G) / G;
-    _varioPrev = vario;
-
-    // Convert inertial frame to body frame
-    // See slide 50 from https://slideplayer.com/slide/2813564/
-    float phi   = euler.X;
-    float theta = euler.Y;
-    return gs * FVector(-sin(theta), sin(phi)*cos(theta), cos(phi)*cos(theta));
-}
-
 FVector AVehiclePawn::getGyrometer(FVector & euler, float DeltaSeconds)
 {
     // Use Euler angle first difference to emulate gyro

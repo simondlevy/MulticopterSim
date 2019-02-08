@@ -110,7 +110,7 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 		{
 			// Use Euler angle first difference to emulate gyro
 			FVector gyro = (euler - _eulerPrev) / DeltaSeconds;
-			_eulerPrev = euler;
+			//_eulerPrev = euler;
 			return gyro;
 		}
 
@@ -152,17 +152,14 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
             // Add loiter PID controllers for aux switch position 2
             hackflight.addPidController(&althold, 2);
             //hackflight.addPidController(&poshold, 2);
-
-			// Initialize simulation variables
-			_eulerPrev = FVector(0, 0, 0);
-			_varioPrev = 0;
-			_elapsedTime = 0;
         }
 
         virtual void start(void) override
         {
-            // Initialize time to a positive value to avod divide-by-zero
-            _elapsedTime = 1.0;
+			// Initialize simulation variables
+			_eulerPrev = FVector(0, 0, 0);
+			_varioPrev = 0;
+			_elapsedTime = 0;
         }
 
 		virtual TArray<float> update(float deltaSeconds, FVector gyro, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override
@@ -178,7 +175,7 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
 			// Get the simulated IMU readings
 			FQuat   quat = getQuaternion(vehiclePawn);
-			//FVector gyro = getGyrometer(euler, deltaSeconds);
+			FVector mygyro = getGyrometer(euler, deltaSeconds);
 
 			// Store quaternion and gyro values for Hackflight::Board methods below
 			_quat[0] = quat.W;
