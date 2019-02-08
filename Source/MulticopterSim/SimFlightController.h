@@ -41,16 +41,7 @@ public:
      */
      virtual TArray<float> update(float timestamp, FVector position, FVector velocity, FQuat quat, FVector gyro, FVector accel) = 0;
 
-
-	 /**
-	  * Updates the flight controller with the current IMU values, returning motor values.
-	  * @param timestamp  input: current time in seconds
-	  * @param position   input: current position in meters
-	  * @param velocity   input: current velocity in meters per second
-	  * @param vehiclePawn the VehilcePawn object that called this method
-	 * @return motorvals motor values between 0 and 1 implementation
-	  */
-	 virtual TArray<float> update(float timestamp, FVector position, FVector velocity, class AVehiclePawn * vehiclePawn) = 0;
+	 virtual TArray<float> update(float deltaSeconds, FVector position, FVector velocity, class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) = 0;
 
     /**
      *  Factory method.

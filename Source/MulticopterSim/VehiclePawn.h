@@ -31,29 +31,26 @@ class AVehiclePawn : public APawn
 
 		GENERATED_BODY()
 
-        // Earth's gravity
-        static constexpr float G = 9.80665f;
-
         // StaticMesh component that will be the visuals for our flying pawn 
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-            class UStaticMeshComponent* PlaneMesh;
+            class UStaticMeshComponent* _vehicleMesh;
 
         // Propeller meshes for spinning
-        class UStaticMeshComponent* PropMeshes[4];
+        class UStaticMeshComponent* _propMeshes[4];
 
         // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
-            class USoundCue* propellerAudioCue;
+            class USoundCue* _propellerAudioCue;
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
-            class USoundCue* propellerStartupCue;
+            class USoundCue* _propellerStartupCue;
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
-            class UAudioComponent* propellerAudioComponent;
+            class UAudioComponent* _propellerAudioComponent;
 
         // FPV camera support
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class UCameraComponent* fpvCamera;
+            class UCameraComponent* _fpvCamera;
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class USpringArmComponent* fpvSpringArm;
+            class USpringArmComponent* _fpvSpringArm;
 
         // Abstract controller
         class SimFlightController * _flightController;
@@ -101,6 +98,9 @@ class AVehiclePawn : public APawn
 
         ~AVehiclePawn();
 
+		// Earth's gravity
+		static constexpr float G = 9.80665f;
+
         // AActor overrides
         virtual void BeginPlay() override;
         virtual void PostInitializeComponents() override;
@@ -113,6 +113,6 @@ class AVehiclePawn : public APawn
         static void debug(char * fmt, ...);
         static void outbuf(char * buf);
 
-        // Returns PlaneMesh subobject 
-        FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
+        // Returns _vehicleMesh subobject 
+        FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return _vehicleMesh; }
 };

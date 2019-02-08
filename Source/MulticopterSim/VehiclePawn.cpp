@@ -28,18 +28,18 @@ AVehiclePawn::AVehiclePawn()
 	// Structure to hold one-time initialization
 	struct FConstructorStatics
 	{
-		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> PlaneMesh;
+		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> _vehicleMesh;
 		FConstructorStatics()
-			: PlaneMesh(TEXT("/Game/Flying/Meshes/3DFly.3DFly"))
+			: _vehicleMesh(TEXT("/Game/Flying/Meshes/3DFly.3DFly"))
 		{
 		}
 	};
 	static FConstructorStatics ConstructorStatics;
 
 	// Create static mesh component
-	PlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
-	PlaneMesh->SetStaticMesh(ConstructorStatics.PlaneMesh.Get());	// Set static mesh
-	RootComponent = PlaneMesh;
+	_vehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
+	_vehicleMesh->SetStaticMesh(ConstructorStatics._vehicleMesh.Get());	// Set static mesh
+	RootComponent = _vehicleMesh;
 
     // Create flight-control support
     _flightController = SimFlightController::createSimFlightController();
@@ -50,24 +50,24 @@ AVehiclePawn::AVehiclePawn()
 	static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/Flying/Audio/MotorSoundCue'"));
 	
 	// Store a reference to the Cue asset - we'll need it later.
-	propellerAudioCue = propellerCue.Object;
+	_propellerAudioCue = propellerCue.Object;
 
 	// Create an audio component, the audio component wraps the Cue, 
 	// and allows us to ineract with it, and its parameters from code.
-	propellerAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
+	_propellerAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
 
 	// Stop the sound from sound playing the moment it's created.
-	propellerAudioComponent->bAutoActivate = false;
+	_propellerAudioComponent->bAutoActivate = false;
 
 	// Attach the sound to the pawn's root, the sound follows the pawn around
-	propellerAudioComponent->SetupAttachment(GetRootComponent());
+	_propellerAudioComponent->SetupAttachment(GetRootComponent());
 
     // Set up the FPV camera
-    fpvSpringArm = CreateDefaultSubobject<USpringArmComponent>(L"FpvSpringArm");
-    fpvSpringArm->SetupAttachment(RootComponent);
-	fpvSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
-    fpvCamera = CreateDefaultSubobject<UCameraComponent>(L"FpvCamera");
-    fpvCamera ->SetupAttachment(fpvSpringArm, USpringArmComponent::SocketName); 
+    _fpvSpringArm = CreateDefaultSubobject<USpringArmComponent>(L"_fpvSpringArm");
+    _fpvSpringArm->SetupAttachment(RootComponent);
+	_fpvSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
+    _fpvCamera = CreateDefaultSubobject<UCameraComponent>(L"_fpvCamera");
+    _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 
 
     // Set up the physics models
     _vehiclePhysics = VehiclePhysics::createVehiclePhysics();
@@ -80,8 +80,8 @@ AVehiclePawn::~AVehiclePawn()
 	
 void AVehiclePawn::PostInitializeComponents()
 {
-	if (propellerAudioCue->IsValidLowLevelFast()) {
-		propellerAudioComponent->SetSound(propellerAudioCue);
+	if (_propellerAudioCue->IsValidLowLevelFast()) {
+		_propellerAudioComponent->SetSound(_propellerAudioCue);
 	}
 
     // Grab the static prop mesh components by name, storing them for use in Tick()
@@ -90,10 +90,10 @@ void AVehiclePawn::PostInitializeComponents()
     for (int i = 0; i < staticComponents.Num(); i++) {
         if (staticComponents[i]) {
             UStaticMeshComponent* child = staticComponents[i];
-            if (child->GetName() == "Prop1") PropMeshes[0] = child;
-            if (child->GetName() == "Prop2") PropMeshes[1] = child;
-            if (child->GetName() == "Prop3") PropMeshes[2] = child;
-            if (child->GetName() == "Prop4") PropMeshes[3] = child;
+            if (child->GetName() == "Prop1") _propMeshes[0] = child;
+            if (child->GetName() == "Prop2") _propMeshes[1] = child;
+            if (child->GetName() == "Prop3") _propMeshes[2] = child;
+            if (child->GetName() == "Prop4") _propMeshes[3] = child;
         }
 	}
 
@@ -107,7 +107,7 @@ void AVehiclePawn::BeginPlay()
     
     // Start playing the sound.  Note that because the Cue Asset is set to loop the sound,
     // once we start playing the sound, it will play continiously...
-    propellerAudioComponent->Play();
+    _propellerAudioComponent->Play();
 
     // Initialize simulation variables
     _eulerPrev = FVector(0, 0, 0);
@@ -151,7 +151,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     // Send state to flight controller, dividing by 100 to convert cm to m
     TArray<float> motorvals = _flightController->update(_elapsedTime, GetActorLocation()/100, GetVelocity()/100, quat, gyro, accel);
-	TArray<float> motorvals2 = _flightController->update(_elapsedTime, GetActorLocation() / 100, GetVelocity() / 100, this);
+	TArray<float> motorvals2 = _flightController->update(DeltaSeconds, GetActorLocation() / 100, GetVelocity() / 100, this, _vehicleMesh);
 
     // Use physics model to compute rotation and translation forces on vehicle
     FVector rotationForce = {0,0,0};
@@ -159,7 +159,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     _vehiclePhysics->computeForces(DeltaSeconds, motorvals, euler, rotationForce, translationForce);
 
     // Add movement force vector to vehicle 
-    PlaneMesh->AddForce(translationForce);
+    _vehicleMesh->AddForce(translationForce);
 
     // Add rotation to vehicle 
     AddActorLocalRotation(DeltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
@@ -183,7 +183,7 @@ void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
 	if (_tickCycle == 0) {
 		for (uint8_t k = 0; k < 4; ++k) {
 			FRotator PropRotation(0, motorvals[k] * MOTORDIRS[k] * 240, 0);
-			PropMeshes[k]->AddLocalRotation(PropRotation);
+			_propMeshes[k]->AddLocalRotation(PropRotation);
 		}
 	}
     _tickCycle = (_tickCycle+1) % PROP_UPDATE;
@@ -191,8 +191,8 @@ void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
 
 void AVehiclePawn::setAudioPitchAndVolume(float value)
 {
-    propellerAudioComponent->SetFloatParameter(FName("pitch"), value);
-    propellerAudioComponent->SetFloatParameter(FName("volume"), value);
+    _propellerAudioComponent->SetFloatParameter(FName("pitch"), value);
+    _propellerAudioComponent->SetFloatParameter(FName("volume"), value);
 }
 
 float AVehiclePawn::mean(TArray<float> x)
