@@ -186,19 +186,18 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 			_gyro[1] = gyro.Y;
 			_gyro[2] = 0; // zero-out gyro Z for now
 			
-
 			TArray<float> motorvals = { _motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3] };
 
 			// Use physics model to compute rotation and translation forces on vehicle
-			//FVector rotationForce = { 0,0,0 };
-			//FVector translationForce = { 0,0,0 };
-			//computeForces(deltaSeconds, motorvals, euler, rotationForce, translationForce);
+			FVector rotationForce = { 0,0,0 };
+			FVector translationForce = { 0,0,0 };
+			computeForces(deltaSeconds, motorvals, euler, rotationForce, translationForce);
 
 			// Add movement force vector to vehicle 
-			//vehicleMesh->AddForce(translationForce);
+			vehicleMesh->AddForce(translationForce);
 
 			// Add rotation to vehicle 
-			//vehiclePawn->AddActorLocalRotation(deltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
+			vehiclePawn->AddActorLocalRotation(deltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
 			
 			// Output the motor values for audiovisual effect
 			return motorvals;

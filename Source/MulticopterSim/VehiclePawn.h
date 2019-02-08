@@ -82,12 +82,10 @@ class AVehiclePawn : public APawn
         GaussianNoise _rangeNoise = GaussianNoise(1, .002);  // meters
         GaussianNoise _flowNoise  = GaussianNoise(2, .001);  // meters / second
 
-        // Support various models of vehicle physics
-        VehiclePhysics * _vehiclePhysics;
-
         // Simulate IMU via ground-truth
         FVector getGyrometer(FVector & euler, float DeltaSeconds);
 
+        // Helper
 		static float mean(TArray<float> x);
 
     public:

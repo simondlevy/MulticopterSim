@@ -68,14 +68,10 @@ AVehiclePawn::AVehiclePawn()
 	_fpvSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
     _fpvCamera = CreateDefaultSubobject<UCameraComponent>(L"_fpvCamera");
     _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 
-
-    // Set up the physics models
-    _vehiclePhysics = VehiclePhysics::createVehiclePhysics();
 }
 
 AVehiclePawn::~AVehiclePawn()
 {
-    delete _vehiclePhysics;
 }
 	
 void AVehiclePawn::PostInitializeComponents()
@@ -149,17 +145,6 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     // Send state to flight controller, dividing by 100 to convert cm to m
 	TArray<float> motorvals = _flightController->update(DeltaSeconds, gyro, this, _vehicleMesh);
-
-    // Use physics model to compute rotation and translation forces on vehicle
-    FVector rotationForce = {0,0,0};
-    FVector translationForce = {0,0,0};
-    _vehiclePhysics->computeForces(DeltaSeconds, motorvals, euler, rotationForce, translationForce);
-
-    // Add movement force vector to vehicle 
-    _vehicleMesh->AddForce(translationForce);
-
-    // Add rotation to vehicle 
-    AddActorLocalRotation(DeltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
 
     // Add animation effects (prop rotation, sound)
     addAnimationEffects(motorvals);
