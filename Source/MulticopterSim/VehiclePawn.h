@@ -88,7 +88,6 @@ class AVehiclePawn : public APawn
         // Simulate IMU via ground-truth
         FVector getAccelerometer(float DeltaSeconds);
         FVector getGyrometer(FVector & euler, float DeltaSeconds);
-        FQuat   getQuaternion(void);
 
 		static float mean(TArray<float> x);
 

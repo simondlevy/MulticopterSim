@@ -239,15 +239,6 @@ FVector AVehiclePawn::getGyrometer(FVector & euler, float DeltaSeconds)
     return gyro;
 }
 
-FQuat AVehiclePawn::getQuaternion(void)
-{
-    // Get current quaternion and convert it to our format (XXX necessary?
-    FQuat quat = this->GetActorQuat();
-    quat.X = -quat.X;
-    quat.Y = -quat.Y;
-    return quat;
-}
-
 void AVehiclePawn::debug(char * fmt, ...)
 {
     va_list ap;
