@@ -56,7 +56,7 @@ class AVehiclePawn : public APawn
             class USpringArmComponent* fpvSpringArm;
 
         // Abstract controller
-        SimFlightController * _flightController;
+        class SimFlightController * _flightController;
 
         // Support for simulating spinning propellers
         uint8_t _tickCycle;
