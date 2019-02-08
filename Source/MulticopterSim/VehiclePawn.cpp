@@ -150,7 +150,6 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     FQuat   quat  = getQuaternion();
 
     // Send state to flight controller, dividing by 100 to convert cm to m
-    //TArray<float> motorvals = _flightController->update(quat, gyro);
 	TArray<float> motorvals = _flightController->update(DeltaSeconds,  quat, gyro, this, _vehicleMesh);
 
     // Use physics model to compute rotation and translation forces on vehicle
