@@ -88,7 +88,6 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
         float _motorvals[3];
 
 		// Support for sensor emulation via first differencing
-		FVector _eulerPrev;
 		float _varioPrev;
 		float _groundAltitude;
 
@@ -149,7 +148,6 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
         virtual void start(void) override
         {
 			// Initialize simulation variables
-			_eulerPrev = FVector(0, 0, 0);
 			_varioPrev = 0;
 			_elapsedTime = 0;
         }
@@ -168,13 +166,21 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 			// Get the simulated IMU readings
 			FQuat   quat = getQuaternion(vehiclePawn);
 
+            static float _eulerXPrev, _eulerYPrev;
+
+            float gyroX = (euler.X - _eulerXPrev) / deltaSeconds;
+            float gyroY = (euler.Y - _eulerYPrev) / deltaSeconds;
+
+            _eulerXPrev = euler.X;
+            _eulerYPrev = euler.Y;
+
 			// Store quaternion and gyro values for Hackflight::Board methods below
 			_quat[0] = quat.W;
 			_quat[1] = quat.X;
 			_quat[2] = quat.Y;
 			_quat[3] = quat.Z;
-			_gyro[0] = gyro.X;
-			_gyro[1] = gyro.Y;
+			_gyro[0] = gyroX;
+			_gyro[1] = gyroY;
 			_gyro[2] = 0; // zero-out gyro Z for now
 			
 			TArray<float> motorvals = { _motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3] };
