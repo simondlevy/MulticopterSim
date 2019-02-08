@@ -30,23 +30,27 @@ public:
 
 	~ImageGrabber(void);
 
+	// Called on the main thread
 	void grabImage(void);
-    
+
+	// Called on the other thread
+	virtual void processImage(void) = 0;
+
 protected:
 
 	cv::Mat _img;
 
-    virtual void processImage(void) = 0;
 
 private:
+
+	// Support for vision algorithms
+	int _rows;
+	int _cols;
+	uint8_t* _bgrabytes; // OpenCV uses BGRA
 
 	// Access to camera's render target
 	UTextureRenderTarget2D* _visionTextureRenderTarget;
 	FRenderTarget* _visionRenderTarget;
 	TArray<FColor> _visionSurfData;
-
-	// Support for vision algorithms
-	int _rows;
-	int _cols;
-	uint8_t* _bgrbytes; // OpenCV uses BGR o
+	UTexture2D *Texture;
 };

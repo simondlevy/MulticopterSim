@@ -142,7 +142,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 		return;
 	}
 
-    //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
+    debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
     // Convert quaternion to Euler angles
     FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
