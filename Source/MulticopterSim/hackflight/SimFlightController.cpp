@@ -152,7 +152,7 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 			_elapsedTime = 0;
         }
 
-		virtual TArray<float> update(float deltaSeconds, FVector gyro, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override
+		virtual TArray<float> update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override
 		{
 			// Update the receiver
 			receiver->update();
@@ -168,21 +168,19 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
             static float _eulerXPrev, _eulerYPrev;
 
-            float gyroX = (euler.X - _eulerXPrev) / deltaSeconds;
-            float gyroY = (euler.Y - _eulerYPrev) / deltaSeconds;
-
-            _eulerXPrev = euler.X;
-            _eulerYPrev = euler.Y;
-
 			// Store quaternion and gyro values for Hackflight::Board methods below
 			_quat[0] = quat.W;
 			_quat[1] = quat.X;
 			_quat[2] = quat.Y;
 			_quat[3] = quat.Z;
-			_gyro[0] = gyroX;
-			_gyro[1] = gyroY;
+			_gyro[0] = (euler.X - _eulerXPrev) / deltaSeconds;
+			_gyro[1] = (euler.Y - _eulerYPrev) / deltaSeconds;
 			_gyro[2] = 0; // zero-out gyro Z for now
 			
+            // Store current Euler X,Y for gyro simulation
+            _eulerXPrev = euler.X;
+            _eulerYPrev = euler.Y;
+
 			TArray<float> motorvals = { _motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3] };
 
 			// Use physics model to compute rotation and translation forces on vehicle

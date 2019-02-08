@@ -106,8 +106,6 @@ void AVehiclePawn::BeginPlay()
     _propellerAudioComponent->Play();
 
     // Initialize simulation variables
-    _eulerPrev = FVector(0, 0, 0);
-	_elapsedTime = 0; 
     _tickCycle = 0;
 
     // Make sure a map has been selected
@@ -136,20 +134,11 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
-    // Convert quaternion to Euler angles
-    FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
-
-    // Get the simulated IMU readings
-    FVector gyro  = getGyrometer(euler, DeltaSeconds);
-
     // Send state to flight controller, dividing by 100 to convert cm to m
-	TArray<float> motorvals = _flightController->update(DeltaSeconds, gyro, this, _vehicleMesh);
+	TArray<float> motorvals = _flightController->update(DeltaSeconds, this, _vehicleMesh);
 
     // Add animation effects (prop rotation, sound)
     addAnimationEffects(motorvals);
-
-    // Accumulate elapsed time
-    _elapsedTime += DeltaSeconds;
 
     // Call any parent class Tick implementation
     Super::Tick(DeltaSeconds);
@@ -196,14 +185,6 @@ void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Ot
     // Deflect along the surface when we collide.
     FRotator CurrentRotation = GetActorRotation();
     SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
-}
-
-FVector AVehiclePawn::getGyrometer(FVector & euler, float DeltaSeconds)
-{
-    // Use Euler angle first difference to emulate gyro
-    FVector gyro = (euler - _eulerPrev) / DeltaSeconds;
-    _eulerPrev = euler;
-    return gyro;
 }
 
 void AVehiclePawn::debug(char * fmt, ...)

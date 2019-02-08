@@ -59,10 +59,6 @@ class AVehiclePawn : public APawn
         static constexpr int8_t MOTORDIRS[4] = {+1, -1, -1, +1};
 		static constexpr uint8_t PROP_UPDATE = 5;
 
-        // Support for sensor emulation via first differencing
-        FVector _eulerPrev;
-        float _elapsedTime;
-
 		// Bozo filter for failure to select a map
 		bool _mapSelected;
 
@@ -78,9 +74,6 @@ class AVehiclePawn : public APawn
         GaussianNoise _quatNoise  = GaussianNoise(4, 0);     // [+/-1]
         GaussianNoise _rangeNoise = GaussianNoise(1, .002);  // meters
         GaussianNoise _flowNoise  = GaussianNoise(2, .001);  // meters / second
-
-        // Simulate IMU via ground-truth
-        FVector getGyrometer(FVector & euler, float DeltaSeconds);
 
         // Helper
 		static float mean(TArray<float> x);
