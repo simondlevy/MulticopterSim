@@ -9,67 +9,49 @@
  */
 
 #include "ImageGrabber.h"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
 
+#include "opencv2/imgproc/imgproc.hpp"
 
 ImageGrabber::ImageGrabber(UTextureRenderTarget2D* visionTextureRenderTarget)
 {
-	_visionTextureRenderTarget = visionTextureRenderTarget;
+	// Get the size of the render target
+	uint16_t rows = visionTextureRenderTarget->SizeY;
+	uint16_t cols = visionTextureRenderTarget->SizeX;
 
-	// Creates Texture2D to store VisionTex content
-	UTexture2D* visionTexture = UTexture2D::CreateTransient(_visionTextureRenderTarget->SizeX, _visionTextureRenderTarget->SizeY, PF_B8G8R8A8);
+	// Create Texture2D to store render content
+	UTexture2D* texture = UTexture2D::CreateTransient(cols, rows, PF_B8G8R8A8);
 
 #if WITH_EDITORONLY_DATA
-	visionTexture->MipGenSettings = TMGS_NoMipmaps;
+	texture->MipGenSettings = TMGS_NoMipmaps;
 #endif
-	visionTexture->SRGB = visionTextureRenderTarget->SRGB;
 
-	_visionRenderTarget = visionTextureRenderTarget->GameThread_GetRenderTargetResource();
+	texture->SRGB = visionTextureRenderTarget->SRGB;
 
-	// Allocate memory for BGR image bytes
-	_rows = _visionTextureRenderTarget->SizeY;
-	_cols = _visionTextureRenderTarget->SizeX;
-	_bgrabytes = new uint8_t[_rows*_cols * 4];
+	_renderTarget = visionTextureRenderTarget->GameThread_GetRenderTargetResource();
 
-	// Create an empty OpenCV image
-	_img= cv::Mat(_rows, _cols, CV_8UC4);
-
-    // Make the images bytes be our BGR bytes
-    _img.data = _bgrabytes;
+	// Create an empty OpenCV BGRA image
+	_img = cv::Mat(rows, cols, CV_8UC4);
 }
 
 ImageGrabber::~ImageGrabber(void)
 {
-	delete _bgrabytes;
 }
 
+// Runs on main thread
 void ImageGrabber::grabImage(void)
 {
-	// Creates Texture2D to store TextureRenderTarget content
-	//Texture = UTexture2D::CreateTransient(_visionTextureRenderTarget->SizeX, _visionTextureRenderTarget->SizeY, PF_B8G8R8A8);
-	Texture = UTexture2D::CreateTransient(_visionTextureRenderTarget->SizeX, _visionTextureRenderTarget->SizeY, PF_R8G8B8A8);
-#if WITH_EDITORONLY_DATA
-	Texture->MipGenSettings = TMGS_NoMipmaps;
-#endif
-	Texture->SRGB = _visionTextureRenderTarget->SRGB;
-
-	// Read the pixels from the RenderTarget and store them in a FColor array
+	// Read the pixels from the RenderTarget
 	TArray<FColor> SurfData;
-	FRenderTarget *RenderTarget = _visionTextureRenderTarget->GameThread_GetRenderTargetResource();
-	RenderTarget->ReadPixels(SurfData);
+	_renderTarget->ReadPixels(SurfData);
 
-	// Lock and copies the data between the textures
-	//void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
-	//const int32 TextureDataSize = SurfData.Num() * 4;
-	//FMemory::Memcpy(TextureData, SurfData.GetData(), TextureDataSize);
-	//Texture->PlatformData->Mips[0].BulkData.Unlock();
+	// Copy the pixels to the OpenCV Mat data
+	FMemory::Memcpy(_img.data, SurfData.GetData(), SurfData.Num() * 4);
 
-	FMemory::Memcpy(_bgrabytes, SurfData.GetData(), SurfData.Num() * 4);
+}
 
+void ImageGrabber::processImage(void)
+{
+	// Convert from UE4 RGBA to OpenCV BGRA
 	cv::cvtColor(_img, _img, CV_RGBA2BGRA);
-
-    // Read the pixels from the RenderTarget and store them in a FColor array
-    //_visionRenderTarget->ReadPixels(_visionSurfData);
 }
 

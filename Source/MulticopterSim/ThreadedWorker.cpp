@@ -46,4 +46,7 @@ uint32_t FThreadedWorker::Run()
 void FThreadedWorker::Stop()
 {
 	_running = false;
+
+	// Final wait after stopping
+	FPlatformProcess::Sleep(0.03);
 }
