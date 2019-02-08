@@ -29,8 +29,7 @@ AVehiclePawn::AVehiclePawn()
 	struct FConstructorStatics
 	{
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> _vehicleMesh;
-		FConstructorStatics()
-			: _vehicleMesh(TEXT("/Game/Flying/Meshes/3DFly.3DFly"))
+		FConstructorStatics() : _vehicleMesh(TEXT("/Game/Flying/Meshes/3DFly.3DFly"))
 		{
 		}
 	};
@@ -41,8 +40,8 @@ AVehiclePawn::AVehiclePawn()
 	_vehicleMesh->SetStaticMesh(ConstructorStatics._vehicleMesh.Get());	// Set static mesh
 	RootComponent = _vehicleMesh;
 
-    // Create flight-control support
-    _flightController = SimFlightController::createSimFlightController();
+    // Create physics support
+    _physics = Physics::createPhysics();
 
 	// Load our Sound Cue for the propeller sound we created in the editor... 
 	// note your path may be different depending
@@ -99,7 +98,7 @@ void AVehiclePawn::PostInitializeComponents()
 void AVehiclePawn::BeginPlay()
 {
     // Start the flight controller
-    _flightController->start();
+    _physics->start();
     
     // Start playing the sound.  Note that because the Cue Asset is set to loop the sound,
     // once we start playing the sound, it will play continiously...
@@ -118,7 +117,7 @@ void AVehiclePawn::BeginPlay()
 void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     // Stop the flight controller
-    _flightController->stop();
+    _physics->stop();
 
     Super::EndPlay(EndPlayReason);
 }
@@ -134,8 +133,8 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
-    // Send state to flight controller, dividing by 100 to convert cm to m
-	TArray<float> motorvals = _flightController->update(DeltaSeconds, this, _vehicleMesh);
+    // Update physics
+	TArray<float> motorvals = _physics->update(DeltaSeconds, this, _vehicleMesh);
 
     // Add animation effects (prop rotation, sound)
     addAnimationEffects(motorvals);

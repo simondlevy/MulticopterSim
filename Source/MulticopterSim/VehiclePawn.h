@@ -14,7 +14,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include "SimFlightController.h"
+#include "Physics.h"
 #include "GaussianNoise.h"
 
 #include "CoreMinimal.h"
@@ -51,8 +51,8 @@ class AVehiclePawn : public APawn
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
             class USpringArmComponent* _fpvSpringArm;
 
-        // Abstract controller
-        class SimFlightController * _flightController;
+        // Actual  physics supported by your application
+        class Physics * _physics;
 
         // Support for simulating spinning propellers
         uint8_t _tickCycle;

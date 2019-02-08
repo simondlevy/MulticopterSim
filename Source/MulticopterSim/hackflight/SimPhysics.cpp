@@ -6,7 +6,7 @@
  * MIT License
  */
 
-#include "SimFlightController.h"
+#include "Physics.h"
 
 #include "VehiclePawn.h"
 
@@ -34,7 +34,7 @@
 #include "hackflight/sensors/SimOpticalFlow.h"
 #include "hackflight/sensors/SimRangefinder.h"
 
-class HackflightSimFlightController : public SimFlightController, public hf::Board {
+class SimPhysics : public Physics, public hf::Board {
 
     private:
 
@@ -126,7 +126,7 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
     public:
 
-        HackflightSimFlightController(void)
+        SimPhysics(void)
         {
             // Start the "receiver" (joystick/gamepad)
             receiver = new hf::SimReceiver();
@@ -281,7 +281,7 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
         { // XXX
         }
 
-}; // HackflightSimFlightController
+}; // SimPhysics
 
 // Debugging
 void hf::Board::outbuf(char * buf)
@@ -290,7 +290,7 @@ void hf::Board::outbuf(char * buf)
 }
 
 // Factory method
-SimFlightController * SimFlightController::createSimFlightController(void)
+Physics * Physics::createPhysics(void)
 {
-    return new HackflightSimFlightController();
+    return new SimPhysics();
 }
