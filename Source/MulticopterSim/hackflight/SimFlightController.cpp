@@ -82,6 +82,9 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
         float _elapsedTime;
 
+        float _eulerXPrev;
+        float _eulerYPrev;
+
         float _quat[4];
         float _gyro[3];
 
@@ -150,6 +153,8 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 			// Initialize simulation variables
 			_varioPrev = 0;
 			_elapsedTime = 0;
+            _eulerXPrev = 0;
+            _eulerYPrev = 0;
         }
 
 		virtual TArray<float> update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override
@@ -165,8 +170,6 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
 			// Get the simulated IMU readings
 			FQuat   quat = getQuaternion(vehiclePawn);
-
-            static float _eulerXPrev, _eulerYPrev;
 
 			// Store quaternion and gyro values for Hackflight::Board methods below
 			_quat[0] = quat.W;
