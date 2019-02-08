@@ -119,9 +119,6 @@ void AVehiclePawn::BeginPlay()
 	FString mapName = GetWorld()->GetMapName();
 	_mapSelected = !mapName.Contains("Untitled");
 
-	// Check whether benchmarking
-    _benchmarking = mapName.Contains(TEXT("Benchmark"));
-
     Super::BeginPlay();
 }
 
@@ -160,25 +157,14 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     FVector translationForce = {0,0,0};
     _vehiclePhysics->computeForces(DeltaSeconds, motorvals, euler, rotationForce, translationForce);
 
-    // Turn off sound and controlled movement in benchmark mode
-    if (_benchmarking) {
+    // Add movement force vector to vehicle 
+    PlaneMesh->AddForce(translationForce);
 
-        debug("Acceleromter X: %+3.3f    Y: %+3.3f    Z: %+3.3f", accel.X, accel.Y, accel.Z);
+    // Add rotation to vehicle 
+    AddActorLocalRotation(DeltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
 
-        silenceAudio();
-    }
-
-    else {
-
-        // Add movement force vector to vehicle 
-        PlaneMesh->AddForce(translationForce);
-
-        // Add rotation to vehicle 
-        AddActorLocalRotation(DeltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
-
-        // Add animation effects (prop rotation, sound)
-        addAnimationEffects(motorvals);
-    }
+    // Add animation effects (prop rotation, sound)
+    addAnimationEffects(motorvals);
 
     // Accumulate elapsed time
     _elapsedTime += DeltaSeconds;
@@ -190,7 +176,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
 {
     // Modulate the pitch and voume of the propeller sound
-    setAudioPitchAndVolume(motorvals.Max());
+	setAudioPitchAndVolume(mean(motorvals));
 
     // Rotate one props periodically (not every tick)
 	if (_tickCycle == 0) {
@@ -202,16 +188,23 @@ void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
     _tickCycle = (_tickCycle+1) % PROP_UPDATE;
 }
 
-void AVehiclePawn::silenceAudio(void)
-{
-    setAudioPitchAndVolume(0);
-}
-
 void AVehiclePawn::setAudioPitchAndVolume(float value)
 {
     propellerAudioComponent->SetFloatParameter(FName("pitch"), value);
     propellerAudioComponent->SetFloatParameter(FName("volume"), value);
 }
+
+float AVehiclePawn::mean(TArray<float> x)
+{
+	float mn = 0;
+
+	for (auto It = x.CreateConstIterator(); It; ++It) {
+		mn += *It;
+	}
+
+	return mn / x.Num();
+}
+
 
 void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
         bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
