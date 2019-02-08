@@ -165,14 +165,8 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
             _elapsedTime = 1.0;
         }
 
-        virtual TArray<float> update(float timestamp, FVector position, FVector velocity, FQuat quat, FVector gyro, FVector accel) override
+        virtual TArray<float> update(FQuat quat, FVector gyro) override
         {
-            // Unused for Hackflight
-            (void)position;
-            (void)timestamp;
-            (void)velocity;
-            (void)accel;
-
             receiver->update();
 
             hackflight.update();
@@ -188,13 +182,16 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
             TArray<float> motorvals = {_motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3]};
             return motorvals;
-
         }
 
-		virtual TArray<float> update(float deltaSeconds, FVector position, FVector velocity, 
-			AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override
+		virtual TArray<float> update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override
 		{
-			/*
+			// Update the receiver
+			receiver->update();
+
+			// Update the Hackflight firmware
+			hackflight.update();
+
 			// Convert quaternion to Euler angles
 			FVector euler = FMath::DegreesToRadians(vehiclePawn->GetActorQuat().Euler());
 
@@ -202,12 +199,6 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 			FVector accel = getAccelerometer(vehiclePawn->GetVelocity().Z, euler, deltaSeconds);
 			FVector gyro = getGyrometer(euler, deltaSeconds);
 			FQuat   quat = getQuaternion(vehiclePawn);
-
-			// Update the receiver
-			receiver->update();
-
-			// Update the Hackflight firmware
-			hackflight.update();
 
 			// Store quaternion and gyro values for Hackflight::Board methods below
 			_quat[0] = quat.W;
@@ -217,11 +208,10 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 			_gyro[0] = gyro.X;
 			_gyro[1] = gyro.Y;
 			_gyro[2] = 0; // zero-out gyro Z for now
-			*/
+			
 
 			TArray<float> motorvals = { _motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3] };
 
-			/*
 			// Use physics model to compute rotation and translation forces on vehicle
 			FVector rotationForce = { 0,0,0 };
 			FVector translationForce = { 0,0,0 };
@@ -232,8 +222,7 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
 			// Add rotation to vehicle 
 			vehiclePawn->AddActorLocalRotation(deltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
-			*/
-
+			
 			// Output the motor values for audiovisual effect
 			return motorvals;
 		}
