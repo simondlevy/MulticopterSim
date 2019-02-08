@@ -92,11 +92,11 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 		float _varioPrev;
 		float _groundAltitude;
 
-		FVector getAccelerometer(float velocityZ, FVector & euler, float DeltaSeconds)
+		FVector getAccelerometer(float velocityZ, FVector & euler, float deltaSeconds)
 		{
 			// Use velocity first difference to emulate G force on vehicle in inertial frame
 			float vario = velocityZ / 100; // m/s
-			float gs = ((vario - _varioPrev) / DeltaSeconds + AVehiclePawn::G) / AVehiclePawn::G;
+			float gs = ((vario - _varioPrev) / deltaSeconds + AVehiclePawn::G) / AVehiclePawn::G;
 			_varioPrev = vario;
 
 			// Convert inertial frame to body frame
@@ -104,14 +104,6 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 			float phi = euler.X;
 			float theta = euler.Y;
 			return gs * FVector(-sin(theta), sin(phi)*cos(theta), cos(phi)*cos(theta));
-		}
-
-		FVector getGyrometer(FVector & euler, float DeltaSeconds)
-		{
-			// Use Euler angle first difference to emulate gyro
-			FVector gyro = (euler - _eulerPrev) / DeltaSeconds;
-			//_eulerPrev = euler;
-			return gyro;
 		}
 
 		FQuat getQuaternion(class AVehiclePawn * vehiclePawn)
@@ -175,7 +167,6 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
 			// Get the simulated IMU readings
 			FQuat   quat = getQuaternion(vehiclePawn);
-			FVector mygyro = getGyrometer(euler, deltaSeconds);
 
 			// Store quaternion and gyro values for Hackflight::Board methods below
 			_quat[0] = quat.W;

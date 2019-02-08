@@ -16,7 +16,6 @@
 
 #include "SimFlightController.h"
 #include "GaussianNoise.h"
-#include "VehiclePhysics.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -62,8 +61,6 @@ class AVehiclePawn : public APawn
 
         // Support for sensor emulation via first differencing
         FVector _eulerPrev;
-        float _varioPrev;
-        float _groundAltitude;
         float _elapsedTime;
 
 		// Bozo filter for failure to select a map

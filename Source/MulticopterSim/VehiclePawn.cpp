@@ -107,7 +107,6 @@ void AVehiclePawn::BeginPlay()
 
     // Initialize simulation variables
     _eulerPrev = FVector(0, 0, 0);
-	_varioPrev = 0;
 	_elapsedTime = 0; 
     _tickCycle = 0;
 
