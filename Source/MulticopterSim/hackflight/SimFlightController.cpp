@@ -184,7 +184,7 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
             return motorvals;
         }
 
-		virtual TArray<float> update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override
+		virtual TArray<float> update(float deltaSeconds, FQuat quat, FVector gyro, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override
 		{
 			// Update the receiver
 			receiver->update();
@@ -193,12 +193,12 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 			hackflight.update();
 
 			// Convert quaternion to Euler angles
-			FVector euler = FMath::DegreesToRadians(vehiclePawn->GetActorQuat().Euler());
+			//FVector euler = FMath::DegreesToRadians(vehiclePawn->GetActorQuat().Euler());
 
 			// Get the simulated IMU readings
-			FVector accel = getAccelerometer(vehiclePawn->GetVelocity().Z, euler, deltaSeconds);
-			FVector gyro = getGyrometer(euler, deltaSeconds);
-			FQuat   quat = getQuaternion(vehiclePawn);
+			//FVector accel = getAccelerometer(vehiclePawn->GetVelocity().Z, euler, deltaSeconds);
+			//FVector gyro = getGyrometer(euler, deltaSeconds);
+			//FQuat   quat = getQuaternion(vehiclePawn);
 
 			// Store quaternion and gyro values for Hackflight::Board methods below
 			_quat[0] = quat.W;
@@ -213,15 +213,15 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 			TArray<float> motorvals = { _motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3] };
 
 			// Use physics model to compute rotation and translation forces on vehicle
-			FVector rotationForce = { 0,0,0 };
-			FVector translationForce = { 0,0,0 };
-			computeForces(deltaSeconds, motorvals, euler, rotationForce, translationForce);
+			//FVector rotationForce = { 0,0,0 };
+			//FVector translationForce = { 0,0,0 };
+			//computeForces(deltaSeconds, motorvals, euler, rotationForce, translationForce);
 
 			// Add movement force vector to vehicle 
-			vehicleMesh->AddForce(translationForce);
+			//vehicleMesh->AddForce(translationForce);
 
 			// Add rotation to vehicle 
-			vehiclePawn->AddActorLocalRotation(deltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
+			//vehiclePawn->AddActorLocalRotation(deltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
 			
 			// Output the motor values for audiovisual effect
 			return motorvals;

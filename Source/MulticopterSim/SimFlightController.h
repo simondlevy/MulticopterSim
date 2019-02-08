@@ -31,7 +31,7 @@ public:
 
      virtual TArray<float> update(FQuat quat, FVector gyro) = 0;
 
-	 virtual TArray<float> update(float deltaSeconds, class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) = 0;
+	 virtual TArray<float> update(float deltaSeconds, FQuat quat, FVector gyro, class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) = 0;
 
     /**
      *  Factory method.
