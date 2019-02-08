@@ -165,7 +165,7 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
             _elapsedTime = 1.0;
         }
 
-		virtual TArray<float> update(float deltaSeconds, FQuat quat, FVector gyro, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override
+		virtual TArray<float> update(float deltaSeconds, FVector gyro, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override
 		{
 			// Update the receiver
 			receiver->update();
@@ -177,14 +177,14 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 			FVector euler = FMath::DegreesToRadians(vehiclePawn->GetActorQuat().Euler());
 
 			// Get the simulated IMU readings
-			FQuat   myquat = getQuaternion(vehiclePawn);
+			FQuat   quat = getQuaternion(vehiclePawn);
 			//FVector gyro = getGyrometer(euler, deltaSeconds);
 
 			// Store quaternion and gyro values for Hackflight::Board methods below
-			_quat[0] = myquat.W;
-			_quat[1] = myquat.X;
-			_quat[2] = myquat.Y;
-			_quat[3] = myquat.Z;
+			_quat[0] = quat.W;
+			_quat[1] = quat.X;
+			_quat[2] = quat.Y;
+			_quat[3] = quat.Z;
 			_gyro[0] = gyro.X;
 			_gyro[1] = gyro.Y;
 			_gyro[2] = 0; // zero-out gyro Z for now

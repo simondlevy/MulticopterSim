@@ -145,12 +145,10 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     FVector euler = FMath::DegreesToRadians(this->GetActorQuat().Euler());
 
     // Get the simulated IMU readings
-    //FVector accel = getAccelerometer(DeltaSeconds);
     FVector gyro  = getGyrometer(euler, DeltaSeconds);
-    FQuat   quat  = getQuaternion();
 
     // Send state to flight controller, dividing by 100 to convert cm to m
-	TArray<float> motorvals = _flightController->update(DeltaSeconds,  quat, gyro, this, _vehicleMesh);
+	TArray<float> motorvals = _flightController->update(DeltaSeconds, gyro, this, _vehicleMesh);
 
     // Use physics model to compute rotation and translation forces on vehicle
     FVector rotationForce = {0,0,0};

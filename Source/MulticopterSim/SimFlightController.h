@@ -29,7 +29,7 @@ public:
      */
     virtual void stop(void) { }
 
-	 virtual TArray<float> update(float deltaSeconds, FQuat quat, FVector gyro, class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) = 0;
+	 virtual TArray<float> update(float deltaSeconds, FVector gyro, class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) = 0;
 
     /**
      *  Factory method.
