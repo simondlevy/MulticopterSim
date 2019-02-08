@@ -149,6 +149,12 @@ class HackflightSimFlightController : public SimFlightController, public hf::Boa
 
         }
 
+		virtual TArray<float> update(float timestamp, FVector position, FVector velocity) override
+		{
+			TArray<float> motorvals = { _motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3] };
+			return motorvals;
+		}
+
     protected:
 
         // Hackflight::Board method implementation -------------------------------------

@@ -40,6 +40,16 @@ public:
      */
      virtual TArray<float> update(float timestamp, FVector position, FVector velocity, FQuat quat, FVector gyro, FVector accel) = 0;
 
+
+	 /**
+	  * Updates the flight controller with the current IMU values, returning motor values.
+	  * @param timestamp  input: current time in seconds
+	  * @param position   input: current position in meters
+	  * @param velocity   input: current velocity in meters per second
+	 * @return motorvals motor values between 0 and 1 implementation
+	  */
+	 virtual TArray<float> update(float timestamp, FVector position, FVector velocity) = 0;
+
     /**
      *  Factory method.
      *  @return pointer to a new SimFlightController object

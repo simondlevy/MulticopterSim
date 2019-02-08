@@ -151,6 +151,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     // Send state to flight controller, dividing by 100 to convert cm to m
     TArray<float> motorvals = _flightController->update(_elapsedTime, GetActorLocation()/100, GetVelocity()/100, quat, gyro, accel);
+	TArray<float> motorvals2 = _flightController->update(_elapsedTime, GetActorLocation() / 100, GetVelocity() / 100);
 
     // Use physics model to compute rotation and translation forces on vehicle
     FVector rotationForce = {0,0,0};
