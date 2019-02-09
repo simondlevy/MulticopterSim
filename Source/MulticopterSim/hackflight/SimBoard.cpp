@@ -9,14 +9,21 @@
 #include "SimBoard.h"
 #include "BuiltinPhysics.h"
 
-SimBoard::SimBoard()
-{
-}
+#include <hackflight.hpp>
 
+class HackflightSimBoard : public SimBoard {
 
-SimBoard::~SimBoard()
-{
-}
+    public:
+
+        HackflightSimBoard(void)
+        {
+        }
+
+        ~HackflightSimBoard(void)
+        {
+        }
+
+}; // SimBoard
 
 // Debugging
 void hf::Board::outbuf(char * buf)
@@ -29,3 +36,10 @@ Physics * Physics::createPhysics(void)
 {
     return new BuiltinPhysics();
 }
+
+// Factory method for SimBoard class
+SimBoard * SimBoard::createSimBoard()
+{
+    return new HackflightSimBoard();
+}
+

@@ -74,7 +74,7 @@ TArray<float> BuiltinPhysics::update(float deltaSeconds, AVehiclePawn * vehicleP
     FVector euler = FMath::DegreesToRadians(vehiclePawn->GetActorQuat().Euler());
 
     // Get the simulated IMU readings
-    FQuat   quat = getQuaternion(vehiclePawn);
+    FQuat quat = getQuaternion(vehiclePawn);
 
     // Store quaternion and gyro values for Hackflight::Board methods below
     _quat[0] = quat.W;
