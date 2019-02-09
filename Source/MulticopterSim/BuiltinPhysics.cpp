@@ -15,10 +15,8 @@ BuiltinPhysics::BuiltinPhysics(void)
 
 void BuiltinPhysics::start(void)
 {
-    // Initialize simulation variables
-    _eulerXPrev = 0;
-    _eulerYPrev = 0;
-    _eulerZPrev = 0;
+    // Initialize previous Euler angles for simulating gyro
+	_eulerPrev = FVector(0, 0, 0);
 }
 
 TArray<float> BuiltinPhysics::update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
@@ -29,19 +27,14 @@ TArray<float> BuiltinPhysics::update(float deltaSeconds, AVehiclePawn * vehicleP
 	// Convert quaternion to Euler angles
 	FVector euler = FMath::DegreesToRadians(quat.Euler());
 
-    // Simulate a gyrometer by temporal first-differencing of Euler angles
-    FVector gyro;
-    gyro.X = (euler.X - _eulerXPrev) / deltaSeconds;
-    gyro.Y = (euler.Y - _eulerYPrev) / deltaSeconds;
-    gyro.Z = (euler.Z - _eulerZPrev) / deltaSeconds;
+    // Simulate gyrometer by temporal first-differencing of Euler angles
+    FVector gyro = (euler - _eulerPrev) / deltaSeconds;
 
     // Update the flight manager with the quaternion and gyrometer, getting the resulting motor values
     TArray<float> motorvals = _flightManager->update(deltaSeconds, quat, gyro);
 
-    // Store current Euler X,Y for gyro simulation
-    _eulerXPrev = euler.X;
-    _eulerYPrev = euler.Y;
-    _eulerZPrev = euler.Z;
+    // Store current Euler angles for gyro simulation
+	_eulerPrev = euler;
 
     // Use physics model to compute rotation and translation forces on vehicle
     FVector rotationForce = { 0,0,0 };

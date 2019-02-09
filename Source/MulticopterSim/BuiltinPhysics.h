@@ -22,14 +22,11 @@ class BuiltinPhysics : public Physics {
 
     private:
 
-        // XXX Can we replace these with an FVector ?
-        float _eulerXPrev;
-        float _eulerYPrev;
-        float _eulerZPrev;
+		// For simulating gyro
+		FVector _eulerPrev;
 
+		// Abstract class for flight control
         FlightManager * _flightManager;
-
-        FQuat getQuaternion(class AVehiclePawn * vehiclePawn);
 
         void computeForces(float deltaSeconds, TArray<float> motorValues, FVector & euler, FVector & rotationForce, FVector & translationForce);
 
