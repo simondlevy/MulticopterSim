@@ -11,7 +11,7 @@
 #include "Physics.h"
 #include "VehiclePawn.h"
 #include "Joystick.h"
-#include "SimBoard.h"
+#include "FlightManager.h"
 
 // Math support
 #define _USE_MATH_DEFINES
@@ -19,9 +19,6 @@
 
 #include <hackflight.hpp>
 #include "hackflight/SimReceiver.h"
-
-// MSP comms
-#include "hackflight/msppg/MSPPG.h"
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
@@ -99,7 +96,7 @@ class BuiltinPhysics : public Physics, public hf::Board {
 
         FQuat getQuaternion(class AVehiclePawn * vehiclePawn);
 
-        SimBoard * _simBoard;
+        FlightManager * _flightManager;
 
     public:
 

@@ -52,7 +52,7 @@ BuiltinPhysics::BuiltinPhysics(void)
     hackflight.addPidController(&althold, 2);
     //hackflight.addPidController(&poshold, 2);
 
-    _simBoard = SimBoard::createSimBoard();
+    _flightManager = FlightManager::createFlightManager();
 }
 
 void BuiltinPhysics::start(void)
@@ -72,7 +72,7 @@ TArray<float> BuiltinPhysics::update(float deltaSeconds, AVehiclePawn * vehicleP
     // Update the Hackflight firmware
     hackflight.update();
 
-    _simBoard->update();
+    _flightManager->update();
 
     // Convert quaternion to Euler angles
     FVector euler = FMath::DegreesToRadians(vehiclePawn->GetActorQuat().Euler());
