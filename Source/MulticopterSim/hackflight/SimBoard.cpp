@@ -12,23 +12,7 @@
 
 SimBoard::SimBoard()
 {
-    _elapsedTime = 0;
-
-    _quat[0] = 0;
-    _quat[1] = 0;
-    _quat[2] = 0;
-    _quat[3] = 0;
-
-    _gyro[0] = 0;
-    _gyro[1] = 0;
-    _gyro[2] = 0;
-
-    _motors[0] = 0;
-    _motors[1] = 0;
-    _motors[2] = 0;
-    _motors[3] = 0;
 }
-
 
 SimBoard::~SimBoard()
 {
@@ -38,27 +22,28 @@ TArray<float> SimBoard::update(float deltaTime, FQuat quat, FVector gyro)
 {
     _elapsedTime += deltaTime;
 
-    _quat[0] = quat.W;
-    _quat[1] = -quat.X;
-    _quat[2] = -quat.Y;
-    _quat[3] = quat.Z;
-
-	_gyro[0] = gyro.X;
-    _gyro[1] = gyro.Y;
-    _gyro[2] = 0; // zero-out gyro Z for now
+	_quat = quat;
+	_gyro = gyro;
 
     return _motors;
 }
 
 bool SimBoard::getQuaternion(float quat[4])
 {
-    memcpy(quat, _quat, 4*sizeof(float));
-    return true;
+	quat[0] = _quat.W;
+	quat[1] = -_quat.X; // invert X
+	quat[2] = -_quat.Y;	// invert Y
+	quat[3] = _quat.Z;
+
+	return true;
 }
 
 bool SimBoard::getGyrometer(float gyro[3])
 {
-    memcpy(gyro, _gyro, 3*sizeof(float));
+	gyro[0] = _gyro.X;
+	gyro[1] = _gyro.Y;
+	gyro[2] = 0; // XXX ignore Z for now
+
     return true;
 }
 

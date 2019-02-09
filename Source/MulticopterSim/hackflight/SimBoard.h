@@ -18,10 +18,9 @@ class SimBoard : public hf::Board {
     private:
 
         // XXX Replace with FQuat and FVectors?
-        float _elapsedTime;
-        float _quat[4];
-        float _gyro[3];
-
+        float _elapsedTime = 0;
+		FQuat _quat = FQuat(0,0,0,0);
+		FVector _gyro = FVector(0, 0, 0);
 		TArray<float> _motors = { 0,0,0,0 };
 
     protected:
