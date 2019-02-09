@@ -8,92 +8,42 @@
 
 #include "BuiltinPhysics.h"
 
-FVector BuiltinPhysics::getAccelerometer(float velocityZ, FVector & euler, float deltaSeconds)
-{
-    // Use velocity first difference to emulate G force on vehicle in inertial frame
-    float vario = velocityZ / 100; // m/s
-    float gs = ((vario - _varioPrev) / deltaSeconds + AVehiclePawn::G) / AVehiclePawn::G;
-    _varioPrev = vario;
-
-    // Convert inertial frame to body frame
-    // See slide 50 from https://slideplayer.com/slide/2813564/
-    float phi = euler.X;
-    float theta = euler.Y;
-    return gs * FVector(-sin(theta), sin(phi)*cos(theta), cos(phi)*cos(theta));
-}
-
-FQuat BuiltinPhysics::getQuaternion(class AVehiclePawn * vehiclePawn)
-{
-    // Get current quaternion and convert it to our format (XXX necessary?
-    FQuat quat = vehiclePawn->GetActorQuat();
-    quat.X = -quat.X;
-    quat.Y = -quat.Y;
-    return quat;
-}
-
 BuiltinPhysics::BuiltinPhysics(void)
 {
-    // Start the "receiver" (joystick/gamepad)
-    receiver = new hf::SimReceiver();
-
-    // Start Hackflight firmware, indicating already armed
-    hackflight.init(this, receiver, &mixer, &ratePid, true);
-
-    // Add optical-flow sensor
-    //hackflight.addSensor(&_flowSensor);
-
-    // Add rangefinder
-    //hackflight.addSensor(&_rangefinder);
-
-    // Add level PID controller for aux switch position 1
-    hackflight.addPidController(&level, 1);
-
-    // Add loiter PID controllers for aux switch position 2
-    hackflight.addPidController(&althold, 2);
-    //hackflight.addPidController(&poshold, 2);
-
     _flightManager = FlightManager::createFlightManager();
 }
 
 void BuiltinPhysics::start(void)
 {
     // Initialize simulation variables
-    _varioPrev = 0;
-    _elapsedTime = 0;
     _eulerXPrev = 0;
     _eulerYPrev = 0;
+    _eulerZPrev = 0;
 }
 
 TArray<float> BuiltinPhysics::update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
 {
-    // Update the receiver
-    receiver->update();
-
-    // Update the Hackflight firmware
-    hackflight.update();
-
-    _flightManager->update();
-
     // Convert quaternion to Euler angles
-    FVector euler = FMath::DegreesToRadians(vehiclePawn->GetActorQuat().Euler());
+	FVector euler = FMath::DegreesToRadians(vehiclePawn->GetActorQuat().Euler());
 
-    // Get the simulated IMU readings
-    FQuat quat = getQuaternion(vehiclePawn);
+	// Get the simulated IMU readings
+	FQuat quat = vehiclePawn->GetActorQuat();
+	quat.X = -quat.X;
+	quat.Y = -quat.Y;
 
-    // Store quaternion and gyro values for Hackflight::Board methods below
-    _quat[0] = quat.W;
-    _quat[1] = quat.X;
-    _quat[2] = quat.Y;
-    _quat[3] = quat.Z;
-    _gyro[0] = (euler.X - _eulerXPrev) / deltaSeconds;
-    _gyro[1] = (euler.Y - _eulerYPrev) / deltaSeconds;
-    _gyro[2] = 0; // zero-out gyro Z for now
+    // Simulate a gyrometer by temporal first-differencing of Euler angles
+    FVector gyro;
+    gyro.X = (euler.X - _eulerXPrev) / deltaSeconds;
+    gyro.Y = (euler.Y - _eulerYPrev) / deltaSeconds;
+    gyro.Z = (euler.Z - _eulerZPrev) / deltaSeconds;
+
+    // Update the flight manager with the quaternion and gyrometer, getting the resulting motor values
+    TArray<float> motorvals = _flightManager->update(deltaSeconds, quat, gyro);
 
     // Store current Euler X,Y for gyro simulation
     _eulerXPrev = euler.X;
     _eulerYPrev = euler.Y;
-
-    TArray<float> motorvals = { _motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3] };
+    _eulerZPrev = euler.Z;
 
     // Use physics model to compute rotation and translation forces on vehicle
     FVector rotationForce = { 0,0,0 };
@@ -144,43 +94,18 @@ float BuiltinPhysics::sum(TArray<float> x)
     return s;
 }
 
-// Hackflight::Board method implementation -------------------------------------
-
-bool BuiltinPhysics::getQuaternion(float quat[4])
+/*
+FVector BuiltinPhysics::getAccelerometer(float velocityZ, FVector & euler, float deltaSeconds)
 {
-    memcpy(quat, _quat, 4*sizeof(float));
-    return true;
-}
+    // Use velocity first difference to emulate G force on vehicle in inertial frame
+    float vario = velocityZ / 100; // m/s
+    float gs = ((vario - _varioPrev) / deltaSeconds + AVehiclePawn::G) / AVehiclePawn::G;
+    _varioPrev = vario;
 
-bool BuiltinPhysics::getGyrometer(float gyro[3])
-{
-    memcpy(gyro, _gyro, 3*sizeof(float));
-    return true;
+    // Convert inertial frame to body frame
+    // See slide 50 from https://slideplayer.com/slide/2813564/
+    float phi = euler.X;
+    float theta = euler.Y;
+    return gs * FVector(-sin(theta), sin(phi)*cos(theta), cos(phi)*cos(theta));
 }
-
-void BuiltinPhysics::writeMotor(uint8_t index, float value)
-{
-    _motorvals[index] = value;
-}
-
-float BuiltinPhysics::getTime(void)
-{
-    // Track elapsed time
-    _elapsedTime += .01; // Assume 100Hz clock
-
-    return _elapsedTime;
-}
-
-uint8_t	BuiltinPhysics::serialAvailableBytes(void)
-{
-    return 0; // XXX
-}
-
-uint8_t	BuiltinPhysics::serialReadByte(void)
-{
-    return 0; // XXX
-}
-
-void BuiltinPhysics::serialWriteByte(uint8_t c)
-{ // XXX
-}
+*/

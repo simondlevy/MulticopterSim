@@ -17,94 +17,19 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include <hackflight.hpp>
-#include "hackflight/SimReceiver.h"
 
-// PID controllers
-#include <pidcontrollers/level.hpp>
-#include <pidcontrollers/althold.hpp>
-#include <pidcontrollers/poshold.hpp>
-
-// Mixer
-#include <mixers/quadx.hpp>
-
-// Additional sensors
-#include "hackflight/sensors/SimOpticalFlow.h"
-#include "hackflight/sensors/SimRangefinder.h"
-
-class BuiltinPhysics : public Physics, public hf::Board {
+class BuiltinPhysics : public Physics {
 
     private:
 
-        // PID tuning
-
-        hf::Rate ratePid = hf::Rate(
-                0.01,	// Roll/Pitch P
-                0.01,	// Roll/Pitch I
-                0.01,	// Roll/Pitch D
-                0.5,	// Yaw P
-                0.0,	// Yaw I
-                8.f);	// Demands to rate
-
-
-        hf::Level level = hf::Level(0.20f);
-
-#ifdef _PYTHON
-        PythonLoiter loiter = PythonLoiter(
-                0.5f,	// Altitude P
-                1.0f,	// Altitude D
-                0.2f);	// Cyclic P
-#else
-
-        hf::AltitudeHold althold = hf::AltitudeHold(
-                1.00f,  // altHoldP
-                0.50f,  // altHoldVelP
-                0.01f,  // altHoldVelI
-                0.10f); // altHoldVelD
-
-        hf::PositionHold poshold = hf::PositionHold(
-                0.2,	// posP
-                0.2f,	// posrP
-                0.0f);	// posrI
-
-#endif
-
-        // Main firmware
-        hf::Hackflight hackflight;
-
-        // "Receiver" (joystick/gamepad)
-        hf::SimReceiver * receiver;
-
-        // Mixer
-        hf::MixerQuadX mixer;
-
-        float _elapsedTime;
-
+        // XXX Can we replace these with an FVector ?
         float _eulerXPrev;
         float _eulerYPrev;
-
-        float _quat[4];
-        float _gyro[3];
-
-        float _motorvals[3];
-
-        // Support for sensor emulation via first differencing
-        float _varioPrev;
-        float _groundAltitude;
-
-        FVector getAccelerometer(float velocityZ, FVector & euler, float deltaSeconds);
-
-        FQuat getQuaternion(class AVehiclePawn * vehiclePawn);
+        float _eulerZPrev;
 
         FlightManager * _flightManager;
 
-    public:
-
-        BuiltinPhysics(void);
-
-        virtual void start(void) override;
-
-        virtual TArray<float> update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override;
+        FQuat getQuaternion(class AVehiclePawn * vehiclePawn);
 
         void computeForces(float deltaSeconds, TArray<float> motorValues, FVector & euler, FVector & rotationForce, FVector & translationForce);
 
@@ -114,23 +39,13 @@ class BuiltinPhysics : public Physics, public hf::Board {
 
         static float sum(TArray<float> x);
 
-    protected:
+    public:
 
-        // Hackflight::Board method implementation -------------------------------------
+        BuiltinPhysics(void);
 
-        virtual bool getQuaternion(float quat[4]) override;
+        virtual void start(void) override;
 
-        virtual bool getGyrometer(float gyro[3]) override;
-
-        virtual void writeMotor(uint8_t index, float value) override;
-
-        virtual float getTime(void) override;
-
-        virtual uint8_t	serialAvailableBytes(void) override;
-
-        virtual uint8_t	serialReadByte(void) override;
-
-        virtual void serialWriteByte(uint8_t c) override;
+        virtual TArray<float> update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override;
 
 }; // BuiltinPhysics
 

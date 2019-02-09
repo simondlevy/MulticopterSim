@@ -1,5 +1,5 @@
 /*
-* FlightManager.cpp: FlightManager class implementation using Hackflight
+* FlightManager.cpp: MulticopterSim FlightManager class implementation using Hackflight
 *
 * Copyright (C) 2019 Simon D. Levy
 *
@@ -10,6 +10,7 @@
 
 #include "FlightManager.h"
 
+#include "SimBoard.h"
 #include "BuiltinPhysics.h"
 #include "VehiclePawn.h"
 #include "Joystick.h"
@@ -74,26 +75,47 @@ class HackflightFlightManager : public FlightManager {
 #endif
 
         // Main firmware
-        hf::Hackflight hackflight;
+        hf::Hackflight _hackflight;
+
+        // Flight-controller board
+        SimBoard _board;
 
         // "Receiver" (joystick/gamepad)
-        hf::SimReceiver * receiver;
+        hf::SimReceiver * _receiver;
 
         // Mixer
-        hf::MixerQuadX mixer;
+        hf::MixerQuadX _mixer;
 
     public:
 
         HackflightFlightManager(void)
         {
-        }
+			// Start the "receiver" (joystick/gamepad)
+			_receiver = new hf::SimReceiver();
+
+			// Start Hackflight firmware, indicating already armed
+			_hackflight.init(&_board, _receiver, &_mixer, &ratePid, true);
+
+			// Add level PID controller for aux switch position 1
+			_hackflight.addPidController(&level, 1);
+
+			// Add loiter PID controllers for aux switch position 2
+			_hackflight.addPidController(&althold, 2);
+			//hackflight.addPidController(&poshold, 2);
+		}
 
         ~HackflightFlightManager(void)
         {
         }
 
-        virtual void update(void) override
+        virtual TArray<float> update(float deltaTime, FQuat quat, FVector gyro) override
         {
+			_receiver->update();
+
+			_hackflight.update();
+
+            return _board.update(deltaTime, quat, gyro);
+
         }
 
 }; // HackflightFlightManager

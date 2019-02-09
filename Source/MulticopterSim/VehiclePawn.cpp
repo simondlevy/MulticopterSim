@@ -133,7 +133,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 		return;
 	}
 
-    debug("%d FPS", (uint16_t)(1/DeltaSeconds));
+    //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
     // Update physics
 	TArray<float> motorvals = _physics->update(DeltaSeconds, this, _vehicleMesh);
