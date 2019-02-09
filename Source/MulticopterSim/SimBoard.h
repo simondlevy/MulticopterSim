@@ -13,6 +13,12 @@ class MULTICOPTERSIM_API SimBoard {
 
 public:
 
+    SimBoard(void);
+
+    ~SimBoard(void);
+
+    void update(void);
+
     /**
      *  Factory method.
      *  @return pointer to a new SimBoard object

@@ -1,5 +1,5 @@
 /*
-* SimBoard.cpp : Hackflight::Board class implementation for MulticopterSim
+* SimBoard.cpp : ::Board class implementation for MulticopterSim
 *
 * Copyright (C) 2019 Simon D. Levy
 *
@@ -11,19 +11,23 @@
 
 #include <hackflight.hpp>
 
-class HackflightSimBoard : public SimBoard {
+SimBoard::SimBoard(void)
+{
+}
 
-    public:
+SimBoard::~SimBoard(void)
+{
+}
 
-        HackflightSimBoard(void)
-        {
-        }
+void SimBoard::update(void)
+{
+}
 
-        ~HackflightSimBoard(void)
-        {
-        }
-
-}; // SimBoard
+// Factory method for SimBoard class
+SimBoard * SimBoard::createSimBoard()
+{
+    return new SimBoard();
+}
 
 // Debugging
 void hf::Board::outbuf(char * buf)
@@ -35,11 +39,5 @@ void hf::Board::outbuf(char * buf)
 Physics * Physics::createPhysics(void)
 {
     return new BuiltinPhysics();
-}
-
-// Factory method for SimBoard class
-SimBoard * SimBoard::createSimBoard()
-{
-    return new HackflightSimBoard();
 }
 

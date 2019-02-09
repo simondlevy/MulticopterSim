@@ -11,6 +11,7 @@
 #include "Physics.h"
 #include "VehiclePawn.h"
 #include "Joystick.h"
+#include "SimBoard.h"
 
 // Math support
 #define _USE_MATH_DEFINES
@@ -98,6 +99,8 @@ class BuiltinPhysics : public Physics, public hf::Board {
 
         FQuat getQuaternion(class AVehiclePawn * vehiclePawn);
 
+        SimBoard * _simBoard;
+
     public:
 
         BuiltinPhysics(void);
@@ -116,21 +119,21 @@ class BuiltinPhysics : public Physics, public hf::Board {
 
     protected:
 
-            // Hackflight::Board method implementation -------------------------------------
+        // Hackflight::Board method implementation -------------------------------------
 
-            virtual bool getQuaternion(float quat[4]) override;
+        virtual bool getQuaternion(float quat[4]) override;
 
-            virtual bool getGyrometer(float gyro[3]) override;
+        virtual bool getGyrometer(float gyro[3]) override;
 
-            virtual void writeMotor(uint8_t index, float value) override;
+        virtual void writeMotor(uint8_t index, float value) override;
 
-            virtual float getTime(void) override;
+        virtual float getTime(void) override;
 
-            virtual uint8_t	serialAvailableBytes(void) override;
+        virtual uint8_t	serialAvailableBytes(void) override;
 
-            virtual uint8_t	serialReadByte(void) override;
+        virtual uint8_t	serialReadByte(void) override;
 
-            virtual void serialWriteByte(uint8_t c) override;
+        virtual void serialWriteByte(uint8_t c) override;
 
 }; // BuiltinPhysics
 

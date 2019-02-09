@@ -51,6 +51,8 @@ BuiltinPhysics::BuiltinPhysics(void)
     // Add loiter PID controllers for aux switch position 2
     hackflight.addPidController(&althold, 2);
     //hackflight.addPidController(&poshold, 2);
+
+    _simBoard = SimBoard::createSimBoard();
 }
 
 void BuiltinPhysics::start(void)
@@ -69,6 +71,8 @@ TArray<float> BuiltinPhysics::update(float deltaSeconds, AVehiclePawn * vehicleP
 
     // Update the Hackflight firmware
     hackflight.update();
+
+    _simBoard->update();
 
     // Convert quaternion to Euler angles
     FVector euler = FMath::DegreesToRadians(vehiclePawn->GetActorQuat().Euler());
