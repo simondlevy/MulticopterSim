@@ -39,8 +39,8 @@ TArray<float> SimBoard::update(float deltaTime, FQuat quat, FVector gyro)
     _elapsedTime += deltaTime;
 
     _quat[0] = quat.W;
-    _quat[1] = quat.X;
-    _quat[2] = quat.Y;
+    _quat[1] = -quat.X;
+    _quat[2] = -quat.Y;
     _quat[3] = quat.Z;
 
 	_gyro[0] = gyro.X;

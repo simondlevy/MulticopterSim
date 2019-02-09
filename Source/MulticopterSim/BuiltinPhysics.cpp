@@ -23,13 +23,11 @@ void BuiltinPhysics::start(void)
 
 TArray<float> BuiltinPhysics::update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
 {
-    // Convert quaternion to Euler angles
-	FVector euler = FMath::DegreesToRadians(vehiclePawn->GetActorQuat().Euler());
-
-	// Get the simulated IMU readings
+	// We'l use the vehicle quaternion to simulate an IMU
 	FQuat quat = vehiclePawn->GetActorQuat();
-	quat.X = -quat.X;
-	quat.Y = -quat.Y;
+	
+	// Convert quaternion to Euler angles
+	FVector euler = FMath::DegreesToRadians(quat.Euler());
 
     // Simulate a gyrometer by temporal first-differencing of Euler angles
     FVector gyro;
