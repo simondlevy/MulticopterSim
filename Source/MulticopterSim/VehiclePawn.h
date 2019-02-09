@@ -45,7 +45,7 @@ class AVehiclePawn : public APawn
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
             class UAudioComponent* _propellerAudioComponent;
 
-        // FPV camera support
+        // Camera support
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
             class UCameraComponent* _fpvCamera;
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -75,8 +75,11 @@ class AVehiclePawn : public APawn
         GaussianNoise _rangeNoise = GaussianNoise(1, .002);  // meters
         GaussianNoise _flowNoise  = GaussianNoise(2, .001);  // meters / second
 
-        // Helper
+        // Helpers
+        
 		static float mean(TArray<float> x);
+
+        void setupCamera(UCameraComponent ** camera, const char * cameraName, USpringArmComponent ** springArm, const char * springArmName);
 
     public:
 
