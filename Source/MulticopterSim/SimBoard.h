@@ -13,11 +13,7 @@ class MULTICOPTERSIM_API SimBoard {
 
 public:
 
-    SimBoard(void);
-
-    ~SimBoard(void);
-
-    void update(void);
+    virtual void update(void) = 0;
 
     /**
      *  Factory method.

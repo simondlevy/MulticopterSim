@@ -11,22 +11,30 @@
 
 #include <hackflight.hpp>
 
-SimBoard::SimBoard(void)
-{
-}
+class HackflightSimBoard : public SimBoard {
 
-SimBoard::~SimBoard(void)
-{
-}
 
-void SimBoard::update(void)
-{
-}
+    public:
+
+        HackflightSimBoard(void)
+        {
+        }
+
+        ~HackflightSimBoard(void)
+        {
+        }
+
+        virtual void update(void) override
+        {
+        }
+
+}; // HackflightSimBoard
+
 
 // Factory method for SimBoard class
 SimBoard * SimBoard::createSimBoard()
 {
-    return new SimBoard();
+    return new HackflightSimBoard();
 }
 
 // Debugging
