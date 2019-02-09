@@ -7,7 +7,7 @@
 */
 
 #include "SimBoard.h"
-#include "SimPhysics.h"
+#include "BuiltinPhysics.h"
 
 SimBoard::SimBoard()
 {
@@ -27,5 +27,5 @@ void hf::Board::outbuf(char * buf)
 // Factory method for Physics class
 Physics * Physics::createPhysics(void)
 {
-    return new SimPhysics();
+    return new BuiltinPhysics();
 }

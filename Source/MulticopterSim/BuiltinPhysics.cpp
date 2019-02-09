@@ -1,15 +1,14 @@
 /*
- * SimPhysics.cpp: 
+ * BuiltinPhysics.cpp: Physics class implemenation using UE4 built-in physics
  *
  * Copyright (C) 2019 Simon D. Levy
  *
  * MIT License
  */
 
-#include "SimPhysics.h"
+#include "BuiltinPhysics.h"
 
-
-FVector SimPhysics::getAccelerometer(float velocityZ, FVector & euler, float deltaSeconds)
+FVector BuiltinPhysics::getAccelerometer(float velocityZ, FVector & euler, float deltaSeconds)
 {
     // Use velocity first difference to emulate G force on vehicle in inertial frame
     float vario = velocityZ / 100; // m/s
@@ -23,7 +22,7 @@ FVector SimPhysics::getAccelerometer(float velocityZ, FVector & euler, float del
     return gs * FVector(-sin(theta), sin(phi)*cos(theta), cos(phi)*cos(theta));
 }
 
-FQuat SimPhysics::getQuaternion(class AVehiclePawn * vehiclePawn)
+FQuat BuiltinPhysics::getQuaternion(class AVehiclePawn * vehiclePawn)
 {
     // Get current quaternion and convert it to our format (XXX necessary?
     FQuat quat = vehiclePawn->GetActorQuat();
@@ -32,7 +31,7 @@ FQuat SimPhysics::getQuaternion(class AVehiclePawn * vehiclePawn)
     return quat;
 }
 
-SimPhysics::SimPhysics(void)
+BuiltinPhysics::BuiltinPhysics(void)
 {
     // Start the "receiver" (joystick/gamepad)
     receiver = new hf::SimReceiver();
@@ -54,7 +53,7 @@ SimPhysics::SimPhysics(void)
     //hackflight.addPidController(&poshold, 2);
 }
 
-void SimPhysics::start(void)
+void BuiltinPhysics::start(void)
 {
     // Initialize simulation variables
     _varioPrev = 0;
@@ -63,7 +62,7 @@ void SimPhysics::start(void)
     _eulerYPrev = 0;
 }
 
-TArray<float> SimPhysics::update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
+TArray<float> BuiltinPhysics::update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
 {
     // Update the receiver
     receiver->update();
@@ -107,7 +106,7 @@ TArray<float> SimPhysics::update(float deltaSeconds, AVehiclePawn * vehiclePawn,
     return motorvals;
 }
 
-void SimPhysics::computeForces(float deltaSeconds, TArray<float> motorValues, FVector & euler, FVector & rotationForce, FVector & translationForce)
+void BuiltinPhysics::computeForces(float deltaSeconds, TArray<float> motorValues, FVector & euler, FVector & rotationForce, FVector & translationForce)
 {
     // Convert motor values to rotational forces
     rotationForce.X = motorsToAngularForce(motorValues, 2, 3, 0, 1);
@@ -123,14 +122,14 @@ void SimPhysics::computeForces(float deltaSeconds, TArray<float> motorValues, FV
     translationForce = THRUST_FACTOR * sum(motorValues) * FVector(-x, -y, z);
 }
 
-float SimPhysics::motorsToAngularForce(TArray<float> motorValues, uint8_t a, uint8_t b, uint8_t c, uint8_t d)
+float BuiltinPhysics::motorsToAngularForce(TArray<float> motorValues, uint8_t a, uint8_t b, uint8_t c, uint8_t d)
 {
     float v = ((motorValues[a] + motorValues[b]) - (motorValues[c] + motorValues[d]));
 
     return (v < 0 ? -1 : +1) * fabs(v);
 }
 
-float SimPhysics::sum(TArray<float> x)
+float BuiltinPhysics::sum(TArray<float> x)
 {
     float s = 0.f;
 
@@ -143,24 +142,24 @@ float SimPhysics::sum(TArray<float> x)
 
 // Hackflight::Board method implementation -------------------------------------
 
-bool SimPhysics::getQuaternion(float quat[4])
+bool BuiltinPhysics::getQuaternion(float quat[4])
 {
     memcpy(quat, _quat, 4*sizeof(float));
     return true;
 }
 
-bool SimPhysics::getGyrometer(float gyro[3])
+bool BuiltinPhysics::getGyrometer(float gyro[3])
 {
     memcpy(gyro, _gyro, 3*sizeof(float));
     return true;
 }
 
-void SimPhysics::writeMotor(uint8_t index, float value)
+void BuiltinPhysics::writeMotor(uint8_t index, float value)
 {
     _motorvals[index] = value;
 }
 
-float SimPhysics::getTime(void)
+float BuiltinPhysics::getTime(void)
 {
     // Track elapsed time
     _elapsedTime += .01; // Assume 100Hz clock
@@ -168,16 +167,16 @@ float SimPhysics::getTime(void)
     return _elapsedTime;
 }
 
-uint8_t	SimPhysics::serialAvailableBytes(void)
+uint8_t	BuiltinPhysics::serialAvailableBytes(void)
 {
     return 0; // XXX
 }
 
-uint8_t	SimPhysics::serialReadByte(void)
+uint8_t	BuiltinPhysics::serialReadByte(void)
 {
     return 0; // XXX
 }
 
-void SimPhysics::serialWriteByte(uint8_t c)
+void BuiltinPhysics::serialWriteByte(uint8_t c)
 { // XXX
 }

@@ -1,5 +1,5 @@
 /*
- * SimPhysics.h: 
+ * BuiltinPhysics.h: Physics class using UE4 built-in physics 
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -9,9 +9,7 @@
 #pragma once
 
 #include "Physics.h"
-
 #include "VehiclePawn.h"
-
 #include "Joystick.h"
 
 // Math support
@@ -19,10 +17,10 @@
 #include <math.h>
 
 #include <hackflight.hpp>
-#include "SimReceiver.h"
-//
+#include "hackflight/SimReceiver.h"
+
 // MSP comms
-#include "msppg/MSPPG.h"
+#include "hackflight/msppg/MSPPG.h"
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
@@ -36,7 +34,7 @@
 #include "hackflight/sensors/SimOpticalFlow.h"
 #include "hackflight/sensors/SimRangefinder.h"
 
-class SimPhysics : public Physics, public hf::Board {
+class BuiltinPhysics : public Physics, public hf::Board {
 
     private:
 
@@ -102,7 +100,7 @@ class SimPhysics : public Physics, public hf::Board {
 
     public:
 
-        SimPhysics(void);
+        BuiltinPhysics(void);
 
         virtual void start(void) override;
 
@@ -134,5 +132,5 @@ class SimPhysics : public Physics, public hf::Board {
 
             virtual void serialWriteByte(uint8_t c) override;
 
-}; // SimPhysics
+}; // BuiltinPhysics
 
