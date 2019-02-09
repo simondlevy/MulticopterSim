@@ -47,8 +47,7 @@ TArray<float> SimBoard::update(float deltaTime, FQuat quat, FVector gyro)
     _gyro[1] = gyro.Y;
     _gyro[2] = 0; // zero-out gyro Z for now
 
-    TArray<float> motorvals = {_motors[0], _motors[1], _motors[2], _motors[3]};
-    return motorvals;
+    return _motors;
 }
 
 bool SimBoard::getQuaternion(float quat[4])

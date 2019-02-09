@@ -21,7 +21,8 @@ class SimBoard : public hf::Board {
         float _elapsedTime;
         float _quat[4];
         float _gyro[3];
-        float _motors[4];
+
+		TArray<float> _motors = { 0,0,0,0 };
 
     protected:
 
