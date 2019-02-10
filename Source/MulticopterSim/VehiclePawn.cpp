@@ -64,6 +64,7 @@ AVehiclePawn::AVehiclePawn()
     // Set up the FPV camera
     _fpvSpringArm = CreateDefaultSubobject<USpringArmComponent>(L"fpvSpringArm");
     _fpvSpringArm->SetupAttachment(RootComponent);
+    _fpvSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
     _fpvCamera = CreateDefaultSubobject<UCameraComponent>(L"fpvCamera");
     _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 
 }
