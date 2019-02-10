@@ -18,9 +18,9 @@ SimBoard::~SimBoard()
 {
 }	
 
-TArray<float> SimBoard::update(float deltaTime, FQuat quat, FVector gyro)
+TArray<float> SimBoard::update(float currentTime, FQuat quat, FVector gyro)
 {
-    _elapsedTime += deltaTime;
+    _currentTime = currentTime;
 
 	_quat = quat;
 	_gyro = gyro;
@@ -54,5 +54,5 @@ void SimBoard::writeMotor(uint8_t index, float value)
 
 float SimBoard::getTime(void)
 {
-    return _elapsedTime;
+    return _currentTime;
 }

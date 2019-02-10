@@ -13,7 +13,7 @@ class MULTICOPTERSIM_API FlightManager {
 
 public:
 
-    virtual TArray<float> update(float deltaTime, FQuat quat, FVector gyro)  = 0;
+    virtual TArray<float> update(float currentTime, FQuat quat, FVector gyro)  = 0;
 
     /**
      *  Factory method.

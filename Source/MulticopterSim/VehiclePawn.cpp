@@ -192,6 +192,11 @@ void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Ot
     SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
 }
 
+float AVehiclePawn::getCurrentTime(void)
+{
+    return UGameplayStatics::GetRealTimeSeconds(GetWorld());
+}
+
 void AVehiclePawn::debug(char * fmt, ...)
 {
     va_list ap;

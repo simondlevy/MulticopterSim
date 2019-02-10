@@ -108,13 +108,13 @@ class HackflightFlightManager : public FlightManager {
         {
         }
 
-        virtual TArray<float> update(float deltaTime, FQuat quat, FVector gyro) override
+        virtual TArray<float> update(float currentTime, FQuat quat, FVector gyro) override
         {
 			_receiver->update();
 
 			_hackflight.update();
 
-            return _board.update(deltaTime, quat, gyro);
+            return _board.update(currentTime, quat, gyro);
 
         }
 
