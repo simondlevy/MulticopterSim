@@ -41,7 +41,7 @@ AVehiclePawn::AVehiclePawn()
 	RootComponent = _vehicleMesh;
 
     // Create physics support
-    _physics = Physics::createPhysics();
+    _physics = Physics::createPhysics(this, _vehicleMesh);
 
 	// Load our Sound Cue for the propeller sound we created in the editor... 
 	// note your path may be different depending
@@ -139,8 +139,8 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
     //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
-    // Update physics
-	TArray<float> motorvals = _physics->update(DeltaSeconds, this, _vehicleMesh);
+    // Update physics, getting back motor values for animation effects
+	TArray<float> motorvals = _physics->update(DeltaSeconds);
 
     // Add animation effects (prop rotation, sound)
     addAnimationEffects(motorvals);

@@ -134,8 +134,8 @@ void hf::Board::outbuf(char * buf)
 }
 
 // Factory method for Physics class
-Physics * Physics::createPhysics(void)
+Physics * Physics::createPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
 {
-    return new BuiltinPhysics();
+    return new BuiltinPhysics(vehiclePawn, vehicleMesh);
 }
 

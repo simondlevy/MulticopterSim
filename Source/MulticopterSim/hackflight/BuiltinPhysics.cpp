@@ -8,9 +8,12 @@
 
 #include "BuiltinPhysics.h"
 
-BuiltinPhysics::BuiltinPhysics(void)
+BuiltinPhysics::BuiltinPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) : Physics(vehiclePawn, vehicleMesh)
+
 {
     _flightManager = FlightManager::createFlightManager();
+
+	_vehicleMesh->SetSimulatePhysics(true);
 }
 
 void BuiltinPhysics::start(void)
@@ -19,10 +22,11 @@ void BuiltinPhysics::start(void)
 	_eulerPrev = FVector(0, 0, 0);
 }
 
-TArray<float> BuiltinPhysics::update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
+TArray<float> BuiltinPhysics::update(float deltaSeconds)
 {
+
 	// We'l use the vehicle quaternion to simulate an IMU
-	FQuat quat = vehiclePawn->GetActorQuat();
+	FQuat quat = _vehiclePawn->GetActorQuat();
 	
 	// Convert quaternion to Euler angles
 	FVector euler = FMath::DegreesToRadians(quat.Euler());
@@ -42,10 +46,10 @@ TArray<float> BuiltinPhysics::update(float deltaSeconds, AVehiclePawn * vehicleP
     computeForces(deltaSeconds, motorvals, euler, rotationForce, translationForce);
 
     // Add movement force vector to vehicle 
-    vehicleMesh->AddForce(translationForce);
+    _vehicleMesh->AddForce(translationForce);
 
     // Add rotation to vehicle 
-    vehiclePawn->AddActorLocalRotation(deltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
+    _vehiclePawn->AddActorLocalRotation(deltaSeconds * FRotator(rotationForce.Y, rotationForce.Z, rotationForce.X) * (180 / M_PI));
 
     // Output the motor values for audiovisual effect
     return motorvals;

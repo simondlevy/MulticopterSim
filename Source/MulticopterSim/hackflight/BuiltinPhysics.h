@@ -38,11 +38,11 @@ class BuiltinPhysics : public Physics {
 
     public:
 
-        BuiltinPhysics(void);
+        BuiltinPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh);
 
         virtual void start(void) override;
 
-        virtual TArray<float> update(float deltaSeconds, AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) override;
+        virtual TArray<float> update(float deltaSeconds) override;
 
 }; // BuiltinPhysics
 
