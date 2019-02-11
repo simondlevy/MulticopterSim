@@ -36,9 +36,8 @@ public:
 	// Called on the other thread
 	void processImage(void);
 
-protected:
-
-	cv::Mat _img;
+    // Available for use by other classes
+	cv::Mat image;
 
 private:
 

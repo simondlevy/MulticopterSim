@@ -30,7 +30,7 @@ ImageGrabber::ImageGrabber(UTextureRenderTarget2D* visionTextureRenderTarget)
 	_renderTarget = visionTextureRenderTarget->GameThread_GetRenderTargetResource();
 
 	// Create an empty OpenCV BGRA image
-	_img = cv::Mat(rows, cols, CV_8UC4);
+	image = cv::Mat(rows, cols, CV_8UC4);
 }
 
 ImageGrabber::~ImageGrabber(void)
@@ -45,13 +45,13 @@ void ImageGrabber::grabImage(void)
 	_renderTarget->ReadPixels(SurfData);
 
 	// Copy the pixels to the OpenCV Mat data
-	FMemory::Memcpy(_img.data, SurfData.GetData(), SurfData.Num() * 4);
+	FMemory::Memcpy(image.data, SurfData.GetData(), SurfData.Num() * 4);
 
 }
 
 void ImageGrabber::processImage(void)
 {
 	// Convert from UE4 RGBA to OpenCV BGRA
-	cv::cvtColor(_img, _img, CV_RGBA2BGRA);
+	cv::cvtColor(image, image, CV_RGBA2BGRA);
 }
 
