@@ -101,8 +101,6 @@ void AVehiclePawn::PostInitializeComponents()
 
 void AVehiclePawn::BeginPlay()
 {
-    // Start the flight controller
-    _physics->start();
     
     // Initialize simulation variables
     _tickCycle = 0;
@@ -111,11 +109,16 @@ void AVehiclePawn::BeginPlay()
 	FString mapName = GetWorld()->GetMapName();
 	_mapSelected = !mapName.Contains("Untitled");
 
-	// Start playing the sound.  Note that because the Cue Asset is set to loop the sound,
-	// once we start playing the sound, it will play continiously...
+    // Start the physics and start playing the sound.  Note that because the
+    // Cue Asset is set to loop the sound, once we start playing the sound, it
+    // will play continiously...
 	if (_mapSelected) {
 		_propellerAudioComponent->Play();
+        _physics->start();
 	}
+    else {
+        debug("NO MAP SELECTED");
+    }
 
     Super::BeginPlay();
 }
@@ -123,7 +126,9 @@ void AVehiclePawn::BeginPlay()
 void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     // Stop the flight controller
-    _physics->stop();
+    if (_mapSelected) {
+        _physics->stop();
+    }
 
     Super::EndPlay(EndPlayReason);
 }
@@ -132,7 +137,6 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 {
 	// D'oh!
 	if (!_mapSelected) {
-		debug("NO MAP SELECTED");
 		Super::Tick(DeltaSeconds);
 		return;
 	}

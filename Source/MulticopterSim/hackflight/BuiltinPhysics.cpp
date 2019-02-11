@@ -24,7 +24,6 @@ void BuiltinPhysics::start(void)
 
 TArray<float> BuiltinPhysics::update(float deltaSeconds)
 {
-
 	// We'l use the vehicle quaternion to simulate an IMU
 	FQuat quat = _vehiclePawn->GetActorQuat();
 	
