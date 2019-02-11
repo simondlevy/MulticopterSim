@@ -12,6 +12,8 @@
 #include "CoreMinimal.h"
 #include "VehiclePawn.h"
 
+#define _USE_HACKFLIGHT
+
 /**
  * Abstract class for flight control
  */

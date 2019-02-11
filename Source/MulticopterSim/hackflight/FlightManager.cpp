@@ -133,9 +133,10 @@ void hf::Board::outbuf(char * buf)
     AVehiclePawn::outbuf(buf);
 }
 
+#ifdef _USE_HACKFLIGHT
 // Factory method for Physics class
 Physics * Physics::createPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
 {
     return new BuiltinPhysics(vehiclePawn, vehicleMesh);
 }
-
+#endif
