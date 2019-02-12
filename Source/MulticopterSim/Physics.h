@@ -18,7 +18,7 @@
  * with #ifndef _USE_HACKFLIGHT ... #endif
  * 
  */
-#define _USE_HACKFLIGHT
+//#define _USE_HACKFLIGHT
 
 /**
  * Abstract class for flight control
