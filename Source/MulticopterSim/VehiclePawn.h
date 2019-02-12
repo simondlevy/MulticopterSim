@@ -104,7 +104,4 @@ class AVehiclePawn : public APawn
         // Debugging support
         static void debug(char * fmt, ...);
         static void outbuf(char * buf);
-
-        // Returns _vehicleMesh subobject 
-        FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return _vehicleMesh; }
 };
