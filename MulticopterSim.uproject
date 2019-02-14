@@ -1,16 +1,13 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "4.21",
+	"EngineAssociation": "{0003524A-08D6-9226-06E6-3118EDF733B4}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
 		{
 			"Name": "MulticopterSim",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine"
-			]
+			"LoadingPhase": "Default"
 		}
 	]
 }
