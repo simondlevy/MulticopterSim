@@ -6,8 +6,6 @@
 * MIT License
 */
 
-#pragma once
-
 #include "FlightManager.h"
 
 #include "SimBoard.h"
