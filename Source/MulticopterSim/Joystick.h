@@ -11,7 +11,7 @@
 #include "CoreMinimal.h"
 
 #ifndef _WIN32
-typedef uint32_t DWORD
+typedef uint32_t DWORD;
 #endif
 
 /**
