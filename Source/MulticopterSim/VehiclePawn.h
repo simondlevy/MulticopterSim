@@ -87,9 +87,6 @@ class AVehiclePawn : public APawn
 
         ~AVehiclePawn();
 
-		// Earth's gravity
-		static constexpr float G = 9.80665f;
-
         // AActor overrides
         virtual void BeginPlay() override;
         virtual void PostInitializeComponents() override;

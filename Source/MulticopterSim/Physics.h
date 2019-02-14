@@ -21,7 +21,7 @@
 #define _USE_HACKFLIGHT
 
 /**
- * Abstract class for flight control
+ * Abstract class for vehicle physics
  */
 class MULTICOPTERSIM_API Physics {
 
@@ -34,6 +34,10 @@ protected:
 	Physics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh);
 
 public:
+
+
+	// Earth's gravity
+	static constexpr float G = 9.80665f;
 
     /**
      *  Called by AVehiclePawn::BeginPlay() when Play button is pressed
