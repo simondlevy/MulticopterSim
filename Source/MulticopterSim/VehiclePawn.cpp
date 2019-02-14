@@ -18,8 +18,6 @@
 #include "Engine/StaticMesh.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 
-#include <shlwapi.h>
-
 #include <cmath>
 #include <stdarg.h>
 
@@ -224,7 +222,4 @@ void AVehiclePawn::outbuf(char * buf)
         // -1 = no overwrite (0 for overwrite); 5.f = arbitrary time to display; true = newer on top
         GEngine->AddOnScreenDebugMessage(0, 5.f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
     }
-
-    // on Visual Studio output console
-    OutputDebugStringA(buf);
 }
