@@ -1,5 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+/*
+* VehiclePawn.cpp: Class implementation for pawn class in MulticopterSim
+*
+* Copyright (C) 2018 Simon D. Levy
+*
+* MIT License
+*/
 
 #include "VehiclePawn.h"
 

@@ -14,7 +14,6 @@ class MULTICOPTERSIM_API AMulticopterSimGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
-	
-	
-	
+public:
+	AMulticopterSimGameModeBase();
 };

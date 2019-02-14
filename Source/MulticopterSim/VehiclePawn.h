@@ -1,6 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+* VehiclePawn.h: Class declaration for pawn class in MulticopterSim
+*
+* Copyright (C) 2018 Simon D. Levy
+*
+* MIT License
+*/
 
 #pragma once
+
+#define WIN32_LEAN_AND_MEAN
+
+// Math support
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
