@@ -1,9 +1,29 @@
 /home/simon/UnrealEngine/Engine/Source
-/home/simon/Documents/Unreal Projects/MulticopterSim/Intermediate/Build/Linux/B4D820EA/MulticopterSimEditor/Inc/MulticopterSim
-/home/simon/Documents/Unreal Projects/MulticopterSim/Source
-/home/simon/Documents/Unreal Projects/MulticopterSim/Source/MulticopterSim
-/home/simon/Documents/Unreal Projects/MulticopterSim/Intermediate/Build/Linux/B4D820EA/MulticopterSimEditor/Inc/Core
+/home/simon/Documents/Arduino/libraries/Hackflight/src
+/home/simon/Documents/Unreal Projects/MulticopterSim/Intermediate/Build/Linux/B4D820EA/MulticopterSimEditor/Inc/Engine
 /home/simon/UnrealEngine/Engine/Source/Runtime
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Classes
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/AI
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/AI/Navigation
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Analytics
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Animation
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Curves
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/EdGraph
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Internationalization
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Net
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/PacketHandlers
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Performance
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Physics
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Physics/Experimental
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Physics/ImmediatePhysics
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/ProfilingDebugging
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Rendering
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Slate
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Tests
+/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/VisualLogger
+/home/simon/Documents/Unreal Projects/MulticopterSim/Intermediate/Build/Linux/B4D820EA/MulticopterSimEditor/Inc/Core
 /home/simon/UnrealEngine/Engine/Source/Runtime/Core/Public/Linux
 /home/simon/UnrealEngine/Engine/Source/Runtime/Core/Public
 /home/simon/UnrealEngine/Engine/Source/Runtime/Core
@@ -44,28 +64,6 @@
 /home/simon/UnrealEngine/Engine/Source/Runtime/CoreUObject/Public/Serialization/Formatters
 /home/simon/UnrealEngine/Engine/Source/Runtime/CoreUObject/Public/Templates
 /home/simon/UnrealEngine/Engine/Source/Runtime/CoreUObject/Public/UObject
-/home/simon/Documents/Unreal Projects/MulticopterSim/Intermediate/Build/Linux/B4D820EA/MulticopterSimEditor/Inc/Engine
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Classes
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/AI
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/AI/Navigation
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Analytics
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Animation
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Curves
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/EdGraph
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Internationalization
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Net
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/PacketHandlers
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Performance
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Physics
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Physics/Experimental
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Physics/ImmediatePhysics
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/ProfilingDebugging
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Rendering
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Slate
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/Tests
-/home/simon/UnrealEngine/Engine/Source/Runtime/Engine/Public/VisualLogger
 /home/simon/Documents/Unreal Projects/MulticopterSim/Intermediate/Build/Linux/B4D820EA/MulticopterSimEditor/Inc/ApplicationCore
 /home/simon/UnrealEngine/Engine/Source/Runtime/ApplicationCore/Public
 /home/simon/UnrealEngine/Engine/Source/Runtime/ApplicationCore
@@ -422,6 +420,9 @@
 /home/simon/UnrealEngine/Engine/Source/Runtime/AudioMixer
 /home/simon/UnrealEngine/Engine/Source/Runtime/AudioMixer/Public/Components
 /home/simon/UnrealEngine/Engine/Source/Runtime/AudioMixer/Public/DSP
+/home/simon/Documents/Unreal Projects/MulticopterSim/Intermediate/Build/Linux/B4D820EA/MulticopterSimEditor/Inc/MulticopterSim
+/home/simon/Documents/Unreal Projects/MulticopterSim/Source
+/home/simon/Documents/Unreal Projects/MulticopterSim/Source/MulticopterSim
 /home/simon/UnrealEngine/Engine/Source
 /home/simon/UnrealEngine/Engine/Source/Runtime/Launch/Private
 /home/simon/UnrealEngine/Engine/Source/Programs/BlankProgram/Private

@@ -10907,5 +10907,6 @@ HEADERS += \
 	"$$unrealRootPath/Engine/Plugins/Tests/ScreenshotTools/Source/ScreenshotTools/Public/ScreenshotTools.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSim.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSimGameModeBase.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/VehiclePawn.h" \
  
 

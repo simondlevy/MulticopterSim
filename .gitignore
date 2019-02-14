@@ -10,6 +10,9 @@
 *.suo
 *.opendb
 .vs
+.idea
+.kdev4
+.vscode
 *~
 
 # Python/Nengo

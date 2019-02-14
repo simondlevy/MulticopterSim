@@ -8414,5 +8414,6 @@ SOURCES += \
 	"$$unrealRootPath/Engine/Plugins/Tests/ScreenshotTools/Source/ScreenshotTools/Private/ScreenshotTools.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSim.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSimGameModeBase.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/VehiclePawn.cpp" \
  
 
