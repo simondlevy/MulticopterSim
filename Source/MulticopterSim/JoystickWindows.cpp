@@ -1,11 +1,13 @@
 /*
- * Joystick.cpp: joystick/gamepad support for MulticopterSim
+ * JoystickWindows.cpp: Windows implementation of joystick/gamepad support for MulticopterSim
  *
  * Copyright (C) 2018 Simon D. Levy
  *
  * MIT License
  */
 
+
+#ifdef _WIN32
 
 #include "Joystick.h"
 
@@ -116,4 +118,4 @@ void Joystick::getButtons(DWORD dwButtons, uint8_t & buttonState, uint8_t button
         buttonState = 2;
     }
 }
-
+#endif
