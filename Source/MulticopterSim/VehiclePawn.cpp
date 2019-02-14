@@ -199,7 +199,7 @@ float AVehiclePawn::getCurrentTime(void)
     return UGameplayStatics::GetRealTimeSeconds(GetWorld());
 }
 
-void AVehiclePawn::debug(char * fmt, ...)
+void AVehiclePawn::debug(const char * fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);

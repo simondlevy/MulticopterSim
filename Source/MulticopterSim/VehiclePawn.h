@@ -99,6 +99,6 @@ class AVehiclePawn : public APawn
         float getCurrentTime(void);
 
         // Debugging support
-        static void debug(char * fmt, ...);
+        static void debug(const char * fmt, ...);
         static void outbuf(char * buf);
 };
