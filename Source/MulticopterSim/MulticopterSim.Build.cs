@@ -19,11 +19,15 @@ public class MulticopterSim : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
-        // Use the following line to add include paths necessary for your implemenation
-        PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src");
+        PrivateIncludePaths.Add(Target.Platform == UnrealTargetPlatform.Win64 ?
+            Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src" :
+            Environment.GetEnvironmentVariable("HOME") + "/Documents/Arduino/libraries/Hackflight/src");
 
-        // Extras
-        LoadOpenCV(Target);
+        // OpenCV (currently Windows-only
+        if (Target.Platform == UnrealTargetPlatform.Win64) {
+            LoadOpenCV(Target);
+        }
+
         //LoadPython(Target);
     }
 
@@ -32,7 +36,7 @@ public class MulticopterSim : ModuleRules
         get { return Path.GetFullPath(Path.Combine(ModuleDirectory, "../../ThirdParty/")); }
     }
 
-    public bool LoadOpenCV(ReadOnlyTargetRules Target)
+    public void LoadOpenCV(ReadOnlyTargetRules Target)
     {
         // Start OpenCV linking here!
         bool isLibrarySupported = false;
@@ -43,36 +47,22 @@ public class MulticopterSim : ModuleRules
         // Get Library Path 
         string LibPath = "";
         bool isdebug = Target.Configuration == UnrealTargetConfiguration.Debug && Target.bDebugBuildsActuallyUseDebugCRT;
-        if (Target.Platform == UnrealTargetPlatform.Win64)
-        {
-            LibPath = Path.Combine(OpenCVPath, "Libraries", "Win64");
-            isLibrarySupported = true;
-        }
-        else
-        {
-            string Err = string.Format("{0} dedicated server is made to depend on {1}. We want to avoid this, please correct module dependencies.", Target.Platform.ToString(), this.ToString());
-            System.Console.WriteLine(Err);
-        }
+        LibPath = Path.Combine(OpenCVPath, "Libraries", "Win64");
+        isLibrarySupported = true;
 
-        if (isLibrarySupported)
-        {
-            //Add Include path 
-            PublicIncludePaths.AddRange(new string[] { Path.Combine(OpenCVPath, "Includes") });
+        //Add Include path 
+        PublicIncludePaths.AddRange(new string[] { Path.Combine(OpenCVPath, "Includes") });
 
-            // Add Library Path 
-            PublicLibraryPaths.Add(LibPath);
+        // Add Library Path 
+        PublicLibraryPaths.Add(LibPath);
 
-            //Add Static Libraries
-            PublicAdditionalLibraries.Add("opencv_world340.lib");
+        //Add Static Libraries
+        PublicAdditionalLibraries.Add("opencv_world340.lib");
 
-            //Add Dynamic Libraries
-            PublicDelayLoadDLLs.Add("opencv_world340.dll");
-            PublicDelayLoadDLLs.Add("opencv_ffmpeg340_64.dll");
-        }
-
+        //Add Dynamic Libraries
+        PublicDelayLoadDLLs.Add("opencv_world340.dll");
+        PublicDelayLoadDLLs.Add("opencv_ffmpeg340_64.dll");
         PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING={0}", isLibrarySupported ? 1 : 0));
-
-        return isLibrarySupported;
     }
 
     public bool LoadPython(ReadOnlyTargetRules Target)

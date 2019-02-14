@@ -1,5 +1,5 @@
 /*
- * ImageGrabber.cpp: MulticopterSim support for acquisition of camera images and processing by OpenCV
+ * ImageGrabber.cpp: MulticopterSim support for acquisition of camera images and processing
  *
  * Adapted from https://answers.unrealengine.com/questions/193827/how-to-get-texture-pixels-using-utexturerendertarg.html
  *
@@ -10,13 +10,11 @@
 
 #include "ImageGrabber.h"
 
-#include "opencv2/imgproc/imgproc.hpp"
-
-ImageGrabber::ImageGrabber(UTextureRenderTarget2D* visionTextureRenderTarget)
+ImageGrabber::ImageGrabber(UTextureRenderTarget2D* textureRenderTarget)
 {
 	// Get the size of the render target
-	uint16_t rows = visionTextureRenderTarget->SizeY;
-	uint16_t cols = visionTextureRenderTarget->SizeX;
+	uint16_t rows = textureRenderTarget->SizeY;
+	uint16_t cols = textureRenderTarget->SizeX;
 
 	// Create Texture2D to store render content
 	UTexture2D* texture = UTexture2D::CreateTransient(cols, rows, PF_B8G8R8A8);
@@ -25,16 +23,9 @@ ImageGrabber::ImageGrabber(UTextureRenderTarget2D* visionTextureRenderTarget)
 	texture->MipGenSettings = TMGS_NoMipmaps;
 #endif
 
-	texture->SRGB = visionTextureRenderTarget->SRGB;
+	texture->SRGB = textureRenderTarget->SRGB;
 
-	_renderTarget = visionTextureRenderTarget->GameThread_GetRenderTargetResource();
-
-	// Create an empty OpenCV BGRA image
-	image = cv::Mat(rows, cols, CV_8UC4);
-}
-
-ImageGrabber::~ImageGrabber(void)
-{
+	_renderTarget = textureRenderTarget->GameThread_GetRenderTargetResource();
 }
 
 // Runs on main thread
@@ -45,13 +36,5 @@ void ImageGrabber::grabImage(void)
 	_renderTarget->ReadPixels(SurfData);
 
 	// Copy the pixels to the OpenCV Mat data
-	FMemory::Memcpy(image.data, SurfData.GetData(), SurfData.Num() * 4);
-
+	copyImageData(SurfData.GetData(), SurfData.Num() * 4);
 }
-
-void ImageGrabber::processImage(void)
-{
-	// Convert from UE4 RGBA to OpenCV BGRA
-	cv::cvtColor(image, image, CV_RGBA2BGRA);
-}
-

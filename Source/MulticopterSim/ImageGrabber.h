@@ -1,5 +1,5 @@
 /*
- * ImageGrabber.h: MulticopterSim support for acquisition of camera images and processing by OpenCV
+ * ImageGrabber.h: MulticopterSim support for acquisition of camera images
  *
  * You should subclass this class, implementing the processImage() method
  *
@@ -16,8 +16,6 @@
 #include "GameFramework/HUD.h"
 #include "Engine/TextureRenderTarget2D.h"
 
-#include <opencv2/core.hpp>
-
 /**
  * 
  */
@@ -26,18 +24,14 @@ class MULTICOPTERSIM_API ImageGrabber
 
 public:
 
-	ImageGrabber(UTextureRenderTarget2D* visionTextureRenderTarget);
-
-	~ImageGrabber(void);
+	ImageGrabber(UTextureRenderTarget2D* textureRenderTarget);
 
 	// Called on the main thread
 	void grabImage(void);
 
-	// Called on the other thread
-	void processImage(void);
+protected:
 
-    // Available for use by other classes
-	cv::Mat image;
+    virtual void copyImageData(void * srcData, int32_t count) { (void)srcData; (void)count; }
 
 private:
 
