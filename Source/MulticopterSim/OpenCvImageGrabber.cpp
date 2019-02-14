@@ -8,6 +8,9 @@
  * MIT License
  */
 
+// XXX support OpenCV for Windows only
+#ifdef _WIN32
+
 #include "OpenCvImageGrabber.h"
 
 #include "opencv2/imgproc/imgproc.hpp"
@@ -33,4 +36,4 @@ void OpenCvImageGrabber::processImage(void)
 	// Convert from UE4 RGBA to OpenCV BGRA
 	cv::cvtColor(image, image, CV_RGBA2BGRA);
 }
-
+#endif
