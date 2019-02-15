@@ -10913,5 +10913,6 @@ HEADERS += \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/ThreadedWorker.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/VehiclePawn.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/hackflight/BuiltinPhysics.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/hackflight/SimReceiver.h" \
  
 
