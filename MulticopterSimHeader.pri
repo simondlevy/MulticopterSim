@@ -10908,13 +10908,13 @@ HEADERS += \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/FlightManager.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/GaussianNoise.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/Joystick.h" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/JoystickLinux.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSim.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSimGameModeBase.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/Physics.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/ThreadedWorker.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/VehiclePawn.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/hackflight/BuiltinPhysics.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/hackflight/SimBoard.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/hackflight/SimReceiver.h" \
  
 
