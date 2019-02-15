@@ -44,13 +44,6 @@ class HackflightFlightManager : public FlightManager {
 
         hf::Level level = hf::Level(0.20f);
 
-#ifdef _PYTHON
-        PythonLoiter loiter = PythonLoiter(
-                0.5f,	// Altitude P
-                1.0f,	// Altitude D
-                0.2f);	// Cyclic P
-#else
-
         hf::AltitudeHold althold = hf::AltitudeHold(
                 1.00f,  // altHoldP
                 0.50f,  // altHoldVelP
@@ -61,8 +54,6 @@ class HackflightFlightManager : public FlightManager {
                 0.2,	// posP
                 0.2f,	// posrP
                 0.0f);	// posrI
-
-#endif
 
         // Main firmware
         hf::Hackflight _hackflight;
@@ -81,17 +72,13 @@ class HackflightFlightManager : public FlightManager {
         HackflightFlightManager(void)
         {
 			// Start the "receiver" (joystick/gamepad)
-			//_receiver = new hf::SimReceiver();
+			_receiver = new hf::SimReceiver();
 
 			// Start Hackflight firmware, indicating already armed
 			//_hackflight.init(&_board, _receiver, &_mixer, &ratePid, true);
 
 			// Add level PID controller for aux switch position 1
-			//_hackflight.addPidController(&level, 1);
-
-			// Add loiter PID controllers for aux switch position 2
-			//_hackflight.addPidController(&althold, 2);
-			//hackflight.addPidController(&poshold, 2);
+			_hackflight.addPidController(&level, 1);
 		}
 
         ~HackflightFlightManager(void)
