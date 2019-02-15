@@ -80,5 +80,8 @@ public:
         // Sets default values for this pawn's properties
         AVehiclePawn();
 
+        // Debugging support
+        static void debug(const char * fmt, ...);
+        static void outbuf(char * buf);
 
 }; // AVehiclePawn

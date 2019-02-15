@@ -96,3 +96,28 @@ void AVehiclePawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+void AVehiclePawn::debug(const char * fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    char buf[200];
+    vsnprintf(buf, 200, fmt, ap); 
+    va_end(ap);
+
+    outbuf(buf);
+}
+
+void AVehiclePawn::outbuf(char * buf)
+{
+    // Text properties for debugging
+    FColor TEXT_COLOR = FColor::Yellow;
+    constexpr float  TEXT_SCALE = 2.f;
+
+    // on screen
+    if (GEngine) {
+
+        // -1 = no overwrite (0 for overwrite); 5.f = arbitrary time to display; true = newer on top
+        GEngine->AddOnScreenDebugMessage(0, 5.f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
+    }
+}
