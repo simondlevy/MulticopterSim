@@ -59,7 +59,12 @@ AVehiclePawn::AVehiclePawn()
 	// Attach the sound to the pawn's root, the sound follows the pawn around
 	_propellerAudioComponent->SetupAttachment(GetRootComponent());
 
-	}
+    // Set up the FPV camera
+    _fpvSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("fpvSpringArm"));
+    _fpvSpringArm->SetupAttachment(RootComponent);
+    _fpvSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
+    _fpvCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("fpvCamera"));
+    _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 	}
 
 // Called when the game starts or when spawned
 void AVehiclePawn::BeginPlay()
