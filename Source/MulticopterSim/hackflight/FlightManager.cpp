@@ -8,7 +8,7 @@
 
 #include "FlightManager.h"
 
-//#include "SimBoard.h"
+#include "SimBoard.h"
 #include "BuiltinPhysics.h"
 #include "VehiclePawn.h"
 
@@ -59,7 +59,7 @@ class HackflightFlightManager : public FlightManager {
         hf::Hackflight _hackflight;
 
         // Flight-controller board
-        //SimBoard _board;
+        SimBoard _board;
 
         // "Receiver" (joystick/gamepad)
         hf::SimReceiver * _receiver;
