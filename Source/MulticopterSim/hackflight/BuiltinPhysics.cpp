@@ -1,5 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+/*
+ * BuiltinPhysics.cpp: Physics class implemenation using UE4 built-in physics
+ *
+ * Copyright (C) 2019 Simon D. Levy
+ *
+ * MIT License
+ */
 
 #include "BuiltinPhysics.h"
 
@@ -71,6 +76,7 @@ float BuiltinPhysics::motorsToAngularForce(TArray<float> motorValues, uint8_t a,
 
     return (v < 0 ? -1 : +1) * fabs(v);
 }
+
 float BuiltinPhysics::sum(TArray<float> x)
 {
     float s = 0.f;
@@ -81,6 +87,14 @@ float BuiltinPhysics::sum(TArray<float> x)
 
     return s;
 }
+
+#ifdef _USE_HACKFLIGHT
+// Factory method for Physics class
+Physics * Physics::createPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
+{
+    return new BuiltinPhysics(vehiclePawn, vehicleMesh);
+}
+#endif
 
 /*
 FVector BuiltinPhysics::getAccelerometer(float velocityZ, FVector & euler, float deltaSeconds)
