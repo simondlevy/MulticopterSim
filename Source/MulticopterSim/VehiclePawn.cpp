@@ -69,8 +69,26 @@ AVehiclePawn::AVehiclePawn()
 // Called when the game starts or when spawned
 void AVehiclePawn::BeginPlay()
 {
+    // Initialize simulation variables
+    _tickCycle = 0;
+
+    /*
+    // Make sure a map has been selected
+	FString mapName = GetWorld()->GetMapName();
+	_mapSelected = !mapName.Contains("Untitled");
+
+    // Start the physics and start playing the sound.  Note that because the
+    // Cue Asset is set to loop the sound, once we start playing the sound, it
+    // will play continiously...
+	if (_mapSelected) {
+		_propellerAudioComponent->Play();
+        //_physics->start();
+	}
+    else {
+        debug("NO MAP SELECTED");
+    }
+    */
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
