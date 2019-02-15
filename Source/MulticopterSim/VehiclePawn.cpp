@@ -116,7 +116,7 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     // Stop the flight controller
     if (_mapSelected) {
-        //_physics->stop();
+        _physics->stop();
     }
 
     Super::EndPlay(EndPlayReason);
@@ -133,7 +133,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     debug("%d FPS", (uint16_t)(1/DeltaSeconds));
 
     // Update physics, getting back motor values for animation effects
-	TArray<float> motorvals = {0,0,0,0}; //_physics->update(DeltaSeconds);
+	TArray<float> motorvals = _physics->update(DeltaSeconds);
 
     // Add animation effects (prop rotation, sound)
     addAnimationEffects(motorvals);
