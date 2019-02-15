@@ -103,7 +103,7 @@ void AVehiclePawn::BeginPlay()
     // will play continiously...
 	if (_mapSelected) {
 		_propellerAudioComponent->Play();
-        //_physics->start();
+        _physics->start();
 	}
     else {
         debug("NO MAP SELECTED");

@@ -11,7 +11,7 @@
 BuiltinPhysics::BuiltinPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) : Physics(vehiclePawn, vehicleMesh)
 
 {
-    //_flightManager = FlightManager::createFlightManager();
+    _flightManager = FlightManager::createFlightManager();
 
 	_vehicleMesh->SetSimulatePhysics(true);
 }
