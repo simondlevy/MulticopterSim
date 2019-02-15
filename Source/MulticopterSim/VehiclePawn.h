@@ -62,6 +62,10 @@ private:
 		// Bozo filter for failure to select a map
 		bool _mapSelected;
 
+        // Animation effects (sound, spinning props)
+        void addAnimationEffects(TArray<float> motorvals);
+        void setAudioPitchAndVolume(float value);
+
 protected:
 
 	    // AActor overrides

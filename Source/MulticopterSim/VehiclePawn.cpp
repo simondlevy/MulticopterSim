@@ -135,8 +135,37 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     // Update physics, getting back motor values for animation effects
 	TArray<float> motorvals = {0,0,0,0}; //_physics->update(DeltaSeconds);
 
+    // Add animation effects (prop rotation, sound)
+    addAnimationEffects(motorvals);
+
 	Super::Tick(DeltaSeconds);
 }
+
+void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
+{
+    /*
+    // Modulate the pitch and voume of the propeller sound
+	setAudioPitchAndVolume(mean(motorvals));
+
+    // Rotate one props periodically (not every tick)
+	if (_tickCycle == 0) {
+		for (uint8_t k = 0; k < 4; ++k) {
+			FRotator PropRotation(0, motorvals[k] * MOTORDIRS[k] * 240, 0);
+			_propMeshes[k]->AddLocalRotation(PropRotation);
+		}
+	}
+    _tickCycle = (_tickCycle+1) % PROP_UPDATE;
+    */
+}
+
+void AVehiclePawn::setAudioPitchAndVolume(float value)
+{
+    /*
+    _propellerAudioComponent->SetFloatParameter(FName("pitch"), value);
+    _propellerAudioComponent->SetFloatParameter(FName("volume"), value);
+    */
+}
+
 
 void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
         bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
