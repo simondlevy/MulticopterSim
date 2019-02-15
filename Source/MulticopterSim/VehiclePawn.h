@@ -14,24 +14,32 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "Physics.h"
+#include "GaussianNoise.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Runtime/Engine/Classes/Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 #include "VehiclePawn.generated.h"
 
-UCLASS()
-class MULTICOPTERSIM_API AVehiclePawn : public APawn
-{
+UCLASS(Config=Game)
+class MULTICOPTERSIM_API AVehiclePawn : public APawn {
+
 	GENERATED_BODY()
 
 public:
+
 	// Sets default values for this pawn's properties
 	AVehiclePawn();
 
 protected:
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -40,4 +48,4 @@ public:
 
 	
 	
-};
+}; // AVehiclePawn
