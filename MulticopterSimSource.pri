@@ -8415,6 +8415,7 @@ SOURCES += \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/GaussianNoise.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSim.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSimGameModeBase.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Physics.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/ThreadedWorker.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/VehiclePawn.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/GoshawkPhysics.cpp" \
