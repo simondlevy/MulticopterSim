@@ -44,5 +44,4 @@ class MULTICOPTERSIM_API Joystick {
 
         void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4);
         void getButtons(DWORD dwButtons, uint8_t & buttonState, uint8_t button0, uint8_t button1, uint8_t button2);
-
 };

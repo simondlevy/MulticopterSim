@@ -10907,6 +10907,8 @@ HEADERS += \
 	"$$unrealRootPath/Engine/Plugins/Tests/ScreenshotTools/Source/ScreenshotTools/Public/ScreenshotTools.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/FlightManager.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/GaussianNoise.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Joystick.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/JoystickLinux.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSim.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSimGameModeBase.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/Physics.h" \
