@@ -84,6 +84,9 @@ public:
         // Sets default values for this pawn's properties
         AVehiclePawn();
 
+        // Timing
+        float getCurrentTime(void);
+
         // Debugging support
         static void debug(const char * fmt, ...);
         static void outbuf(char * buf);
