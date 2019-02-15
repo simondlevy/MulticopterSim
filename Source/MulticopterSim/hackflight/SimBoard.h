@@ -1,15 +1,24 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+* SimBoard.h: Header for Hackflight::Board class implementation in MulticopterSim
+*
+* Copyright(C) 2018 Simon D.Levy
+*
+* MIT License
+*/
+
+#include <Runtime/Core/Public/Containers/Array.h>
+#include <Runtime/Core/Public/Math/Quat.h>
+
+#include <board.hpp>
+
 
 #pragma once
 
-#include "CoreMinimal.h"
+class SimBoard {
 
-/**
- * 
- */
-class MULTICOPTERSIM_API SimBoard
-{
 public:
+
 	SimBoard();
+
 	~SimBoard();
 };
