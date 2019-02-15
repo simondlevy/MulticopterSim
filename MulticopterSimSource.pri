@@ -8418,11 +8418,6 @@ SOURCES += \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/Physics.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/ThreadedWorker.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/VehiclePawn.cpp" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/GoshawkPhysics.cpp" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/TargetPawn.cpp" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/ThreadedPhysicsWorker.cpp" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/ThreadedVideoWorker.cpp" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/old/OldFlightController.cpp" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/old/ThreadedSocketServer.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/hackflight/FlightManager.cpp" \
  
 

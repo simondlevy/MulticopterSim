@@ -10911,10 +10911,6 @@ HEADERS += \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/Physics.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/ThreadedWorker.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/VehiclePawn.h" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/GoshawkPhysics.h" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/TargetPawn.h" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/ThreadedPhysicsWorker.h" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/ThreadedVideoWorker.h" \
-	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/old/ThreadedSocketServer.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/hackflight/FlightManager.h" \
  
 
