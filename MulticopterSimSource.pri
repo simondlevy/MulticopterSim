@@ -8412,8 +8412,16 @@ SOURCES += \
 	"$$unrealRootPath/Engine/Plugins/Tests/RuntimeTests/Source/RuntimeTests/Private/Shaders/ShaderComparisonTests.cpp" \
 	"$$unrealRootPath/Engine/Plugins/Tests/RuntimeTests/Source/RuntimeTests/Private/Slate/RichTextMarkupProcessingTest.cpp" \
 	"$$unrealRootPath/Engine/Plugins/Tests/ScreenshotTools/Source/ScreenshotTools/Private/ScreenshotTools.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/GaussianNoise.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSim.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSimGameModeBase.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/ThreadedWorker.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/VehiclePawn.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/GoshawkPhysics.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/TargetPawn.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/ThreadedPhysicsWorker.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/ThreadedVideoWorker.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/old/OldFlightController.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/old/ThreadedSocketServer.cpp" \
  
 

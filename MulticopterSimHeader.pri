@@ -10905,8 +10905,16 @@ HEADERS += \
 	"$$unrealRootPath/Engine/Plugins/Tests/RuntimeTests/Source/RuntimeTests/Public/RuntimeTests.h" \
 	"$$unrealRootPath/Engine/Plugins/Tests/RuntimeTests/Source/RuntimeTests/Public/ShaderComparisonTests.h" \
 	"$$unrealRootPath/Engine/Plugins/Tests/ScreenshotTools/Source/ScreenshotTools/Public/ScreenshotTools.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/GaussianNoise.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSim.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/MulticopterSimGameModeBase.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Physics.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/ThreadedWorker.h" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/VehiclePawn.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/GoshawkPhysics.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/TargetPawn.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/ThreadedPhysicsWorker.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/ThreadedVideoWorker.h" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/Goshawk/sim/old/ThreadedSocketServer.h" \
  
 
