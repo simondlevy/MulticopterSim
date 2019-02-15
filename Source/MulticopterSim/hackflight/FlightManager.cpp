@@ -62,7 +62,7 @@ class HackflightFlightManager : public FlightManager {
         SimBoard _board;
 
         // "Receiver" (joystick/gamepad)
-        hf::SimReceiver * _receiver;
+        SimReceiver _receiver;
 
         // Mixer
         hf::MixerQuadX _mixer;
@@ -71,9 +71,6 @@ class HackflightFlightManager : public FlightManager {
 
         HackflightFlightManager(void)
         {
-			// Start the "receiver" (joystick/gamepad)
-			_receiver = new hf::SimReceiver();
-
 			// Start Hackflight firmware, indicating already armed
 			//_hackflight.init(&_board, _receiver, &_mixer, &ratePid, true);
 

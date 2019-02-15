@@ -10,6 +10,6 @@
 #include "SimReceiver.h"
 #include <debug.hpp>
 
-hf::SimReceiver::SimReceiver(void)
+SimReceiver::SimReceiver(void)
 {
 }
