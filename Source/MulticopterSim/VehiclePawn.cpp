@@ -33,6 +33,11 @@ AVehiclePawn::AVehiclePawn()
 	};
 	static FConstructorStatics ConstructorStatics;
 
+	// Create static mesh component
+	_vehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
+	_vehicleMesh->SetStaticMesh(ConstructorStatics._vehicleMesh.Get());	// Set static mesh
+	RootComponent = _vehicleMesh;
+
 }
 
 // Called when the game starts or when spawned
