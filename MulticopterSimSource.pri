@@ -8418,6 +8418,7 @@ SOURCES += \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/Physics.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/ThreadedWorker.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/VehiclePawn.cpp" \
+	"$$MulticopterSimRootPath/Source/MulticopterSim/hackflight/BuiltinPhysics.cpp" \
 	"$$MulticopterSimRootPath/Source/MulticopterSim/hackflight/FlightManager.cpp" \
  
 
