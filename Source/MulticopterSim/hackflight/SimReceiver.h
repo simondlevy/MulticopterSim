@@ -6,11 +6,11 @@
  * MIT License
  */
 
-#pragma once
-
 #include <receiver.hpp>
 
 #include "Joystick.h"
+
+#pragma once
 
 namespace hf {
 
