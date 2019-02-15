@@ -64,15 +64,14 @@ private:
 
 protected:
 
-	// Called when the game starts or when spawned
+	// AActor overrides
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 public:	
 
 	// Sets default values for this pawn's properties
 	AVehiclePawn();
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 }; // AVehiclePawn
