@@ -130,6 +130,17 @@ void AVehiclePawn::Tick(float DeltaTime)
 
 }
 
+void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
+        bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+    Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+    // Deflect along the surface when we collide.
+    FRotator CurrentRotation = GetActorRotation();
+    SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
+}
+
+
 void AVehiclePawn::debug(const char * fmt, ...)
 {
     va_list ap;
