@@ -146,16 +146,14 @@ void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
     // Modulate the pitch and voume of the propeller sound
 	setAudioPitchAndVolume(mean(motorvals));
 
-    /*
     // Rotate one props periodically (not every tick)
 	if (_tickCycle == 0) {
 		for (uint8_t k = 0; k < 4; ++k) {
 			FRotator PropRotation(0, motorvals[k] * MOTORDIRS[k] * 240, 0);
-			_propMeshes[k]->AddLocalRotation(PropRotation);
+			//_propMeshes[k]->AddLocalRotation(PropRotation);
 		}
 	}
     _tickCycle = (_tickCycle+1) % PROP_UPDATE;
-    */
 }
 
 void AVehiclePawn::setAudioPitchAndVolume(float value)
