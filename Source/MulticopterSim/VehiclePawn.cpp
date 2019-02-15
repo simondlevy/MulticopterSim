@@ -64,8 +64,30 @@ AVehiclePawn::AVehiclePawn()
     _fpvSpringArm->SetupAttachment(RootComponent);
     _fpvSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
     _fpvCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("fpvCamera"));
-    _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 	}
+    _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 	
+}
 
+void AVehiclePawn::PostInitializeComponents()
+{
+	if (_propellerAudioCue->IsValidLowLevelFast()) {
+		_propellerAudioComponent->SetSound(_propellerAudioCue);
+	}
+
+    // Grab the static prop mesh components by name, storing them for use in Tick()
+    TArray<UStaticMeshComponent *> staticComponents;
+    this->GetComponents<UStaticMeshComponent>(staticComponents);
+    for (int i = 0; i < staticComponents.Num(); i++) {
+        if (staticComponents[i]) {
+            UStaticMeshComponent* child = staticComponents[i];
+            if (child->GetName() == "Prop1") _propMeshes[0] = child;
+            if (child->GetName() == "Prop2") _propMeshes[1] = child;
+            if (child->GetName() == "Prop3") _propMeshes[2] = child;
+            if (child->GetName() == "Prop4") _propMeshes[3] = child;
+        }
+	}
+
+	Super::PostInitializeComponents();
+}
 // Called when the game starts or when spawned
 void AVehiclePawn::BeginPlay()
 {
@@ -100,30 +122,6 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 }
 
-void AVehiclePawn::PostInitializeComponents()
-{
-	if (_propellerAudioCue->IsValidLowLevelFast()) {
-		_propellerAudioComponent->SetSound(_propellerAudioCue);
-	}
-
-    // Grab the static prop mesh components by name, storing them for use in Tick()
-    TArray<UStaticMeshComponent *> staticComponents;
-    this->GetComponents<UStaticMeshComponent>(staticComponents);
-    for (int i = 0; i < staticComponents.Num(); i++) {
-        if (staticComponents[i]) {
-            UStaticMeshComponent* child = staticComponents[i];
-            if (child->GetName() == "Prop1") _propMeshes[0] = child;
-            if (child->GetName() == "Prop2") _propMeshes[1] = child;
-            if (child->GetName() == "Prop3") _propMeshes[2] = child;
-            if (child->GetName() == "Prop4") _propMeshes[3] = child;
-        }
-	}
-
-	Super::PostInitializeComponents();
-}
-
-
-// Called every frame
 void AVehiclePawn::Tick(float DeltaSeconds)
 {
 	// D'oh!
@@ -131,6 +129,11 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 		Super::Tick(DeltaSeconds);
 		return;
 	}
+
+    //debug("%d FPS", (uint16_t)(1/DeltaSeconds));
+
+    // Update physics, getting back motor values for animation effects
+	TArray<float> motorvals = {0,0,0,0}; //_physics->update(DeltaSeconds);
 
 	Super::Tick(DeltaSeconds);
 }
