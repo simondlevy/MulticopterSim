@@ -8,9 +8,18 @@
 
 #pragma once
 
-class SimReceiver {
+#include <receiver.hpp>
 
-public:
+//#include "Joystick.h"
 
-	SimReceiver(void);
-};
+namespace hf {
+
+    class SimReceiver {
+
+        public:
+
+            SimReceiver(void);
+
+    }; // class SimReceiver
+
+} // namespace hf
