@@ -11,14 +11,13 @@
 //#include "SimBoard.h"
 #include "BuiltinPhysics.h"
 #include "VehiclePawn.h"
-//#include "Joystick.h"
 
 // Math support
 #define _USE_MATH_DEFINES
 #include <math.h>
 
 #include <hackflight.hpp>
-//#include "hackflight/SimReceiver.h"
+#include "hackflight/SimReceiver.h"
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
@@ -72,7 +71,7 @@ class HackflightFlightManager : public FlightManager {
         //SimBoard _board;
 
         // "Receiver" (joystick/gamepad)
-        //hf::SimReceiver * _receiver;
+        hf::SimReceiver * _receiver;
 
         // Mixer
         hf::MixerQuadX _mixer;
