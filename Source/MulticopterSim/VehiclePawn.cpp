@@ -23,6 +23,15 @@
 
 AVehiclePawn::AVehiclePawn()
 {
+	// Structure to hold one-time initialization
+	struct FConstructorStatics
+	{
+		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> _vehicleMesh;
+		FConstructorStatics() : _vehicleMesh(TEXT("/Game/Flying/Meshes/3DFly.3DFly"))
+		{
+		}
+	};
+	static FConstructorStatics ConstructorStatics;
 
 }
 
