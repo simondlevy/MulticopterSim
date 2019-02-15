@@ -106,7 +106,7 @@ void AVehiclePawn::BeginPlay()
         //_physics->start();
 	}
     else {
-        //debug("NO MAP SELECTED");
+        debug("NO MAP SELECTED");
     }
     
 	Super::BeginPlay();
