@@ -90,6 +90,16 @@ void AVehiclePawn::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    // Stop the flight controller
+    if (_mapSelected) {
+        //_physics->stop();
+    }
+
+    Super::EndPlay(EndPlayReason);
+}
+
 void AVehiclePawn::PostInitializeComponents()
 {
 	if (_propellerAudioCue->IsValidLowLevelFast()) {

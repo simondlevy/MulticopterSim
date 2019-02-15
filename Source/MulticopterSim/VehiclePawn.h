@@ -68,10 +68,10 @@ protected:
         virtual void BeginPlay() override;
         virtual void Tick(float DeltaTime) override;
         virtual void PostInitializeComponents() override;
+        virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
         /*
         virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
                 bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
-        virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
         */
 
 public:	
