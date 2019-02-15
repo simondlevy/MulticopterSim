@@ -46,6 +46,19 @@ AVehiclePawn::AVehiclePawn()
 	// on where you store the asset on disk.
 	static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/Flying/Audio/MotorSoundCue'"));
 	
+	// Store a reference to the Cue asset - we'll need it later.
+	_propellerAudioCue = propellerCue.Object;
+
+	// Create an audio component, the audio component wraps the Cue, 
+	// and allows us to ineract with it, and its parameters from code.
+	_propellerAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
+
+	// Stop the sound from sound playing the moment it's created.
+	_propellerAudioComponent->bAutoActivate = false;
+
+	// Attach the sound to the pawn's root, the sound follows the pawn around
+	_propellerAudioComponent->SetupAttachment(GetRootComponent());
+
 	}
 
 // Called when the game starts or when spawned
