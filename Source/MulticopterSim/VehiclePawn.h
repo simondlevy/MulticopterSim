@@ -14,7 +14,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include "Physics.h"
+//#include "Physics.h"
 #include "GaussianNoise.h"
 
 #include "CoreMinimal.h"
@@ -52,7 +52,7 @@ private:
             class USpringArmComponent* _fpvSpringArm;
 
         // Actual  physics supported by your application
-        class Physics * _physics;
+        //class Physics * _physics;
 
         // Support for simulating spinning propellers
         uint8_t _tickCycle;
