@@ -39,7 +39,7 @@ AVehiclePawn::AVehiclePawn()
 	RootComponent = _vehicleMesh;
 
     // Create physics support
-    //_physics = Physics::createPhysics(this, _vehicleMesh);
+    _physics = Physics::createPhysics(this, _vehicleMesh);
 
 	// Load our Sound Cue for the propeller sound we created in the editor... 
 	// note your path may be different depending
