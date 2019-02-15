@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 /*
 * FlightManager.cpp: MulticopterSim FlightManager class implementation using Hackflight
 *
@@ -16,16 +13,12 @@
 #include "VehiclePawn.h"
 //#include "Joystick.h"
 
-/*
 // Math support
 #define _USE_MATH_DEFINES
 #include <math.h>
 
 #include <hackflight.hpp>
-#include "hackflight/SimReceiver.h"
-
-// MSP comms
-#include "hackflight/msppg/MSPPG.h"
+//#include "hackflight/SimReceiver.h"
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
@@ -35,16 +28,10 @@
 // Mixer
 #include <mixers/quadx.hpp>
 
-// Additional sensors
-#include "hackflight/sensors/SimOpticalFlow.h"
-#include "hackflight/sensors/SimRangefinder.h"
-*/
-
 class HackflightFlightManager : public FlightManager {
 
     private:
 
-        /*
         // PID tuning
 
         hf::Rate ratePid = hf::Rate(
@@ -82,14 +69,14 @@ class HackflightFlightManager : public FlightManager {
         hf::Hackflight _hackflight;
 
         // Flight-controller board
-        SimBoard _board;
+        //SimBoard _board;
 
         // "Receiver" (joystick/gamepad)
-        hf::SimReceiver * _receiver;
+        //hf::SimReceiver * _receiver;
 
         // Mixer
         hf::MixerQuadX _mixer;
-*/
+
     public:
 
         HackflightFlightManager(void)
