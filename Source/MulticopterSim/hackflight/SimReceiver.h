@@ -10,7 +10,7 @@
 
 #include <receiver.hpp>
 
-//#include "Joystick.h"
+#include "Joystick.h"
 
 namespace hf {
 

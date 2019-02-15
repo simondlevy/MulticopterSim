@@ -10,7 +10,6 @@
 
 #include "Physics.h"
 #include "VehiclePawn.h"
-//#include "Joystick.h"
 #include "FlightManager.h"
 
 // Math support
