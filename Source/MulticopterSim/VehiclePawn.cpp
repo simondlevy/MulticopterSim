@@ -90,6 +90,29 @@ void AVehiclePawn::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AVehiclePawn::PostInitializeComponents()
+{
+	if (_propellerAudioCue->IsValidLowLevelFast()) {
+		_propellerAudioComponent->SetSound(_propellerAudioCue);
+	}
+
+    // Grab the static prop mesh components by name, storing them for use in Tick()
+    TArray<UStaticMeshComponent *> staticComponents;
+    this->GetComponents<UStaticMeshComponent>(staticComponents);
+    for (int i = 0; i < staticComponents.Num(); i++) {
+        if (staticComponents[i]) {
+            UStaticMeshComponent* child = staticComponents[i];
+            if (child->GetName() == "Prop1") _propMeshes[0] = child;
+            if (child->GetName() == "Prop2") _propMeshes[1] = child;
+            if (child->GetName() == "Prop3") _propMeshes[2] = child;
+            if (child->GetName() == "Prop4") _propMeshes[3] = child;
+        }
+	}
+
+	Super::PostInitializeComponents();
+}
+
+
 // Called every frame
 void AVehiclePawn::Tick(float DeltaTime)
 {
