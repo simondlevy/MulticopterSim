@@ -143,10 +143,10 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
 void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
 {
-    /*
     // Modulate the pitch and voume of the propeller sound
 	setAudioPitchAndVolume(mean(motorvals));
 
+    /*
     // Rotate one props periodically (not every tick)
 	if (_tickCycle == 0) {
 		for (uint8_t k = 0; k < 4; ++k) {
@@ -160,10 +160,19 @@ void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
 
 void AVehiclePawn::setAudioPitchAndVolume(float value)
 {
-    /*
     _propellerAudioComponent->SetFloatParameter(FName("pitch"), value);
     _propellerAudioComponent->SetFloatParameter(FName("volume"), value);
-    */
+}
+
+float AVehiclePawn::mean(TArray<float> x)
+{
+	float mn = 0;
+
+	for (auto It = x.CreateConstIterator(); It; ++It) {
+		mn += *It;
+	}
+
+	return mn / x.Num();
 }
 
 

@@ -66,6 +66,9 @@ private:
         void addAnimationEffects(TArray<float> motorvals);
         void setAudioPitchAndVolume(float value);
 
+        // Helpers
+		static float mean(TArray<float> x);
+
 protected:
 
 	    // AActor overrides
