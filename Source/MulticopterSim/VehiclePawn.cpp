@@ -76,7 +76,6 @@ void AVehiclePawn::BeginPlay()
 	FString mapName = GetWorld()->GetMapName();
 	_mapSelected = !mapName.Contains("Untitled");
 
-    /*
     // Start the physics and start playing the sound.  Note that because the
     // Cue Asset is set to loop the sound, once we start playing the sound, it
     // will play continiously...
@@ -85,9 +84,9 @@ void AVehiclePawn::BeginPlay()
         //_physics->start();
 	}
     else {
-        debug("NO MAP SELECTED");
+        //debug("NO MAP SELECTED");
     }
-    */
+    
 	Super::BeginPlay();
 }
 
