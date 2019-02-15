@@ -624,3 +624,6 @@ configure:
 	$(PROJECTBUILD) -projectfiles -project="\"$(GAMEPROJECTFILE)\"" -game -engine 
 
 .PHONY: $(TARGETS)
+
+clean:
+	rm -rf Binaries/ DerivedDataCache/ Intermediate/ Saved/
