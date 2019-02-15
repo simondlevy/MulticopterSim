@@ -26,12 +26,41 @@
 UCLASS(Config=Game)
 class MULTICOPTERSIM_API AVehiclePawn : public APawn {
 
+private:
+
 	GENERATED_BODY()
 
-public:
+        // StaticMesh component that will be the visuals for our flying pawn 
+        UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+            class UStaticMeshComponent* _vehicleMesh;
 
-	// Sets default values for this pawn's properties
-	AVehiclePawn();
+        // Propeller meshes for spinning
+        class UStaticMeshComponent* _propMeshes[4];
+
+        // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+            class USoundCue* _propellerAudioCue;
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+            class USoundCue* _propellerStartupCue;
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+            class UAudioComponent* _propellerAudioComponent;
+
+        // Camera support
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+            class UCameraComponent* _fpvCamera;
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+            class USpringArmComponent* _fpvSpringArm;
+
+        // Actual  physics supported by your application
+        class Physics * _physics;
+
+        // Support for simulating spinning propellers
+        uint8_t _tickCycle;
+        static constexpr int8_t MOTORDIRS[4] = {+1, -1, -1, +1};
+		static constexpr uint8_t PROP_UPDATE = 5;
+
+		// Bozo filter for failure to select a map
+		bool _mapSelected;
 
 protected:
 
@@ -39,6 +68,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+
+	// Sets default values for this pawn's properties
+	AVehiclePawn();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
