@@ -38,7 +38,15 @@ AVehiclePawn::AVehiclePawn()
 	_vehicleMesh->SetStaticMesh(ConstructorStatics._vehicleMesh.Get());	// Set static mesh
 	RootComponent = _vehicleMesh;
 
-}
+    // Create physics support
+    //_physics = Physics::createPhysics(this, _vehicleMesh);
+
+	// Load our Sound Cue for the propeller sound we created in the editor... 
+	// note your path may be different depending
+	// on where you store the asset on disk.
+	static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/Flying/Audio/MotorSoundCue'"));
+	
+	}
 
 // Called when the game starts or when spawned
 void AVehiclePawn::BeginPlay()
