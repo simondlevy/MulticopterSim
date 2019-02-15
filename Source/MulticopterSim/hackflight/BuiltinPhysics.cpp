@@ -34,7 +34,7 @@ TArray<float> BuiltinPhysics::update(float deltaSeconds)
     FVector gyro = (euler - _eulerPrev) / deltaSeconds;
 
     // Update the flight manager with the quaternion and gyrometer, getting the resulting motor values
-    TArray<float> motorvals = {0,0,0,0};//_flightManager->update(deltaSeconds, quat, gyro);
+    TArray<float> motorvals = _flightManager->update(deltaSeconds, quat, gyro);
 
     // Store current Euler angles for gyro simulation
 	_eulerPrev = euler;
