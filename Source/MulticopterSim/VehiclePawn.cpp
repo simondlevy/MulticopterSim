@@ -124,10 +124,15 @@ void AVehiclePawn::PostInitializeComponents()
 
 
 // Called every frame
-void AVehiclePawn::Tick(float DeltaTime)
+void AVehiclePawn::Tick(float DeltaSeconds)
 {
-	Super::Tick(DeltaTime);
+	// D'oh!
+	if (!_mapSelected) {
+		Super::Tick(DeltaSeconds);
+		return;
+	}
 
+	Super::Tick(DeltaSeconds);
 }
 
 void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
