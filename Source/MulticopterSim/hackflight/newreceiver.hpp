@@ -11,7 +11,6 @@ namespace hf {
 
     class NewReceiver {
 
-        /*
         friend class Hackflight;
         friend class RealBoard;
         friend class MspParser;
@@ -26,6 +25,7 @@ namespace hf {
         const float THROTTLE_MID      = 0.00f;
         const float THROTTLE_EXPO     = 0.20f;
 
+        /*
         float adjustCommand(float command, uint8_t channel)
         {
             command /= 2;
