@@ -109,7 +109,7 @@ namespace hf {
         }
 
         // Override this if your receiver provides RSSI or other weak-signal detection
-        //virtual bool lostSignal(void) { return false; }
+        virtual bool lostSignal(void) { return false; }
 
         /*
         Receiver(const uint8_t channelMap[6]) // throttle, roll, pitch, yaw, aux, arm
