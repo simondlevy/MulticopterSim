@@ -1,2 +1,2 @@
-rm -rf Binaries DerivedDataCache Intermediate Saved
+./cleanup.sh
 git reset --hard
