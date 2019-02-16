@@ -27,25 +27,29 @@ void Joystick::init(void)
 
         fcntl(_joystickId, F_SETFL, O_NONBLOCK);
 
-        char prodname[128];
+        char productName[128];
 
-        if (ioctl(_joystickId, JSIOCGNAME(sizeof(prodname)), prodname) < 0) {
+        if (ioctl(_joystickId, JSIOCGNAME(sizeof(productName)), productName) < 0) {
             return;
         }
 
-        if (strstr(prodname, "Taranis") || strstr(prodname, "DeviationTx Deviation GamePad")) {
+        if (strstr(productName, "Taranis") || strstr(productName, "DeviationTx Deviation GamePad")) {
         }
-        else if (strstr(prodname, "Horizon Hobby SPEKTRUM")) {
+        else if (strstr(productName, "Horizon Hobby SPEKTRUM")) {
         }
-        else if (strstr(prodname, "Extreme 3D")) {
+        else if (strstr(productName, "Extreme 3D")) {
         }
-        else if (strstr(prodname, "Generic X-Box pad")) {
+        else if (strstr(productName, "Generic X-Box pad")) {
+        }
+        else if (strstr(productName, "Logitech Gamepad F310")) {
+            _productId = PRODUCT_F310;
         }
     }
 }
 
 void Joystick::poll(float axes[6], uint8_t & buttonState)
 {
+    AVehiclePawn::debug("%x", _productId);
 }
 
 void Joystick::getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4)
