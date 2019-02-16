@@ -1,18 +1,17 @@
 #pragma once
 
-/*
 #include <cstring>
 #include <algorithm>
 #include <cmath>
 #include <stdint.h>
 
 #include "datatypes.hpp"
-*/
 
 namespace hf {
 
     class NewReceiver {
 
+        /*
         friend class Hackflight;
         friend class RealBoard;
         friend class MspParser;
@@ -27,7 +26,6 @@ namespace hf {
         const float THROTTLE_MID      = 0.00f;
         const float THROTTLE_EXPO     = 0.20f;
 
-        /*
         float adjustCommand(float command, uint8_t channel)
         {
             command /= 2;
@@ -62,7 +60,7 @@ namespace hf {
             float y = tmp>0 ? 1-mid : (tmp<0 ? mid : 1);
             return (mid + tmp*(1-THROTTLE_EXPO + THROTTLE_EXPO * (tmp*tmp) / (y*y))) * 2 - 1;
         }
-
+        
         protected: 
 
         // maximum number of channels that any receiver will send (of which we'll use six)
@@ -87,11 +85,11 @@ namespace hf {
         //virtual bool gotNewFrame(void) = 0;
         //virtual void readRawvals(void) = 0;
 
-        bool gotNewFrame(void) { return false; }
-        void readRawvals(void) { }
+        //bool gotNewFrame(void) { return false; }
+        //void readRawvals(void) { }
 
         // This can be overridden optionally
-        virtual void begin(void) { }
+        //virtual void begin(void) { }
 
         // Software trim
         float _trimRoll;
