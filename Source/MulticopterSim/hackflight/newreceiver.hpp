@@ -17,7 +17,6 @@ namespace hf {
         friend class RealBoard;
         friend class MspParser;
 
-        /*
         private: 
 
         static constexpr uint8_t DEFAULT_CHANNEL_MAP[6] = {0, 1, 2, 3, 4, 5};
@@ -28,6 +27,7 @@ namespace hf {
         const float THROTTLE_MID      = 0.00f;
         const float THROTTLE_EXPO     = 0.20f;
 
+        /*
         float adjustCommand(float command, uint8_t channel)
         {
             command /= 2;
