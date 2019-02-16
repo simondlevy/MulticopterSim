@@ -63,9 +63,15 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
     if (js.type & JS_EVENT_INIT) return;
 
     switch (js.type) {
+
         case JS_EVENT_AXIS:
+            switch (_productId) {
+                case PRODUCT_F310:// 1,3,4,0
+                    break;
+            }
             axes[js.number] = js.value;
             break;
+
         case JS_EVENT_BUTTON:
             _buttons = js.number + 1; // avoid zero
     }
@@ -80,34 +86,9 @@ void Joystick::getButtons(DWORD dwButtons, uint8_t & buttonState, uint8_t button
 }
 
 /*
-
-
-   void hf::Controller::productInit(void)
-   {
-   }
-
-   void hf::Controller::productPoll(int32_t axes[6], uint8_t & buttons)
-   {
-   if (_joystickId <= 0) return;
-
-   struct js_event js;
-
-   read(_joystickId, &js, sizeof(struct js_event));
-
-   if (js.type & JS_EVENT_INIT) return;
-
-   switch (js.type) {
-   case JS_EVENT_AXIS:
-   axes[js.number] = js.value;
-   break;
-   case JS_EVENT_BUTTON:
-   buttons = js.number + 1; // avoid zero
-   }
-   }
-
    int32_t hf::Controller::productGetBaseline(void)
    {
-   return 0;
+       return 0;
    }
  */
 
