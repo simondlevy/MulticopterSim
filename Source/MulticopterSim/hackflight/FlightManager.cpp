@@ -88,7 +88,7 @@ class HackflightFlightManager : public FlightManager {
 
 			_hackflight.update();
 
-            //return _board.update(currentTime, quat, gyro);
+            return _board.update(currentTime, quat, gyro);
 
             TArray<float> motorvals = {0,0,0,0};
             return motorvals;
