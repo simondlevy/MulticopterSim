@@ -86,7 +86,7 @@ class HackflightFlightManager : public FlightManager {
         {
 			_receiver.update();
 
-			//_hackflight.update();
+			_hackflight.update();
 
             //return _board.update(currentTime, quat, gyro);
 
