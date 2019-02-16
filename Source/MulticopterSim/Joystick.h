@@ -21,11 +21,13 @@ class MULTICOPTERSIM_API Joystick {
 
     public:
 
-        Joystick(void);
-
         void poll(float axes[6], uint8_t & buttonState);
 
         bool isRcTransmitter;
+
+        static Joystick * createJoystick(void);
+
+        Joystick(void);
 
     private:
 

@@ -85,6 +85,11 @@ void Joystick::getButtons(DWORD dwButtons, uint8_t & buttonState, uint8_t button
 {
 }
 
+Joystick * Joystick::createJoystick(void)
+{
+    return new Joystick();
+}
+
 /*
    int32_t hf::Controller::productGetBaseline(void)
    {
