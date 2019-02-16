@@ -72,7 +72,7 @@ class HackflightFlightManager : public FlightManager {
         HackflightFlightManager(void)
         {
 			// Start Hackflight firmware, indicating already armed
-			//_hackflight.init(&_board, _receiver, &_mixer, &ratePid, true);
+			_hackflight.init(&_board, &_receiver, &_mixer, &ratePid, true);
 
 			// Add level PID controller for aux switch position 1
 			_hackflight.addPidController(&level, 1);
