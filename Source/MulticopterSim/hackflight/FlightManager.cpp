@@ -104,10 +104,8 @@ FlightManager * FlightManager::createFlightManager()
     return new HackflightFlightManager();
 }
 
-/*
 // Debugging
 void hf::Board::outbuf(char * buf)
 {
     AVehiclePawn::outbuf(buf);
 }
-*/
