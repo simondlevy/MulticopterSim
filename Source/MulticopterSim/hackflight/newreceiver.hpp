@@ -111,10 +111,9 @@ namespace hf {
         // Override this if your receiver provides RSSI or other weak-signal detection
         virtual bool lostSignal(void) { return false; }
 
-        /*
         NewReceiver(const uint8_t channelMap[6]) // throttle, roll, pitch, yaw, aux, arm
         { 
-            memcpy(_channelMap, channelMap, 6);
+            //memcpy(_channelMap, channelMap, 6);
 
             _trimRoll  = 0;
             _trimPitch = 0;
@@ -122,12 +121,7 @@ namespace hf {
         }
 
         // Default constructor
-        NewReceiver(void) : Receiver(DEFAULT_CHANNEL_MAP)
-        {
-        }
-        */
-
-        NewReceiver(void)
+        NewReceiver(void) : NewReceiver(DEFAULT_CHANNEL_MAP)
         {
         }
 
