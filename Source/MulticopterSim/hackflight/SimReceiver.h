@@ -6,13 +6,13 @@
  * MIT License
  */
 
-#include "newreceiver.hpp"
+#include <receiver.hpp>
 
 #include "Joystick.h"
 
 #pragma once
 
-class SimReceiver : public hf::NewReceiver {
+class SimReceiver : public hf::Receiver {
 
     public:
 
