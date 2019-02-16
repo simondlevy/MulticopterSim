@@ -85,10 +85,10 @@ namespace hf {
         //virtual void readRawvals(void) = 0;
 
         //bool gotNewFrame(void) { return false; }
-        //void readRawvals(void) { }
+        void readRawvals(void) { }
 
         // This can be overridden optionally
-        //virtual void begin(void) { }
+        virtual void begin(void) { }
 
         // Software trim
         float _trimRoll;
@@ -113,8 +113,6 @@ namespace hf {
 
         NewReceiver(const uint8_t channelMap[6]) // throttle, roll, pitch, yaw, aux, arm
         { 
-            //memcpy(_channelMap, channelMap, 6);
-
             for (uint8_t k=0; k<6; ++k) {
                 _channelMap[k] = channelMap[k];
             }
