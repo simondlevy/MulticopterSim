@@ -13,11 +13,11 @@ namespace hf {
 
     class NewReceiver {
 
-        /*
         friend class Hackflight;
         friend class RealBoard;
         friend class MspParser;
 
+        /*
         private: 
 
         static constexpr uint8_t DEFAULT_CHANNEL_MAP[6] = {0, 1, 2, 3, 4, 5};
