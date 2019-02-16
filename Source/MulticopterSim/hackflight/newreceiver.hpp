@@ -81,11 +81,8 @@ namespace hf {
         uint8_t _channelMap[6];
 
         // These must be overridden for each receiver
-        //virtual bool gotNewFrame(void) = 0;
-        //virtual void readRawvals(void) = 0;
-
-        //bool gotNewFrame(void) { return false; }
-        void readRawvals(void) { }
+        virtual bool gotNewFrame(void) = 0;
+        virtual void readRawvals(void) = 0;
 
         // This can be overridden optionally
         virtual void begin(void) { }

@@ -18,4 +18,10 @@ class SimReceiver : public hf::NewReceiver {
 
         SimReceiver(void);
 
+    protected:
+
+        virtual bool gotNewFrame(void) override;
+
+        virtual void readRawvals(void) override;
+
 }; // class SimReceiver

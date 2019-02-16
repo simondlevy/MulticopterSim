@@ -13,3 +13,12 @@
 SimReceiver::SimReceiver(void)
 {
 }
+
+bool SimReceiver::gotNewFrame(void) 
+{
+    return false;
+}
+
+void SimReceiver::readRawvals(void) 
+{
+}
