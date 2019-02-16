@@ -112,7 +112,7 @@ namespace hf {
         virtual bool lostSignal(void) { return false; }
 
         /*
-        Receiver(const uint8_t channelMap[6]) // throttle, roll, pitch, yaw, aux, arm
+        NewReceiver(const uint8_t channelMap[6]) // throttle, roll, pitch, yaw, aux, arm
         { 
             memcpy(_channelMap, channelMap, 6);
 
@@ -122,11 +122,15 @@ namespace hf {
         }
 
         // Default constructor
-        Receiver(void) : Receiver(DEFAULT_CHANNEL_MAP)
+        NewReceiver(void) : Receiver(DEFAULT_CHANNEL_MAP)
+        {
+        }
+        */
+
+        NewReceiver(void)
         {
         }
 
-        */
         bool getDemands(float yawAngle)
         {
             // Wait till there's a new frame
