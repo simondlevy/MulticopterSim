@@ -17,7 +17,7 @@
 
 static const char * DEVNAME = "/dev/input/js0";
 
-void Joystick::init(void)
+Joystick::Joystick(void)
 {
     _productId = 0;
 

@@ -11,7 +11,7 @@
 
 SimReceiver::SimReceiver(void)
 {
-    joystick.init();
+    _joystick = new Joystick();
 
     _cycle = 0;
     _buttonState = 0;
@@ -29,7 +29,7 @@ bool SimReceiver::gotNewFrame(void)
 void SimReceiver::readRawvals(void)
 {
     // For game controllers, use buttons to fake up values in a three-position aux switch
-    if (!joystick.isRcTransmitter) {
+    if (!_joystick->isRcTransmitter) {
        rawvals[4] = buttonsToAux[_buttonState];
     }
 }
@@ -48,5 +48,5 @@ uint8_t SimReceiver::getAux2State(void)
 
 void SimReceiver::update(void)
 {
-    joystick.poll(rawvals, _buttonState);
+    _joystick->poll(rawvals, _buttonState);
 }

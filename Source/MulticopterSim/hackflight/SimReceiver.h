@@ -41,6 +41,6 @@ class SimReceiver : public hf::Receiver {
 
     private:
 
-        Joystick joystick;
+        Joystick * _joystick;
 
 }; // class SimReceiver

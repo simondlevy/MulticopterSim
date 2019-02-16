@@ -21,7 +21,7 @@ class MULTICOPTERSIM_API Joystick {
 
     public:
 
-        void init(void);
+        Joystick(void);
 
         void poll(float axes[6], uint8_t & buttonState);
 
