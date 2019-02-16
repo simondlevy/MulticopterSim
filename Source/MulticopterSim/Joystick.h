@@ -8,9 +8,10 @@
 
 #pragma once
 
-/**
- * 
- */
+#ifndef _WIN32
+typedef int32_t DWORD;
+#endif
+
 class Joystick {
 
     private:
@@ -27,6 +28,7 @@ class Joystick {
         uint16_t _productId;
 
         int _joystickId;
+
 
     public:
 

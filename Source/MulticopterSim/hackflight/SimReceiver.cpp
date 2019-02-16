@@ -49,4 +49,6 @@ uint8_t SimReceiver::getAux2State(void)
 void SimReceiver::update(void)
 {
     _joystick->poll(rawvals, _buttonState);
+
+    hf::Debug::printf("%3.3f  %+3.3f  %+3.3f  %+3.3f", rawvals[0], rawvals[1], rawvals[2], rawvals[3]);
 }
