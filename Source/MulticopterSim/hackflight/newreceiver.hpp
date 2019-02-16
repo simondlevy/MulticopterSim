@@ -60,7 +60,7 @@ namespace hf {
             float y = tmp>0 ? 1-mid : (tmp<0 ? mid : 1);
             return (mid + tmp*(1-THROTTLE_EXPO + THROTTLE_EXPO * (tmp*tmp) / (y*y))) * 2 - 1;
         }
-        
+        */ 
         protected: 
 
         // maximum number of channels that any receiver will send (of which we'll use six)
@@ -104,6 +104,7 @@ namespace hf {
 
         demands_t demands;
 
+        /*
         float getRawval(uint8_t chan)
         {
             return rawvals[_channelMap[chan]];
