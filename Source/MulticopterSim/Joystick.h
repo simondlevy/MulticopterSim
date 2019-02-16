@@ -15,6 +15,7 @@ class Joystick {
 
     private:
 
+        static const uint16_t PRODUCT_SPEKTRUM		= 0x0000;
         static const uint16_t PRODUCT_PS3_CLONE		= 0x0003;
         static const uint16_t PRODUCT_XBOX360	    = 0x02a1;
         static const uint16_t PRODUCT_TARANIS		= 0x5710;

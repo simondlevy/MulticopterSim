@@ -37,7 +37,7 @@ Joystick::Joystick(void)
             isRcTransmitter = true;
         }
         else if (strstr(productName, "Horizon Hobby SPEKTRUM")) {
-            _productId = PRODUCT_TARANIS;
+            _productId = PRODUCT_SPEKTRUM;
             isRcTransmitter = true;
         }
         else if (strstr(productName, "Extreme 3D")) {
