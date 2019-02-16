@@ -25,7 +25,6 @@ namespace hf {
         const float THROTTLE_MID      = 0.00f;
         const float THROTTLE_EXPO     = 0.20f;
 
-        /*
         float adjustCommand(float command, uint8_t channel)
         {
             command /= 2;
@@ -60,7 +59,7 @@ namespace hf {
             float y = tmp>0 ? 1-mid : (tmp<0 ? mid : 1);
             return (mid + tmp*(1-THROTTLE_EXPO + THROTTLE_EXPO * (tmp*tmp) / (y*y))) * 2 - 1;
         }
-        */ 
+        
         protected: 
 
         // maximum number of channels that any receiver will send (of which we'll use six)
@@ -104,15 +103,15 @@ namespace hf {
 
         demands_t demands;
 
-        /*
         float getRawval(uint8_t chan)
         {
             return rawvals[_channelMap[chan]];
         }
 
         // Override this if your receiver provides RSSI or other weak-signal detection
-        virtual bool lostSignal(void) { return false; }
+        //virtual bool lostSignal(void) { return false; }
 
+        /*
         Receiver(const uint8_t channelMap[6]) // throttle, roll, pitch, yaw, aux, arm
         { 
             memcpy(_channelMap, channelMap, 6);
@@ -127,13 +126,14 @@ namespace hf {
         {
         }
 
+        */
         bool getDemands(float yawAngle)
         {
             // Wait till there's a new frame
-            if (!gotNewFrame()) return false;
+            //if (!gotNewFrame()) return false;
 
             // Read raw channel values
-            readRawvals();
+            //readRawvals();
 
             // Convert raw [-1,+1] to absolute value
             demands.roll  = makePositiveCommand(CHANNEL_ROLL);
@@ -212,8 +212,6 @@ namespace hf {
         {
             _trimYaw = trim;
         }
-        */
-
 
     }; // class NewReceiver
 
