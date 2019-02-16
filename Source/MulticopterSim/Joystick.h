@@ -39,8 +39,9 @@ class MULTICOPTERSIM_API Joystick {
         static const uint16_t PRODUCT_PS4	        = 0x09cc;
         static const uint16_t PRODUCT_XBOX360_CLONE	= 0xfafe;
 
-        int  _joystickId;
+        int      _joystickId;
         uint16_t _productId;
+        uint8_t  _buttons;
 
         void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4);
         void getButtons(DWORD dwButtons, uint8_t & buttonState, uint8_t button0, uint8_t button1, uint8_t button2);
