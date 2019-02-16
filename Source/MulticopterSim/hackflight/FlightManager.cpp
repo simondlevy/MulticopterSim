@@ -84,7 +84,7 @@ class HackflightFlightManager : public FlightManager {
 
         virtual TArray<float> update(float currentTime, FQuat quat, FVector gyro) override
         {
-			//_receiver->update();
+			_receiver.update();
 
 			//_hackflight.update();
 
