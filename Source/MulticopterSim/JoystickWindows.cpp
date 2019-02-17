@@ -94,6 +94,9 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
             getButtons(joyState.dwButtons, buttonState, 1, 2, 4);
             break;
+
+        default:
+            AVehiclePawn::debug("****** NO JOYSTICK RECOGNIZED ******");
     }
 
     // Normalize the axes to demands in [-1,+1]
