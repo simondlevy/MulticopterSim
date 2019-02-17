@@ -20,7 +20,17 @@ static const char * DEVNAME = "/dev/input/js0";
 
 static const uint8_t BAD = 0xF;
 
-static uint8_t F310_MAP[5] = {3,0,BAD,1,2};
+enum {
+
+    AXIS_THROTTLE,
+    AXIS_ROLL,
+    AXIS_PITCH,
+    AXIS_YAW,
+    AXIS_NONE
+};
+
+static uint8_t F310_MAP[5]     = {AXIS_YAW, AXIS_THROTTLE, AXIS_NONE, AXIS_ROLL,  AXIS_PITCH};
+static uint8_t SPEKTRUM_MAP[5] = {AXIS_YAW, AXIS_THROTTLE, AXIS_ROLL, AXIS_PITCH, AXIS_NONE};
 
 Joystick::Joystick(void) 
 {
@@ -53,9 +63,8 @@ Joystick::Joystick(void)
         else if (strstr(productName, "Logitech Gamepad F310")) {
             _productId = PRODUCT_F310;
         }
-        else { // default to PS3 clone
-            _productId = PRODUCT_PS3_CLONE;
-        }
+        
+        // XXX should check for PS3 clone
     }
 }
 
@@ -71,10 +80,27 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
 
     static float _axes[6];
 
+    uint8_t * axisMap = NULL;
+
+    switch (_productId) {
+
+        case PRODUCT_F310:
+            axisMap = F310_MAP;
+            break;
+
+        case PRODUCT_SPEKTRUM:
+            axisMap = SPEKTRUM_MAP;
+            break;
+
+        default:
+            AVehiclePawn::debug("**** NO JOYSTICK RECOGNIZED **** ");
+            return;
+    }
+
     switch (js.type) {
 
-        case JS_EVENT_AXIS:
-            _axes[F310_MAP[js.number]] = js.value / 32768.f;
+        case JS_EVENT_AXIS: 
+            _axes[axisMap[js.number]] = js.value / 32768.f;
             break;
 
         case JS_EVENT_BUTTON:
