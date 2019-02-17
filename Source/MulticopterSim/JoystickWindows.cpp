@@ -6,8 +6,6 @@
  * MIT License
  */
 
-#ifdef _WIN32
-
 #include "Joystick.h"
 
 #include "VehiclePawn.h"
@@ -17,7 +15,28 @@
 #include <shlwapi.h>
 #include "joystickapi.h"
 
-void Joystick::init(void)
+static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4)
+{
+    axes[0] = axis0;
+    axes[1] = axis1;
+    axes[2] = axis2;
+    axes[3] = axis3;
+    axes[4] = axis4;
+}
+
+static void getButtons(DWORD dwButtons, uint8_t & buttonState, uint8_t button0, uint8_t button1, uint8_t button2)
+{
+    if (dwButtons == button0) {
+        buttonState = 0;
+    }
+    else if (dwButtons == button1) {
+        buttonState = 1;
+    }
+    else if (dwButtons == button2) {
+        buttonState = 2;
+    }
+}
+Joystick::Joystick(void)
 {
     JOYCAPS joycaps = {0};
 
@@ -34,7 +53,7 @@ void Joystick::init(void)
 
         _productId = joycaps.wPid;
 
-        isRcTransmitter = (joycaps.wMid == VENDOR_STM);
+        isRcTransmitter = (_productId == PRODUCT_TARANIS || _productId == PRODUCT_SPEKTRUM);
     }
 }
 
@@ -47,47 +66,41 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
 
     // axes: 0=Thr 1=Ael 2=Ele 3=Rud 4=Aux
 
-    // R/C transmitter
-    if (isRcTransmitter) {
+    switch (_productId) {
 
-        if (_productId == PRODUCT_TARANIS) {
-            getAxes(axes, joyState.dwXpos, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwRpos);
-        }
-        else { // Spektrum
+        case PRODUCT_SPEKTRUM:
             getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwXpos, joyState.dwUpos);
-        }
-    }
+            break;
 
-    else {
+        case PRODUCT_TARANIS:
+            getAxes(axes, joyState.dwXpos, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwRpos);
+            break;
 
-        switch (_productId) {
-
-            case PRODUCT_PS3_CLONE:      
-            case PRODUCT_PS4:
-                getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos, 0);
-                getButtons(joyState.dwButtons, buttonState, 1, 2, 4);
-                break;
+        case PRODUCT_PS3_CLONE:      
+        case PRODUCT_PS4:
+            getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos, 0);
+            getButtons(joyState.dwButtons, buttonState, 1, 2, 4);
+            break;
 
 
-            case PRODUCT_XBOX360:  
-            case PRODUCT_XBOX360_CLONE:
-            case PRODUCT_F310:
-                getAxes(axes, joyState.dwYpos, joyState.dwUpos, joyState.dwRpos, joyState.dwXpos, 0);
-                getButtons(joyState.dwButtons, buttonState, 8, 2, 1);
-                break;
+        case PRODUCT_XBOX360:  
+        case PRODUCT_XBOX360_CLONE:
+        case PRODUCT_F310:
+            getAxes(axes, joyState.dwYpos, joyState.dwUpos, joyState.dwRpos, joyState.dwXpos, 0);
+            getButtons(joyState.dwButtons, buttonState, 8, 2, 1);
+            break;
 
-            case PRODUCT_EXTREMEPRO3D:  
-                getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
-                getButtons(joyState.dwButtons, buttonState, 1, 2, 4);
-                break;
-        }
+        case PRODUCT_EXTREMEPRO3D:  
+            getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
+            getButtons(joyState.dwButtons, buttonState, 1, 2, 4);
+            break;
     }
 
     // Normalize the axes to demands in [-1,+1]
     for (uint8_t k=0; k<5; ++k) {
         axes[k] = (axes[k] - 32767) / 32767.f;
     }
-    
+
     // Invert axes 0, 2 for unless R/C transmitter
     if (!isRcTransmitter) {
         axes[0] = -axes[0];
@@ -95,26 +108,3 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
     }
 }
 
-void Joystick::getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4)
-{
-    axes[0] = axis0;
-    axes[1] = axis1;
-    axes[2] = axis2;
-    axes[3] = axis3;
-    axes[4] = axis4;
-}
-
-void Joystick::getButtons(DWORD dwButtons, uint8_t & buttonState, uint8_t button0, uint8_t button1, uint8_t button2)
-{
-    if (dwButtons == button0) {
-        buttonState = 0;
-    }
-    else if (dwButtons == button1) {
-        buttonState = 1;
-    }
-    else if (dwButtons == button2) {
-        buttonState = 2;
-    }
-}
-
-#endif

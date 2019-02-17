@@ -8,10 +8,6 @@
 
 #pragma once
 
-#ifndef _WIN32
-typedef int32_t DWORD;
-#endif
-
 class Joystick {
 
     private:
