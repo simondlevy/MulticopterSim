@@ -15,10 +15,7 @@
 #include <sys/time.h>
 #include <linux/joystick.h>
 
-
 static const char * DEVNAME = "/dev/input/js0";
-
-static const uint8_t BAD = 0xF;
 
 enum {
 
@@ -29,8 +26,12 @@ enum {
     AXIS_NONE
 };
 
-static uint8_t F310_MAP[5]     = {AXIS_YAW, AXIS_THROTTLE, AXIS_NONE, AXIS_ROLL,  AXIS_PITCH};
-static uint8_t SPEKTRUM_MAP[5] = {AXIS_YAW, AXIS_THROTTLE, AXIS_ROLL, AXIS_PITCH, AXIS_NONE};
+//                                            0         1              2          3           4
+static uint8_t F310_MAP[5]             = {AXIS_YAW, AXIS_THROTTLE, AXIS_NONE, AXIS_ROLL,  AXIS_PITCH};
+static uint8_t SPEKTRUM_MAP[5]         = {AXIS_YAW, AXIS_THROTTLE, AXIS_ROLL, AXIS_PITCH, AXIS_NONE};
+static uint8_t XBOX360_WIRELESS_MAP[5] = {AXIS_YAW, AXIS_THROTTLE, AXIS_NONE, AXIS_ROLL,  AXIS_PITCH};
+
+static char productName[128];
 
 Joystick::Joystick(void) 
 {
@@ -40,7 +41,7 @@ Joystick::Joystick(void)
 
         fcntl(_joystickId, F_SETFL, O_NONBLOCK);
 
-        char productName[128];
+        *productName = 0;
 
         if (ioctl(_joystickId, JSIOCGNAME(sizeof(productName)), productName) < 0) {
             return;
@@ -63,7 +64,10 @@ Joystick::Joystick(void)
         else if (strstr(productName, "Logitech Gamepad F310")) {
             _productId = PRODUCT_F310;
         }
-        
+        else if (strstr(productName, "Xbox 360 Wireless Receiver")) {
+            _productId = PRODUCT_XBOX360_WIRELESS;
+        }
+
         // XXX should check for PS3 clone
     }
 }
@@ -92,8 +96,12 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             axisMap = SPEKTRUM_MAP;
             break;
 
+        case PRODUCT_XBOX360_WIRELESS:
+            axisMap = XBOX360_WIRELESS_MAP;
+            break;
+
         default:
-            AVehiclePawn::debug("**** NO JOYSTICK RECOGNIZED **** ");
+            AVehiclePawn::debug("JOYSTICK %s NOT RECOGNIZED", productName);
             return;
     }
 
