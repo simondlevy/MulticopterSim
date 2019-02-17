@@ -50,5 +50,5 @@ void SimReceiver::update(void)
 {
     _joystick->poll(rawvals, _buttonState);
 
-    hf::Debug::printf("%3.3f  %+3.3f  %+3.3f  %+3.3f", rawvals[0], rawvals[1], rawvals[2], rawvals[3]);
+    //hf::Debug::printf("%3.3f  %+3.3f  %+3.3f  %+3.3f", rawvals[0], rawvals[1], rawvals[2], rawvals[3]);
 }
