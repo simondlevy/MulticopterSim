@@ -88,13 +88,11 @@ float BuiltinPhysics::sum(TArray<float> x)
     return s;
 }
 
-#ifdef _USE_HACKFLIGHT
 // Factory method for Physics class
 Physics * Physics::createPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
 {
     return new BuiltinPhysics(vehiclePawn, vehicleMesh);
 }
-#endif
 
 /*
 FVector BuiltinPhysics::getAccelerometer(float velocityZ, FVector & euler, float deltaSeconds)

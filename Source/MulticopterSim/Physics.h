@@ -12,14 +12,6 @@
 #include "CoreMinimal.h"
 #include "VehiclePawn.h"
 
-/*
- * To use another physics / flight-management system, comment-out the line below,
- * write your own Physics::createPhysics() factory method, and surround this method
- * with #ifndef _USE_HACKFLIGHT ... #endif
- * 
- */
-#define _USE_HACKFLIGHT
-
 /**
  * Abstract class for vehicle physics
  */
