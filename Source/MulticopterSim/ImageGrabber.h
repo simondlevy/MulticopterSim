@@ -31,6 +31,10 @@ public:
 	// Called on the other thread
 	virtual void processImage(void) { }
 
+protected:
+
+    virtual void copyImageData(void * srcData, int32_t count) { }
+
 private:
 
 	// Access to camera's render target

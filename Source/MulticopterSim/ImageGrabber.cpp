@@ -41,8 +41,7 @@ void ImageGrabber::grabImage(void)
 	TArray<FColor> SurfData;
 	_renderTarget->ReadPixels(SurfData);
 
-	// Copy the pixels to the OpenCV Mat data
-	//FMemory::Memcpy(_img.data, SurfData.GetData(), SurfData.Num() * 4);
-
+	// Copy the pixels to the image in the subcass
+	copyImageData(SurfData.GetData(), SurfData.Num() * 4); // RGBA
 }
 
