@@ -12,6 +12,7 @@
 
 #include "VehiclePawn.h"
 
+#undef TEXT
 #include <shlwapi.h>
 #include "joystickapi.h"
 
