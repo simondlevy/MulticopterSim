@@ -73,15 +73,15 @@ You can then use your favorite code editor (ours is
 
 ## Windows
 
-If you have any difficulty doing this on Windows, you can right-click on the <b>MulticopterSim.uproject</b> 
+If you have any difficulty building the project on Windows, you can right-click on the <b>MulticopterSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file, which will
 launch Visual Studio with a double-click.
 
 ## Linux
 
 If you run into trouble building the project on Linux, you can run the <b>build.sh</b> script, which will show
-you the compiling and linking of the project file-by-file. 
-[Edit](https://github.com/simondlevy/MulticopterSim/blob/master/build.sh#L8-L9)
+you the compiling and linking of the project file-by-file.  You should
+[edit](https://github.com/simondlevy/MulticopterSim/blob/master/build.sh#L8-L9)
 this script to reflect where you installed UnrealEngine.
 
 # Launch and fly!
