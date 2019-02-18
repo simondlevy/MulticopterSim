@@ -80,7 +80,8 @@ launch Visual Studio with a double-click.
 ## Linux
 
 If you run into trouble building the project on Linux, you can run the <b>build.sh</b> script, which will show
-you the compiling and linking of the project file-by-file.  [Edit]()
+you the compiling and linking of the project file-by-file. 
+[Edit](https://github.com/simondlevy/MulticopterSim/blob/master/build.sh#L8-L9)
 this script to reflect where you installed UnrealEngine.
 
 # Launch and fly!
