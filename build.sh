@@ -1,3 +1,10 @@
+#
+# build.sh Linux script for building MulticopterSim
+#
+# Copyright (C) 2018 Simon D. Levy
+#
+# MIT License
+
 # Change this to where you installed UnrealEngine
 UE4=$HOME/UnrealEngine
 
