@@ -10,8 +10,6 @@
 
 #include "ImageGrabber.h"
 
-#include "opencv2/imgproc/imgproc.hpp"
-
 ImageGrabber::ImageGrabber(UTextureRenderTarget2D* visionTextureRenderTarget)
 {
 	// Get the size of the render target
