@@ -2,7 +2,7 @@
 
 # About
 
-MulticopterSim is a simple quadcopter flight simulator using Unreal Engine 4.  It runs on Windows 10.
+MulticopterSim is a simple quadcopter flight simulator using Unreal Engine 4.  It runs on Windows and Linux.
 
 I began this project using the [V-REP platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
 UnrealEngine after seeing the kinds of beautiful, real-time simulations that
@@ -70,9 +70,18 @@ the Hackflight software.)
 Now double-click on <b>MulticopterSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
 You can then use your favorite code editor (ours is 
 <a href="https://www.vim.org">vim</a>) to edit the source code in <b>Source/MulticopterSim</b>.
-If you have any difficulty doing this, you can right-click on the <b>MulticopterSim.uproject</b> 
+
+## Windows
+
+If you have any difficulty doing this on Windows, you can right-click on the <b>MulticopterSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file, which will
 launch Visual Studio with a double-click.
+
+## Linux
+
+If you run into trouble building the project on Linux, you can run the <b>build.sh</b> script, which will show
+you the compiling and linking of the project file-by-file.  [Edit]()
+this script to reflect where you installed UnrealEngine.
 
 # Launch and fly!
 
@@ -80,7 +89,7 @@ In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Click
 the play button and you're ready to begin. Throttle up to fly.  You can use the
 spacebar to switch between the ground camera and FPV camera.
 
-# Support for OpenCV
+# Support for OpenCV (Windows only)
 
 To enable projects using machine vision, MulticopterSim includes support for the popular OpenCV package.
 To use OpenCV with MulticopterSim, you should do the following:
