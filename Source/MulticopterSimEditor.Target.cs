@@ -1,4 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+* MulticopterSimEditor.Target.cs: Edtor Target script for MulticopterSim
+*
+* Copyright (C) 2018 Simon D. Levy
+*
+* MIT License
+*/
+
 
 using UnrealBuildTool;
 using System.Collections.Generic;

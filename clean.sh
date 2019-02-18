@@ -1,7 +1,7 @@
 #
 # clean.sh Linux cleanup script for MulticopterSim
 #
-# Copyright (C) 2018 Simon D. Levy
+# Copyright (C) 2019 Simon D. Levy
 #
 # MIT License
 
