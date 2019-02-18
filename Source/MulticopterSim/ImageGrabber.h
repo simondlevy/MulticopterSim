@@ -23,7 +23,7 @@ public:
 
 	ImageGrabber(UTextureRenderTarget2D* visionTextureRenderTarget);
 
-	~ImageGrabber(void);
+	virtual ~ImageGrabber(void);
 
 	// Called on the main thread
 	void grabImage(void);

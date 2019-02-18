@@ -78,7 +78,7 @@ class HackflightFlightManager : public FlightManager {
 			_hackflight.addPidController(&level, 1);
 		}
 
-        ~HackflightFlightManager(void)
+        virtual ~HackflightFlightManager(void)
         {
         }
 

@@ -36,7 +36,7 @@ class SimBoard : public hf::Board {
 
 	SimBoard();
 
-	~SimBoard();
+	virtual ~SimBoard();
 
     TArray<float> update(float currentTime, FQuat quat, FVector gyro);
 };
