@@ -33,7 +33,8 @@ public:
 
 protected:
 
-    virtual void copyImageData(void * srcData, int32_t count) { }
+    // Called on the main thread
+    virtual void copyImageData(void * srcData, int32_t count) = 0;
 
 private:
 
