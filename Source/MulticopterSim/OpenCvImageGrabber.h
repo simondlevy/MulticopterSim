@@ -31,12 +31,13 @@ public:
 	OpenCvImageGrabber(UTextureRenderTarget2D* textureRenderTarget);
 
     // Called on its own thread (not main thread)
-    void processImage(void);
+    void processImage(void) override;
 
     // Available for use by other classes
 	cv::Mat image;
 
 protected:
 
+    // Called on the main thread
     virtual void copyImageData(void * srcData, int32_t count) override;
 };

@@ -1,7 +1,8 @@
 /*
  * ImageGrabber.h: MulticopterSim support for acquisition of camera images and processing
  *
- * You should subclass this class, implementing the processImage() method
+ * You should subclass this class, implementing the processImage() and
+ * copyImageData() methods
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -33,7 +34,8 @@ public:
 
 protected:
 
-    virtual void copyImageData(void * srcData, int32_t count) { }
+    // Called on the main thread
+    virtual void copyImageData(void * srcData, int32_t count) = 0;
 
 private:
 
