@@ -29,7 +29,7 @@ public:
 	void grabImage(void);
 
 	// Called on the other thread
-	virtual void processImage(void) { }
+	virtual void processImage(void) = 0;
 
 protected:
 
