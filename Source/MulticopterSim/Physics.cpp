@@ -14,3 +14,8 @@ Physics::Physics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* v
     _vehicleMesh = vehicleMesh;
 }
 
+float Physics::getCurrentTime(void)
+{
+    return _vehiclePawn->getCurrentTime();
+}
+

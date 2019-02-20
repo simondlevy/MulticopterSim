@@ -25,6 +25,8 @@ protected:
 
 	Physics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh);
 
+    float getCurrentTime(void);
+
 public:
 
 
