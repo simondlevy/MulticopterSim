@@ -15,7 +15,7 @@
 /**
  * Abstract class for vehicle physics
  */
-class MULTICOPTERSIM_API Physics {
+class Physics {
 
 protected:
 
@@ -25,12 +25,12 @@ protected:
 
 	Physics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh);
 
-    float getCurrentTime(void);
-
 public:
 
-
-	// Earth's gravity
+	/**
+     * Earth's gravity
+     * 
+     */
 	static constexpr float G = 9.80665f;
 
     /**
@@ -49,6 +49,8 @@ public:
 	* @return motor values in[0,1] for simulating propeller spin and motor sound
 	*/
 	 virtual TArray<float> update(float deltaSeconds) = 0;
+
+    float getCurrentTime(void);
 
     /**
      * Factory method.
