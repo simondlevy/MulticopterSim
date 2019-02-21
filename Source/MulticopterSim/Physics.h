@@ -50,6 +50,10 @@ public:
 	*/
 	 virtual TArray<float> update(float deltaSeconds) = 0;
 
+     /**
+      * Called by threads as a common way for them to get current time.
+      * @return current time in seconds
+      */
     float getCurrentTime(void);
 
     /**

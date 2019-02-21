@@ -10,6 +10,7 @@
 
 #include "Core.h"
 #include "Runnable.h"
+#include "Physics.h"
 
 /**
  * 
@@ -22,13 +23,17 @@ private:
 
 	bool _running;
 
+    Physics * _physics;
+
 protected:
 
     virtual void performTask(void) = 0;
 
+	float getCurrentTime(void);
+
 public:
 
-	FThreadedWorker();
+	FThreadedWorker(Physics * physics);
 
 	~FThreadedWorker();
 
