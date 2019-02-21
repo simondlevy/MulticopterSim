@@ -19,6 +19,16 @@
 class ImageGrabber
 {
 
+private:
+
+	// Access to camera's render target
+	FRenderTarget* _renderTarget;
+
+protected:
+
+    // Called on the main thread
+    virtual void copyImageData(void * srcData, int32_t count) = 0;
+
 public:
 
 	ImageGrabber(UTextureRenderTarget2D* visionTextureRenderTarget);
@@ -31,13 +41,4 @@ public:
 	// Called on the other thread
 	virtual void processImage(void) = 0;
 
-protected:
-
-    // Called on the main thread
-    virtual void copyImageData(void * srcData, int32_t count) = 0;
-
-private:
-
-	// Access to camera's render target
-	FRenderTarget* _renderTarget;
 };

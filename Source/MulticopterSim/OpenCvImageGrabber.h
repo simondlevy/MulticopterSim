@@ -26,6 +26,10 @@
 class OpenCvImageGrabber : public ImageGrabber
 {
 
+protected:
+
+    virtual void copyImageData(void * srcData, int32_t count) override;
+
 public:
 
 	OpenCvImageGrabber(UTextureRenderTarget2D* textureRenderTarget);
@@ -36,7 +40,4 @@ public:
     // Available for use by other classes
 	cv::Mat image;
 
-protected:
-
-    virtual void copyImageData(void * srcData, int32_t count) override;
 };
