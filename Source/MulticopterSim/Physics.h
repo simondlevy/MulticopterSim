@@ -44,14 +44,14 @@ public:
     virtual void stop(void) { }
 
 	/**
-	* Implemented by your physics model.
+	* Called by AVehiclePawn::Tick() on main thread; implemented by your physics model.
 	* @param deltaSeconds time since last Tick()
 	* @return motor values in[0,1] for simulating propeller spin and motor sound
 	*/
 	 virtual TArray<float> update(float deltaSeconds) = 0;
 
     /**
-     *  Factory method.
+     * Factory method.
 	 * @param vehiclePawn Pawn object for vehicle; can be queried (e.g., position, velocity) and affected (e.g., rotated)
 	 * @param vehicleMesh static mesh for vehicle; can be modifed (e.g., force added)
      *  @return pointer to a new Physics object
