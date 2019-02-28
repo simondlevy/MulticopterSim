@@ -23,12 +23,7 @@ public class MulticopterSim : ModuleRules
             Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src" :
             Environment.GetEnvironmentVariable("HOME") + "/Documents/Arduino/libraries/Hackflight/src");
 
-        // OpenCV (currently Windows-only
-        if (Target.Platform == UnrealTargetPlatform.Win64) {
-            LoadOpenCV(Target);
-        }
-
-        //LoadPython(Target);
+        LoadOpenCV(Target);
     }
 
     private string ThirdPartyPath
@@ -62,47 +57,5 @@ public class MulticopterSim : ModuleRules
         //Add Dynamic Libraries
         PublicDelayLoadDLLs.Add("opencv_world340.dll");
         PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING={0}", isLibrarySupported ? 1 : 0));
-    }
-
-    public bool LoadPython(ReadOnlyTargetRules Target)
-    {
-        // Start OpenCV linking here!
-        bool isLibrarySupported = false;
-
-        // Create OpenCV Path 
-        string PythonPath = Environment.GetEnvironmentVariable("userprofile") + "\\AppData\\Local\\Programs\\Python\\Python36";
-
-        // Get Library Path 
-        string LibPath = "";
-        bool isdebug = Target.Configuration == UnrealTargetConfiguration.Debug && Target.bDebugBuildsActuallyUseDebugCRT;
-        if (Target.Platform == UnrealTargetPlatform.Win64)
-        {
-            LibPath = Path.Combine(PythonPath, "libs");
-            isLibrarySupported = true;
-        }
-        else
-        {
-            string Err = string.Format("{0} dedicated server is made to depend on {1}. We want to avoid this, please correct module dependencies.", Target.Platform.ToString(), this.ToString());
-            System.Console.WriteLine(Err);
-        }
-
-        if (isLibrarySupported)
-        {
-            //Add Include path 
-            PublicIncludePaths.AddRange(new string[] { Path.Combine(PythonPath, "include") });
-
-            // Add Library Path 
-            PublicLibraryPaths.Add(LibPath);
-
-            //Add Static Libraries
-            PublicAdditionalLibraries.Add("python36.lib");
-
-            //Add Dynamic Libraries
-            PublicDelayLoadDLLs.Add("python36.dll");
-        }
-
-        PublicDefinitions.Add(string.Format("WITH_PYTHON_BINDING={0}", isLibrarySupported ? 1 : 0));
-
-        return isLibrarySupported;
     }
 }
