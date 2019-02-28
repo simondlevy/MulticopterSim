@@ -47,11 +47,11 @@ public class MulticopterSim : ModuleRules
         // Get Library Path 
         string LibPath = "";
         bool isdebug = Target.Configuration == UnrealTargetConfiguration.Debug && Target.bDebugBuildsActuallyUseDebugCRT;
-        LibPath = Path.Combine(OpenCVPath, "Libraries", "Win64");
+        LibPath = Path.Combine(OpenCVPath, "lib");
         isLibrarySupported = true;
 
         //Add Include path 
-        PublicIncludePaths.AddRange(new string[] { Path.Combine(OpenCVPath, "Includes") });
+        PublicIncludePaths.AddRange(new string[] { Path.Combine(OpenCVPath, "include") });
 
         // Add Library Path 
         PublicLibraryPaths.Add(LibPath);
