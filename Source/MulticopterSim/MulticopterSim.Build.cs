@@ -61,7 +61,6 @@ public class MulticopterSim : ModuleRules
 
         //Add Dynamic Libraries
         PublicDelayLoadDLLs.Add("opencv_world340.dll");
-        PublicDelayLoadDLLs.Add("opencv_ffmpeg340_64.dll");
         PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING={0}", isLibrarySupported ? 1 : 0));
     }
 
