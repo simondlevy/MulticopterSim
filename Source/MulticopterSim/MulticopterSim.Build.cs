@@ -13,6 +13,8 @@ using System.IO;
 
 public class MulticopterSim : ModuleRules
 {
+    private string release = "340";
+
 	public MulticopterSim(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
@@ -42,16 +44,16 @@ public class MulticopterSim : ModuleRules
         isLibrarySupported = true;
 
         //Add Include path 
-        PublicIncludePaths.AddRange(new string[] { Path.Combine(OpenCVPath, "include") });
+        PublicIncludePaths.AddRange(new string[] { Path.Combine(OpenCVPath, "include" + release) });
 
         // Add Library Path 
         PublicLibraryPaths.Add(LibPath);
 
-        //Add Static Libraries
-        PublicAdditionalLibraries.Add("opencv_world340.lib");
+        //Add Libraries
+        string libname = "opencv_world" + release;
+        PublicAdditionalLibraries.Add(libname + ".lib");
+        PublicDelayLoadDLLs.Add(libname + ".dll");
 
-        //Add Dynamic Libraries
-        PublicDelayLoadDLLs.Add("opencv_world340.dll");
         PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING={0}", isLibrarySupported ? 1 : 0));
     }
 }
