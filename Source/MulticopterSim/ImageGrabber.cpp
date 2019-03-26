@@ -1,5 +1,5 @@
 /*
- * ImageGrabber.cpp: MulticopterSim support for acquisition of camera images and processing
+ * ImageGrabber.cpp: MulticopterSim support for acquisition of camera images and processing using OpenCV
  *
  * Adapted from https://answers.unrealengine.com/questions/193827/how-to-get-texture-pixels-using-utexturerendertarg.html
  *
@@ -7,8 +7,13 @@
  *
  * MIT License
  */
+//
+// XXX support OpenCV for Windows only
+#ifdef _WIN32
 
 #include "ImageGrabber.h"
+
+#include "opencv2/imgproc/imgproc.hpp"
 
 ImageGrabber::ImageGrabber(UTextureRenderTarget2D* visionTextureRenderTarget)
 {
@@ -16,16 +21,16 @@ ImageGrabber::ImageGrabber(UTextureRenderTarget2D* visionTextureRenderTarget)
 	uint16_t rows = visionTextureRenderTarget->SizeY;
 	uint16_t cols = visionTextureRenderTarget->SizeX;
 
-	// Create Texture2D to store render content
-	UTexture2D* texture = UTexture2D::CreateTransient(cols, rows, PF_B8G8R8A8);
+	// Create a private RBGA image for acquiring render target on main thread
+	_rbga_image = cv::Mat::zeros(rows, cols, CV_8UC4);
 
-#if WITH_EDITORONLY_DATA
-	texture->MipGenSettings = TMGS_NoMipmaps;
-#endif
+	// Create a public OpenCV BGR image for uses by other classes
+	image = cv::Mat::zeros(rows, cols, CV_8UC3);
 
-	texture->SRGB = visionTextureRenderTarget->SRGB;
+	 // Get the render target resource for copying the image pixels
+	_renderTargetResource = visionTextureRenderTarget->GameThread_GetRenderTargetResource();
 
-	_renderTarget = visionTextureRenderTarget->GameThread_GetRenderTargetResource();
+	ready = false;
 }
 
 ImageGrabber::~ImageGrabber(void)
@@ -36,10 +41,17 @@ ImageGrabber::~ImageGrabber(void)
 void ImageGrabber::grabImage(void)
 {
 	// Read the pixels from the RenderTarget
-	TArray<FColor> SurfData;
-	_renderTarget->ReadPixels(SurfData);
+	TArray<FColor> renderTargetPixels;
+	_renderTargetResource->ReadPixels(renderTargetPixels);
 
-	// Copy the pixels to the image in the subcass
-	copyImageData(SurfData.GetData(), SurfData.Num() * 4); // RGBA
+	// Copy the RBGA pixels to the private image
+	FMemory::Memcpy(_rbga_image.data, renderTargetPixels.GetData(), renderTargetPixels.Num() * 4);
+
+	// Convert RGBA => RGB for public image
+	cv::cvtColor(_rbga_image, image, CV_RGBA2RGB);
+
+	ready = true;
 }
+
+#endif
 

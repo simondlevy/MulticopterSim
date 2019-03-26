@@ -15,7 +15,7 @@
 /**
  * Abstract class for vehicle physics
  */
-class MULTICOPTERSIM_API Physics {
+class Physics {
 
 protected:
 
@@ -27,10 +27,6 @@ protected:
 
 public:
 
-
-	// Earth's gravity
-	static constexpr float G = 9.80665f;
-
     /**
      *  Called by AVehiclePawn::BeginPlay() when Play button is pressed
      */
@@ -41,15 +37,28 @@ public:
      */
     virtual void stop(void) { }
 
+
+    /**
+     *  Called by AVehiclePawn::NotifyHit() when there's a collision
+     */
+    virtual void notifyHit(void) { }
+
+
 	/**
-	* Implemented by your physics model.
+	* Called by AVehiclePawn::Tick() on main thread; implemented by your physics model.
 	* @param deltaSeconds time since last Tick()
 	* @return motor values in[0,1] for simulating propeller spin and motor sound
 	*/
 	 virtual TArray<float> update(float deltaSeconds) = 0;
 
+     /**
+      * Called by threads as a common way for them to get current time.
+      * @return current time in seconds
+      */
+    double getCurrentTime(void);
+
     /**
-     *  Factory method.
+     * Factory method.
 	 * @param vehiclePawn Pawn object for vehicle; can be queried (e.g., position, velocity) and affected (e.g., rotated)
 	 * @param vehicleMesh static mesh for vehicle; can be modifed (e.g., force added)
      *  @return pointer to a new Physics object

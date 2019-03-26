@@ -10,6 +10,7 @@
 
 #include "Joystick.h"
 #include "VehiclePawn.h"
+#include "Debug.h"
 
 #include <unistd.h>
 #include <sys/time.h>
@@ -101,7 +102,7 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             break;
 
         default:
-            AVehiclePawn::debug("JOYSTICK %s NOT RECOGNIZED", productName);
+            debug("JOYSTICK %s NOT RECOGNIZED", productName);
             return;
     }
 

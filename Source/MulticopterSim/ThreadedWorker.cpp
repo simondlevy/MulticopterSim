@@ -11,9 +11,13 @@
 
 #include "ThreadedWorker.h"
 
-FThreadedWorker::FThreadedWorker()
+FThreadedWorker::FThreadedWorker(Physics * physics)
 {
-	_thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); //windows default = 8mb for thread, could specify more
+	_thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); 
+
+    _physics = physics;
+
+    *_message = 0;
 }
 
 FThreadedWorker::~FThreadedWorker()
@@ -49,4 +53,14 @@ void FThreadedWorker::Stop()
 
 	// Final wait after stopping
 	FPlatformProcess::Sleep(0.03);
+}
+
+double FThreadedWorker::getCurrentTime(void)
+{
+	return _physics->getCurrentTime();
+}
+
+const char * FThreadedWorker::getMessage(void)
+{
+    return (const char *)_message;
 }

@@ -16,7 +16,15 @@
 /**
  * 
  */
-class MULTICOPTERSIM_API GaussianNoise {
+class GaussianNoise {
+
+    private:
+
+        std::default_random_engine _generator;
+        std::normal_distribution<float> _dist;
+
+        uint8_t _size;
+        float   _noise;
 
     public:
 
@@ -26,11 +34,4 @@ class MULTICOPTERSIM_API GaussianNoise {
 
         void addNoise(float vals[]);
 
-    private:
-
-        std::default_random_engine _generator;
-        std::normal_distribution<float> _dist;
-
-        uint8_t _size;
-        float   _noise;
 };

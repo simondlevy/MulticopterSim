@@ -56,9 +56,7 @@ private:
         class Physics * _physics;
 
         // Support for simulating spinning propellers
-        uint8_t _tickCycle;
         static constexpr int8_t MOTORDIRS[4] = {+1, -1, -1, +1};
-		static constexpr uint8_t PROP_UPDATE = 5;
 
 		// Bozo filter for failure to select a map
 		bool _mapSelected;
@@ -73,12 +71,24 @@ private:
 protected:
 
 	    // AActor overrides
+       
         virtual void BeginPlay() override;
+
         virtual void Tick(float DeltaSeconds) override;
+
         virtual void PostInitializeComponents() override;
+
         virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-        virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
-                bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+
+        virtual void NotifyHit(
+                class UPrimitiveComponent* MyComp, 
+                class AActor* Other, 
+                class UPrimitiveComponent* OtherComp, 
+                bool bSelfMoved, 
+                FVector HitLocation, 
+                FVector HitNormal, 
+                FVector NormalImpulse, 
+                const FHitResult& Hit) override;
 
 public:	
 
@@ -87,9 +97,5 @@ public:
 
         // Timing
         float getCurrentTime(void);
-
-        // Debugging support
-        static void debug(const char * fmt, ...);
-        static void outbuf(char * buf);
 
 }; // AVehiclePawn

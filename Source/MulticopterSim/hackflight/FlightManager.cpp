@@ -11,6 +11,7 @@
 #include "SimBoard.h"
 #include "BuiltinPhysics.h"
 #include "VehiclePawn.h"
+#include "OSD.h"
 
 // Math support
 #define _USE_MATH_DEFINES
@@ -103,5 +104,5 @@ FlightManager * FlightManager::createFlightManager()
 // Debugging
 void hf::Board::outbuf(char * buf)
 {
-    AVehiclePawn::outbuf(buf);
+    osd(buf);
 }

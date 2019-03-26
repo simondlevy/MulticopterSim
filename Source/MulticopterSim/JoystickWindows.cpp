@@ -11,6 +11,7 @@
 #include "Joystick.h"
 
 #include "VehiclePawn.h"
+#include "Debug.h"
 
 #undef TEXT
 #include <shlwapi.h>
@@ -97,7 +98,7 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             break;
 
         default:
-            AVehiclePawn::debug("****** NO JOYSTICK RECOGNIZED ******");
+            debug("****** NO JOYSTICK RECOGNIZED ******");
     }
 
     // Normalize the axes to demands in [-1,+1]

@@ -17,6 +17,7 @@
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
+#include "Debug.h"
 
 #include <cmath>
 #include <stdarg.h>
@@ -91,9 +92,6 @@ void AVehiclePawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AVehiclePawn::BeginPlay()
 {
-    // Initialize simulation variables
-    _tickCycle = 0;
-
     // Make sure a map has been selected
 	FString mapName = GetWorld()->GetMapName();
 	_mapSelected = !mapName.Contains("Untitled");
@@ -108,7 +106,7 @@ void AVehiclePawn::BeginPlay()
     else {
         debug("NO MAP SELECTED");
     }
-    
+
 	Super::BeginPlay();
 }
 
@@ -130,7 +128,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 		return;
 	}
 
-    debug("%d FPS", (uint16_t)(1/DeltaSeconds));
+    //debug("Main Thread FPS: %d", (uint16_t)(1/DeltaSeconds));
 
     // Update physics, getting back motor values for animation effects
 	TArray<float> motorvals = _physics->update(DeltaSeconds);
@@ -143,17 +141,22 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
 void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
 {
-    // Modulate the pitch and voume of the propeller sound
-	setAudioPitchAndVolume(mean(motorvals));
+    float motormean = mean(motorvals);
 
-    // Rotate one props periodically (not every tick)
-	if (_tickCycle == 0) {
-		for (uint8_t k = 0; k < 4; ++k) {
-			FRotator PropRotation(0, motorvals[k] * MOTORDIRS[k] * 240, 0);
-			//_propMeshes[k]->AddLocalRotation(PropRotation); // XXX causes problems
-		}
-	}
-    _tickCycle = (_tickCycle+1) % PROP_UPDATE;
+    // Modulate the pitch and voume of the propeller sound
+	setAudioPitchAndVolume(motormean);
+
+    // For visual effect, we can ignore actual motor values, and just keep increasing the rotation
+    static float rotation;
+
+    // Rotate props
+    if (motormean > 0) {
+        for (uint8_t k = 0; k < 4; ++k) {
+            _propMeshes[k]->SetRelativeRotation(FRotator(0,  rotation * MOTORDIRS[k] * 100, 0));
+        }
+    }
+
+    rotation++;
 }
 
 void AVehiclePawn::setAudioPitchAndVolume(float value)
@@ -174,43 +177,26 @@ float AVehiclePawn::mean(TArray<float> x)
 }
 
 
-void AVehiclePawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, 
-        bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+void AVehiclePawn::NotifyHit(
+        class UPrimitiveComponent* MyComp, 
+        class AActor* Other, 
+        class UPrimitiveComponent* OtherComp, 
+        bool bSelfMoved, 
+        FVector HitLocation, 
+        FVector HitNormal, 
+        FVector NormalImpulse, 
+        const FHitResult& Hit)
 {
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
+    _physics->notifyHit();
+
     // Deflect along the surface when we collide.
-    FRotator CurrentRotation = GetActorRotation();
-    SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
+    //FRotator CurrentRotation = GetActorRotation();
+    //SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
 }
 
 float AVehiclePawn::getCurrentTime(void)
 {
     return UGameplayStatics::GetRealTimeSeconds(GetWorld());
-}
-
-
-void AVehiclePawn::debug(const char * fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    char buf[200];
-    vsnprintf(buf, 200, fmt, ap); 
-    va_end(ap);
-
-    outbuf(buf);
-}
-
-void AVehiclePawn::outbuf(char * buf)
-{
-    // Text properties for debugging
-    FColor TEXT_COLOR = FColor::Yellow;
-    constexpr float  TEXT_SCALE = 2.f;
-
-    // on screen
-    if (GEngine) {
-
-        // -1 = no overwrite (0 for overwrite); 5.f = arbitrary time to display; true = newer on top
-        GEngine->AddOnScreenDebugMessage(0, 5.f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
-    }
 }

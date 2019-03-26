@@ -14,3 +14,8 @@ Physics::Physics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* v
     _vehicleMesh = vehicleMesh;
 }
 
+double Physics::getCurrentTime(void)
+{
+    return FPlatformTime::Seconds();
+}
+

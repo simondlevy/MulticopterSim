@@ -10,6 +10,7 @@
 
 #include "Core.h"
 #include "Runnable.h"
+#include "Physics.h"
 
 /**
  * 
@@ -20,19 +21,25 @@ private:
 
 	FRunnableThread* _thread;
 
+    Physics * _physics;
+
 	bool _running;
 
 protected:
 
     virtual void performTask(void) = 0;
 
+	double getCurrentTime(void);
+
+    char _message[200];
+
 public:
 
-	FThreadedWorker();
+	FThreadedWorker(Physics * physics);
 
 	~FThreadedWorker();
 
-	uint32_t getCount(void);
+    const char * getMessage(void);
 
 	// FRunnable interface.
 	virtual bool Init();

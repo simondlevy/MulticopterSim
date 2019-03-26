@@ -14,8 +14,3 @@
 .kdev4
 .vscode
 *~
-
-# Python/Nengo
-Source/HackflightSim/python/build/
-Source/HackflightSim/python/__pycache__
-*.cfg
