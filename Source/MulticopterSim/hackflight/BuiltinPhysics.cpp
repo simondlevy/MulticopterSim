@@ -7,6 +7,7 @@
  */
 
 #include "BuiltinPhysics.h"
+#include "Debug.h"
 
 BuiltinPhysics::BuiltinPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) : Physics(vehiclePawn, vehicleMesh)
 
@@ -61,12 +62,20 @@ void BuiltinPhysics::computeForces(float deltaSeconds, TArray<float> motorValues
     rotationForce.Y = motorsToAngularForce(motorValues, 1, 3, 0, 2);
     rotationForce.Z = motorsToAngularForce(motorValues, 1, 2, 0, 3);
 
-    // Rotate Euler angles into inertial frame: http://www.chrobotics.com/library/understanding-euler-angles
-    float x = sin(euler.X)*sin(euler.Z) + cos(euler.X)*cos(euler.Z)*sin(euler.Y);
-    float y = cos(euler.X)*sin(euler.Y)*sin(euler.Z) - cos(euler.Z)*sin(euler.X);
-    float z = cos(euler.Y)*cos(euler.X);
+    // Rename Euler angles for readability
+    float phi   = euler.X;
+    float theta = euler.Y;
+    float psi   = euler.Z;
 
-    // Use rotated Euler angles to compute translation force
+    // Rotate Euler angles into inertial frame.  See last column of rotation matrix at end of section 5 in
+    // http://www.chrobotics.com/library/understanding-euler-angles
+    float x = sin(phi)*sin(psi) + cos(phi)*cos(psi)*sin(theta);
+    float y = cos(phi)*sin(psi)*sin(theta) - cos(psi)*sin(phi);
+    float z = cos(phi)*cos(theta);
+
+    // Use rotated Euler angles to compute translation force.  We negate X and Y to 
+    // adjust for the fact that roll right and pitch forward correspond to 
+    // negative Euler angles.
     translationForce = THRUST_FACTOR * sum(motorValues) * FVector(-x, -y, z);
 }
 
