@@ -14,6 +14,7 @@
 #include "GameFramework/HUD.h"
 #include "Engine/TextureRenderTarget2D.h"
 
+#ifdef _USE_OPENCV
 #include <opencv2/core.hpp>
 
 class ImageGrabber
@@ -42,3 +43,4 @@ public:
 	// Should be called on the main thread
 	void grabImage(void);
 };
+#endif

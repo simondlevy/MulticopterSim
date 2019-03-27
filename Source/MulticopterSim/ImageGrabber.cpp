@@ -7,7 +7,9 @@
  *
  * MIT License
  */
-//
+
+#ifdef _USE_OPENCV
+
 // XXX support OpenCV for Windows only
 #ifdef _WIN32
 
@@ -54,4 +56,4 @@ void ImageGrabber::grabImage(void)
 }
 
 #endif
-
+#endif
