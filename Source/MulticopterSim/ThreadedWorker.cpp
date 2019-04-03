@@ -35,7 +35,7 @@ bool FThreadedWorker::Init()
 uint32_t FThreadedWorker::Run()
 {
 	// Initial wait before starting
-	FPlatformProcess::Sleep(0.03);
+	FPlatformProcess::Sleep(0.5);
 
 	_running = true;
 

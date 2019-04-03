@@ -98,7 +98,12 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             break;
 
         default:
-            debug("****** NO JOYSTICK RECOGNIZED ******");
+            if (_productId) {
+                debug("****** JOYSTICK PRODUCT 0x%x NOT RECOGNIZED ******", _productId);
+            }
+            else {
+                debug("****** NO JOYSTICK DETECTED ******");
+            }
     }
 
     // Normalize the axes to demands in [-1,+1]

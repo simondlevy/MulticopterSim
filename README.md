@@ -43,7 +43,7 @@ through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/
 ## Toolchain
 
 You will need Unreal Engine 4 (UE4). I am attempting to use the latest version, which as of the time of this
-writing is UE4.21.1.  
+writing is UE4.22.0.  
 
 Windows users will need Visual Studio Community (we're using the latest version, 2017).
 If you don't have UE4 or Visual Studio 2017 installed, these

@@ -9,23 +9,20 @@
 * MIT License
 */
 
-
 #include "GaussianNoise.h"
 
-   
-GaussianNoise::GaussianNoise(uint8_t size, float noise)
+GaussianNoise::GaussianNoise(uint8_t size, double mean, double stdev)
 {
     _size  = size;
-    _noise = noise;
 
-    _dist = std::normal_distribution<float>(0, _noise);
+    _dist = std::normal_distribution<double>(mean, stdev);
 }
 
 GaussianNoise::~GaussianNoise()
 {
 }
  
-void GaussianNoise::addNoise(float vals[])
+void GaussianNoise::addNoise(double vals[])
 {
     for (uint8_t k=0; k<_size; ++k) {
         vals[k] += _dist(_generator);
