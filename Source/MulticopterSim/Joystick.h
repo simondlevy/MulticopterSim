@@ -26,7 +26,6 @@ class Joystick {
 
         int _joystickId;
 
-
     public:
 
         Joystick(void);

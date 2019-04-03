@@ -85,9 +85,13 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             break;
 
 
+        case PRODUCT_F310:
+            getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos, 0);
+            getButtons(joyState.dwButtons, buttonState, 8, 4, 2);
+            break;
+
         case PRODUCT_XBOX360:  
         case PRODUCT_XBOX360_CLONE:
-        case PRODUCT_F310:
             getAxes(axes, joyState.dwYpos, joyState.dwUpos, joyState.dwRpos, joyState.dwXpos, 0);
             getButtons(joyState.dwButtons, buttonState, 8, 2, 1);
             break;
