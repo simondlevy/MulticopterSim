@@ -103,10 +103,10 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
 
         default:
             if (_productId) {
-                debug("****** JOYSTICK PRODUCT 0x%x NOT RECOGNIZED ******", _productId);
+                error("****** JOYSTICK PRODUCT 0x%x NOT RECOGNIZED ******", _productId);
             }
             else {
-                debug("****** NO JOYSTICK DETECTED ******");
+                error("****** NO JOYSTICK DETECTED ******");
             }
     }
 

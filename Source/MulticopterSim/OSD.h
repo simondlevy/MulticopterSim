@@ -8,4 +8,5 @@
 
 #pragma once
 
-void osd(char * buf);
+void osd(char * buf, bool err=false);
+

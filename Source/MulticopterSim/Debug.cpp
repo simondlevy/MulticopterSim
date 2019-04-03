@@ -22,4 +22,15 @@ void debug(const char * fmt, ...)
     osd(buf);
 }
 
+void error(const char * fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    char buf[200];
+    vsnprintf(buf, 200, fmt, ap); 
+    va_end(ap);
+
+    osd(buf, true);
+}
+
 

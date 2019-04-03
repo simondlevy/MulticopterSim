@@ -10,10 +10,10 @@
 #include "Engine.h"
 #include "Engine/World.h"
 
-void osd(char * buf)
+void osd(char * buf, bool err)
 {
     // Text properties for debugging
-    FColor TEXT_COLOR = FColor::Yellow;
+    FColor TEXT_COLOR = err ? FColor::Red : FColor::Yellow;
     constexpr float  TEXT_SCALE = 2.f;
 
     // on screen

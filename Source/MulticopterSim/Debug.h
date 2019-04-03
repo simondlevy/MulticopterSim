@@ -8,5 +8,6 @@
 
 #pragma once
 
-// Debugging support
 void debug(const char * fmt, ...);
+
+void error(const char * fmt, ...);
