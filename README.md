@@ -55,13 +55,11 @@ to generate a .sln file from a .uproject file, inability to compile source code,
 
 # Build
 
-You should first clone the MulticopterSim repository into your <b>Documents/Unreal Projects</b> folder, creating
-that folder if it doesn't already exist.
-
 Although MulticopterSim is designed to work with any flight-control software
 you like, it is set up to work with the
 [Hackflight](https://github.com/simondlevy/Hackflight) software by default. So to get started, you should 
-clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your <b>Arduino/libraries</b>
+clone the [hackflight](https://github.com/simondlevy/MulticopterSim/tree/hackflight) branch of MulticopterSim into your <b>Unreal Projects</b> folder.
+The clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your <b>Arduino/libraries</b>
 folder, first creating that folder if it doesn't already exist.  (You don't need to install Arduino; this is
 simply where MulticopterSim 
 [looks for](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L21-L24) 
