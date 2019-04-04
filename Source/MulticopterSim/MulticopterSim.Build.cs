@@ -24,7 +24,7 @@ public class MulticopterSim : ModuleRules
                 Environment.GetEnvironmentVariable("HOME") + "/Documents/Arduino/libraries/Hackflight/src");
 
 
-        //LoadOpenCV(Target);
+        LoadOpenCV(Target);
     }
 
     private string ThirdPartyPath
