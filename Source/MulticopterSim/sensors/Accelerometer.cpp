@@ -10,18 +10,14 @@
 
 #include <math.h>
 
-Accelerometer::Accelerometer(double g)
-{
-    _g = g;
-}
-
 void Accelerometer::computeImuAcceleration(
         double verticalAcceleration,
         double rotation[3], 
-        double imuLinearAccelerationXYZ[3])
+        double imuLinearAccelerationXYZ[3],
+        double G)
 {
     // Subtract vertical acceleration from earth gravity to simulate accelerometer
-    double wdot = _g - verticalAcceleration;
+    double wdot = G - verticalAcceleration;
 
     // Store stuff in a readable format
     double phi   = rotation[0]; // bank angle

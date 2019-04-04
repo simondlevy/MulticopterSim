@@ -8,16 +8,11 @@
 
 class Accelerometer {
 
-    private:
-
-        double _g;
-
     public:
 
-        Accelerometer(double g);
-
-        void computeImuAcceleration(
+        static void computeImuAcceleration(
                 double verticalAcceleration,
                 double rotation[3], 
-                double imuLinearAccelerationXYZ[3]);
+                double imuLinearAccelerationXYZ[3],
+                double G = 9.80665);
 };
