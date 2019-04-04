@@ -14,8 +14,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-//#include "Physics.h"
-#include "GaussianNoise.h"
 #include "Physics.h"
 
 #include "CoreMinimal.h"
