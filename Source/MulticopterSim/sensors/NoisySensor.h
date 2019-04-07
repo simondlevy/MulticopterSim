@@ -30,5 +30,4 @@ class NoisySensor {
         ~NoisySensor();
 
         void addNoise(double vals[]);
-
 };
