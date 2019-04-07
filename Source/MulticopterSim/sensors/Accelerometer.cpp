@@ -16,8 +16,8 @@ void Accelerometer::computeImuAcceleration(
         double imuLinearAccelerationXYZ[3],
         double G)
 {
-    // Subtract vertical acceleration from earth gravity to simulate accelerometer
-    double wdot = G - verticalAcceleration;
+    // Subtract earth gravity from vertical acceleration to simulate accelerometer
+    double wdot = verticalAcceleration - G;
 
     // Store stuff in a readable format
     double phi   = rotation[0]; // bank angle
