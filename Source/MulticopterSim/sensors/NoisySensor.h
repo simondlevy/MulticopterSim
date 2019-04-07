@@ -23,7 +23,7 @@ class NoisySensor {
 
         uint8_t _size;
 
-    public:
+    protected:
 
         NoisySensor(uint8_t size, double mean=0, double stdev=1);
 

@@ -10,11 +10,16 @@
 
 #include <math.h>
 
+// 3 dimensions, noise mean = 0 , noise stdev = 0.01
+Accelerometer::Accelerometer(void) : NoisySensor(3, 0, 0.01)
+{
+}
+
 void Accelerometer::computeImuAcceleration(
         double verticalAcceleration,
         double rotation[3], 
         double imuLinearAccelerationXYZ[3],
-        double G)
+        double G) 
 {
     // Subtract earth gravity from vertical acceleration to simulate accelerometer
     double wdot = verticalAcceleration - G;
@@ -31,4 +36,7 @@ void Accelerometer::computeImuAcceleration(
     imuLinearAccelerationXYZ[0] = wdot * -sin(theta);
     imuLinearAccelerationXYZ[1] = wdot * sin(phi) * cthe;
     imuLinearAccelerationXYZ[2] = wdot * cos(phi) * cthe;
+
+    // Add noise
+    addNoise(imuLinearAccelerationXYZ);
 }

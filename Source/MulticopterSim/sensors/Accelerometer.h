@@ -6,11 +6,17 @@
  * MIT License
  */
 
-class Accelerometer {
+#pragma once
+
+#include "NoisySensor.h"
+
+class Accelerometer : public NoisySensor {
 
     public:
 
-        static void computeImuAcceleration(
+        Accelerometer(void);
+
+        void computeImuAcceleration(
                 double verticalAcceleration,
                 double rotation[3], 
                 double imuLinearAccelerationXYZ[3],
