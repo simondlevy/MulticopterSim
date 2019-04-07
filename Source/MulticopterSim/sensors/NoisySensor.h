@@ -1,5 +1,5 @@
 /*
-* GaussianNoise.h: Simulate Gaussian sensor noise
+* NoisySensor.h: Superclass for simulating sensors with Gaussian noise
 *
 * Copyright (C) 2019 Simon D. Levy
 *
@@ -14,7 +14,7 @@
 /**
  * 
  */
-class GaussianNoise {
+class NoisySensor {
 
     private:
 
@@ -25,9 +25,9 @@ class GaussianNoise {
 
     public:
 
-        GaussianNoise(uint8_t size, double mean=0, double stdev=1);
+        NoisySensor(uint8_t size, double mean=0, double stdev=1);
 
-        ~GaussianNoise();
+        ~NoisySensor();
 
         void addNoise(double vals[]);
 
