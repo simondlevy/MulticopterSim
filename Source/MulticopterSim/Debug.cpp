@@ -11,24 +11,24 @@
 
 #include <stdarg.h>
 
-static void message(bool err, const char * fmt, ...)
+void debug(const char * fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
     char buf[200];
     vsnprintf(buf, 200, fmt, ap); 
 
-    osd(buf, err);
-}
-
-void debug(const char * fmt, ...)
-{
-    message(false, fmt);
+    osd(buf, false);
 }
 
 void error(const char * fmt, ...)
 {
-    message(true, fmt);
+    va_list ap;
+    va_start(ap, fmt);
+    char buf[200];
+    vsnprintf(buf, 200, fmt, ap); 
+
+    osd(buf, true);
 }
 
 
