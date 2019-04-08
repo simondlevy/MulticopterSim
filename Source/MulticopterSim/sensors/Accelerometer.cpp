@@ -10,8 +10,7 @@
 
 #include <math.h>
 
-// 3 dimensions, noise mean = 0 , noise stdev = 0.01
-Accelerometer::Accelerometer(void) : NoisySensor(3, 0, 0.01)
+Accelerometer::Accelerometer(void) : NoisySensor(3, 0, 0)
 {
 }
 
