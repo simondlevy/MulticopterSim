@@ -12,13 +12,13 @@
 
 class Accelerometer : public NoisySensor {
 
+    private:
+
+        double _xyz[3];
+
     public:
 
         Accelerometer(void);
 
-        void computeImuAcceleration(
-                double verticalAcceleration,
-                double rotation[3], 
-                double imuLinearAccelerationXYZ[3],
-                double G = 9.80665);
+        double * computeImuAcceleration(double verticalAcceleration, double rotation[3], double G = 9.80665);
 };
