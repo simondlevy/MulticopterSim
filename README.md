@@ -39,6 +39,7 @@ through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/
 * Logitech F310 gamepad
 * FrSky Taranis TX9 RC transmitter with mini USB cable 
 * Spektrum transmitter with WS1000 wireless simulator dongle
+* Great Planes RealFlight Interlink
 
 ## Toolchain
 

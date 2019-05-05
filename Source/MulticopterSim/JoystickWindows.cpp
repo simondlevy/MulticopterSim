@@ -64,7 +64,7 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
     JOYINFOEX joyState;
     joyState.dwSize=sizeof(joyState);
     joyState.dwFlags=JOY_RETURNALL | JOY_RETURNPOVCTS | JOY_RETURNCENTERED | JOY_USEDEADZONE;
-    joyGetPosEx(_joystickId, &joyState);
+	joyGetPosEx(_joystickId, &joyState);
 
     // axes: 0=Thr 1=Ael 2=Ele 3=Rud 4=Aux
 
@@ -100,6 +100,11 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
             getButtons(joyState.dwButtons, buttonState, 1, 2, 4);
             break;
+
+		case PRODUCT_REALFLIGHT_INTERLINK:
+			getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
+			getButtons(joyState.dwButtons, buttonState, 11, 3, 19); // NB: Ch5 up; use CH8 Mode Idle Up button
+			break;
 
         default:
             if (_productId) {
