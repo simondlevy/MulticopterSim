@@ -2,7 +2,7 @@
 
 # About
 
-MulticopterSim is a simple quadcopter flight simulator using Unreal Engine 4.  It runs on Windows and Linux.
+MulticopterSim is a simple quadcopter flight simulator using Unreal Engine 4.  It runs on Windows.
 
 I began this project using the [V-REP platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
 UnrealEngine after seeing the kinds of beautiful, real-time simulations that
@@ -57,31 +57,31 @@ to generate a .sln file from a .uproject file, inability to compile source code,
 # Build
 
 Although MulticopterSim is designed to work with any flight-control software
-you like, it is set up to work with the
-[Hackflight](https://github.com/simondlevy/Hackflight) software by default. So to get started, you should 
-clone the [hackflight](https://github.com/simondlevy/MulticopterSim/tree/hackflight) branch of MulticopterSim into your <b>Unreal Projects</b> folder.
-The clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your <b>Arduino/libraries</b>
-folder, first creating that folder if it doesn't already exist.  (You don't need to install Arduino; this is
-simply where MulticopterSim 
-[looks for](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L21-L24) 
+you like, it easiest to get started with the
+[Hackflight](https://github.com/simondlevy/Hackflight) software. So to get started, you should 
+do the following:
+
+1. Clone this repository (MulticopterSim) plugin into your <b>Documents/Unreal Projects</b> folder, first
+creating that folder if it doesn't exit.
+
+2. Clone the [HackflightSim](https://github.com/simondlevy/HackflightSim) repository into
+the <b>Documents/Unreal Projects/MulticopterSim/Source/Multicopter</b> folder.
+
+3. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
+<b>DocumentsArduino/libraries</b> folder, first creating that folder if it
+doesn't already exist.  (You don't need to install Arduino; this is simply
+where MulticopterSim [looks
+for](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L21-L24)
 the Hackflight software.)
 
-Now double-click on <b>MulticopterSim.uproject</b> to launch UnrealEditor; then click the Compile icon at the top. 
-You can then use your favorite code editor (ours is 
-<a href="https://www.vim.org">vim</a>) to edit the source code in <b>Source/MulticopterSim</b>.
+4. Right-click on the <b>MulticopterSim.uproject</b> 
+file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
-## Windows
+5. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
+you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
+to build the project.
 
-If you have any difficulty building the project on Windows, you can right-click on the <b>MulticopterSim.uproject</b> 
-file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file, which will
-launch Visual Studio with a double-click.
-
-## Linux
-
-If you run into trouble building the project on Linux, you can run the <b>build.sh</b> script, which will show
-you the compiling and linking of the project file-by-file.  You should
-[edit](https://github.com/simondlevy/MulticopterSim/blob/master/build.sh#L8-L9)
-this script to reflect where you installed UnrealEngine.
+6. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
 # Launch and fly!
 
