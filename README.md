@@ -65,7 +65,7 @@ do the following:
 creating that folder if it doesn't exit.
 
 2. Clone the [HackflightSim](https://github.com/simondlevy/HackflightSim) repository into
-the <b>Documents/Unreal Projects/MulticopterSim/Source/Multicopter</b> folder.
+the <b>Documents/Unreal Projects/MulticopterSim/Source/MulticopterSim</b> folder.
 
 3. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
