@@ -2,7 +2,7 @@
 
 # About
 
-MulticopterSim is a simple quadcopter flight simulator using Unreal Engine 4.  It runs on Windows.
+MulticopterSim is a simple multicopter flight simulator using Unreal Engine 4.  It runs on Windows.
 
 I began this project using the [V-REP platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
 UnrealEngine after seeing the kinds of beautiful, real-time simulations that
