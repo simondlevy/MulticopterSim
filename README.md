@@ -89,7 +89,7 @@ In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Click
 the play button and you're ready to begin. Throttle up to fly.  You can use the
 spacebar to switch between the ground camera and FPV camera.
 
-# Support for OpenCV (Windows only)
+# Support for OpenCV
 
 To enable projects using machine vision, MulticopterSim includes support for the popular OpenCV package.
 To use OpenCV with MulticopterSim, you should do the following:
