@@ -46,7 +46,7 @@ public:
 
 	/**
 	* Called by AVehiclePawn::Tick() on main thread; implemented by your physics model.
-	* @param deltaSeconds time since last Tick()
+	* @param deltaSeconds time since last update
 	* @return motor values in[0,1] for simulating propeller spin and motor sound
 	*/
 	 virtual TArray<float> update(float deltaSeconds) = 0;

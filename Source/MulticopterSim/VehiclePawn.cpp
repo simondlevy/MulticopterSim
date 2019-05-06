@@ -128,8 +128,6 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 		return;
 	}
 
-    //debug("Main Thread FPS: %d", (uint16_t)(1/DeltaSeconds));
-
     // Update physics, getting back motor values for animation effects
 	TArray<float> motorvals = _physics->update(DeltaSeconds);
 
