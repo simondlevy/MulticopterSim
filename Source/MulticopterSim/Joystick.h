@@ -27,11 +27,13 @@ class Joystick {
 
         int _joystickId;
 
+        bool _isRcTransmitter;
+
     public:
 
         Joystick(void);
 
-        bool isRcTransmitter;
-
         void poll(float axes[6], uint8_t & buttonState);
+
+        bool isRcTransmitter(void);
 };

@@ -42,7 +42,7 @@ Joystick::Joystick(void)
 
     _productId = 0;
 
-    isRcTransmitter = false;
+    _isRcTransmitter = false;
 
     // Grab the first available joystick
     for (_joystickId=0; _joystickId<16; _joystickId++)
@@ -53,7 +53,7 @@ Joystick::Joystick(void)
 
         _productId = joycaps.wPid;
 
-        isRcTransmitter = (_productId == PRODUCT_TARANIS || _productId == PRODUCT_SPEKTRUM);
+        _isRcTransmitter = (_productId == PRODUCT_TARANIS || _productId == PRODUCT_SPEKTRUM);
     }
 }
 
@@ -119,8 +119,13 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
     }
 
     // Invert axes 0, 2 for unless R/C transmitter
-    if (!isRcTransmitter) {
+    if (!_isRcTransmitter) {
         axes[0] = -axes[0];
         axes[2] = -axes[2];
     }
+}
+
+bool Joystick::isRcTransmitter(void)
+{
+    return _isRcTransmitter;
 }
