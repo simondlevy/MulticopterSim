@@ -6,8 +6,6 @@
  * MIT License
  */
 
-#ifdef _WIN32
-
 #include "Joystick.h"
 
 #include "VehiclePawn.h"
@@ -126,5 +124,3 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
         axes[2] = -axes[2];
     }
 }
-
-#endif
