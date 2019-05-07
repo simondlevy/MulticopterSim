@@ -116,8 +116,6 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             }
     }
 
-    debug("%d", inGimbalMode());
-
     // Normalize the axes to demands in [-1,+1]
     for (uint8_t k=0; k<5; ++k) {
         axes[k] = (axes[k] - 32767) / 32767.f;
