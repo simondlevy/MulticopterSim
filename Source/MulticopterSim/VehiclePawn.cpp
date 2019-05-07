@@ -201,5 +201,13 @@ float AVehiclePawn::getCurrentTime(void)
         
 void AVehiclePawn::setGimbal(float pan, float tilt)
 {
-    debug("p: %3.3f  t: %3.3f", pan, tilt);
+	//FRotator rotator = _fpvSpringArm->GetComponentRotation();
+    //rotator.Yaw += sin(2*PI*this->getCurrentTime());
+
+	FRotator rotator;
+	rotator.Yaw   = 40 * pan;
+	//rotator.Pitch += tilt;
+
+	_fpvSpringArm->SetWorldRotation(rotator);
 }
+
