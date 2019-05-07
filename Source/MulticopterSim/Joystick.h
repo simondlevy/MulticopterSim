@@ -29,6 +29,8 @@ class Joystick {
 
         bool _isRcTransmitter;
 
+        bool _inGimbalMode;
+
     public:
 
         Joystick(void);
@@ -36,4 +38,6 @@ class Joystick {
         void poll(float axes[6], uint8_t & buttonState);
 
         bool isRcTransmitter(void);
+
+        bool inGimbalMode(void);
 };

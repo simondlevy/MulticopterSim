@@ -44,6 +44,8 @@ Joystick::Joystick(void)
 
     _isRcTransmitter = false;
 
+    _inGimbalMode = false;
+
     // Grab the first available joystick
     for (_joystickId=0; _joystickId<16; _joystickId++)
         if (joyGetDevCaps(_joystickId, &joycaps, sizeof(joycaps)) == JOYERR_NOERROR)
@@ -70,6 +72,7 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
 
         case PRODUCT_SPEKTRUM:
             getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwXpos, joyState.dwUpos);
+            _inGimbalMode = !(joyState.dwButtons & 0x01);
             break;
 
         case PRODUCT_TARANIS:
@@ -113,6 +116,8 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             }
     }
 
+    debug("%d", inGimbalMode());
+
     // Normalize the axes to demands in [-1,+1]
     for (uint8_t k=0; k<5; ++k) {
         axes[k] = (axes[k] - 32767) / 32767.f;
@@ -128,4 +133,9 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
 bool Joystick::isRcTransmitter(void)
 {
     return _isRcTransmitter;
+}
+        
+bool Joystick::inGimbalMode(void)
+{
+    return _inGimbalMode;
 }
