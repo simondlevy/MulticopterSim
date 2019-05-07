@@ -1,7 +1,7 @@
 /*
 * VehiclePawn.h: Class declaration for pawn class in MulticopterSim
 *
-* Copyright (C) 2018 Simon D. Levy
+* Copyright (C) 2019 Simon D. Levy, Daniel Katzav
 *
 * MIT License
 */
@@ -92,6 +92,9 @@ public:
 
         // Sets default values for this pawn's properties
         AVehiclePawn();
+
+        // Sets gimbal pan, tilt
+        void setGimbal(float pan, float tilt);
 
         // Timing
         float getCurrentTime(void);

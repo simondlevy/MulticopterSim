@@ -198,3 +198,8 @@ float AVehiclePawn::getCurrentTime(void)
 {
     return UGameplayStatics::GetRealTimeSeconds(GetWorld());
 }
+        
+void AVehiclePawn::setGimbal(float pan, float tilt)
+{
+    debug("p: %3.3f  t: %3.3f", pan, tilt);
+}
