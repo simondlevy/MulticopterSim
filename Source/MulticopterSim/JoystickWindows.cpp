@@ -72,7 +72,7 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
 
         case PRODUCT_SPEKTRUM:
             getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwXpos, joyState.dwUpos);
-            _inGimbalMode = !(joyState.dwButtons & 0x01);
+            _inGimbalMode = !(joyState.dwButtons & 0x01); // rightmost is zero for gimbal mode
             break;
 
         case PRODUCT_TARANIS:
@@ -104,7 +104,8 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
 
 		case PRODUCT_REALFLIGHT_INTERLINK:
 			getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
-			getButtons(joyState.dwButtons, buttonState, 11, 3, 19); // NB: Ch5 up; use CH8 Mode Idle Up button
+            _inGimbalMode = !(joyState.dwButtons & 0x01); // rightmost is zero for gimbal mode
+			getButtons(joyState.dwButtons&0xFE, buttonState, 10, 2, 18); // use other bits for aux state
 			break;
 
         default:
