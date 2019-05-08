@@ -199,13 +199,14 @@ float AVehiclePawn::getCurrentTime(void)
     return UGameplayStatics::GetRealTimeSeconds(GetWorld());
 }
         
-void AVehiclePawn::setGimbal(float pan, float tilt)
+void AVehiclePawn::setGimbal(float roll, float pitch, float yaw)
 {
 
 	FRotator rotation = _fpvSpringArm->GetComponentRotation();
 
-    rotation.Yaw   += pan;
-    rotation.Pitch -= tilt;
+    rotation.Roll  += roll;
+    rotation.Pitch -= pitch;
+    rotation.Yaw   += yaw;
 
 	_fpvSpringArm->SetWorldRotation(rotation);
 }

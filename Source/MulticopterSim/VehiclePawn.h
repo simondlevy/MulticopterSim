@@ -93,8 +93,8 @@ public:
         // Sets default values for this pawn's properties
         AVehiclePawn();
 
-        // Sets gimbal pan, tilt
-        void setGimbal(float pan, float tilt);
+        // Sets axes for camera gimbal
+        void setGimbal(float roll, float pitch, float yaw);
 
         // Timing
         float getCurrentTime(void);
