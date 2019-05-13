@@ -103,9 +103,18 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             break;
 
 		case PRODUCT_REALFLIGHT_INTERLINK:
+
 			getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
-            _inGimbalMode = !(joyState.dwButtons & 0x01); // rightmost is zero for gimbal mode
+
+            // rescale axes (should be done in RealFlight!)
+            rescaleAxis(axes[0], 13161, 51336);                          
+            rescaleAxis(axes[1], 12623, 55342);
+            rescaleAxis(axes[2], 13698, 51335);
+            rescaleAxis(axes[3], 11818, 55159);
+
+            _inGimbalMode = !(joyState.dwButtons & 0x01);                // rightmost bit is zero for gimbal mode
 			getButtons(joyState.dwButtons&0xFE, buttonState, 10, 2, 18); // use other bits for aux state
+
 			break;
 
         default:
@@ -117,7 +126,7 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             }
     }
 
-    // Normalize the axes to demands in [-1,+1]
+    // Normalize the axes to demands to [-1,+1]
     for (uint8_t k=0; k<5; ++k) {
         axes[k] = (axes[k] - 32767) / 32767.f;
     }
@@ -137,4 +146,14 @@ bool Joystick::isRcTransmitter(void)
 bool Joystick::inGimbalMode(void)
 {
     return _inGimbalMode;
+}
+        
+void Joystick::rescaleAxis(float & value, float minval, float maxval)
+{
+    if (value <= 32767) {
+        value = (value - minval) / (32767 - minval) * 32767;
+    }
+    else {
+        value = (value - 32767) / (maxval - 32767) * 32767 + 32767;
+    }
 }

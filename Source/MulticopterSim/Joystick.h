@@ -31,6 +31,9 @@ class Joystick {
 
         bool _inGimbalMode;
 
+        // handles failure to calibrate transmitter before run
+        void rescaleAxis(float & value, float minval, float maxval);
+
     public:
 
         Joystick(void);
