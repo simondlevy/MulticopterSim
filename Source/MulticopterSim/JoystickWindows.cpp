@@ -151,7 +151,7 @@ bool Joystick::inGimbalMode(void)
 void Joystick::rescaleAxis(float & value, float minval, float maxval)
 {
     if (value <= 32767) {
-        value = (value - minval) / (32767 - minval) * 32767;
+        value = (value - minval) / (1 - minval/32767);
     }
     else {
         value = (value - 32767) / (maxval - 32767) * 32767 + 32767;
