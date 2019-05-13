@@ -154,6 +154,6 @@ void Joystick::rescaleAxis(float & value, float minval, float maxval)
         value = (value - minval) / (1 - minval/32767);
     }
     else {
-        value = (value - 32767) / (maxval - 32767) * 32767 + 32767;
+        value = 32767 *((value - 32767) / (maxval - 32767)  + 1);
     }
 }
