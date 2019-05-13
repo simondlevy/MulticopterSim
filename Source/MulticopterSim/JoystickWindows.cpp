@@ -128,7 +128,7 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
 
     // Normalize the axes to demands to [-1,+1]
     for (uint8_t k=0; k<5; ++k) {
-        axes[k] = (axes[k] - 32767) / 32767.f;
+        axes[k] = axes[k] / 32767 - 1;
     }
 
     // Invert axes 0, 2 for unless R/C transmitter
