@@ -1,5 +1,5 @@
 /*
- * ThreadedWorker.cpp: Threaded video code for  project
+ * ThreadedWorker.cpp: Threading support
  *
  * Adapted from https://wiki.unrealengine.com/Multi-Threading:_How_to_Create_Threads_in_UE4
  *
@@ -11,9 +11,11 @@
 
 #include "ThreadedWorker.h"
 
-FThreadedWorker::FThreadedWorker(/*Physics * physics*/)
+FThreadedWorker::FThreadedWorker(AVehiclePawn * vehiclePawn)
 {
 	_thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); 
+
+    _vehiclePawn = vehiclePawn;
 
     *_message = 0;
 }
@@ -55,7 +57,7 @@ void FThreadedWorker::Stop()
 
 double FThreadedWorker::getCurrentTime(void)
 {
-	return 0;// _physics->getCurrentTime();
+	return _vehiclePawn->getCurrentTime();
 }
 
 const char * FThreadedWorker::getMessage(void)

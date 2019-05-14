@@ -1,5 +1,5 @@
 /*
- * ThreadedWorker.cpp: Threaded video code for  project
+ * ThreadedWorker.h: Threading support
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -11,6 +11,8 @@
 #include "Core.h"
 #include "Runnable.h"
 
+#include "VehiclePawn.h"
+
 /**
  * 
  */
@@ -20,6 +22,8 @@ private:
 
 	FRunnableThread* _thread;
 
+    AVehiclePawn * _vehiclePawn; // for getCurrentTime()
+
 	bool _running;
 
 protected:
@@ -28,11 +32,12 @@ protected:
 
 	double getCurrentTime(void);
 
+    // Supports debugging on main thread
     char _message[200];
 
 public:
 
-	FThreadedWorker(/*Physics * physics*/);
+	FThreadedWorker(AVehiclePawn * vehiclePawn);
 
 	~FThreadedWorker();
 

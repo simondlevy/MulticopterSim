@@ -123,3 +123,4 @@ void MultirotorDynamics::eulerToQuaternion(double eulerAngles[3], double quatern
     quaternion[2] = -cph * sth * cps - sph * cth * sps;
     quaternion[3] =  cph * cth * sps - sph * sth * cps;
 }
+
