@@ -8,20 +8,16 @@
 
 #pragma once
 
-/*
 #include "Core.h"
 #include "Runnable.h"
-#include "VehiclePawn.h"
-*/
 
-class FThreadedWorker /*: public FRunnable*/ {
+class FThreadedWorker : public FRunnable {
 
-    /*
 private:
 
 	FRunnableThread* _thread;
 
-    AVehiclePawn * _vehiclePawn; // for getCurrentTime()
+    class AVehiclePawn * _vehiclePawn; // for getCurrentTime()
 
 	bool _running;
 
@@ -48,5 +44,4 @@ public:
 	virtual bool Init();
 	virtual uint32 Run();
 	virtual void Stop();
-    */
 };

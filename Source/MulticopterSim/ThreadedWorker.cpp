@@ -10,8 +10,8 @@
 
 
 #include "ThreadedWorker.h"
+#include "VehiclePawn.h"
 
-/*
 FThreadedWorker::FThreadedWorker(AVehiclePawn * vehiclePawn)
 {
 	_thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); 
@@ -72,5 +72,3 @@ FThreadedWorker * FThreadedWorker::stopThreadedWorker(FThreadedWorker * worker)
     delete worker;
     return (FThreadedWorker *)NULL;
 }
-
-*/

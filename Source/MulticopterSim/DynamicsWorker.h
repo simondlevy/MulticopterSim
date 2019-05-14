@@ -9,14 +9,13 @@
 #pragma once
 
 #include "ThreadedWorker.h"
-//#include "dynamics/MultirotorDynamics.h"
+#include "dynamics/MultirotorDynamics.h"
 
 class FDynamicsWorker :	public FThreadedWorker {
 
-    /*
     private:
 
-        class MultirotorDynamics * _dynamics;
+        MultirotorDynamics * _dynamics;
 
         double _previousTime;
 
@@ -30,5 +29,4 @@ class FDynamicsWorker :	public FThreadedWorker {
         FDynamicsWorker(class AVehiclePawn * vehiclePawn, class MultirotorDynamics * dynamics);
 
         ~FDynamicsWorker(void);
-        */
 };

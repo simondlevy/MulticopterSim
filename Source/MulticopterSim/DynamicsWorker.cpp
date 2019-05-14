@@ -10,8 +10,8 @@
  */
 
 #include "DynamicsWorker.h"
+#include "VehiclePawn.h"
 
-/*
 // Called once on main thread
 FDynamicsWorker::FDynamicsWorker(AVehiclePawn * vehiclePawn, class MultirotorDynamics * dynamics) : FThreadedWorker(vehiclePawn)
 {
@@ -36,4 +36,3 @@ void FDynamicsWorker::performTask(void)
 
     _previousTime = currentTime;
 }
-*/
