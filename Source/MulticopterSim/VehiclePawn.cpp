@@ -7,7 +7,7 @@
 */
 
 #include "VehiclePawn.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
@@ -19,9 +19,6 @@
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
-
-#include <cmath>
-#include <stdarg.h>
 
 AVehiclePawn::AVehiclePawn()
 {
