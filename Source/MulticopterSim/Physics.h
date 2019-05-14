@@ -21,9 +21,7 @@ protected:
 
 	class AVehiclePawn * _vehiclePawn;
 
-	class UStaticMeshComponent* _vehicleMesh;
-
-	Physics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh);
+	Physics(class AVehiclePawn * vehiclePawn);
 
 public:
 
@@ -60,8 +58,7 @@ public:
     /**
      * Factory method.
 	 * @param vehiclePawn Pawn object for vehicle; can be queried (e.g., position, velocity) and affected (e.g., rotated)
-	 * @param vehicleMesh static mesh for vehicle; can be modifed (e.g., force added)
      *  @return pointer to a new Physics object
      */
-     static Physics * createPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh);
+     static Physics * createPhysics(class AVehiclePawn * vehiclePawn);
 };

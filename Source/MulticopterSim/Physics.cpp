@@ -8,10 +8,9 @@
 
 #include "Physics.h"
 
-Physics::Physics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
+Physics::Physics(class AVehiclePawn * vehiclePawn)
 {
     _vehiclePawn = vehiclePawn;
-    _vehicleMesh = vehicleMesh;
 }
 
 double Physics::getCurrentTime(void)

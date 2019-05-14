@@ -30,7 +30,7 @@ class MULTICOPTERSIM_API CustomPhysics : public Physics {
 
     public:
 
-        CustomPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh);
+        CustomPhysics(class AVehiclePawn * vehiclePawn);
 
         virtual void start(void) override;
 

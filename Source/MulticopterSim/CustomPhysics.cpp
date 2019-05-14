@@ -9,13 +9,10 @@
 #include "CustomPhysics.h"
 #include "debug.h"
 
-CustomPhysics::CustomPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh) : Physics(vehiclePawn, vehicleMesh)
+CustomPhysics::CustomPhysics(class AVehiclePawn * vehiclePawn) : Physics(vehiclePawn)
 
 {
     _flightManager = FlightManager::createFlightManager(vehiclePawn);
-
-    // Turn off UE4 physics
-	_vehicleMesh->SetSimulatePhysics(false);
 
 }
 
@@ -78,7 +75,7 @@ TArray<float> CustomPhysics::update(float deltaSeconds)
 }
 
 // Factory method for Physics class
-Physics * Physics::createPhysics(class AVehiclePawn * vehiclePawn, class UStaticMeshComponent* vehicleMesh)
+Physics * Physics::createPhysics(class AVehiclePawn * vehiclePawn)
 {
-    return new CustomPhysics(vehiclePawn, vehicleMesh);
+    return new CustomPhysics(vehiclePawn);
 }
