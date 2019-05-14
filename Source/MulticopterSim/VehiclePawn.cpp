@@ -40,7 +40,7 @@ AVehiclePawn::AVehiclePawn()
 	RootComponent = _vehicleMesh;
 
     // Create physics support
-    _physics = Physics::createPhysics(this);
+    //_physics = Physics::createPhysics(this);
 
     // Turn off UE4 physics
 	_vehicleMesh->SetSimulatePhysics(false);
@@ -104,7 +104,7 @@ void AVehiclePawn::BeginPlay()
     // will play continiously...
 	if (_mapSelected) {
 		_propellerAudioComponent->Play();
-        _physics->start();
+        startPhysics();
 	}
     else {
         debug("NO MAP SELECTED");
@@ -117,7 +117,7 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     // Stop the flight controller
     if (_mapSelected) {
-        _physics->stop();
+        stopPhysics();
     }
 
     Super::EndPlay(EndPlayReason);
@@ -132,7 +132,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 	}
 
     // Update physics, getting back motor values for animation effects
-	TArray<float> motorvals = _physics->update(DeltaSeconds);
+	TArray<float> motorvals = updatePhysics(DeltaSeconds);
 
     // Add animation effects (prop rotation, sound)
     addAnimationEffects(motorvals);
@@ -195,11 +195,68 @@ void AVehiclePawn::NotifyHit(
     //SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
 }
 
+void AVehiclePawn::startPhysics(void)
+{
+    // Get vehicle ground-truth location and rotation to initialize dynamics
+    FVector pos = this->GetActorLocation() / 100; // cm => m
+    double groundTruthPosition[3] = {pos.X, pos.Y, pos.Z};
+    FRotator rot = this->GetActorRotation(); 
+    double groundTruthRotation[3] = {rot.Roll, rot.Pitch, rot.Yaw};
+    _dynamics.init(groundTruthPosition, groundTruthRotation);
+
+    // Create a new flight manager (e.g., HackflightSim)
+    _flightManager = FlightManager::createFlightManager(this);
+}
+
+void AVehiclePawn::stopPhysics(void)
+{
+    delete _flightManager;
+}
+
+TArray<float> AVehiclePawn::updatePhysics(float deltaT)
+{
+    // Current motor values
+    static double _motorvals[4];
+
+    // Get vehicle state by passing motor values to dynamics
+    double angularVelocityRPY[3] = {0}; // body frame
+    double eulerAngles[3] = {0};        // body frame
+    double velocityXYZ[3] = {0};        // inertial frame
+    double positionXYZ[3] = {0};        // inertial frame
+    _dynamics.update( deltaT, _motorvals, angularVelocityRPY, eulerAngles, velocityXYZ, positionXYZ);
+
+    // Set pawn location using position from dynamics
+    this->SetActorLocation(FVector(positionXYZ[0], positionXYZ[1], positionXYZ[2]) * 100); // m =>cm
+
+    // Set pawn rotation using Euler angles (note order: pitch, yaw, roll = 1,2,0 = Y,Z,X)
+    this->SetActorRotation(FRotator(eulerAngles[1], eulerAngles[2], eulerAngles[0]) * (180 / M_PI)); // radians => deg
+
+    // Convert Euler angles to quaternion
+    double imuOrientationQuat[4]={0};
+    MultirotorDynamics::eulerToQuaternion(eulerAngles, imuOrientationQuat);
+
+    // PID controller: update the flight manager with the quaternion and gyrometer, getting the resulting motor values
+    // Note quaternion order: https://api.unrealengine.com/INT/API/Runtime/Core/Math/FQuat/__ctor/7/index.html    
+    TArray<float> motorvals = _flightManager->update(
+            deltaT, 
+            FQuat(imuOrientationQuat[1], imuOrientationQuat[2], imuOrientationQuat[3], imuOrientationQuat[0]), 
+            FVector(angularVelocityRPY[0], angularVelocityRPY[1], angularVelocityRPY[2]));
+
+    // Set motor values for dynamics on next iteration
+    for (uint8_t j=0; j<4; ++j) {
+        _motorvals[j] = motorvals[j];
+    }
+
+    // Return the motor values for audiovisual effect
+    return motorvals;
+}
+
+
 float AVehiclePawn::getCurrentTime(void)
 {
     return UGameplayStatics::GetRealTimeSeconds(GetWorld());
 }
-        
+
 void AVehiclePawn::setGimbal(float roll, float pitch, float yaw)
 {
 

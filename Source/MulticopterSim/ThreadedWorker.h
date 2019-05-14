@@ -10,7 +10,6 @@
 
 #include "Core.h"
 #include "Runnable.h"
-#include "Physics.h"
 
 /**
  * 
@@ -20,8 +19,6 @@ class FThreadedWorker : public FRunnable {
 private:
 
 	FRunnableThread* _thread;
-
-    Physics * _physics;
 
 	bool _running;
 
@@ -35,7 +32,7 @@ protected:
 
 public:
 
-	FThreadedWorker(Physics * physics);
+	FThreadedWorker(/*Physics * physics*/);
 
 	~FThreadedWorker();
 

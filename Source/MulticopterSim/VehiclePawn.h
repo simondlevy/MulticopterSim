@@ -14,7 +14,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include "Physics.h"
+#include "FlightManager.h"
+#include "dynamics/MultirotorDynamics.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -51,7 +52,7 @@ private:
             class USpringArmComponent* _fpvSpringArm;
 
         // Actual  physics supported by your application
-        class Physics * _physics;
+        //class Physics * _physics;
 
         // Support for simulating spinning propellers
         static constexpr int8_t MOTORDIRS[4] = {+1, -1, -1, +1};
@@ -63,6 +64,15 @@ private:
         void addAnimationEffects(TArray<float> motorvals);
         void setAudioPitchAndVolume(float value);
 
+        // Physics simulation
+        void startPhysics(void);
+        void stopPhysics(void);
+	    TArray<float> updatePhysics(float deltaT);
+        MultirotorDynamics _dynamics;
+
+        // Flight manager (PID control)
+        FlightManager * _flightManager;
+    
         // Helpers
 		static float mean(TArray<float> x);
 

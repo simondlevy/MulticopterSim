@@ -11,11 +11,11 @@
 
 #include "ThreadedWorker.h"
 
-FThreadedWorker::FThreadedWorker(Physics * physics)
+FThreadedWorker::FThreadedWorker(/*Physics * physics*/)
 {
 	_thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); 
 
-    _physics = physics;
+    //_physics = physics;
 
     *_message = 0;
 }
@@ -57,7 +57,7 @@ void FThreadedWorker::Stop()
 
 double FThreadedWorker::getCurrentTime(void)
 {
-	return _physics->getCurrentTime();
+	return 0;// _physics->getCurrentTime();
 }
 
 const char * FThreadedWorker::getMessage(void)

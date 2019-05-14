@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "VehiclePawn.h"
-
 class MULTICOPTERSIM_API FlightManager
 {
     public:
@@ -20,5 +18,5 @@ class MULTICOPTERSIM_API FlightManager
          *  Factory method.
          *  @return pointer to a new FlightManager object
          */
-        static FlightManager * createFlightManager(AVehiclePawn * vehiclePawn);
+        static FlightManager * createFlightManager(class AVehiclePawn * vehiclePawn);
 };
