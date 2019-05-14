@@ -15,8 +15,6 @@ FThreadedWorker::FThreadedWorker(/*Physics * physics*/)
 {
 	_thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); 
 
-    //_physics = physics;
-
     *_message = 0;
 }
 
