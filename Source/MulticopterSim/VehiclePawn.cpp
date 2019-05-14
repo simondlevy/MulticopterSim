@@ -7,6 +7,8 @@
 */
 
 #include "VehiclePawn.h"
+#include "debug.h"
+
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -17,7 +19,6 @@
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
-#include "Debug.h"
 
 #include <cmath>
 #include <stdarg.h>
@@ -206,10 +207,16 @@ void AVehiclePawn::startPhysics(void)
 
     // Create a new flight manager (e.g., HackflightSim)
     _flightManager = FlightManager::createFlightManager(this);
+
+    // Create a threaded dynamics worker
+    //_dynamicsWorker = new FDynamicsWorker(this, &_dynamics);
 }
 
 void AVehiclePawn::stopPhysics(void)
 {
+    // Stop threaded dymamics worker and free its memory
+    //_dynamicsWorker = (FDynamicsWorker *)FThreadedWorker::stopThreadedWorker(_dynamicsWorker);
+
     delete _flightManager;
 }
 

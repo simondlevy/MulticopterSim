@@ -15,6 +15,7 @@
 #include <math.h>
 
 #include "FlightManager.h"
+#include "DynamicsWorker.h"
 #include "dynamics/MultirotorDynamics.h"
 
 #include "CoreMinimal.h"
@@ -51,8 +52,8 @@ private:
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
             class USpringArmComponent* _fpvSpringArm;
 
-        // Actual  physics supported by your application
-        //class Physics * _physics;
+        // Threaded worker for running dynamics
+        class FDynamicsWorker * _dynamicsWorker;
 
         // Support for simulating spinning propellers
         static constexpr int8_t MOTORDIRS[4] = {+1, -1, -1, +1};

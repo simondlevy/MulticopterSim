@@ -8,16 +8,15 @@
 
 #pragma once
 
+/*
 #include "Core.h"
 #include "Runnable.h"
-
 #include "VehiclePawn.h"
+*/
 
-/**
- * 
- */
-class FThreadedWorker : public FRunnable {
+class FThreadedWorker /*: public FRunnable*/ {
 
+    /*
 private:
 
 	FRunnableThread* _thread;
@@ -37,14 +36,17 @@ protected:
 
 public:
 
-	FThreadedWorker(AVehiclePawn * vehiclePawn);
+	FThreadedWorker(class AVehiclePawn * vehiclePawn);
 
 	~FThreadedWorker();
 
     const char * getMessage(void);
 
+    static FThreadedWorker * stopThreadedWorker(FThreadedWorker * worker);
+
 	// FRunnable interface.
 	virtual bool Init();
 	virtual uint32 Run();
 	virtual void Stop();
+    */
 };

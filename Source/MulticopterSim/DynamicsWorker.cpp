@@ -11,6 +11,7 @@
 
 #include "DynamicsWorker.h"
 
+/*
 // Called once on main thread
 FDynamicsWorker::FDynamicsWorker(AVehiclePawn * vehiclePawn, class MultirotorDynamics * dynamics) : FThreadedWorker(vehiclePawn)
 {
@@ -30,8 +31,9 @@ void FDynamicsWorker::performTask(void)
 
     if (_previousTime>0) {
 
-        _dynamics->update(currentTime-_previousTime);
+        //_dynamics->update(currentTime-_previousTime);
     }
 
     _previousTime = currentTime;
 }
+*/
