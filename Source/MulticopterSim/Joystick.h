@@ -14,6 +14,7 @@ class Joystick {
 
         static const uint16_t PRODUCT_PS3_CLONE				= 0x0003;
         static const uint16_t PRODUCT_XBOX360				= 0x02a1;
+		static const uint16_t PRODUCT_XBOX360_CLONE2		= 0x028e;
         static const uint16_t PRODUCT_XBOX360_WIRELESS		= 0x0719;
 		static const uint16_t PRODUCT_REALFLIGHT_INTERLINK	= 0x0e56;
         static const uint16_t PRODUCT_TARANIS				= 0x5710;
