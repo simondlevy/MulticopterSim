@@ -23,12 +23,12 @@ private:
 
 protected:
 
+    // Supports debugging on main thread
+    char _message[200];
+
     virtual void performTask(void) = 0;
 
 	double getCurrentTime(void);
-
-    // Supports debugging on main thread
-    char _message[200];
 
 public:
 

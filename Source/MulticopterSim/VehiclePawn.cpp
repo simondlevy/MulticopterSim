@@ -129,6 +129,8 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 		return;
 	}
 
+    debug("%s", _dynamicsWorker->getMessage());
+
     // Update physics, getting back motor values for animation effects
 	TArray<float> motorvals = updatePhysics(DeltaSeconds);
 
@@ -206,13 +208,13 @@ void AVehiclePawn::startPhysics(void)
     _flightManager = FlightManager::createFlightManager(this);
 
     // Create a threaded dynamics worker
-    //_dynamicsWorker = new FDynamicsWorker(this, &_dynamics);
+    _dynamicsWorker = new FDynamicsWorker(this, &_dynamics);
 }
 
 void AVehiclePawn::stopPhysics(void)
 {
     // Stop threaded dymamics worker and free its memory
-    //_dynamicsWorker = (FDynamicsWorker *)FThreadedWorker::stopThreadedWorker(_dynamicsWorker);
+    _dynamicsWorker = (FDynamicsWorker *)FThreadedWorker::stopThreadedWorker(_dynamicsWorker);
 
     delete _flightManager;
 }

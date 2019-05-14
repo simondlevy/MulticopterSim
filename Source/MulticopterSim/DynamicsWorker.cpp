@@ -29,6 +29,8 @@ void FDynamicsWorker::performTask(void)
 {
     double currentTime = getCurrentTime();
 
+    sprintf_s(_message, "%f", currentTime);
+
     if (_previousTime>0) {
 
         //_dynamics->update(currentTime-_previousTime);
