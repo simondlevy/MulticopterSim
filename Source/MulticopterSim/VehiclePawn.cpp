@@ -190,8 +190,6 @@ void AVehiclePawn::NotifyHit(
 {
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-    _physics->notifyHit();
-
     // Deflect along the surface when we collide.
     //FRotator CurrentRotation = GetActorRotation();
     //SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));

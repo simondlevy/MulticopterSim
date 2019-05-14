@@ -36,12 +36,6 @@ public:
     virtual void stop(void) { }
 
 
-    /**
-     *  Called by AVehiclePawn::NotifyHit() when there's a collision
-     */
-    virtual void notifyHit(void) { }
-
-
 	/**
 	* Called by AVehiclePawn::Tick() on main thread; implemented by your physics model.
 	* @param deltaSeconds time since last update
