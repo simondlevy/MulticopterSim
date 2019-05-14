@@ -207,7 +207,7 @@ void AVehiclePawn::startPhysics(void)
     // Create a new flight manager (e.g., HackflightSim)
     _flightManager = FlightManager::createFlightManager(this);
 
-    // Create a threaded dynamics worker
+    // Launch a threaded dynamics worker
     _dynamicsWorker = new FDynamicsWorker(this, &_dynamics);
 }
 
