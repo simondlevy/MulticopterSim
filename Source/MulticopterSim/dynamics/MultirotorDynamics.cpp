@@ -69,8 +69,8 @@ void MultirotorDynamics::update(double dt)
     _acceleration[1] = -Fz * (cphi*spsi*sthe - cpsi*sphi);
     _acceleration[2] =  Fz * (cphi*cthe);
 
-    // XXX Subtract off an empirical constant to get net acceleration vertical, so that motionless maps to zero
-    _acceleration[2] -= 2.01;
+    // Subtract off an earth gravity to get net acceleration vertical, so that motionless maps to zero
+    _acceleration[2] -= G;
 
     // We're airborne once net vertical acceleration excedes zero
     if (!_airborne) {

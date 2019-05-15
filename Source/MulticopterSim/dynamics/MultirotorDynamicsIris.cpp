@@ -17,8 +17,9 @@ void IrisDynamics::getForces(double & Fz, double & L, double & M, double & N)
     M = motorsToAngularVelocity(0, 2, 1, 3);
     N = motorsToAngularVelocity(0, 1, 2, 3);
 
-    // Compute orthogonal force vector
-    Fz = _motorvals[0] + _motorvals[1] + _motorvals[2] + _motorvals[3];
+    // Compute orthogonal force component Fz.
+    // XXX currently we just multiply by 4 to make this big enough to get airborne.
+    Fz = 4 * (_motorvals[0] + _motorvals[1] + _motorvals[2] + _motorvals[3]);
 }
 
 void IrisDynamics::setMotors(double * motorvals)

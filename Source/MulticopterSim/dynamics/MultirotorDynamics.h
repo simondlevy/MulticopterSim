@@ -14,6 +14,9 @@ class MultirotorDynamics {
 
     private:
 
+        // Earth's gravitational constant
+        static constexpr double G = 9.80665;
+        
         // State
         double _angularVelocity[3];
         double _acceleration[3];
