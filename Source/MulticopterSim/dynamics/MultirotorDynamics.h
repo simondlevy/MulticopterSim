@@ -1,6 +1,8 @@
 /*
  * Class declaration for platform-independent multirotor dynamics
  *
+ * Should work for any simulator, vehicle, or operating system
+ *
  * Copyright (C) 2019 Simon D. Levy
  *
  * MIT License
@@ -13,6 +15,7 @@ class MultirotorDynamics {
     private:
 
         // State
+        double _angularVelocity[3];
         double _acceleration[3];
         double _velocity[3];
         double _position[3];
@@ -22,21 +25,41 @@ class MultirotorDynamics {
 
     protected:
 
-        // Implement in a subclass for each vehicle
-        virtual void motorsToForces(double * motorvals, double & Fz, double & L, double & M, double & N) = 0;
+        /** 
+         * You must implement this method in a subclass for each vehicle.
+         */
+        virtual void getForces(double & Fz, double & L, double & M, double & N) = 0;
 
     public:
 
+        /** 
+         * Initializes pose, with flag for whether we're airbone (helps with testing gravity).
+         */
         void init(double position[3], double rotation[3], bool airborne=false);
 
-        void update(
-                double dt, 
-                double motorvals[4],                                   
-                double imuAngularVelocityRPY[3], 
+
+        /** 
+         * Updates dynamics state.
+         */
+        void update(double dt);
+
+
+        /**
+         * Sets motor values.
+         * You must implement this method in a subclass for each vehicle.
+         */
+        virtual void setMotors(double * motorvals) = 0;
+
+        /*
+         *  Gets current state
+         */
+        void getState(
+                double angularVelocity[3], 
                 double eulerAngles[3], 
                 double velocityXYZ[3],
                 double positionXYZ[3]);
 
+        // Not strictly part of dynamics, but useful
         static void eulerToQuaternion(double eulerAngles[3], double quaternion[4]);
 
         // Factory method

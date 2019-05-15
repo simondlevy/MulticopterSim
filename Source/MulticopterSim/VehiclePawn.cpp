@@ -229,12 +229,18 @@ TArray<float> AVehiclePawn::updatePhysics(float deltaT)
     // Current motor values
     static double _motorvals[4];
 
-    // Get vehicle state by passing motor values to dynamics
+    // Send motor values to dynamics
+    _dynamics->setMotors(_motorvals);
+
+    // Update dynamics
+    _dynamics->update(deltaT);
+
+    // Get vehicle state from dynamics
     double angularVelocityRPY[3] = {0}; // body frame
     double eulerAngles[3] = {0};        // body frame
     double velocityXYZ[3] = {0};        // inertial frame
     double positionXYZ[3] = {0};        // inertial frame
-    _dynamics->update( deltaT, _motorvals, angularVelocityRPY, eulerAngles, velocityXYZ, positionXYZ);
+    _dynamics->getState(angularVelocityRPY, eulerAngles, velocityXYZ, positionXYZ);
 
     // Set pawn location using position from dynamics
     this->SetActorLocation(FVector(positionXYZ[0], positionXYZ[1], positionXYZ[2]) * 100); // m =>cm

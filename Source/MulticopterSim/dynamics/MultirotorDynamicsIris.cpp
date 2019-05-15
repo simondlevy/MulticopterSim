@@ -8,21 +8,29 @@
 
 #include "MultirotorDynamicsIris.h"
 
-// Convert motor values to forces (in reality, we get vertical thrust and angular velocities)
-void IrisDynamics::motorsToForces(double * motorvals, double & Fz, double & L, double & M, double & N)
+// Get forces based on current motor values.
+// XXX In reality, we get vertical thrust and angular velocities).
+void IrisDynamics::getForces(double & Fz, double & L, double & M, double & N)
 {
     // Convert motor values to rotational velocity vector
-    L = motorsToAngularVelocity(motorvals, 1, 2, 0, 3);
-    M = motorsToAngularVelocity(motorvals, 0, 2, 1, 3);
-    N = motorsToAngularVelocity(motorvals, 0, 1, 2, 3);
+    L = motorsToAngularVelocity(1, 2, 0, 3);
+    M = motorsToAngularVelocity(0, 2, 1, 3);
+    N = motorsToAngularVelocity(0, 1, 2, 3);
 
     // Compute orthogonal force vector
-    Fz = motorvals[0] + motorvals[1] + motorvals[2] + motorvals[3];
+    Fz = _motorvals[0] + _motorvals[1] + _motorvals[2] + _motorvals[3];
 }
 
-double IrisDynamics::motorsToAngularVelocity(double motorvals[4], uint8_t a, uint8_t b, uint8_t c, uint8_t d)
+void IrisDynamics::setMotors(double * motorvals)
 {
-    double v = ((motorvals[a] + motorvals[b]) - (motorvals[c] + motorvals[d]));
+    for (uint8_t k=0; k<4; ++k) {
+        _motorvals[k] = motorvals[k];
+    }
+}
+
+double IrisDynamics::motorsToAngularVelocity(uint8_t a, uint8_t b, uint8_t c, uint8_t d)
+{
+    double v = ((_motorvals[a] + _motorvals[b]) - (_motorvals[c] + _motorvals[d]));
 
     return (v < 0 ? -1 : +1) * fabs(v);
 }
@@ -32,4 +40,3 @@ MultirotorDynamics * MultirotorDynamics::create(void)
 {
     return new IrisDynamics();
 }
-
