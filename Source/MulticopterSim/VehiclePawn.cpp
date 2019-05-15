@@ -199,6 +199,9 @@ void AVehiclePawn::startPhysics(void)
     // Create a new flight manager (e.g., HackflightSim)
     _flightManager = FlightManager::createFlightManager(this);
 
+    // Allocate array for motor values
+    _motorvals = new double[getMotorCount()];
+
     // Create vehicle dynamics via factory method
     _dynamics = MultirotorDynamics::create();
 
@@ -219,15 +222,12 @@ void AVehiclePawn::stopPhysics(void)
     _dynamicsWorker = (FDynamicsWorker *)FThreadedWorker::stopThreadedWorker(_dynamicsWorker);
 
     delete _dynamics;
-
+    delete _motorvals;
     delete _flightManager;
 }
 
 TArray<float> AVehiclePawn::updatePhysics(float deltaT)
 {
-    // Current motor values
-    static double _motorvals[4];
-
     // Send motor values to dynamics
     _dynamics->setMotors(_motorvals);
 
@@ -259,7 +259,7 @@ TArray<float> AVehiclePawn::updatePhysics(float deltaT)
             FVector(angularVelocityRPY[0], angularVelocityRPY[1], angularVelocityRPY[2]));
 
     // Set motor values for dynamics on next iteration
-    for (uint8_t j=0; j<4; ++j) {
+    for (uint8_t j=0; j<getMotorCount(); ++j) {
         _motorvals[j] = motorvals[j];
     }
 

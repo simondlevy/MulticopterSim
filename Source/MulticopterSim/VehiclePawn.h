@@ -71,6 +71,9 @@ private:
         // Flight manager (PID control)
         FlightManager * _flightManager;
 
+        // Current motor values from flight manager
+        double * _motorvals; 
+
         // Implement for each vehicle mesh
         static const uint8_t getMotorCount(void);
         static const int8_t  getMotorDirection(uint8_t j);
