@@ -1,5 +1,5 @@
 /*
- * MulticopterSimBuild.cs: Build script for MulticopterSim
+ * Build script for MulticopterSim
  *
  * Copyright (C) 2018 Simon D. Levy
  *

@@ -1,5 +1,5 @@
 /*
- * ImageGrabber.h: MulticopterSim support for acquisition of camera images and processing using OpenCV
+ * MulticopterSim support for acquisition of camera images and processing using OpenCV
  *
  * Copyright (C) 2019 Simon D. Levy
  *

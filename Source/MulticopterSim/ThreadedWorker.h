@@ -1,5 +1,5 @@
 /*
- * ThreadedWorker.h: Threading support
+ * Threading support
  *
  * Copyright (C) 2019 Simon D. Levy
  *

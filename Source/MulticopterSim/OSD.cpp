@@ -1,5 +1,5 @@
 /*
-* OSD.cpp: On-Screen Display for MulticopterSim
+* On-Screen Display for MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *

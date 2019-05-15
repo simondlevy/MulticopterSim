@@ -1,5 +1,5 @@
 /*
-* VehiclePawn.cpp: Class implementation for pawn class in MulticopterSim
+* Class implementation for pawn class in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *

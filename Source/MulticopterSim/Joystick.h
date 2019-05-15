@@ -1,5 +1,5 @@
 /*
- * Joystick.cpp: joystick/gamepad support for MulticopterSim
+ * Joystick/gamepad support for MulticopterSim
  *
  * Copyright (C) 2018 Simon D. Levy
  *

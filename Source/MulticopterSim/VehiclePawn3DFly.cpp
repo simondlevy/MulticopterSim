@@ -1,5 +1,5 @@
 /*
-* VehiclePawn3DFly.cpp: Constants for simulated 3DFly vehicle
+* Constants for simulated 3DFly vehicle
 *
 * Copyright (C) 2018 Simon D. Levy
 *

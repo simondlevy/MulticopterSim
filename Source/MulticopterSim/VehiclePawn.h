@@ -1,5 +1,5 @@
 /*
-* VehiclePawn.h: Class declaration for pawn class in MulticopterSim
+* Class declaration for pawn class in MulticopterSim
 *
 * Copyright (C) 2019 Simon D. Levy, Daniel Katzav
 *

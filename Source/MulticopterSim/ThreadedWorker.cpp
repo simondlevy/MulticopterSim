@@ -1,5 +1,5 @@
 /*
- * ThreadedWorker.cpp: Threading support
+ * Threading support
  *
  * Adapted from https://wiki.unrealengine.com/Multi-Threading:_How_to_Create_Threads_in_UE4
  *
