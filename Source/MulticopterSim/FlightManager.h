@@ -1,5 +1,5 @@
 /*
- * FlightManager.h: Abstract flight-management class for MulticopterSim
+ * Abstract, threaded flight-management class for MulticopterSim
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -8,15 +8,32 @@
 
 #pragma once
 
-class MULTICOPTERSIM_API FlightManager
+#include "ThreadedWorker.h"
+#include "dynamics/MultirotorDynamics.h"
+
+class FFlightManager : public FThreadedWorker
 {
+    private:
+
+        MultirotorDynamics * _dynamics;
+
+        double _previousTime;
+
+    protected:
+
+        virtual void performTask(void) override;
+
+        FFlightManager(class AVehiclePawn * vehiclePawn, class MultirotorDynamics * dynamics);
+
     public:
+
+
+        ~FFlightManager(void);
 
         virtual TArray<float> update(float deltaTime, FQuat quat, FVector gyro)  = 0;
 
         /**
          *  Factory method.
-         *  @return pointer to a new FlightManager object
          */
-        static FlightManager * createFlightManager(class AVehiclePawn * vehiclePawn);
+        static FFlightManager * createFlightManager(class AVehiclePawn * vehiclePawn, class MultirotorDynamics * dynamics);
 };

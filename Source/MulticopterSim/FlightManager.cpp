@@ -1,5 +1,5 @@
 /*
- * DynamicsWorker.cpp: ThreadedWorker subclass for dynamics computation
+ * ThreadedWorker subclass for dynamics computation
  *
  * This class contains very little code, because the dynamics computations are 
  * done in the platform-independent MultirotorDynamics class.
@@ -9,23 +9,23 @@
  * MIT License
  */
 
-#include "DynamicsWorker.h"
+#include "FlightManager.h"
 #include "VehiclePawn.h"
 
 // Called once on main thread
-FDynamicsWorker::FDynamicsWorker(AVehiclePawn * vehiclePawn, class MultirotorDynamics * dynamics) : FThreadedWorker(vehiclePawn)
+FFlightManager::FFlightManager(AVehiclePawn * vehiclePawn, class MultirotorDynamics * dynamics) : FThreadedWorker(vehiclePawn)
 {
     _dynamics = dynamics;
 
     _previousTime = 0;
 }
 
-FDynamicsWorker::~FDynamicsWorker(void)
+FFlightManager::~FFlightManager(void)
 {
 }
 
 // Called repeatedly on worker thread
-void FDynamicsWorker::performTask(void)
+void FFlightManager::performTask(void)
 {
     double currentTime = getCurrentTime();
 

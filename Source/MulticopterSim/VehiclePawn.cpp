@@ -128,7 +128,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 		return;
 	}
 
-    //debug("%s", _dynamicsWorker->getMessage());
+    debug("%s", _flightManager->getMessage());
 
     // Update physics, getting back motor values for animation effects
 	TArray<float> motorvals = updatePhysics(DeltaSeconds);
@@ -196,9 +196,6 @@ void AVehiclePawn::NotifyHit(
 
 void AVehiclePawn::startPhysics(void)
 {
-    // Create a new flight manager (e.g., HackflightSim)
-    _flightManager = FlightManager::createFlightManager(this);
-
     // Allocate array for motor values
     _motorvals = new double[getMotorCount()];
 
@@ -212,18 +209,18 @@ void AVehiclePawn::startPhysics(void)
     double groundTruthRotation[3] = {rot.Roll, rot.Pitch, rot.Yaw};
     _dynamics->init(groundTruthPosition, groundTruthRotation);
 
-    // Launch a threaded dynamics worker
-    _dynamicsWorker = new FDynamicsWorker(this, _dynamics);
+    // Launch a new threaded flight manager 
+    _flightManager = FFlightManager::createFlightManager(this, _dynamics);
+
 }
 
 void AVehiclePawn::stopPhysics(void)
 {
     // Stop threaded dymamics worker and free its memory
-    _dynamicsWorker = (FDynamicsWorker *)FThreadedWorker::stopThreadedWorker(_dynamicsWorker);
+    _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
 
     delete _dynamics;
     delete _motorvals;
-    delete _flightManager;
 }
 
 TArray<float> AVehiclePawn::updatePhysics(float deltaT)

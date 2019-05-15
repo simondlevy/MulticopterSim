@@ -15,7 +15,6 @@
 #include <math.h>
 
 #include "FlightManager.h"
-#include "DynamicsWorker.h"
 #include "dynamics/MultirotorDynamics.h"
 
 #include "CoreMinimal.h"
@@ -52,8 +51,8 @@ private:
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
             class USpringArmComponent* _fpvSpringArm;
 
-        // Threaded worker for running dynamics
-        class FDynamicsWorker * _dynamicsWorker;
+        // Threaded worker for running flight control
+        class FFlightManager * _flightManager;
 
 		// Bozo filter for failure to select a map
 		bool _mapSelected;
@@ -67,9 +66,6 @@ private:
         void stopPhysics(void);
 	    TArray<float> updatePhysics(float deltaT);
         MultirotorDynamics * _dynamics;
-
-        // Flight manager (PID control)
-        FlightManager * _flightManager;
 
         // Current motor values from flight manager
         double * _motorvals; 
