@@ -37,9 +37,6 @@ AVehiclePawn::AVehiclePawn()
 	_vehicleMesh->SetStaticMesh(ConstructorStatics._vehicleMesh.Get());	// Set static mesh
 	RootComponent = _vehicleMesh;
 
-    // Create physics support
-    //_physics = Physics::createPhysics(this);
-
     // Turn off UE4 physics
 	_vehicleMesh->SetSimulatePhysics(false);
 
@@ -81,15 +78,17 @@ void AVehiclePawn::PostInitializeComponents()
     for (int i = 0; i < staticComponents.Num(); i++) {
         if (staticComponents[i]) {
             UStaticMeshComponent* child = staticComponents[i];
-            if (child->GetName() == "Prop1") _propMeshes[0] = child;
-            if (child->GetName() == "Prop2") _propMeshes[1] = child;
-            if (child->GetName() == "Prop3") _propMeshes[2] = child;
-            if (child->GetName() == "Prop4") _propMeshes[3] = child;
+            for (uint8_t j=0; j<getMotorCount(); ++j) {
+                if (child->GetName() == getPropellerMeshNames()[j]) {
+                    _propMeshes[j] = child;
+                }
+            }
         }
-	}
+    }
 
 	Super::PostInitializeComponents();
 }
+
 // Called when the game starts or when spawned
 void AVehiclePawn::BeginPlay()
 {
@@ -152,12 +151,31 @@ void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
 
     // Rotate props
     if (motormean > 0) {
-        for (uint8_t k = 0; k < 4; ++k) {
-            _propMeshes[k]->SetRelativeRotation(FRotator(0,  rotation * MOTORDIRS[k] * 100, 0));
+        for (uint8_t j=0; j<getMotorCount(); ++j) {
+            _propMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * getMotorDirection(j)*100, 0));
         }
     }
 
     rotation++;
+}
+
+const uint8_t AVehiclePawn::getMotorCount(void)
+{
+    return 4;
+}
+
+const int8_t AVehiclePawn::getMotorDirection(uint8_t j)
+{
+    // Support for simulating spinning propellers
+    static constexpr int8_t motordirs[4] = {+1, -1, -1, +1};
+
+    return motordirs[j];
+}
+
+const char ** AVehiclePawn::getPropellerMeshNames(void)
+{
+    static const char * meshnames[4] = {"Prop1", "Prop2", "Prop3", "Prop4"};
+    return meshnames;
 }
 
 void AVehiclePawn::setAudioPitchAndVolume(float value)

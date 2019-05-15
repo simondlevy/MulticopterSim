@@ -55,9 +55,6 @@ private:
         // Threaded worker for running dynamics
         class FDynamicsWorker * _dynamicsWorker;
 
-        // Support for simulating spinning propellers
-        static constexpr int8_t MOTORDIRS[4] = {+1, -1, -1, +1};
-
 		// Bozo filter for failure to select a map
 		bool _mapSelected;
 
@@ -73,14 +70,19 @@ private:
 
         // Flight manager (PID control)
         FlightManager * _flightManager;
-    
+
+        // Implement for each vehicle mesh
+        static const uint8_t getMotorCount(void);
+        static const int8_t  getMotorDirection(uint8_t j);
+        static const char ** getPropellerMeshNames(void);
+
         // Helpers
-		static float mean(TArray<float> x);
+        static float mean(TArray<float> x);
 
 protected:
 
-	    // AActor overrides
-       
+        // AActor overrides
+
         virtual void BeginPlay() override;
 
         virtual void Tick(float DeltaSeconds) override;
