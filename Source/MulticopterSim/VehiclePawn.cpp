@@ -197,24 +197,29 @@ void AVehiclePawn::NotifyHit(
 
 void AVehiclePawn::startPhysics(void)
 {
+    // Create a new flight manager (e.g., HackflightSim)
+    _flightManager = FlightManager::createFlightManager(this);
+
+    // Create vehicle dynamics via factory method
+    _dynamics = MultirotorDynamics::create();
+
     // Get vehicle ground-truth location and rotation to initialize dynamics
     FVector pos = this->GetActorLocation() / 100; // cm => m
     double groundTruthPosition[3] = {pos.X, pos.Y, pos.Z};
     FRotator rot = this->GetActorRotation(); 
     double groundTruthRotation[3] = {rot.Roll, rot.Pitch, rot.Yaw};
-    _dynamics.init(groundTruthPosition, groundTruthRotation);
-
-    // Create a new flight manager (e.g., HackflightSim)
-    _flightManager = FlightManager::createFlightManager(this);
+    _dynamics->init(groundTruthPosition, groundTruthRotation);
 
     // Launch a threaded dynamics worker
-    _dynamicsWorker = new FDynamicsWorker(this, &_dynamics);
+    _dynamicsWorker = new FDynamicsWorker(this, _dynamics);
 }
 
 void AVehiclePawn::stopPhysics(void)
 {
     // Stop threaded dymamics worker and free its memory
     _dynamicsWorker = (FDynamicsWorker *)FThreadedWorker::stopThreadedWorker(_dynamicsWorker);
+
+    delete _dynamics;
 
     delete _flightManager;
 }
@@ -229,7 +234,7 @@ TArray<float> AVehiclePawn::updatePhysics(float deltaT)
     double eulerAngles[3] = {0};        // body frame
     double velocityXYZ[3] = {0};        // inertial frame
     double positionXYZ[3] = {0};        // inertial frame
-    _dynamics.update( deltaT, _motorvals, angularVelocityRPY, eulerAngles, velocityXYZ, positionXYZ);
+    _dynamics->update( deltaT, _motorvals, angularVelocityRPY, eulerAngles, velocityXYZ, positionXYZ);
 
     // Set pawn location using position from dynamics
     this->SetActorLocation(FVector(positionXYZ[0], positionXYZ[1], positionXYZ[2]) * 100); // m =>cm

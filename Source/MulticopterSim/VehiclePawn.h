@@ -69,7 +69,7 @@ private:
         void startPhysics(void);
         void stopPhysics(void);
 	    TArray<float> updatePhysics(float deltaT);
-        MultirotorDynamics _dynamics;
+        MultirotorDynamics * _dynamics;
 
         // Flight manager (PID control)
         FlightManager * _flightManager;

@@ -22,8 +22,8 @@ class MultirotorDynamics {
 
     protected:
 
-        void motorsToForces(double * motorvals, double & Fz, double & L, double & M, double & N);
-        double motorsToAngularVelocity(double motorvals[4], uint8_t a, uint8_t b, uint8_t c, uint8_t d);
+        // Implement in a subclass for each vehicle
+        virtual void motorsToForces(double * motorvals, double & Fz, double & L, double & M, double & N) = 0;
 
     public:
 
@@ -38,6 +38,9 @@ class MultirotorDynamics {
                 double positionXYZ[3]);
 
         static void eulerToQuaternion(double eulerAngles[3], double quaternion[4]);
+
+        // Factory method
+        static MultirotorDynamics * create(void);
 
 }; // class MultirotorDynamics
 
