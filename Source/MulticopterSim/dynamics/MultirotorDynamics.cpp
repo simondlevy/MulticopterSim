@@ -32,10 +32,19 @@ void MultirotorDynamics::update(
         double velocityXYZ[3],
         double positionXYZ[3])
 {
-    // Convert motor values to rotational velocity vector
-    imuAngularVelocityRPY[0] = motorsToAngularVelocity(motorvals, 1, 2, 0, 3);
-    imuAngularVelocityRPY[1] = motorsToAngularVelocity(motorvals, 0, 2, 1, 3);
-    imuAngularVelocityRPY[2] = motorsToAngularVelocity(motorvals, 0, 1, 2, 3);
+    // Forces
+    double Fz = 0;
+    double L  = 0;
+    double M  = 0;
+    double N  = 0;
+    
+    // Convert motor values to forces (in reality, we get vertical thrust and angular velocities)
+    motorsToForces(motorvals, Fz, L, M, N);
+
+    // XXX For now, we go directly from rotational force to angular velocity
+    imuAngularVelocityRPY[0] = L;
+    imuAngularVelocityRPY[1] = M;
+    imuAngularVelocityRPY[2] = N;
 
     // Integrate rotational velocity to get Euler angles
     for (uint8_t j=0; j<3; ++j) {
@@ -56,9 +65,6 @@ void MultirotorDynamics::update(
     double sthe = sin(theta);
     double cthe = cos(theta);
 
-    // Compute orthogonal force vector
-    double Fz = motorvals[0] + motorvals[1] + motorvals[2] + motorvals[3];
-
     // Rotate orthongal force vecotor into intertial frame to compute translation force.  
     // See last column of rotation matrix at end of section 5 in
     // http://www.chrobotics.com/library/understanding-euler-angles
@@ -67,9 +73,9 @@ void MultirotorDynamics::update(
     // negative Euler angles.
     _acceleration[0] = -Fz * (sphi*spsi + cphi*cpsi*sthe);
     _acceleration[1] = -Fz * (cphi*spsi*sthe - cpsi*sphi);
-    _acceleration[2] = Fz * (cphi*cthe);
+    _acceleration[2] =  Fz * (cphi*cthe);
 
-    // Subtract off an empirical constant to get net acceleration vertical, so that motionless maps to zero
+    // XXX Subtract off an empirical constant to get net acceleration vertical, so that motionless maps to zero
     _acceleration[2] -= 2.01;
 
     // We're airborne once net vertical acceleration excedes zero
@@ -93,6 +99,18 @@ void MultirotorDynamics::update(
             positionXYZ[j] = _position[j];
         }
     }
+}
+
+// Convert motor values to forces (in reality, we get vertical thrust and angular velocities)
+void MultirotorDynamics::motorsToForces(double * motorvals, double & Fz, double & L, double & M, double & N)
+{
+    // Convert motor values to rotational velocity vector
+    L = motorsToAngularVelocity(motorvals, 1, 2, 0, 3);
+    M = motorsToAngularVelocity(motorvals, 0, 2, 1, 3);
+    N = motorsToAngularVelocity(motorvals, 0, 1, 2, 3);
+
+    // Compute orthogonal force vector
+    Fz = motorvals[0] + motorvals[1] + motorvals[2] + motorvals[3];
 }
 
 double MultirotorDynamics::motorsToAngularVelocity(double motorvals[4], uint8_t a, uint8_t b, uint8_t c, uint8_t d)

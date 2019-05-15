@@ -12,8 +12,6 @@ class MultirotorDynamics {
 
     private:
 
-        double motorsToAngularVelocity(double motorvals[4], uint8_t a, uint8_t b, uint8_t c, uint8_t d);
-
         // State
         double _acceleration[3];
         double _velocity[3];
@@ -21,6 +19,11 @@ class MultirotorDynamics {
         double _rotation[3];
 
         bool _airborne;
+
+    protected:
+
+        void motorsToForces(double * motorvals, double & Fz, double & L, double & M, double & N);
+        double motorsToAngularVelocity(double motorvals[4], uint8_t a, uint8_t b, uint8_t c, uint8_t d);
 
     public:
 

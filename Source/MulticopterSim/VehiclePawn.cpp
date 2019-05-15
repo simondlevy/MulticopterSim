@@ -129,7 +129,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 		return;
 	}
 
-    debug("%s", _dynamicsWorker->getMessage());
+    //debug("%s", _dynamicsWorker->getMessage());
 
     // Update physics, getting back motor values for animation effects
 	TArray<float> motorvals = updatePhysics(DeltaSeconds);
