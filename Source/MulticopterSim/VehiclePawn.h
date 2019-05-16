@@ -74,6 +74,9 @@ private:
         // Motor values for animation/sound
         double * _motorvals;
 
+        // XXX we should be able to get rid of this once we've debugged the dynamics sufficiently
+        bool sanityCheck(double v[3]);
+
 protected:
 
         // AActor overrides
