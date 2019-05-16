@@ -155,8 +155,6 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
 void AVehiclePawn::getPoseAndMotors(float deltaT)
 {
-    //debug("%s", _flightManager->getMessage());
-
     // Get current pose kinematics and motor values from flight manager. Motor
     // values are used only for animation effects (prop rotation, sound).
     double position[3] = {0};
@@ -177,20 +175,17 @@ void AVehiclePawn::addAnimationEffects(void)
     }
     motormean /= getMotorCount();
 
-    // Modulate the pitch and voume of the propeller sound
+    // Use the mean motor value to modulate the pitch and voume of the propeller sound
     setAudioPitchAndVolume(motormean);
 
-    // For visual effect, we can ignore actual motor values, and just keep increasing the rotation
-    static float rotation;
-
-    // Rotate props
+    // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
     if (motormean > 0) {
+        static float rotation;
         for (uint8_t j=0; j<getMotorCount(); ++j) {
             _propMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * getMotorDirection(j)*100, 0));
         }
+        rotation++;
     }
-
-    rotation++;
 }
 
 void AVehiclePawn::setAudioPitchAndVolume(float value)
