@@ -26,6 +26,8 @@
 UCLASS(Config=Game)
 class MULTICOPTERSIM_API AVehiclePawn : public APawn {
 
+    friend class FlightManager;
+
 private:
 
 	GENERATED_BODY()
@@ -57,26 +59,20 @@ private:
 		// Bozo filter for failure to select a map
 		bool _mapSelected;
 
+        // Interact with flight manager
+        void getPoseAndMotors(float deltaSeconds);
+
         // Animation effects (sound, spinning props)
-        void addAnimationEffects(TArray<float> motorvals);
+        void addAnimationEffects(void);
         void setAudioPitchAndVolume(float value);
-
-        // Physics simulation
-        void startPhysics(void);
-        void stopPhysics(void);
-	    TArray<float> updatePhysics(float deltaT);
-        MultirotorDynamics * _dynamics;
-
-        // Current motor values from flight manager
-        double * _motorvals; 
 
         // Implement for each vehicle mesh
         static const uint8_t getMotorCount(void);
         static const int8_t  getMotorDirection(uint8_t j);
         static const char ** getPropellerMeshNames(void);
 
-        // Helpers
-        static float mean(TArray<float> x);
+        // Motor values for animation/sound
+        double * _motorvals;
 
 protected:
 
@@ -102,8 +98,9 @@ protected:
 
 public:	
 
-        // Sets default values for this pawn's properties
         AVehiclePawn();
+
+        ~AVehiclePawn();
 
         // Sets axes for camera gimbal
         void setGimbal(float roll, float pitch, float yaw);

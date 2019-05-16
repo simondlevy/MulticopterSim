@@ -64,7 +64,16 @@ AVehiclePawn::AVehiclePawn()
     _fpvSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
     _fpvCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("fpvCamera"));
     _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 	
+
+    // Allocate space for motor values used in animation/sound
+    _motorvals = new double[getMotorCount()];
 }
+
+AVehiclePawn::~AVehiclePawn()
+{
+    delete _motorvals;
+}
+
 
 void AVehiclePawn::PostInitializeComponents()
 {
@@ -96,25 +105,37 @@ void AVehiclePawn::BeginPlay()
 	FString mapName = GetWorld()->GetMapName();
 	_mapSelected = !mapName.Contains("Untitled");
 
-    // Start the physics and start playing the sound.  Note that because the
-    // Cue Asset is set to loop the sound, once we start playing the sound, it
-    // will play continiously...
-	if (_mapSelected) {
-		_propellerAudioComponent->Play();
-        startPhysics();
-	}
-    else {
-        debug("NO MAP SELECTED");
+    if (_mapSelected) {
+
+        // Start the audio for the propellers Note that because the
+        // Cue Asset is set to loop the sound, once we start playing the sound, it
+        // will play continiously...
+        _propellerAudioComponent->Play();
+
+        // Get vehicle ground-truth location and rotation to initialize flight manager
+        FVector pos = this->GetActorLocation() / 100; // cm => m
+        double groundTruthPosition[3] = {pos.X, pos.Y, pos.Z};
+        FRotator rot = this->GetActorRotation(); 
+        double groundTruthRotation[3] = {rot.Roll, rot.Pitch, rot.Yaw};
+
+        // Launch a new threaded flight manager 
+        _flightManager = FFlightManager::createFlightManager(this, groundTruthPosition, groundTruthRotation);
     }
 
-	Super::BeginPlay();
+    else {
+        error("NO MAP SELECTED");
+    }
+
+    Super::BeginPlay();
 }
 
 void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     // Stop the flight controller
     if (_mapSelected) {
-        stopPhysics();
+
+        // Stop threaded dymamics worker and free its memory
+        _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
     }
 
     Super::EndPlay(EndPlayReason);
@@ -122,29 +143,42 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AVehiclePawn::Tick(float DeltaSeconds)
 {
-	// D'oh!
-	if (!_mapSelected) {
-		Super::Tick(DeltaSeconds);
-		return;
-	}
+    if (_mapSelected) {
 
-    debug("%s", _flightManager->getMessage());
+        getPoseAndMotors(DeltaSeconds);
 
-    // Update physics, getting back motor values for animation effects
-	TArray<float> motorvals = updatePhysics(DeltaSeconds);
+        addAnimationEffects();
+    }
 
-    // Add animation effects (prop rotation, sound)
-    addAnimationEffects(motorvals);
-
-	Super::Tick(DeltaSeconds);
+    Super::Tick(DeltaSeconds);
 }
 
-void AVehiclePawn::addAnimationEffects(TArray<float> motorvals)
+void AVehiclePawn::getPoseAndMotors(float deltaT)
 {
-    float motormean = mean(motorvals);
+    //debug("%s", _flightManager->getMessage());
+
+    // Get current pose kinematics and motor values from flight manager. Motor
+    // values are used only for animation effects (prop rotation, sound).
+    double position[3] = {0};
+    double rotation[3] = {0};
+    _flightManager->getPoseAndMotors(deltaT, position, rotation, _motorvals);
+
+    // Set pawn pose. Note rotation order: pitch, yaw, roll = 1,2,0 = Y,Z,X)
+    SetActorLocation(FVector(position[0], position[1], position[2]) * 100); // m =>cm
+    SetActorRotation(FRotator(rotation[1], rotation[2], rotation[0]) * (180 / M_PI)); // radians => deg
+}
+
+void AVehiclePawn::addAnimationEffects(void)
+{
+    // Compute the mean of the motor values
+    float motormean = 0;
+    for (uint8_t j=0; j<getMotorCount(); ++j) {
+        motormean += _motorvals[j];
+    }
+    motormean /= getMotorCount();
 
     // Modulate the pitch and voume of the propeller sound
-	setAudioPitchAndVolume(motormean);
+    setAudioPitchAndVolume(motormean);
 
     // For visual effect, we can ignore actual motor values, and just keep increasing the rotation
     static float rotation;
@@ -165,18 +199,6 @@ void AVehiclePawn::setAudioPitchAndVolume(float value)
     _propellerAudioComponent->SetFloatParameter(FName("volume"), value);
 }
 
-float AVehiclePawn::mean(TArray<float> x)
-{
-	float mn = 0;
-
-	for (auto It = x.CreateConstIterator(); It; ++It) {
-		mn += *It;
-	}
-
-	return mn / x.Num();
-}
-
-
 void AVehiclePawn::NotifyHit(
         class UPrimitiveComponent* MyComp, 
         class AActor* Other, 
@@ -194,77 +216,6 @@ void AVehiclePawn::NotifyHit(
     //SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
 }
 
-void AVehiclePawn::startPhysics(void)
-{
-    // Allocate array for motor values
-    _motorvals = new double[getMotorCount()];
-
-    // Create vehicle dynamics via factory method
-    _dynamics = MultirotorDynamics::create();
-
-    // Get vehicle ground-truth location and rotation to initialize dynamics
-    FVector pos = this->GetActorLocation() / 100; // cm => m
-    double groundTruthPosition[3] = {pos.X, pos.Y, pos.Z};
-    FRotator rot = this->GetActorRotation(); 
-    double groundTruthRotation[3] = {rot.Roll, rot.Pitch, rot.Yaw};
-    _dynamics->init(groundTruthPosition, groundTruthRotation);
-
-    // Launch a new threaded flight manager 
-    _flightManager = FFlightManager::createFlightManager(this, _dynamics);
-
-}
-
-void AVehiclePawn::stopPhysics(void)
-{
-    // Stop threaded dymamics worker and free its memory
-    _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
-
-    delete _dynamics;
-    delete _motorvals;
-}
-
-TArray<float> AVehiclePawn::updatePhysics(float deltaT)
-{
-    // Send motor values to dynamics
-    _dynamics->setMotors(_motorvals);
-
-    // Update dynamics
-    _dynamics->update(deltaT);
-
-    // Get vehicle state from dynamics
-    double angularVelocityRPY[3] = {0}; // body frame
-    double eulerAngles[3] = {0};        // body frame
-    double velocityXYZ[3] = {0};        // inertial frame
-    double positionXYZ[3] = {0};        // inertial frame
-    _dynamics->getState(angularVelocityRPY, eulerAngles, velocityXYZ, positionXYZ);
-
-    // Set pawn location using position from dynamics
-    this->SetActorLocation(FVector(positionXYZ[0], positionXYZ[1], positionXYZ[2]) * 100); // m =>cm
-
-    // Set pawn rotation using Euler angles (note order: pitch, yaw, roll = 1,2,0 = Y,Z,X)
-    this->SetActorRotation(FRotator(eulerAngles[1], eulerAngles[2], eulerAngles[0]) * (180 / M_PI)); // radians => deg
-
-    // Convert Euler angles to quaternion
-    double imuOrientationQuat[4]={0};
-    MultirotorDynamics::eulerToQuaternion(eulerAngles, imuOrientationQuat);
-
-    // PID controller: update the flight manager with the quaternion and gyrometer, getting the resulting motor values
-    // Note quaternion order: https://api.unrealengine.com/INT/API/Runtime/Core/Math/FQuat/__ctor/7/index.html    
-    TArray<float> motorvals = _flightManager->update(
-            deltaT, 
-            FQuat(imuOrientationQuat[1], imuOrientationQuat[2], imuOrientationQuat[3], imuOrientationQuat[0]), 
-            FVector(angularVelocityRPY[0], angularVelocityRPY[1], angularVelocityRPY[2]));
-
-    // Set motor values for dynamics on next iteration
-    for (uint8_t j=0; j<getMotorCount(); ++j) {
-        _motorvals[j] = motorvals[j];
-    }
-
-    // Return the motor values for audiovisual effect
-    return motorvals;
-}
-
-
 float AVehiclePawn::getCurrentTime(void)
 {
     return UGameplayStatics::GetRealTimeSeconds(GetWorld());
@@ -273,12 +224,12 @@ float AVehiclePawn::getCurrentTime(void)
 void AVehiclePawn::setGimbal(float roll, float pitch, float yaw)
 {
 
-	FRotator rotation = _fpvSpringArm->GetComponentRotation();
+    FRotator rotation = _fpvSpringArm->GetComponentRotation();
 
     rotation.Roll  += roll;
     rotation.Pitch -= pitch;
     rotation.Yaw   += yaw;
 
-	_fpvSpringArm->SetWorldRotation(rotation);
+    _fpvSpringArm->SetWorldRotation(rotation);
 }
 

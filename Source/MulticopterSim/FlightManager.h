@@ -11,29 +11,36 @@
 #include "ThreadedWorker.h"
 #include "dynamics/MultirotorDynamics.h"
 
-class FFlightManager : public FThreadedWorker
-{
+class FFlightManager : public FThreadedWorker {
+
     private:
 
         MultirotorDynamics * _dynamics;
 
+        double * _motorvals; 
+
         double _previousTime;
+
+        uint8_t _motorCount;
+
+        virtual void update(double deltaT, double quat[4], double gyro[4], double * motorvals)  = 0;
 
     protected:
 
         virtual void performTask(void) override;
 
-        FFlightManager(class AVehiclePawn * vehiclePawn, class MultirotorDynamics * dynamics);
+        FFlightManager(class AVehiclePawn * vehiclePawn, uint8_t motorCount, 
+                double initialPosition[3], double initialRotation[3]);
 
     public:
 
 
         ~FFlightManager(void);
 
-        virtual TArray<float> update(float deltaTime, FQuat quat, FVector gyro)  = 0;
+        void getPoseAndMotors(double deltaT, double position[3], double rotation[3], double * motorvals);
 
-        /**
-         *  Factory method.
-         */
-        static FFlightManager * createFlightManager(class AVehiclePawn * vehiclePawn, class MultirotorDynamics * dynamics);
+        static FFlightManager * createFlightManager(
+                class AVehiclePawn * vehiclePawn, 
+                double initialPosition[3], 
+                double initialRotation[3]);
 };
