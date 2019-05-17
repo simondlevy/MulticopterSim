@@ -56,11 +56,12 @@ class MultirotorDynamics {
         /*
          *  Gets current state
          */
-        void getState(
-                double angularVelocity[3], 
-                double eulerAngles[3], 
-                double velocityXYZ[3],
-                double positionXYZ[3]);
+        void getState(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double positionXYZ[3]);
+
+        /*
+         *  Convenience method for getting altitude
+         */
+        double getAltitude(void);
 
         // Not strictly part of dynamics, but useful
         static void eulerToQuaternion(double eulerAngles[3], double quaternion[4]);

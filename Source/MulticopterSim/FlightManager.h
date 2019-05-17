@@ -15,8 +15,6 @@ class FFlightManager : public FThreadedWorker {
 
     private:
 
-        MultirotorDynamics * _dynamics;
-
         double * _motorvals; 
 
         double _previousTime;
@@ -26,6 +24,8 @@ class FFlightManager : public FThreadedWorker {
         virtual void update(double deltaT, double quat[4], double gyro[4], double * motorvals)  = 0;
 
     protected:
+
+        MultirotorDynamics * _dynamics;
 
         virtual void performTask(void) override;
 
