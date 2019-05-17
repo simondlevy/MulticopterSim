@@ -12,6 +12,8 @@
 #include "ThreadedWorker.h"
 #include "VehiclePawn.h"
 
+#include <stdarg.h>
+
 FThreadedWorker::FThreadedWorker(void)
 {
 	_thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); 
@@ -57,6 +59,14 @@ void FThreadedWorker::Stop()
 const char * FThreadedWorker::getMessage(void)
 {
     return (const char *)_message;
+}
+
+void FThreadedWorker::dbgprintf(const char * fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	vsnprintf(_message, MAXMSG, fmt, ap);
+	va_end(ap);
 }
 
 FThreadedWorker * FThreadedWorker::stopThreadedWorker(FThreadedWorker * worker)

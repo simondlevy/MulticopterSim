@@ -31,5 +31,3 @@ void error(const char * fmt, ...)
 	osd(buf, true);
 	va_end(ap);
 }
-
-

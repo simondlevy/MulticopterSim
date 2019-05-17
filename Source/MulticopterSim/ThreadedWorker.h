@@ -19,11 +19,16 @@ private:
 
 	bool _running;
 
+    // Supports debugging on main thread
+    static const uint16_t MAXMSG = 1000;
+    char _message[MAXMSG];
+
 protected:
 
     // Supports debugging on main thread
-    char _message[200];
+    void dbgprintf(const char * fmt, ...);
 
+    // Implemented differently by each subclass
     virtual void performTask(void) = 0;
 
 public:
