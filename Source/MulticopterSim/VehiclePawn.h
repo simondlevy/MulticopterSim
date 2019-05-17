@@ -108,7 +108,4 @@ public:
         // Sets axes for camera gimbal
         void setGimbal(float roll, float pitch, float yaw);
 
-        // Timing
-        float getCurrentTime(void);
-
 }; // AVehiclePawn

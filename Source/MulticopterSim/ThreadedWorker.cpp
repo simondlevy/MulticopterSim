@@ -12,11 +12,9 @@
 #include "ThreadedWorker.h"
 #include "VehiclePawn.h"
 
-FThreadedWorker::FThreadedWorker(AVehiclePawn * vehiclePawn)
+FThreadedWorker::FThreadedWorker(void)
 {
 	_thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); 
-
-    _vehiclePawn = vehiclePawn;
 
     *_message = 0;
 }
@@ -54,11 +52,6 @@ void FThreadedWorker::Stop()
 
 	// Final wait after stopping
 	FPlatformProcess::Sleep(0.03);
-}
-
-double FThreadedWorker::getCurrentTime(void)
-{
-	return _vehiclePawn->getCurrentTime();
 }
 
 const char * FThreadedWorker::getMessage(void)

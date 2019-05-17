@@ -17,8 +17,6 @@ private:
 
 	FRunnableThread* _thread;
 
-    class AVehiclePawn * _vehiclePawn; // for getCurrentTime()
-
 	bool _running;
 
 protected:
@@ -28,11 +26,9 @@ protected:
 
     virtual void performTask(void) = 0;
 
-	double getCurrentTime(void);
-
 public:
 
-	FThreadedWorker(class AVehiclePawn * vehiclePawn);
+	FThreadedWorker(void);
 
 	~FThreadedWorker();
 

@@ -25,6 +25,8 @@ class FFlightManager : public FThreadedWorker {
 
     protected:
 
+        class AVehiclePawn * _vehiclePawn;
+
         MultirotorDynamics * _dynamics;
 
         virtual void performTask(void) override;

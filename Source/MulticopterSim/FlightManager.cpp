@@ -14,8 +14,11 @@
 
 // Called once on main thread
 FFlightManager::FFlightManager(class AVehiclePawn * vehiclePawn, uint8_t motorCount,
-        double initialPosition[3], double initialRotation[3]) : FThreadedWorker(vehiclePawn)
+        double initialPosition[3], double initialRotation[3]) : FThreadedWorker()
 {
+    // Store vehicle pawn for use by subclasses
+    _vehiclePawn = vehiclePawn;
+    
     // Allocate array for motor values
     _motorvals = new double[motorCount];
 
@@ -38,9 +41,10 @@ FFlightManager::~FFlightManager(void)
 // Called repeatedly on worker thread
 void FFlightManager::performTask(void)
 {
+    /*
     double currentTime = getCurrentTime();
 
-    sprintf_s(_message, "%f", currentTime);
+    sprintf_s(_message, "%d", currentTime==_previousTime);
 
     if (_previousTime>0) {
 
@@ -48,6 +52,7 @@ void FFlightManager::performTask(void)
     }
 
     _previousTime = currentTime;
+    */
 }
 
 void FFlightManager::getPoseAndMotors(double deltaT, double position[3], double rotation[3], double * motorvals)

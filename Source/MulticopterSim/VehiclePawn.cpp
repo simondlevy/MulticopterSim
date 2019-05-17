@@ -148,6 +148,8 @@ void AVehiclePawn::Tick(float DeltaSeconds)
         getPoseAndMotors(DeltaSeconds);
 
         addAnimationEffects();
+
+        debug("%s", _flightManager->getMessage());
     }
 
     Super::Tick(DeltaSeconds);
@@ -225,11 +227,6 @@ void AVehiclePawn::NotifyHit(
     // Deflect along the surface when we collide.
     //FRotator CurrentRotation = GetActorRotation();
     //SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
-}
-
-float AVehiclePawn::getCurrentTime(void)
-{
-    return UGameplayStatics::GetRealTimeSeconds(GetWorld());
 }
 
 void AVehiclePawn::setGimbal(float roll, float pitch, float yaw)

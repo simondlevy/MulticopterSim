@@ -105,11 +105,6 @@ void MultirotorDynamics::getState(
     }
 }
 
-double MultirotorDynamics::getAltitude(void)
-{
-    return _position[2];
-}
-
 void MultirotorDynamics::eulerToQuaternion(double eulerAngles[3], double quaternion[4])
 {
     // Convenient renaming
