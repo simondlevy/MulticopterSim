@@ -75,7 +75,7 @@ void FFlightManager::performTask(void)
 
         // PID controller: update the flight manager (e.g., HackflightManager) with
         // the quaternion and gyrometer, getting the resulting motor values
-        update(deltaT, imuOrientationQuat, angularVelocityRPY, _motorvals);
+        update(currentTime, imuOrientationQuat, angularVelocityRPY, _motorvals);
 
         // Track previous time for deltaT
         _previousTime = currentTime;

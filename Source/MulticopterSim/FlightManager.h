@@ -26,7 +26,7 @@ class FFlightManager : public FThreadedWorker {
         double   _previousTime;
 
         // Implement for each subclass
-        virtual void update(double deltaT, double quat[4], double gyro[4], double * motorvals)  = 0;
+        virtual void update(double time, double quat[4], double gyro[4], double * motorvals)  = 0;
 
     protected:
 
