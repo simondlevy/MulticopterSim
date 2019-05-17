@@ -43,15 +43,16 @@ void FFlightManager::performTask(void)
 {
     double currentTime = FPlatformTime::Seconds();
 
+    double deltaT = currentTime - _previousTime;
 
-    sprintf_s(_message, "%f", currentTime-_previousTime);
+    if (deltaT >= .001) {
 
-    if (_previousTime>0) {
+        sprintf_s(_message, "%f", deltaT);
 
         //_dynamics->update(currentTime-_previousTime);
-    }
 
-    _previousTime = currentTime;
+        _previousTime = currentTime;
+    }
 }
 
 void FFlightManager::getPoseAndMotors(double deltaT, double position[3], double rotation[3], double * motorvals)
