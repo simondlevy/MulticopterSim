@@ -152,6 +152,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
         // Keepin' it real(istic)!
         addAnimationEffects();
 
+        // OSD for debugging messages from flight manager
         debug("%s", _flightManager->getMessage());
     }
 

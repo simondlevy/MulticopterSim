@@ -25,9 +25,6 @@ private:
 
 protected:
 
-    // Supports debugging on main thread
-    void dbgprintf(const char * fmt, ...);
-
     // Implemented differently by each subclass
     virtual void performTask(void) = 0;
 
@@ -37,6 +34,8 @@ public:
 
 	~FThreadedWorker();
 
+    // Supports debugging on main thread
+    void dbgprintf(const char * fmt, ...);
     const char * getMessage(void);
 
     static FThreadedWorker * stopThreadedWorker(FThreadedWorker * worker);
