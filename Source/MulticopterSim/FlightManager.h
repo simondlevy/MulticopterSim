@@ -15,11 +15,15 @@ class FFlightManager : public FThreadedWorker {
 
     private:
 
+        // Constants specified/computed in constructor
+        uint8_t _motorCount;
+        double  _deltaT;
+
         double * _motorvals; 
 
         double _previousTime;
 
-        uint8_t _motorCount;
+        double _updatePeriod; // compute from frequency specified in constructor
 
         virtual void update(double deltaT, double quat[4], double gyro[4], double * motorvals)  = 0;
 
@@ -31,11 +35,14 @@ class FFlightManager : public FThreadedWorker {
 
         virtual void performTask(void) override;
 
-        FFlightManager(class AVehiclePawn * vehiclePawn, uint8_t motorCount, 
-                double initialPosition[3], double initialRotation[3]);
+        FFlightManager(
+                class AVehiclePawn * vehiclePawn, 
+                uint8_t   motorCount, 
+                double    initialPosition[3], 
+                double    initialRotation[3],
+                uint16_t  updateFrequency=1000);
 
     public:
-
 
         ~FFlightManager(void);
 

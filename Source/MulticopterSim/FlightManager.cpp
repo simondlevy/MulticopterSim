@@ -13,12 +13,17 @@
 #include "VehiclePawn.h"
 
 // Called once on main thread
-FFlightManager::FFlightManager(class AVehiclePawn * vehiclePawn, uint8_t motorCount,
-        double initialPosition[3], double initialRotation[3]) : FThreadedWorker()
+FFlightManager::FFlightManager(
+        class AVehiclePawn * vehiclePawn, 
+        uint8_t motorCount,
+        double initialPosition[3], 
+        double initialRotation[3],
+        uint16_t updateFrequency)
+    : FThreadedWorker()
 {
     // Store vehicle pawn for use by subclasses
     _vehiclePawn = vehiclePawn;
-    
+
     // Allocate array for motor values
     _motorvals = new double[motorCount];
 
@@ -28,7 +33,11 @@ FFlightManager::FFlightManager(class AVehiclePawn * vehiclePawn, uint8_t motorCo
     // Initialize dynamics with initial pose
     _dynamics->init(initialPosition, initialRotation);
 
+    // Constants
+    _deltaT = 1. / updateFrequency;
     _motorCount = motorCount;
+
+    // For periodic update
     _previousTime = 0;
 }
 
@@ -45,7 +54,7 @@ void FFlightManager::performTask(void)
 
     double deltaT = currentTime - _previousTime;
 
-    if (deltaT >= .001) {
+    if (deltaT >= _deltaT) {
 
         sprintf_s(_message, "%f", deltaT);
 
