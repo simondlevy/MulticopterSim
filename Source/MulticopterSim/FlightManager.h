@@ -19,12 +19,13 @@ class FFlightManager : public FThreadedWorker {
         uint8_t _motorCount;
         double  _deltaT;
 
+        // Dynamics
         double * _motorvals; 
+        double   _position[3];
+        double   _rotation[3];
+        double   _previousTime;
 
-        double _previousTime;
-
-        double _updatePeriod; // compute from frequency specified in constructor
-
+        // Implement for each subclass
         virtual void update(double deltaT, double quat[4], double gyro[4], double * motorvals)  = 0;
 
     protected:
@@ -46,8 +47,10 @@ class FFlightManager : public FThreadedWorker {
 
         ~FFlightManager(void);
 
-        void getPoseAndMotors(double deltaT, double position[3], double rotation[3], double * motorvals);
+        // Copies current pose and motor speeds for kinematics
+        void getKinematics(double position[3], double rotation[3], double * motorvals);
 
+        // Factory method implemented by your subclass
         static FFlightManager * createFlightManager(
                 class AVehiclePawn * vehiclePawn, 
                 double initialPosition[3], 

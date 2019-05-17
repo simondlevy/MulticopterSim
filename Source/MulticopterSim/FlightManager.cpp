@@ -47,45 +47,51 @@ FFlightManager::~FFlightManager(void)
     delete _motorvals;
 }
 
-// Called repeatedly on worker thread
+// Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
 void FFlightManager::performTask(void)
 {
+    // Get a high-fidelity current time value from the OS
     double currentTime = FPlatformTime::Seconds();
 
     double deltaT = currentTime - _previousTime;
 
     if (deltaT >= _deltaT) {
 
-        sprintf_s(_message, "%f", deltaT);
+        // Send current motor values to dynamics
+        _dynamics->setMotors(_motorvals);
 
-        //_dynamics->update(currentTime-_previousTime);
+        // Update dynamics
+        _dynamics->update(deltaT);
 
+        // Get vehicle state from dynamics.  We keep pose (position, rotation) in memory for use  in
+        // getKinematics() method
+        double angularVelocityRPY[3] = {0}; // body frame
+        double velocityXYZ[3] = {0};        // inertial frame
+        _dynamics->getState(angularVelocityRPY, _rotation, velocityXYZ, _position);
+
+        // Convert Euler angles to quaternion
+        double imuOrientationQuat[4]={0};
+        MultirotorDynamics::eulerToQuaternion(_rotation, imuOrientationQuat);
+
+        // PID controller: update the flight manager (e.g., HackflightManager) with
+        // the quaternion and gyrometer, getting the resulting motor values
+        update(deltaT, imuOrientationQuat, angularVelocityRPY, _motorvals);
+
+        // Track previous time for deltaT
         _previousTime = currentTime;
     }
 }
 
-void FFlightManager::getPoseAndMotors(double deltaT, double position[3], double rotation[3], double * motorvals)
+// Called by VehiclePawn::Tick() method to get current display kinematics
+// (position, rotation) and propeller animation/sound (motorvals)
+void FFlightManager::getKinematics(double position[3], double rotation[3], double * motorvals)
 {
-    // Send current motor values to dynamics
-    _dynamics->setMotors(_motorvals);
-
-    // Update dynamics
-    _dynamics->update(deltaT);
-
-    // Get vehicle state from dynamics
-    double angularVelocityRPY[3] = {0}; // body frame
-    double velocityXYZ[3] = {0};        // inertial frame
-    _dynamics->getState(angularVelocityRPY, rotation, velocityXYZ, position);
-
-    // Convert Euler angles to quaternion
-    double imuOrientationQuat[4]={0};
-    MultirotorDynamics::eulerToQuaternion(rotation, imuOrientationQuat);
-
-    // PID controller: update the flight manager with the quaternion and gyrometer, getting the resulting motor values
-    update(deltaT, imuOrientationQuat, angularVelocityRPY, _motorvals);
-
-    // Copy out motor values
     for (uint8_t j=0; j<_motorCount; ++j) {
         motorvals[j] = _motorvals[j];
+    }
+
+    for (uint8_t k=0; k<3; ++k) {
+        position[k] = _position[k];
+        rotation[k] = _rotation[k];
     }
 }

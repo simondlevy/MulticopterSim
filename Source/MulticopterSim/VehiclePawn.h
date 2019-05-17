@@ -59,8 +59,8 @@ private:
 		// Bozo filter for failure to select a map
 		bool _mapSelected;
 
-        // Interact with flight manager
-        void getPoseAndMotors(float deltaSeconds);
+        // Retrieves kinematics from dynamics computed in another thread
+        void getKinematics(void);
 
         // Animation effects (sound, spinning props)
         void addAnimationEffects(void);

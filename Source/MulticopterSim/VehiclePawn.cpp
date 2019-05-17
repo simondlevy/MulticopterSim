@@ -141,12 +141,15 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 }
 
+// Called automatically on main thread
 void AVehiclePawn::Tick(float DeltaSeconds)
 {
     if (_mapSelected) {
 
-        getPoseAndMotors(DeltaSeconds);
+        // Kinematics from dynamics
+        getKinematics();
 
+        // Keepin' it real(istic)!
         addAnimationEffects();
 
         debug("%s", _flightManager->getMessage());
@@ -155,13 +158,14 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 }
 
-void AVehiclePawn::getPoseAndMotors(float deltaT)
+void AVehiclePawn::getKinematics(void)
 {
-    // Get current pose kinematics and motor values from flight manager. Motor
-    // values are used only for animation effects (prop rotation, sound).
+    // Get current pose kinematics and motor values dynamics (from flight
+    // manager). Motor values are used only for animation effects (prop
+    // rotation, sound).
     double position[3] = {0};
     double rotation[3] = {0};
-    _flightManager->getPoseAndMotors(deltaT, position, rotation, _motorvals);
+    _flightManager->getKinematics(position, rotation, _motorvals);
 
     // XXX avoid bugs pose values (shouldn't be arising to begin with )
     if (sanityCheck(position) && sanityCheck(rotation)) {
