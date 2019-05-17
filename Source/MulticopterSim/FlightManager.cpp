@@ -41,10 +41,10 @@ FFlightManager::~FFlightManager(void)
 // Called repeatedly on worker thread
 void FFlightManager::performTask(void)
 {
-    /*
-    double currentTime = getCurrentTime();
+    double currentTime = FPlatformTime::Seconds();
 
-    sprintf_s(_message, "%d", currentTime==_previousTime);
+
+    sprintf_s(_message, "%f", currentTime-_previousTime);
 
     if (_previousTime>0) {
 
@@ -52,7 +52,6 @@ void FFlightManager::performTask(void)
     }
 
     _previousTime = currentTime;
-    */
 }
 
 void FFlightManager::getPoseAndMotors(double deltaT, double position[3], double rotation[3], double * motorvals)
