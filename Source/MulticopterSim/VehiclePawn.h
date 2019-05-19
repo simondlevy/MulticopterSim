@@ -77,6 +77,9 @@ private:
         // XXX we should be able to get rid of this once we've debugged the dynamics sufficiently
         bool sanityCheck(double v[3]);
 
+        // Sets axes for camera gimbal based on values returned in child class
+        void setGimbal(void);
+
 protected:
 
         // AActor overrides
@@ -104,8 +107,5 @@ public:
         AVehiclePawn();
 
         ~AVehiclePawn();
-
-        // Sets axes for camera gimbal
-        void setGimbal(float roll, float pitch, float yaw);
 
 }; // AVehiclePawn

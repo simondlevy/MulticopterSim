@@ -12,6 +12,8 @@
 #include "FlightManager.h"
 #include "VehiclePawn.h"
 
+#include <debugger.hpp>
+
 // Called once on main thread
 FFlightManager::FFlightManager(
         class AVehiclePawn * vehiclePawn, 
@@ -38,6 +40,7 @@ FFlightManager::FFlightManager(
     _motorCount = motorCount;
 
     // For periodic update
+    _startTime = FPlatformTime::Seconds();
     _previousTime = 0;
 }
 
@@ -51,7 +54,7 @@ FFlightManager::~FFlightManager(void)
 void FFlightManager::performTask(void)
 {
     // Get a high-fidelity current time value from the OS
-    double currentTime = FPlatformTime::Seconds();
+    double currentTime = FPlatformTime::Seconds() - _startTime;
 
     double deltaT = currentTime - _previousTime;
 

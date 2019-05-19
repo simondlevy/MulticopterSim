@@ -13,11 +13,16 @@
 
 class FFlightManager : public FThreadedWorker {
 
+    friend class AVehiclePawn;
+
     private:
 
         // Constants specified/computed in constructor
         uint8_t _motorCount;
         double  _deltaT;
+
+        // Start-time offset so timing begins at zero
+        double _startTime;
 
         // Dynamics
         double * _motorvals; 
@@ -35,6 +40,8 @@ class FFlightManager : public FThreadedWorker {
         MultirotorDynamics * _dynamics;
 
         virtual void performTask(void) override;
+
+        virtual void getGimbal(float & roll, float &pitch) { roll = 0; pitch = 0; }
 
         FFlightManager(
                 class AVehiclePawn * vehiclePawn, 

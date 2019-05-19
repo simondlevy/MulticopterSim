@@ -152,6 +152,9 @@ void AVehiclePawn::Tick(float DeltaSeconds)
         // Keepin' it real(istic)!
         addAnimationEffects();
 
+        // Move gimbal
+        setGimbal();
+
         // OSD for debugging messages from flight manager
         debug("%s", _flightManager->getMessage());
     }
@@ -234,14 +237,16 @@ void AVehiclePawn::NotifyHit(
     //SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
 }
 
-void AVehiclePawn::setGimbal(float roll, float pitch, float yaw)
+void AVehiclePawn::setGimbal(void)
 {
+    // Get gimbal position from flight manager
+    float roll = 0, pitch = 0;
+    _flightManager->getGimbal(roll, pitch);
 
     FRotator rotation = _fpvSpringArm->GetComponentRotation();
 
     rotation.Roll  += roll;
     rotation.Pitch -= pitch;
-    rotation.Yaw   += yaw;
 
     _fpvSpringArm->SetWorldRotation(rotation);
 }
