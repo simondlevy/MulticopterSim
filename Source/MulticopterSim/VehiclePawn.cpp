@@ -182,7 +182,7 @@ bool AVehiclePawn::sanityCheck(double v[3])
 {
     for (uint8_t j=0; j<3; ++j) {
         if (abs(v[j]) > 1e6) {
-            return true;
+            return false;
         }
     }
 
