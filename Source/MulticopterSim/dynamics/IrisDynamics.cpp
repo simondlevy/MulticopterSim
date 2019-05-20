@@ -1,6 +1,13 @@
 /*
  * MultirotorDynamics implementation for 3DR Iris
  *
+ *
+ * Uses CLeanflight QuadX motor layout:
+ *
+ *   3   1
+ *     X
+ *   2   4
+ *
  * See: https://charlestytler.com/modeling-vehicle-dynamics-6dof-nonlinear-simulation/#Equations-of-Motion
  *
  * Copyright (C) 2019 Simon D. Levy
@@ -16,15 +23,15 @@ class IrisDynamics : public MultirotorDynamics {
 
         double _motorvals[4];
 
-        // Motor distances from center of mass
-        double d1x = 1;
-        double d1y = 1;
-        double d2x = 1;
-        double d2y = 1;
-        double d3x = 1;
-        double d3y = 1;
-        double d4x = 1;
-        double d4y = 1;
+        // Motor distances from center of mass, in meters
+        double d1x = 0.150;
+        double d1y = 0.240;
+        double d2x = 0.150;
+        double d2y = 0.225;
+        double d3x = 0.150;
+        double d3y = 0.240;
+        double d4x = 0.150;
+        double d4y = 0.225;
 
     protected:
 
