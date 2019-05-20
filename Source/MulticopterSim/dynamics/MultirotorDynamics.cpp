@@ -104,3 +104,8 @@ void MultirotorDynamics::getState(
         positionXYZ[j]     = _x[j+9];
     }
 }
+
+double MultirotorDynamics::computeMotorThrust(double motorval)
+{
+    return 4 * motorval; // XXX should use nonlinear formula
+}

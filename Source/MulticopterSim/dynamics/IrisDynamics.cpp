@@ -12,14 +12,18 @@
 // XXX In reality, we get vertical thrust and angular velocities).
 void IrisDynamics::getForces(double & Fz, double & L, double & M, double & N)
 {
+    double F1 = computeMotorThrust(_motorvals[0]);
+    double F2 = computeMotorThrust(_motorvals[1]);
+    double F3 = computeMotorThrust(_motorvals[2]);
+    double F4 = computeMotorThrust(_motorvals[3]);
+
     // Convert motor values to rotational velocity vector
     L = motorsToAngularVelocity(1, 2, 0, 3);
     M = motorsToAngularVelocity(0, 2, 1, 3);
     N = motorsToAngularVelocity(0, 1, 2, 3);
 
-    // Compute orthogonal force component Fz.
-    // XXX currently we just multiply by 4 to make this big enough to get airborne.
-    Fz = 4 * (_motorvals[0] + _motorvals[1] + _motorvals[2] + _motorvals[3]);
+    // Compute orthogonal force component Fz
+    Fz = F1 + F2 + F3 + F4;
 }
 
 void IrisDynamics::setMotors(double * motorvals)

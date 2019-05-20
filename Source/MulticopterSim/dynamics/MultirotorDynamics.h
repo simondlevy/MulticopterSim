@@ -45,6 +45,11 @@ class MultirotorDynamics {
          */
         virtual void getForces(double & Fz, double & L, double & M, double & N) = 0;
 
+        /*
+         *  Converts motor value in [0,1] to thrust in Newtons
+         */
+        double computeMotorThrust(double motorValue);
+
     public:
 
         /** 
