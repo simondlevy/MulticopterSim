@@ -15,13 +15,13 @@ class FThreadedWorker : public FRunnable {
 
 private:
 
-	FRunnableThread* _thread;
+	FRunnableThread * _thread = NULL;
 
-	bool _running;
+	bool _running = false;
 
     // Supports debugging on main thread
     static const uint16_t MAXMSG = 1000;
-    char _message[MAXMSG];
+    char _message[MAXMSG] = {0};
 
 protected:
 

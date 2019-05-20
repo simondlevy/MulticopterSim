@@ -24,13 +24,13 @@ class Joystick {
         static const uint16_t PRODUCT_PS4					= 0x09cc;
         static const uint16_t PRODUCT_XBOX360_CLONE			= 0xfafe;
 
-        uint16_t _productId;
+        uint16_t _productId = 0;
 
-        int _joystickId;
+        int _joystickId = 0;
 
-        bool _isRcTransmitter;
+        bool _isRcTransmitter = false;
 
-        bool _inGimbalMode;
+        bool _inGimbalMode = false;
 
         // handles failure to calibrate transmitter before run
         void rescaleAxis(float & value, float minval, float maxval);

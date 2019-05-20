@@ -76,7 +76,7 @@ void FFlightManager::performTask(void)
         double position_test[3] = {0};
         _dynamics->getState_test(angularVelocityRPY_test, rotation_test, velocityXYZ_test, position_test);
 
-        dbgprintf("%+3.3f  %+3.3f", angularVelocityRPY[2], angularVelocityRPY_test[2]);
+        //dbgprintf("%+3.3f  %+3.3f", angularVelocityRPY[2], angularVelocityRPY_test[2]);
 
         // Convert Euler angles to quaternion
         double imuOrientationQuat[4]={0};

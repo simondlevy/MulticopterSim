@@ -53,10 +53,13 @@ private:
             class USpringArmComponent* _fpvSpringArm;
 
         // Threaded worker for running flight control
-        class FFlightManager * _flightManager;
+        class FFlightManager * _flightManager = NULL;
 
 		// Bozo filter for failure to select a map
-		bool _mapSelected;
+		bool _mapSelected = false;
+
+        // Motor values for animation/sound
+        double * _motorvals = NULL;
 
         // Retrieves kinematics from dynamics computed in another thread
         void getKinematics(void);
@@ -69,9 +72,6 @@ private:
         static const uint8_t getMotorCount(void);
         static const int8_t  getMotorDirection(uint8_t j);
         static const char ** getPropellerMeshNames(void);
-
-        // Motor values for animation/sound
-        double * _motorvals;
 
         // Sets axes for camera gimbal based on values returned in child class
         void setGimbal(void);

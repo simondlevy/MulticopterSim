@@ -36,6 +36,44 @@ static void getButtons(DWORD dwButtons, uint8_t & buttonState, uint8_t button0, 
         buttonState = 2;
     }
 }
+
+static void getButtonsExtra(
+        DWORD dwButtons, 
+        uint8_t & buttonState, 
+        uint8_t button0, 
+        uint8_t button1, 
+        uint8_t button2,
+        uint8_t button3,
+        bool & inGimbalMode)
+{
+    static bool button3WasDown;
+
+    if (dwButtons == button3) {
+
+        if (!button3WasDown) {
+            inGimbalMode = !inGimbalMode;
+        }
+
+        button3WasDown = true;
+    }
+
+    else {
+
+        button3WasDown = false;
+
+        if (dwButtons == button0) {
+            buttonState = 0;
+        }
+        else if (dwButtons == button1) {
+            buttonState = 1;
+        }
+        else if (dwButtons == button2) {
+            buttonState = 2;
+        }
+
+    }
+}
+
 Joystick::Joystick(void)
 {
     JOYCAPS joycaps = {0};
@@ -64,7 +102,7 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
     JOYINFOEX joyState;
     joyState.dwSize=sizeof(joyState);
     joyState.dwFlags=JOY_RETURNALL | JOY_RETURNPOVCTS | JOY_RETURNCENTERED | JOY_USEDEADZONE;
-	joyGetPosEx(_joystickId, &joyState);
+    joyGetPosEx(_joystickId, &joyState);
 
     // axes: 0=Thr 1=Ael 2=Ele 3=Rud 4=Aux
 
@@ -88,13 +126,13 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
 
         case PRODUCT_F310:
             getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos, 0);
-            getButtons(joyState.dwButtons, buttonState, 8, 4, 2);
+            getButtonsExtra(joyState.dwButtons, buttonState, 8, 4, 2, 1, _inGimbalMode);
             break;
 
         case PRODUCT_XBOX360:  
         case PRODUCT_XBOX360_CLONE:
-		case PRODUCT_XBOX360_CLONE2:
-			getAxes(axes, joyState.dwYpos, joyState.dwUpos, joyState.dwRpos, joyState.dwXpos, 0);
+        case PRODUCT_XBOX360_CLONE2:
+            getAxes(axes, joyState.dwYpos, joyState.dwUpos, joyState.dwRpos, joyState.dwXpos, 0);
             getButtons(joyState.dwButtons, buttonState, 8, 2, 1);
             break;
 
@@ -103,9 +141,9 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             getButtons(joyState.dwButtons, buttonState, 1, 2, 4);
             break;
 
-		case PRODUCT_REALFLIGHT_INTERLINK:
+        case PRODUCT_REALFLIGHT_INTERLINK:
 
-			getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
+            getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
 
             // rescale axes (should be done in RealFlight!)
             rescaleAxis(axes[0], 13161, 51336);                          
@@ -114,9 +152,9 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             rescaleAxis(axes[3], 11818, 55159);
 
             _inGimbalMode = !(joyState.dwButtons & 0x01);                // rightmost bit is zero for gimbal mode
-			getButtons(joyState.dwButtons&0xFE, buttonState, 10, 2, 18); // use other bits for aux state
+            getButtons(joyState.dwButtons&0xFE, buttonState, 10, 2, 18); // use other bits for aux state
 
-			break;
+            break;
 
         default:
             if (_productId) {

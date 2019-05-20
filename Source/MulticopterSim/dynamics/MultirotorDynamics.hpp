@@ -22,8 +22,7 @@ static constexpr double M_PI = 3.14159265358979323846;
 
 class MultirotorDynamics {
 
-    //private:
-    public:
+    private:
 
         // Earth's gravitational constant.  Eventually we may want to make this a variable.
         static constexpr double G = 9.80665;
@@ -41,15 +40,12 @@ class MultirotorDynamics {
         // x[9]  xE:  longitudinal position in Earth frame
         // x[10] yE:  lateral position in Earth frame
         // x[11] hE:  height in Earth frame
-        double _x[12]; 
-        double _xtest[12]; 
+        double _x[12] = {0}; 
+        double _xtest[12] = {0}; 
 
         // Flag for whether we're airborne
-        bool _airborne;
-        bool _airborne_test;
-
-        // Experimental
-        double rollRate;
+        bool _airborne = false;
+        bool _airborne_test = false;
 
     protected:
 
@@ -57,7 +53,6 @@ class MultirotorDynamics {
          * You must implement this method in a subclass for each vehicle.
          */
         virtual void getForces(double & Fz, double & L, double & M, double & N) = 0;
-        virtual void getForces_test(double & Fz, double & L, double & M, double & N) = 0;
 
         /*
          *  Converts motor value in [0,1] to thrust in Newtons
@@ -79,11 +74,6 @@ class MultirotorDynamics {
             return F; // XXX should use dx, dy
         }
 
-        static double T_test(double F, double dx, double dy)
-        {
-            return F; // XXX should use dx, dy
-        }
-
     public:
 
         /** 
@@ -91,8 +81,8 @@ class MultirotorDynamics {
          */
         void init(double position[3], double rotation[3], bool airborne=false)
         {
-            // Zero-out rates
-            for (uint8_t j=0; j<6; ++j) {
+            // Zero-out state
+            for (uint8_t j=0; j<12; ++j) {
                 _x[j] = 0;
                 _xtest[j] = 0;
             }
@@ -100,8 +90,8 @@ class MultirotorDynamics {
             // Set pose
             for (uint8_t j=0; j<3; ++j) {
 
-                _x[j+6] = rotation[j];
-                _x[j+9] = position[j];
+                _x[j+6]     = rotation[j];
+                _x[j+9]     = position[j];
                 _xtest[j+6] = rotation[j];
                 _xtest[j+9] = position[j];
              }
@@ -127,7 +117,7 @@ class MultirotorDynamics {
             getForces(Fz, L, M, N);
 
             // XXX For now, we go directly from rotational force to angular velocity
-            _x[3] = L;
+            _x[3] = L; 
             _x[4] = M;
             _x[5] = N;
 
@@ -186,7 +176,7 @@ class MultirotorDynamics {
             double N  = 0;
 
             // Use frame subclass (e.g., Iris) to convert motor values to rotational forces
-            getForces_test(Fz, L, M, N);
+            getForces(Fz, L, M, N);
 
             // Integrate rotational forces to get rotational velocities
             _xtest[3] += dt * L;

@@ -18,22 +18,23 @@ class FFlightManager : public FThreadedWorker {
     private:
 
         // Constants specified/computed in constructor
-        uint8_t _motorCount;
-        double  _deltaT;
+        uint8_t _motorCount = 0;
+        double  _deltaT = 0;
 
         // Start-time offset so timing begins at zero
-        double _startTime;
+        double _startTime = 0;
 
         // Kinematics
-        double   _position[3];
-        double   _rotation[3];
-        double * _motorvals; 
+        double   _position[3] = {0};
+        double   _rotation[3] = {0};
+        double * _motorvals = NULL; 
         
         // For computing _deltaT
-        double   _previousTime;
+        double   _previousTime = 0;
 
         // Useful conversion function
         static void eulerToQuaternion(double eulerAngles[3], double quaternion[4]);
+
         // Implement for each subclass
         virtual void update(double time, double quat[4], double gyro[4], double * motorvals)  = 0;
 
