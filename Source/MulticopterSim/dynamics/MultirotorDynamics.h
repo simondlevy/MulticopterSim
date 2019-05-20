@@ -69,8 +69,6 @@ class MultirotorDynamics {
          */
         void getState(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double positionXYZ[3]);
 
-        // Not strictly part of dynamics, but useful
-        static void eulerToQuaternion(double eulerAngles[3], double quaternion[4]);
 
         // Factory method
         static MultirotorDynamics * create(void);

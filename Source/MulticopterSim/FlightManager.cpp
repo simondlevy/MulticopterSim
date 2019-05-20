@@ -1,8 +1,5 @@
 /*
- * ThreadedWorker subclass for dynamics computation
- *
- * This class contains very little code, because the dynamics computations are 
- * done in the platform-independent MultirotorDynamics class.
+ * ThreadedWorker subclass for flight management (dynamics + PID control)
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -10,9 +7,6 @@
  */
 
 #include "FlightManager.h"
-#include "VehiclePawn.h"
-
-#include <debugger.hpp>
 
 // Called once on main thread
 FFlightManager::FFlightManager(
@@ -76,7 +70,7 @@ void FFlightManager::performTask(void)
 
         // Convert Euler angles to quaternion
         double imuOrientationQuat[4]={0};
-        MultirotorDynamics::eulerToQuaternion(_rotation, imuOrientationQuat);
+        eulerToQuaternion(_rotation, imuOrientationQuat);
 
         // PID controller: update the flight manager (e.g., HackflightManager) with
         // the quaternion and gyrometer, getting the resulting motor values
@@ -85,6 +79,28 @@ void FFlightManager::performTask(void)
         // Track previous time for deltaT
         _previousTime = currentTime;
     }
+}
+
+void FFlightManager::eulerToQuaternion(double eulerAngles[3], double quaternion[4])
+{
+    // Convenient renaming
+    double phi = eulerAngles[0] / 2;
+    double the = eulerAngles[1] / 2;
+    double psi = eulerAngles[2] / 2;
+
+    // Pre-computation
+    double cph = cos(phi);
+    double cth = cos(the);
+    double cps = cos(psi);
+    double sph = sin(phi);
+    double sth = sin(the);
+    double sps = sin(psi);
+
+    // Conversion
+    quaternion[0] =  cph * cth * cps + sph * sth * sps;
+    quaternion[1] =  cph * sth * sps - sph * cth * cps ;
+    quaternion[2] = -cph * sth * cps - sph * cth * sps;
+    quaternion[3] =  cph * cth * sps - sph * sth * cps;
 }
 
 // Called by VehiclePawn::Tick() method to get current display kinematics

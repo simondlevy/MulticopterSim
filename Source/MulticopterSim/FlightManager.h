@@ -32,6 +32,8 @@ class FFlightManager : public FThreadedWorker {
         // For computing _deltaT
         double   _previousTime;
 
+        // Useful conversion function
+        static void eulerToQuaternion(double eulerAngles[3], double quaternion[4]);
         // Implement for each subclass
         virtual void update(double time, double quat[4], double gyro[4], double * motorvals)  = 0;
 
