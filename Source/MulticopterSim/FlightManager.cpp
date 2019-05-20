@@ -63,7 +63,7 @@ void FFlightManager::performTask(void)
         _dynamics->update(deltaT);
 
         // Debugging
-        dbgprintf("L: %+3.3f  L': %+3.3f", _dynamics->L, _dynamics->Ltest);
+        dbgprintf("x[3]: %+3.3f  xtest[3]: %+3.3f", _dynamics->_x[3], _dynamics->_xtest[3]);
 
         // Get vehicle state from dynamics.  We keep pose (position, rotation) in memory for use  in
         // getKinematics() method

@@ -18,7 +18,8 @@
 
 class MultirotorDynamics {
 
-    private:
+    //private:
+    public:
 
         // Earth's gravitational constant.  Eventually we may want to make this a variable.
         static constexpr double G = 9.80665;
@@ -37,6 +38,7 @@ class MultirotorDynamics {
         // x[10] yE:  lateral position in Earth frame
         // x[11] hE:  height in Earth frame
         double _x[12]; 
+        double _xtest[12]; 
 
         // Flag for whether we're airborne
         bool _airborne;
@@ -60,9 +62,19 @@ class MultirotorDynamics {
             return 4 * motorval; // XXX should use nonlinear formula
         }
 
-        static double Fthrust_test(double motorval)
+        /*
+         *  Converts motor value in [0,1] to thrust in Newtons
+         *
+         *  For equations see https://m-selig.ae.illinois.edu/props/propDB.html
+         */
+         static double Fthrust_test(double motorval)
         {
-            return 4 * motorval; // XXX should use nonlinear formula
+            double MAXRPM = 10000;
+            double FUDGE = 1; // fudge factor for prop diameter, prop pitch, etc.
+
+            double n = motorval * MAXRPM / 60;
+
+            return n*n * FUDGE;
         }
 
         /*
@@ -75,10 +87,6 @@ class MultirotorDynamics {
 
     public:
 
-        // Eventually will be local variables in get
-        double L, M, N, Fz;
-        double Ltest, Mtest, Ntest, Fztest;
-
         /** 
          * Initializes pose, with flag for whether we're airbone (helps with testing gravity).
          */
@@ -87,13 +95,14 @@ class MultirotorDynamics {
             // Zero-out rates
             for (uint8_t j=0; j<6; ++j) {
                 _x[j] = 0;
+                _xtest[j] = 0;
             }
 
             // Set pose
             for (uint8_t j=0; j<3; ++j) {
 
                 _x[j+6] = rotation[j];
-                _x[j+9] = position[j];
+                _xtest[j+9] = position[j];
             }
 
             _airborne = airborne;
@@ -106,15 +115,16 @@ class MultirotorDynamics {
         void update(double dt)
         {
             // Forces
-            Fz = 0;
-            L  = 0;
-            M  = 0;
-            N  = 0;
+            double Fz = 0;
+            double L  = 0;
+            double M  = 0;
+            double N  = 0;
 
             // Experimental
-            Ltest = 0;
-            Mtest = 0;
-            Ntest = 0;
+            double Fztest = 0;
+            double Ltest = 0;
+            double Mtest = 0;
+            double Ntest = 0;
 
             // Use frame subclass (e.g., Iris) to convert motor values to forces (in
             // reality, we get vertical thrust and angular velocities)
@@ -125,6 +135,11 @@ class MultirotorDynamics {
             _x[3] = L;
             _x[4] = M;
             _x[5] = N;
+
+            // The right way
+            _xtest[3] += dt * Ltest;
+            _xtest[4] += dt * Mtest;
+            _xtest[5] += dt * Ntest;
 
             // Integrate rotational velocity to get Euler angles
             for (uint8_t j=0; j<3; ++j) {
@@ -171,7 +186,6 @@ class MultirotorDynamics {
                 }
             }
         }
-
 
         /**
          * Sets motor values.
