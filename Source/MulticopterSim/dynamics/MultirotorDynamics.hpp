@@ -16,6 +16,10 @@
 
 #include <math.h>
 
+#ifndef M_PI
+static constexpr double M_PI = 3.14159265358979323846;
+#endif
+
 class MultirotorDynamics {
 
     //private:
@@ -67,14 +71,12 @@ class MultirotorDynamics {
          *
          *  For equations see https://m-selig.ae.illinois.edu/props/propDB.html
          */
-         static double Fthrust_test(double motorval)
+         static double Fthrust_test(const double B, double motorval)
         {
             double MAXRPM = 10000;
-            double FUDGE = 1; // fudge factor for prop diameter, prop pitch, etc.
+            double omega = motorval * MAXRPM * M_PI / 30;
 
-            double n = motorval * MAXRPM / 60;
-
-            return n*n * FUDGE;
+            return B * (omega*omega);
         }
 
         /*

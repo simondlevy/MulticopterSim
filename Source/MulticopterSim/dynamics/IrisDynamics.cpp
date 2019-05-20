@@ -21,17 +21,21 @@ class IrisDynamics : public MultirotorDynamics {
 
     private:
 
-        double _motorvals[4];
-
         // Motor distances from center of mass, in meters
-        double d1x = 0.150;
-        double d1y = 0.240;
-        double d2x = 0.150;
-        double d2y = 0.225;
-        double d3x = 0.150;
-        double d3y = 0.240;
-        double d4x = 0.150;
-        double d4y = 0.225;
+        const double d1x = 0.150;
+        const double d1y = 0.240;
+        const double d2x = 0.150;
+        const double d2y = 0.225;
+        const double d3x = 0.150;
+        const double d3y = 0.240;
+        const double d4x = 0.150;
+        const double d4y = 0.225;
+
+        // Propeller constants
+        const double B = 0.01;
+
+        // Current motor values in interval [0,1]
+        double _motorvals[4];
 
     protected:
 
@@ -58,10 +62,10 @@ class IrisDynamics : public MultirotorDynamics {
         virtual void getForces_test(double & Fz, double & L, double & M, double & N) override
         {
             // Convert motor values in [0,1] to thrusts in Newtons
-            double F1 = Fthrust_test(_motorvals[0]);
-            double F2 = Fthrust_test(_motorvals[1]);
-            double F3 = Fthrust_test(_motorvals[2]);
-            double F4 = Fthrust_test(_motorvals[3]);
+            double F1 = Fthrust_test(B, _motorvals[0]);
+            double F2 = Fthrust_test(B, _motorvals[1]);
+            double F3 = Fthrust_test(B, _motorvals[2]);
+            double F4 = Fthrust_test(B, _motorvals[3]);
 
             // Convert motor thrusts to angular accelerations
             L = (F2*d2y + F3*d3y) - (F1*d1y + F4*d4y);
