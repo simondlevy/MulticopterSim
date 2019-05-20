@@ -12,14 +12,15 @@
 // XXX In reality, we get vertical thrust and angular velocities).
 void IrisDynamics::getForces(double & Fz, double & L, double & M, double & N)
 {
+    // Convert motor values in [0,1] to thrusts in Newtons
     double F1 = computeMotorThrust(_motorvals[0]);
     double F2 = computeMotorThrust(_motorvals[1]);
     double F3 = computeMotorThrust(_motorvals[2]);
     double F4 = computeMotorThrust(_motorvals[3]);
 
-    // Convert motor values to rotational velocity vector
-    L = motorsToAngularVelocity(1, 2, 0, 3);
-    M = motorsToAngularVelocity(0, 2, 1, 3);
+    // Convert motor thrusts to angular accelerations
+    L = (F2 + F3) - (F1 + F4);
+    M = (F1 + F3) - (F2 + F4); 
     N = (F1 + F2) - (F3 + F4); 
 
     // Compute orthogonal force component Fz
@@ -31,13 +32,6 @@ void IrisDynamics::setMotors(double * motorvals)
     for (uint8_t k=0; k<4; ++k) {
         _motorvals[k] = motorvals[k];
     }
-}
-
-double IrisDynamics::motorsToAngularVelocity(uint8_t a, uint8_t b, uint8_t c, uint8_t d)
-{
-    double v = ((_motorvals[a] + _motorvals[b]) - (_motorvals[c] + _motorvals[d]));
-
-    return (v < 0 ? -1 : +1) * fabs(v);
 }
 
 // Factory method

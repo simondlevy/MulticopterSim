@@ -16,8 +16,6 @@ class IrisDynamics : public MultirotorDynamics {
 
         double _motorvals[4];
 
-        double motorsToAngularVelocity(uint8_t a, uint8_t b, uint8_t c, uint8_t d);
-
     protected:
 
         virtual void getForces(double & Fz, double & L, double & M, double & N) override;
