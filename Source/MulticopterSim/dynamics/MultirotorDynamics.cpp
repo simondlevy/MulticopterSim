@@ -16,9 +16,7 @@ void MultirotorDynamics::init(double position[3], double rotation[3], bool airbo
 
         _position[j] = position[j];
         _rotation[j] = rotation[j];
-
         _angularVelocity[j] = 0;
-        _acceleration[j] = 0;
         _velocity[j] = 0;
     }
 
@@ -33,7 +31,8 @@ void MultirotorDynamics::update(double dt)
     double M  = 0;
     double N  = 0;
     
-    // Convert motor values to forces (in reality, we get vertical thrust and angular velocities)
+    // Use frame subclass (e.g., Iris) to convert motor values to forces (in
+    // reality, we get vertical thrust and angular velocities)
     getForces(Fz, L, M, N);
 
     // XXX For now, we go directly from rotational force to angular velocity
@@ -63,25 +62,23 @@ void MultirotorDynamics::update(double dt)
     // See last column of rotation matrix at end of section 5 in
     //   http://www.chrobotics.com/library/understanding-euler-angles
     // Note use of negative sign to implement North-East-Down (NED) coordinates
-    _acceleration[0] = -Fz * (sphi*spsi + cphi*cpsi*sthe);
-    _acceleration[1] = -Fz * (cphi*spsi*sthe - cpsi*sphi);
-    _acceleration[2] = -Fz * (cphi*cthe);
+    double accel[3] = { -Fz * (sphi*spsi + cphi*cpsi*sthe), -Fz * (cphi*spsi*sthe - cpsi*sphi), -Fz * (cphi*cthe) };
 
     // Add earth gravity to get net acceleration vertical, so that motionless maps to zero
-    _acceleration[2] += G;
+    accel[2] += G;
 
     // We're airborne once net vertical acceleration falls below zero
     if (!_airborne) {
-        _airborne = _acceleration[2] < 0;
+        _airborne = accel[2] < 0;
     }
 
-    // Once airborne, we can compute inertial-frame state values
+    // Once airborne, we can compute inertial-frame state values by integration
     if (_airborne) {
 
         for (uint8_t j=0; j<3; ++j) {
 
             // Integrate acceleration to get velocity
-            _velocity[j] += dt * _acceleration[j];
+            _velocity[j] += dt * accel[j];
 
             // Integrate velocity to get position
             _position[j] += dt * _velocity[j];

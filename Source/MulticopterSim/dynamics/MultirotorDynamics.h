@@ -19,7 +19,6 @@ class MultirotorDynamics {
         
         // State
         double _angularVelocity[3];
-        double _acceleration[3];
         double _velocity[3];
         double _position[3];
         double _rotation[3];
