@@ -38,7 +38,11 @@ class MultirotorDynamics {
         // x[11] hE:  height in Earth frame
         double _x[12]; 
 
+        // Flag for whether we're airborne
         bool _airborne;
+
+        // Experimental
+        double rollRate;
 
     protected:
 
@@ -64,6 +68,10 @@ class MultirotorDynamics {
         }
 
     public:
+
+        // Eventually will be local variables in get
+        double L, M, N, Fz;
+        double Ltest, Mtest, Ntest, Fztest;
 
         /** 
          * Initializes pose, with flag for whether we're airbone (helps with testing gravity).
@@ -92,20 +100,24 @@ class MultirotorDynamics {
         void update(double dt)
         {
             // Forces
-            double Fz = 0;
-            double L  = 0;
-            double M  = 0;
-            double N  = 0;
+            Fz = 0;
+            L  = 0;
+            M  = 0;
+            N  = 0;
 
             // Use frame subclass (e.g., Iris) to convert motor values to forces (in
             // reality, we get vertical thrust and angular velocities)
             getForces(Fz, L, M, N);
 
             // XXX For now, we go directly from rotational force to angular velocity
-            //
             _x[3] = L;
             _x[4] = M;
             _x[5] = N;
+
+            // Experimental
+            Ltest = 0;
+            Mtest = 0;
+            Ntest = 0;
 
             // Integrate rotational velocity to get Euler angles
             for (uint8_t j=0; j<3; ++j) {
