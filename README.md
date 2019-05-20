@@ -64,15 +64,15 @@ do the following:
 1. Clone this repository (MulticopterSim) into your <b>Documents/Unreal Projects</b> folder, first
 creating that folder if it doesn't exit.
 
-2. Clone the [HackflightSim](https://github.com/simondlevy/HackflightSim) repository into
-the <b>Documents/Unreal Projects/MulticopterSim/Source/MulticopterSim</b> folder.
-
-3. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
+2. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
 where MulticopterSim [looks
 for](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L21-L24)
 the Hackflight software.)
+
+3. Copy the <b>Hackflight/extras/HackflightSim</b> folder into
+the <b>Documents/Unreal Projects/MulticopterSim/Source/MulticopterSim</b> folder.
 
 4. Right-click on the <b>MulticopterSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
