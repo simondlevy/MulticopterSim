@@ -50,11 +50,17 @@ class MultirotorDynamics {
          * You must implement this method in a subclass for each vehicle.
          */
         virtual void getForces(double & Fz, double & L, double & M, double & N) = 0;
+        virtual void getForces_test(double & Fz, double & L, double & M, double & N) = 0;
 
         /*
          *  Converts motor value in [0,1] to thrust in Newtons
          */
         static double Fthrust(double motorval)
+        {
+            return 4 * motorval; // XXX should use nonlinear formula
+        }
+
+        static double Fthrust_test(double motorval)
         {
             return 4 * motorval; // XXX should use nonlinear formula
         }
@@ -105,19 +111,20 @@ class MultirotorDynamics {
             M  = 0;
             N  = 0;
 
+            // Experimental
+            Ltest = 0;
+            Mtest = 0;
+            Ntest = 0;
+
             // Use frame subclass (e.g., Iris) to convert motor values to forces (in
             // reality, we get vertical thrust and angular velocities)
             getForces(Fz, L, M, N);
+            getForces_test(Fztest, Ltest, Mtest, Ntest);
 
             // XXX For now, we go directly from rotational force to angular velocity
             _x[3] = L;
             _x[4] = M;
             _x[5] = N;
-
-            // Experimental
-            Ltest = 0;
-            Mtest = 0;
-            Ntest = 0;
 
             // Integrate rotational velocity to get Euler angles
             for (uint8_t j=0; j<3; ++j) {
