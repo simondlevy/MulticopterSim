@@ -15,7 +15,6 @@
 #include <math.h>
 
 #include "FlightManager.h"
-#include "dynamics/MultirotorDynamics.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ThreadedWorker.h"
-#include "dynamics/MultirotorDynamics.h"
+#include "dynamics/MultirotorDynamics.hpp"
 
 class FFlightManager : public FThreadedWorker {
 
