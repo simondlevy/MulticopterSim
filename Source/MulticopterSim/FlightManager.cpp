@@ -16,16 +16,12 @@
 
 // Called once on main thread
 FFlightManager::FFlightManager(
-        class AVehiclePawn * vehiclePawn, 
         uint8_t motorCount,
         double initialPosition[3], 
         double initialRotation[3],
         uint16_t updateFrequency)
     : FThreadedWorker()
 {
-    // Store vehicle pawn for use by subclasses
-    _vehiclePawn = vehiclePawn;
-
     // Allocate array for motor values
     _motorvals = new double[motorCount];
 

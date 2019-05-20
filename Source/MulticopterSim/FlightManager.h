@@ -37,8 +37,6 @@ class FFlightManager : public FThreadedWorker {
 
     protected:
 
-        class AVehiclePawn * _vehiclePawn;
-
         MultirotorDynamics * _dynamics;
 
         virtual void performTask(void) override;
@@ -46,7 +44,6 @@ class FFlightManager : public FThreadedWorker {
         virtual void getGimbal(float & roll, float &pitch) { roll = 0; pitch = 0; }
 
         FFlightManager(
-                class AVehiclePawn * vehiclePawn, 
                 uint8_t   motorCount, 
                 double    initialPosition[3], 
                 double    initialRotation[3],
@@ -60,8 +57,5 @@ class FFlightManager : public FThreadedWorker {
         void getKinematics(double position[3], double rotation[3], double * motorvals);
 
         // Factory method implemented by your subclass
-        static FFlightManager * createFlightManager(
-                class AVehiclePawn * vehiclePawn, 
-                double initialPosition[3], 
-                double initialRotation[3]);
+        static FFlightManager * createFlightManager(double initialPosition[3], double initialRotation[3]);
 };

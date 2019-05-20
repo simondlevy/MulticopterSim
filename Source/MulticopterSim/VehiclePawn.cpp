@@ -119,7 +119,7 @@ void AVehiclePawn::BeginPlay()
         double groundTruthRotation[3] = {rot.Roll, rot.Pitch, rot.Yaw};
 
         // Launch a new threaded flight manager 
-        _flightManager = FFlightManager::createFlightManager(this, groundTruthPosition, groundTruthRotation);
+        _flightManager = FFlightManager::createFlightManager(groundTruthPosition, groundTruthRotation);
     }
 
     else {
