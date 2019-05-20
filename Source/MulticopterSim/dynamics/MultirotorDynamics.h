@@ -1,6 +1,10 @@
 /*
  * Class declaration for platform-independent multirotor dynamics
  *
+ * Based on equations in 
+ *
+ *   https://charlestytler.com/modeling-vehicle-dynamics-6dof-nonlinear-simulation/
+ *
  * Should work for any simulator, vehicle, or operating system
  *
  * Copyright (C) 2019 Simon D. Levy
@@ -17,11 +21,20 @@ class MultirotorDynamics {
         // Earth's gravitational constant.  Eventually we may want to make this a variable.
         static constexpr double G = 9.80665;
         
-        // State
-        double _angularVelocity[3];
-        double _velocity[3];
-        double _position[3];
-        double _rotation[3];
+        // State vector
+        // x[0]  u:   longitudinal velocity
+        // x[1]  v:   lateral velocity
+        // x[2]  w:   normal velocity
+        // x[3]  p:   roll rate
+        // x[4]  q:   pitch rate
+        // x[5]  r:   yaw rate
+        // x[6]  phi: bank angle
+        // x[7]  the: pitch attitude
+        // x[8]  psi: heading
+        // x[9]  xE:  longitudinal position in Earth frame
+        // x[10] yE:  lateral position in Earth frame
+        // x[11] hE:  height in Earth frame
+        double _x[12]; 
 
         bool _airborne;
 

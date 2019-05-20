@@ -12,12 +12,16 @@
 
 void MultirotorDynamics::init(double position[3], double rotation[3], bool airborne)
 {
+    // Zero-out rates
+    for (uint8_t j=0; j<6; ++j) {
+        _x[j] = 0;
+    }
+
+    // Set pose
     for (uint8_t j=0; j<3; ++j) {
 
-        _position[j] = position[j];
-        _rotation[j] = rotation[j];
-        _angularVelocity[j] = 0;
-        _velocity[j] = 0;
+        _x[j+6] = rotation[j];
+        _x[j+9] = position[j];
     }
 
     _airborne = airborne;
@@ -36,19 +40,20 @@ void MultirotorDynamics::update(double dt)
     getForces(Fz, L, M, N);
 
     // XXX For now, we go directly from rotational force to angular velocity
-    _angularVelocity[0] = L;
-    _angularVelocity[1] = M;
-    _angularVelocity[2] = N;
+    //
+    _x[3] = L;
+    _x[4] = M;
+    _x[5] = N;
 
     // Integrate rotational velocity to get Euler angles
     for (uint8_t j=0; j<3; ++j) {
-        _rotation[j] += dt * _angularVelocity[j];
+        _x[j+6] += dt * _x[j+3];
     }
 
     // Rename Euler angles for readability
-    double phi   = _rotation[0];
-    double theta = _rotation[1];
-    double psi   = _rotation[2];
+    double phi   = _x[6];
+    double theta = _x[7];
+    double psi   = _x[8];
 
     // Pre-compute angle trigonometry for rotation to earth frame
     double sphi = sin(phi);
@@ -78,10 +83,10 @@ void MultirotorDynamics::update(double dt)
         for (uint8_t j=0; j<3; ++j) {
 
             // Integrate acceleration to get velocity
-            _velocity[j] += dt * accel[j];
+            _x[j] += dt * accel[j];
 
             // Integrate velocity to get position
-            _position[j] += dt * _velocity[j];
+            _x[j+9] += dt * _x[j];
         }
     }
 }
@@ -93,10 +98,10 @@ void MultirotorDynamics::getState(
         double positionXYZ[3])
 {
     for (uint8_t j=0; j<3; ++j) {
-        angularVelocity[j] = _angularVelocity[j];
-        eulerAngles[j] = _rotation[j];
-        velocityXYZ[j] = _velocity[j];
-        positionXYZ[j] = _position[j];
+        angularVelocity[j] = _x[j+3];
+        eulerAngles[j]     = _x[j+6];
+        velocityXYZ[j]     = _x[j];
+        positionXYZ[j]     = _x[j+9];
     }
 }
 
