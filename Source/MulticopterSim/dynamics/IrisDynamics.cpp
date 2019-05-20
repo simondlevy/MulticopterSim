@@ -31,8 +31,11 @@ class IrisDynamics : public MultirotorDynamics {
         const double d4x = 0.150;
         const double d4y = 0.225;
 
+        // Motor constants
+        double MAXRPM = 10000;
+
         // Propeller constants
-        const double B = 0.000001;
+        const double B = 0.000005;
 
         // Current motor values in interval [0,1]
         double _motorvals[4];
@@ -44,10 +47,10 @@ class IrisDynamics : public MultirotorDynamics {
         virtual void getForces(double & Fz, double & L, double & M, double & N) override
         {
             // Convert motor values in [0,1] to thrusts in Newtons
-            double F1 = Fthrust(_motorvals[0]);
-            double F2 = Fthrust(_motorvals[1]);
-            double F3 = Fthrust(_motorvals[2]);
-            double F4 = Fthrust(_motorvals[3]);
+            double F1 = Fthrust(_motorvals[0], B, MAXRPM);
+            double F2 = Fthrust(_motorvals[1], B, MAXRPM);
+            double F3 = Fthrust(_motorvals[2], B, MAXRPM);
+            double F4 = Fthrust(_motorvals[3], B, MAXRPM);
 
             // Convert motor thrusts to angular accelerations
             L = (F2*d2y + F3*d3y) - (F1*d1y + F4*d4y);
@@ -62,15 +65,15 @@ class IrisDynamics : public MultirotorDynamics {
         virtual void getForces_test(double & Fz, double & L, double & M, double & N) override
         {
             // Convert motor values in [0,1] to thrusts in Newtons
-            double F1 = Fthrust_test(B, _motorvals[0]);
-            double F2 = Fthrust_test(B, _motorvals[1]);
-            double F3 = Fthrust_test(B, _motorvals[2]);
-            double F4 = Fthrust_test(B, _motorvals[3]);
+            double F1 = Fthrust(_motorvals[0], B, MAXRPM);
+            double F2 = Fthrust(_motorvals[1], B, MAXRPM);
+            double F3 = Fthrust(_motorvals[2], B, MAXRPM);
+            double F4 = Fthrust(_motorvals[3], B, MAXRPM);
 
             // Convert motor thrusts to angular accelerations
             L = (F1*d1y + F4*d4y) - (F2*d2y + F3*d3y);
             M = (F1*d1x + F3*d3x) - (F2*d2x + F4*d4x); 
-            N = (T(F1,d1x,d1y) + T(F2,d2x,d2y)) - (T(F3,d3x,d3y) + T(F4,d4x,d4y)); 
+            N = (T_test(F1,d1x,d1y) + T_test(F2,d2x,d2y)) - (T_test(F3,d3x,d3y) + T_test(F4,d4x,d4y)); 
 
             // Compute orthogonal force component Fz
             Fz = F1 + F2 + F3 + F4;

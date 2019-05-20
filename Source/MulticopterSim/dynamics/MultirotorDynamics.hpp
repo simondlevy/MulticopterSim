@@ -61,29 +61,25 @@ class MultirotorDynamics {
 
         /*
          *  Converts motor value in [0,1] to thrust in Newtons
-         */
-        static double Fthrust(double motorval)
-        {
-            return 4 * motorval; // XXX should use nonlinear formula
-        }
-
-        /*
-         *  Converts motor value in [0,1] to thrust in Newtons
          *
-         *  For equations see https://m-selig.ae.illinois.edu/props/propDB.html
          */
-         static double Fthrust_test(const double B, double motorval)
+         static double Fthrust(double motorval, const double b, const double maxrpm)
         {
-            double MAXRPM = 10000;
-            double omega = motorval * MAXRPM * M_PI / 30;
+            double omega = motorval * maxrpm * M_PI / 30;
 
-            return B * (omega*omega);
+            return b * (omega*omega);
         }
 
         /*
          * Computes thrust in Newtons to torque in Newton meters
          */
+
         static double T(double F, double dx, double dy)
+        {
+            return F; // XXX should use dx, dy
+        }
+
+        static double T_test(double F, double dx, double dy)
         {
             return F; // XXX should use dx, dy
         }
@@ -105,8 +101,10 @@ class MultirotorDynamics {
             for (uint8_t j=0; j<3; ++j) {
 
                 _x[j+6] = rotation[j];
+                _x[j+9] = position[j];
+                _xtest[j+6] = rotation[j];
                 _xtest[j+9] = position[j];
-            }
+             }
 
             _airborne = airborne;
             _airborne_test = airborne;
@@ -151,7 +149,7 @@ class MultirotorDynamics {
             double sthe = sin(theta);
             double cthe = cos(theta);
 
-            // Rotate orthongal force vecotor into intertial frame to compute translation force.  
+            // Rotate orthongal force vector into intertial frame to compute translation force.  
             // See last column of rotation matrix at end of section 5 in
             //   http://www.chrobotics.com/library/understanding-euler-angles
             // Note use of negative sign to implement North-East-Down (NED) coordinates
@@ -213,7 +211,7 @@ class MultirotorDynamics {
             double sthe = sin(theta);
             double cthe = cos(theta);
 
-            // Rotate orthongal force vecotor into intertial frame to compute translation force.  
+            // Rotate orthongal force vector into intertial frame to compute translation force.  
             // See last column of rotation matrix at end of section 5 in
             //   http://www.chrobotics.com/library/understanding-euler-angles
             // Note use of negative sign to implement North-East-Down (NED) coordinates
@@ -250,6 +248,7 @@ class MultirotorDynamics {
         /*
          *  Gets current state
          */
+
         void getState(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double positionXYZ[3])
         {
             for (uint8_t j=0; j<3; ++j) {
@@ -257,6 +256,16 @@ class MultirotorDynamics {
                 eulerAngles[j]     = _x[j+6];
                 velocityXYZ[j]     = _x[j];
                 positionXYZ[j]     = _x[j+9];
+            }
+        }
+
+        void getState_test(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double positionXYZ[3])
+        {
+            for (uint8_t j=0; j<3; ++j) {
+                angularVelocity[j] = _xtest[j+3];
+                eulerAngles[j]     = _xtest[j+6];
+                velocityXYZ[j]     = _xtest[j];
+                positionXYZ[j]     = _xtest[j+9];
             }
         }
 
