@@ -105,7 +105,12 @@ void MultirotorDynamics::getState(
     }
 }
 
-double MultirotorDynamics::computeMotorThrust(double motorval)
+double MultirotorDynamics::Fthrust(double motorval)
 {
     return 4 * motorval; // XXX should use nonlinear formula
+}
+        
+double MultirotorDynamics::T(double F)
+{
+    return F; // XXX should use dx, dy
 }

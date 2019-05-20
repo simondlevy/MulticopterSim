@@ -48,7 +48,12 @@ class MultirotorDynamics {
         /*
          *  Converts motor value in [0,1] to thrust in Newtons
          */
-        double computeMotorThrust(double motorValue);
+        static double Fthrust(double motorValue);
+
+        /*
+         * Computes thrust in Newtons to torque in Newton meters
+         */
+        static double T(double F);
 
     public:
 
