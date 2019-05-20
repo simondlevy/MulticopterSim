@@ -35,6 +35,12 @@ FFlightManager::FFlightManager(
     // Initialize dynamics with initial pose
     _dynamics->init(initialPosition, initialRotation);
 
+    // Initialize kinematics
+    for (uint8_t j=0; j<3; ++j) {
+        _position[j] = initialPosition[j];
+        _rotation[j] = initialRotation[j];
+    }
+
     // Constants
     _deltaT = 1. / updateFrequency;
     _motorCount = motorCount;

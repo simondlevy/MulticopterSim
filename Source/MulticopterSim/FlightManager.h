@@ -24,10 +24,12 @@ class FFlightManager : public FThreadedWorker {
         // Start-time offset so timing begins at zero
         double _startTime;
 
-        // Dynamics
-        double * _motorvals; 
+        // Kinematics
         double   _position[3];
         double   _rotation[3];
+        double * _motorvals; 
+        
+        // For computing _deltaT
         double   _previousTime;
 
         // Implement for each subclass

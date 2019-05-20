@@ -171,25 +171,10 @@ void AVehiclePawn::getKinematics(void)
     double rotation[3] = {0};
     _flightManager->getKinematics(position, rotation, _motorvals);
 
-    // XXX avoid bugs pose values (shouldn't be arising to begin with )
-    if (sanityCheck(position) && sanityCheck(rotation)) {
+    SetActorLocation(FVector(position[0], position[1], position[2]) * 100); // m =>cm
 
-        SetActorLocation(FVector(position[0], position[1], position[2]) * 100); // m =>cm
-
-        // Note rotation order: pitch, yaw, roll = 1,2,0 = Y,Z,X)
-        SetActorRotation(FRotator(rotation[1], rotation[2], rotation[0]) * (180 / M_PI)); // radians => deg
-    }
-}
-
-bool AVehiclePawn::sanityCheck(double v[3])
-{
-    for (uint8_t j=0; j<3; ++j) {
-        if (abs(v[j]) > 1e6) {
-            return false;
-        }
-    }
-
-    return true;
+    // Note rotation order: pitch, yaw, roll = 1,2,0 = Y,Z,X)
+    SetActorRotation(FRotator(rotation[1], rotation[2], rotation[0]) * (180 / M_PI)); // radians => deg
 }
 
 void AVehiclePawn::addAnimationEffects(void)
