@@ -1,6 +1,8 @@
 /*
  * MultirotorDynamics implementation for 3DR Iris
  *
+ * See: https://charlestytler.com/modeling-vehicle-dynamics-6dof-nonlinear-simulation/#Equations-of-Motion
+ *
  * Copyright (C) 2019 Simon D. Levy
  *
  * MIT License
@@ -14,10 +16,19 @@ class IrisDynamics : public MultirotorDynamics {
 
         double _motorvals[4];
 
+        // Motor distances from center of mass
+        double d1x = 1;
+        double d1y = 1;
+        double d2x = 1;
+        double d2y = 1;
+        double d3x = 1;
+        double d3y = 1;
+        double d4x = 1;
+        double d4y = 1;
+
     protected:
 
         // Get forces based on current motor values.
-        // See: https://charlestytler.com/modeling-vehicle-dynamics-6dof-nonlinear-simulation/#Equations-of-Motion
         // XXX In reality, we get vertical thrust and angular velocities).
         virtual void getForces(double & Fz, double & L, double & M, double & N) override
         {
@@ -28,9 +39,9 @@ class IrisDynamics : public MultirotorDynamics {
             double F4 = Fthrust(_motorvals[3]);
 
             // Convert motor thrusts to angular accelerations
-            L = (F2 + F3) - (F1 + F4);
-            M = (F1 + F3) - (F2 + F4); 
-            N = (T(F1) + T(F2)) - (T(F3) + T(F4)); 
+            L = (F2*d2y + F3*d3y) - (F1*d1y + F4*d4y);
+            M = (F1*d1x + F3*d3x) - (F2*d2x + F4*d4x); 
+            N = (T(F1,d1x,d1y) + T(F2,d2x,d2y)) - (T(F3,d3x,d3y) + T(F4,d4x,d4y)); 
 
             // Compute orthogonal force component Fz
             Fz = F1 + F2 + F3 + F4;

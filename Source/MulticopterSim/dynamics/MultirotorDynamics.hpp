@@ -58,7 +58,7 @@ class MultirotorDynamics {
         /*
          * Computes thrust in Newtons to torque in Newton meters
          */
-        static double T(double F)
+        static double T(double F, double dx, double dy)
         {
             return F; // XXX should use dx, dy
         }
