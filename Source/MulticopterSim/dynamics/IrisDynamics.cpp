@@ -6,7 +6,7 @@
  * MIT License
  */
 
-#include "MultirotorDynamicsIris.h"
+#include "IrisDynamics.h"
 
 // Get forces based on current motor values.
 // XXX In reality, we get vertical thrust and angular velocities).
