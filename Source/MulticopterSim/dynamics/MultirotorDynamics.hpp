@@ -46,6 +46,7 @@ class MultirotorDynamics {
 
         // Flag for whether we're airborne
         bool _airborne;
+        bool _airborne_test;
 
         // Experimental
         double rollRate;
@@ -108,12 +109,13 @@ class MultirotorDynamics {
             }
 
             _airborne = airborne;
+            _airborne_test = airborne;
         }
-
 
         /** 
          * Updates dynamics state.
          */
+
         void update(double dt)
         {
             // Forces
@@ -122,26 +124,14 @@ class MultirotorDynamics {
             double M  = 0;
             double N  = 0;
 
-            // Experimental
-            double Fztest = 0;
-            double Ltest = 0;
-            double Mtest = 0;
-            double Ntest = 0;
-
             // Use frame subclass (e.g., Iris) to convert motor values to forces (in
             // reality, we get vertical thrust and angular velocities)
             getForces(Fz, L, M, N);
-            getForces_test(Fztest, Ltest, Mtest, Ntest);
 
             // XXX For now, we go directly from rotational force to angular velocity
             _x[3] = L;
             _x[4] = M;
             _x[5] = N;
-
-            // The right way
-            _xtest[3] += dt * Ltest;
-            _xtest[4] += dt * Mtest;
-            _xtest[5] += dt * Ntest;
 
             // Integrate rotational velocity to get Euler angles
             for (uint8_t j=0; j<3; ++j) {
@@ -185,6 +175,68 @@ class MultirotorDynamics {
 
                     // Integrate velocity to get position
                     _x[j+9] += dt * _x[j];
+                }
+            }
+        }
+
+        void update_test(double dt)
+        {
+            // Forces
+            double Fz = 0;
+            double L  = 0;
+            double M  = 0;
+            double N  = 0;
+
+            // Use frame subclass (e.g., Iris) to convert motor values to rotational forces
+            getForces_test(Fz, L, M, N);
+
+            // Integrate rotational forces to get rotational velocities
+            _xtest[3] += dt * L;
+            _xtest[4] += dt * M;
+            _xtest[5] += dt * N;
+
+            // Integrate rotational velocities to get Euler angles
+            for (uint8_t j=0; j<3; ++j) {
+                _xtest[j+6] += dt * _xtest[j+3];
+            }
+
+            // Rename Euler angles for readability
+            double phi   = _xtest[6];
+            double theta = _xtest[7];
+            double psi   = _xtest[8];
+
+            // Pre-compute angle trigonometry for rotation to earth frame
+            double sphi = sin(phi);
+            double spsi = sin(psi);
+            double cphi = cos(phi);
+            double cpsi = cos(psi);
+            double sthe = sin(theta);
+            double cthe = cos(theta);
+
+            // Rotate orthongal force vecotor into intertial frame to compute translation force.  
+            // See last column of rotation matrix at end of section 5 in
+            //   http://www.chrobotics.com/library/understanding-euler-angles
+            // Note use of negative sign to implement North-East-Down (NED) coordinates
+            double accelXYZ[3] = { -Fz * (sphi*spsi + cphi*cpsi*sthe), -Fz * (cphi*spsi*sthe - cpsi*sphi), -Fz * (cphi*cthe) };
+
+            // Add earth gravity to get net acceleration vertical, so that motionless maps to zero
+            accelXYZ[2] += G;
+
+            // We're airborne once net vertical acceleration falls below zero
+            if (!_airborne) {
+                _airborne = accelXYZ[2] < 0;
+            }
+
+            // Once airborne, we can compute inertial-frame state values by integration
+            if (_airborne) {
+
+                for (uint8_t j=0; j<3; ++j) {
+
+                    // Integrate acceleration to get velocity
+                    _xtest[j] += dt * accelXYZ[j];
+
+                    // Integrate velocity to get position
+                    _xtest[j+9] += dt * _xtest[j];
                 }
             }
         }

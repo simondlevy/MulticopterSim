@@ -32,7 +32,7 @@ class IrisDynamics : public MultirotorDynamics {
         const double d4y = 0.225;
 
         // Propeller constants
-        const double B = 0.01;
+        const double B = 0.000001;
 
         // Current motor values in interval [0,1]
         double _motorvals[4];
@@ -68,7 +68,7 @@ class IrisDynamics : public MultirotorDynamics {
             double F4 = Fthrust_test(B, _motorvals[3]);
 
             // Convert motor thrusts to angular accelerations
-            L = (F2*d2y + F3*d3y) - (F1*d1y + F4*d4y);
+            L = (F1*d1y + F4*d4y) - (F2*d2y + F3*d3y);
             M = (F1*d1x + F3*d3x) - (F2*d2x + F4*d4x); 
             N = (T(F1,d1x,d1y) + T(F2,d2x,d2y)) - (T(F3,d3x,d3y) + T(F4,d4x,d4y)); 
 

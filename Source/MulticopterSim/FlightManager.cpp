@@ -61,6 +61,7 @@ void FFlightManager::performTask(void)
 
         // Update dynamics
         _dynamics->update(deltaT);
+        _dynamics->update_test(deltaT);
 
         // Debugging
         dbgprintf("x[3]: %+3.3f  xtest[3]: %+3.3f", _dynamics->_x[3], _dynamics->_xtest[3]);
