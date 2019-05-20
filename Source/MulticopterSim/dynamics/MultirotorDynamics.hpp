@@ -129,14 +129,14 @@ class MultirotorDynamics {
             // See last column of rotation matrix at end of section 5 in
             //   http://www.chrobotics.com/library/understanding-euler-angles
             // Note use of negative sign to implement North-East-Down (NED) coordinates
-            double accel[3] = { -Fz * (sphi*spsi + cphi*cpsi*sthe), -Fz * (cphi*spsi*sthe - cpsi*sphi), -Fz * (cphi*cthe) };
+            double accelXYZ[3] = { -Fz * (sphi*spsi + cphi*cpsi*sthe), -Fz * (cphi*spsi*sthe - cpsi*sphi), -Fz * (cphi*cthe) };
 
             // Add earth gravity to get net acceleration vertical, so that motionless maps to zero
-            accel[2] += G;
+            accelXYZ[2] += G;
 
             // We're airborne once net vertical acceleration falls below zero
             if (!_airborne) {
-                _airborne = accel[2] < 0;
+                _airborne = accelXYZ[2] < 0;
             }
 
             // Once airborne, we can compute inertial-frame state values by integration
@@ -145,7 +145,7 @@ class MultirotorDynamics {
                 for (uint8_t j=0; j<3; ++j) {
 
                     // Integrate acceleration to get velocity
-                    _x[j] += dt * accel[j];
+                    _x[j] += dt * accelXYZ[j];
 
                     // Integrate velocity to get position
                     _x[j+9] += dt * _x[j];
