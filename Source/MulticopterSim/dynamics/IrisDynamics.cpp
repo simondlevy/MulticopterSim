@@ -20,7 +20,7 @@ void IrisDynamics::getForces(double & Fz, double & L, double & M, double & N)
     // Convert motor values to rotational velocity vector
     L = motorsToAngularVelocity(1, 2, 0, 3);
     M = motorsToAngularVelocity(0, 2, 1, 3);
-    N = motorsToAngularVelocity(0, 1, 2, 3);
+    N = (F1 + F2) - (F3 + F4); 
 
     // Compute orthogonal force component Fz
     Fz = F1 + F2 + F3 + F4;
