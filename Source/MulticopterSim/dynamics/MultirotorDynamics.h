@@ -14,7 +14,7 @@ class MultirotorDynamics {
 
     private:
 
-        // Earth's gravitational constant
+        // Earth's gravitational constant.  Eventually we may want to make this a variable.
         static constexpr double G = 9.80665;
         
         // State
@@ -45,7 +45,6 @@ class MultirotorDynamics {
          * Updates dynamics state.
          */
         void update(double dt);
-
 
         /**
          * Sets motor values.

@@ -171,10 +171,13 @@ void AVehiclePawn::getKinematics(void)
     double rotation[3] = {0};
     _flightManager->getKinematics(position, rotation, _motorvals);
 
-    SetActorLocation(FVector(position[0], position[1], position[2]) * 100); // m =>cm
+    // Negate Z position to accommodate NED coordinates, and mulitply position by 100 to convert from meters
+    // to centimeters.
+    SetActorLocation(FVector(position[0], position[1], -position[2]) * 100);
 
-    // Note rotation order: pitch, yaw, roll = 1,2,0 = Y,Z,X)
-    SetActorRotation(FRotator(rotation[1], rotation[2], rotation[0]) * (180 / M_PI)); // radians => deg
+    // Set vehicle rotation using UE4 order pitch, yaw, roll = 1,2,0 = Y,Z,X); then convert radians to
+    // degrees.
+    SetActorRotation(FRotator(rotation[1], rotation[2], rotation[0]) * (180 / M_PI));
 }
 
 void AVehiclePawn::addAnimationEffects(void)

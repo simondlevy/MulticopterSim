@@ -61,20 +61,18 @@ void MultirotorDynamics::update(double dt)
 
     // Rotate orthongal force vecotor into intertial frame to compute translation force.  
     // See last column of rotation matrix at end of section 5 in
-    // http://www.chrobotics.com/library/understanding-euler-angles
-    // 
-    // We negate X and Y to adjust for the fact that roll right and pitch forward correspond to 
-    // negative Euler angles.
+    //   http://www.chrobotics.com/library/understanding-euler-angles
+    // Note use of negative sign to implement North-East-Down (NED) coordinates
     _acceleration[0] = -Fz * (sphi*spsi + cphi*cpsi*sthe);
     _acceleration[1] = -Fz * (cphi*spsi*sthe - cpsi*sphi);
-    _acceleration[2] =  Fz * (cphi*cthe);
+    _acceleration[2] = -Fz * (cphi*cthe);
 
-    // Subtract off an earth gravity to get net acceleration vertical, so that motionless maps to zero
-    _acceleration[2] -= G;
+    // Add earth gravity to get net acceleration vertical, so that motionless maps to zero
+    _acceleration[2] += G;
 
-    // We're airborne once net vertical acceleration excedes zero
+    // We're airborne once net vertical acceleration falls below zero
     if (!_airborne) {
-        _airborne = _acceleration[2] > 0;
+        _airborne = _acceleration[2] < 0;
     }
 
     // Once airborne, we can compute inertial-frame state values
