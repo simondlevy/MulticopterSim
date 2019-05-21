@@ -22,6 +22,7 @@
  *     biburl    = {https://dblp.org/rec/bib/conf/icra/BouabdallahMS04},
  *     bibsource = {dblp computer science bibliography, https://dblp.org}
  *   }
+ * 
  * Copyright (C) 2019 Simon D. Levy
  *
  * MIT License
@@ -58,10 +59,10 @@ class MultirotorDynamics {
         double _psid  = 0;
         double _psidd = 0;
 
-        // 
-
+        // Set by subclass constructor
         int _nmotors;
 
+        // Radians per second for each motor
         double * _omegas;
 
         // Flag for whether we're airborne
@@ -72,6 +73,7 @@ class MultirotorDynamics {
         /** 
          * You must implement these constant methods in a subclass for each vehicle.
          */
+
         virtual const double b(void)  = 0;
         virtual const double d(void)  = 0;
         virtual const double m(void)  = 0;
@@ -80,10 +82,15 @@ class MultirotorDynamics {
         virtual const double Iy(void) = 0;
         virtual const double Iz(void) = 0; 
         virtual const double Jr(void) = 0;
-
         virtual const unsigned int maxrpm(void) = 0;
 
-        MultirotorDynamics(int nmotors)
+        virtual double u2(double * o2)  = 0;
+        virtual double u3(double * o2)  = 0;
+        virtual double u4(double * o2)  = 0;
+
+        virtual double omega(double * o) = 0;
+
+         MultirotorDynamics(int nmotors)
         {
             _omegas = new double[nmotors];
         }
@@ -100,12 +107,6 @@ class MultirotorDynamics {
         double _U4 = 0;
         double _Omega = 0;
 
-        // Functions computing these values for a particular build
-        virtual double u2(double * o2)  = 0;
-        virtual double u3(double * o2)  = 0;
-        virtual double u4(double * o2)  = 0;
-        virtual double omega(double * o) = 0;
- 
     public:
 
         /** 
