@@ -40,24 +40,13 @@ class MultirotorDynamics {
         static constexpr double g  = 9.80665; // might want to allow this to vary!
         static constexpr double pi = 3.14159;
 
-        double _x   = 0;
-        double _xd  = 0;
-        double _xdd = 0;
-        double _y   = 0;
-        double _yd  = 0;
-        double _ydd = 0;
-        double _z   = 0;
-        double _zd  = 0;
-        double _zdd = 0;
-        double _phi   = 0;
-        double _phid  = 0;
-        double _phidd = 0;
-        double _theta   = 0;
-        double _thetad  = 0;
-        double _thetadd = 0;
-        double _psi   = 0;
-        double _psid  = 0;
-        double _psidd = 0;
+        // State variables: 0 = value; 1 = first derivative; 2 = second derivative
+        double _x[3]     = {0};
+        double _y[3]     = {0};
+        double _z[3]     = {0};
+        double _phi[3]   = {0};
+        double _theta[3] = {0};
+        double _psi[3]   = {0};
 
         // Set by subclass constructor
         int _nmotors;
@@ -114,45 +103,49 @@ class MultirotorDynamics {
          */
         void init(double position[3], double rotation[3], bool airborne=false)
         {
-            // Zero-out state first derivatives
-            _xd  = 0;
-            _xdd = 0;
-            _yd  = 0;
-            _ydd = 0;
-            _zd  = 0;
-            _zdd = 0;
-            _phid  = 0;
-            _phidd = 0;
-            _thetad  = 0;
-            _thetadd = 0;
-            _psid  = 0;
-            _psidd = 0;
+            // Zero-out first and second derivatives in state
+            for (int i=1; i<3; ++i) {
+                _x[i]     = 0;
+                _y[i]     = 0;
+                _z[i]     = 0;
+                _phi[i]   = 0;
+                _theta[i] = 0;
+                _psi[i]   = 0;
+             }
 
             // Set pose
-            _x = position[0];
-            _y = position[1];
-            _z = position[2];
-            _phi   = rotation[0];
-            _theta = rotation[1];
-            _psi   = rotation[2];
+            _x[0]     = position[0];
+            _y[0]     = position[1];
+            _z[0]     = position[2];
+            _phi[0]   = rotation[0];
+            _theta[0] = rotation[1];
+            _psi[0]   = rotation[2];
 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
         }
 
         /** 
-         * Updates dynamics state.
+         * Updates state using Equation 5.
+         * @param dt time in seconds since previous update
          */
         void update(double dt)
         {
-            // Use scaled forces to update state second-derivatives (Eqn. 6)
-            _xdd = (cos(_phi)*sin(_theta)*cos(_psi) + sin(_phi)*sin(_psi)) / m() * _U1;
-            _ydd = (cos(_phi)*sin(_theta)*sin(_psi) + sin(_phi)*cos(_psi)) / m() * _U1;
-            _zdd = -g + (cos(_phi)*cos(_theta)) / m() * _U1;
+            _x[2]     = (cos(_phi[0])*sin(_theta[0])*cos(_psi[0]) + sin(_phi[0])*sin(_psi[0])) / m() * _U1;
+
+            _y[2]     = (cos(_phi[0])*sin(_theta[0])*sin(_psi[0]) + sin(_phi[0])*cos(_psi[0])) / m() * _U1;
+
+            _z[2]     = -g + (cos(_phi[0])*cos(_theta[0])) / m() * _U1;
+
+            _phi[2]   = _theta[1]*_psi[1]*(Iy()-Iz())/Ix() - Jr()/Ix()*_theta[1]*_Omega + l()/Ix()*_U2;
+
+            _theta[2] = _phi[1]*_psi[1]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_phi[1]*_Omega   + l()/Iy()*_U3; 
+
+            _psi[2]   = _phi[1]*_theta[1]*(Ix()-Iy())/Iz() + _U4/Iz();
         }
 
         /**
-         * Uses motor values to implement Equations 5 and 6.
+         * Uses motor values to implement Equation 6.
          * @param motorvals in interval [0,1]
          */
         void setMotors(double * motorvals) 
@@ -171,7 +164,7 @@ class MultirotorDynamics {
 
             // Compute Omega from Omegas
             _Omega = omega(_omegas);
-            
+
             // Square the Omegas
             for (int i=0; i<_nmotors; ++i) {
                 _omegas[i] *= _omegas[i];
