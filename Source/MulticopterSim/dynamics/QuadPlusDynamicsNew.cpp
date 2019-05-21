@@ -9,52 +9,70 @@
  *          |
  *         3cw
  *
- * See: https://charlestytler.com/modeling-vehicle-dynamics-6dof-nonlinear-simulation/#Equations-of-Motion
+ * Based on:
+ *
+ *   @inproceedings{DBLP:conf/icra/BouabdallahMS04,
+ *    author    = {Samir Bouabdallah and
+ *                  Pierpaolo Murrieri and
+ *                  Roland Siegwart},
+ *     title     = {Design and Control of an Indoor Micro Quadrotor},
+ *     booktitle = {Proceedings of the 2004 {IEEE} International Conference on Robotics
+ *                  and Automation, {ICRA} 2004, April 26 - May 1, 2004, New Orleans,
+ *                  LA, {USA}},
+ *     pages     = {4393--4398},
+ *     year      = {2004},
+ *     crossref  = {DBLP:conf/icra/2004},
+ *     url       = {https://doi.org/10.1109/ROBOT.2004.1302409},
+ *     doi       = {10.1109/ROBOT.2004.1302409},
+ *     timestamp = {Sun, 04 Jun 2017 01:00:00 +0200},
+ *     biburl    = {https://dblp.org/rec/bib/conf/icra/BouabdallahMS04},
+ *     bibsource = {dblp computer science bibliography, https://dblp.org}
+ *   }
  *
  * Copyright (C) 2019 Simon D. Levy
  *
  * MIT License
  */
 
-#include "MultirotorDynamicsNew.hpp"
+#include "NewMultirotorDynamics.hpp"
 
 class QuadPlusDynamics : public MultirotorDynamics {
 
     private:
 
-        // Motor distances from center of mass, in meters
-        const double d1x = 0.150;
-        const double d1y = 0.240;
-        const double d2x = 0.150;
-        const double d2y = 0.225;
-        const double d3x = 0.150;
-        const double d3y = 0.240;
-        const double d4x = 0.150;
-        const double d4y = 0.225;
-
         // Motor constants
         double MAXRPM = 10000;
 
-        // Propeller constants
-        const double B    = 0.000005; 
-        const double Bnew = 0.0000530216718361085;
-        const double Dnew = 2.23656692806239E-06;
+        // Propeller/motor constants
+        const double B = 0.0000530216718361085;
+        const double D = 2.23656692806239E-06;
+        const double M = 16.47;
+        //const double I = 2,2,3;
+        const double Jr = 0.000308013; // Kg*m^2
 
         // Current motor values in interval [0,1]
         double _motorvals[4] = {0};
 
     protected:
 
-        virtual void getForces(double & U1, double & U2, double & U3, double & U4) override
+        virtual void getForces(double & U1, double & U2, double & U3, double & U4, double & omega) override
         {
-            double omega21 = rpss(_motorvals[0], MAXRPM);
-            double omega22 = rpss(_motorvals[1], MAXRPM);
-            double omega23 = rpss(_motorvals[2], MAXRPM);
-            double omega24 = rpss(_motorvals[3], MAXRPM);
+            double o1 = rps(_motorvals[0], MAXRPM);
+            double o2 = rps(_motorvals[1], MAXRPM);
+            double o3 = rps(_motorvals[2], MAXRPM);
+            double o4 = rps(_motorvals[3], MAXRPM);
 
-            U1 = Bnew * (omega21 + omega22 + omega23 + omega24);
-            U2 = Bnew * (omega24 + omega22);
-            U3 = Bnew * (omega23 - omega21);
+            double o21 = o1 * o1;
+            double o22 = o2 * o2;
+            double o23 = o3 * o3;
+            double o24 = o4 * o4;
+
+            U1 = B * (o21 + o22 + o23 + o24);
+            U2 = B * (o24 + o22);
+            U3 = B * (o23 - o21);
+            U4 = D * (o22 + o24 - o21 - o23);
+
+            omega = o2 + o4 - o1 - o3;
         }
 
     public:

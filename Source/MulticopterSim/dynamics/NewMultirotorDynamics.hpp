@@ -52,16 +52,14 @@ class MultirotorDynamics {
         /** 
          * You must implement this method in a subclass for each vehicle.
          */
-        virtual void getForces(double & U1, double & U2, double & U3, double & U4) = 0;
+        virtual void getForces(double & U1, double & U2, double & U3, double & U4, double & Omega) = 0;
 
         /**
-         *  Converts motor value in [0,1] to square of radians per second
+         *  Converts motor value in [0,1] to radians per second
          */
-        static double rpss(double motorval, const double maxrpm)
+        static double rps(double motorval, const double maxrpm)
         {
-            double omega = motorval * maxrpm * M_PI / 30; // radians per second
-
-            return omega*omega;
+            return motorval * maxrpm * M_PI / 30; 
         }
 
     public:
@@ -110,9 +108,10 @@ class MultirotorDynamics {
             double U2 = 0;
             double U3 = 0;
             double U4 = 0;
+            double Omega = 0;
 
             // Use frame subclass (e.g., Iris) to convert motor values to forces 
-            getForces(U1, U2, U3, U4);
+            getForces(U1, U2, U3, U4, Omega);
         }
 
         /**
