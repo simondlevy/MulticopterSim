@@ -2,7 +2,7 @@
  * MultirotorDynamics implementation for 3DR Iris
  *
  *
- * Uses CLeanflight QuadX motor layout:
+ * Uses Ardupilot QuadX motor layout:
  *
  *   3cw   1ccw
  *      \ /
