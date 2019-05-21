@@ -24,26 +24,7 @@ class MultirotorDynamics {
         static constexpr double M_PI = 3.14159265358979323846;
 #endif
 
-        double _xstate[12] = {0}; 
-
-        double _x   = 0;
-        double _xd  = 0;
-        double _xdd = 0;
-        double _y   = 0;
-        double _yd  = 0;
-        double _ydd = 0;
-        double _z   = 0;
-        double _zd  = 0;
-        double _zdd = 0;
-        double _phi   = 0;
-        double _phid  = 0;
-        double _phidd = 0;
-        double _theta   = 0;
-        double _thetad  = 0;
-        double _thetadd = 0;
-        double _psi   = 0;
-        double _psid  = 0;
-        double _psidd = 0;
+        double _x[12] = {0}; 
 
 
         // Flag for whether we're airborne
@@ -55,8 +36,6 @@ class MultirotorDynamics {
          * You must implement this method in a subclass for each vehicle.
          */
         virtual void getForces(double & Fz, double & L, double & M, double & N) = 0;
-
-        virtual void getForces2(double & U1, double & U2, double & U3, double & U4) = 0;
 
         /*
          *  Converts motor value in [0,1] to thrust in Newtons
@@ -78,16 +57,6 @@ class MultirotorDynamics {
             return F; // XXX should use dx, dy
         }
 
-        /**
-         *  Converts motor value in [0,1] to square of radians per second
-         */
-        static double rpss(double motorval, const double maxrpm)
-        {
-            double omega = motorval * maxrpm * M_PI / 30; // radians per second
-
-            return omega*omega;
-        }
-
     public:
 
         /** 
@@ -98,37 +67,16 @@ class MultirotorDynamics {
             // Zero-out state
             
             for (uint8_t j=0; j<12; ++j) {
-                _xstate[j] = 0;
+                _x[j] = 0;
             }
-
-            _xd  = 0;
-            _xdd = 0;
-            _yd  = 0;
-            _ydd = 0;
-            _zd  = 0;
-            _zdd = 0;
-            _phid  = 0;
-            _phidd = 0;
-            _thetad  = 0;
-            _thetadd = 0;
-            _psid  = 0;
-            _psidd = 0;
 
             // Set pose
            
             for (uint8_t j=0; j<3; ++j) {
 
-                _xstate[j+6]     = rotation[j];
-                _xstate[j+9]     = position[j];
+                _x[j+6]     = rotation[j];
+                _x[j+9]     = position[j];
             }
-
-            _x = position[0];
-            _y = position[1];
-            _z = position[2];
-
-            _phi   = rotation[0];
-            _theta = rotation[1];
-            _psi   = rotation[2];
 
             _airborne = airborne;
         }
@@ -146,31 +94,24 @@ class MultirotorDynamics {
             double M  = 0;
             double N  = 0;
 
-            double U1 = 0;
-            double U2 = 0;
-            double U3 = 0;
-            double U4 = 0;
-
             // Use frame subclass (e.g., Iris) to convert motor values to forces 
             
             getForces(Fz, L, M, N);
 
-            getForces2(U1, U2, U3, U4);
-
             // XXX For now, we go directly from rotational force to angular velocity
-            _xstate[3] = L; 
-            _xstate[4] = M;
-            _xstate[5] = N;
+            _x[3] = L; 
+            _x[4] = M;
+            _x[5] = N;
 
             // Integrate rotational velocity to get Euler angles
             for (uint8_t j=0; j<3; ++j) {
-                _xstate[j+6] += dt * _xstate[j+3];
+                _x[j+6] += dt * _x[j+3];
             }
 
             // Rename Euler angles for readability
-            double phi   = _xstate[6];
-            double theta = _xstate[7];
-            double psi   = _xstate[8];
+            double phi   = _x[6];
+            double theta = _x[7];
+            double psi   = _x[8];
 
             // Pre-compute angle trigonometry for rotation to earth frame
             double sphi = sin(phi);
@@ -200,10 +141,10 @@ class MultirotorDynamics {
                 for (uint8_t j=0; j<3; ++j) {
 
                     // Integrate acceleration to get velocity
-                    _xstate[j] += dt * accelXYZ[j];
+                    _x[j] += dt * accelXYZ[j];
 
                     // Integrate velocity to get position
-                    _xstate[j+9] += dt * _xstate[j];
+                    _x[j+9] += dt * _x[j];
                 }
             }
         }
@@ -221,10 +162,10 @@ class MultirotorDynamics {
         void getState(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double positionXYZ[3])
         {
             for (uint8_t j=0; j<3; ++j) {
-                angularVelocity[j] = _xstate[j+3];
-                eulerAngles[j]     = _xstate[j+6];
-                velocityXYZ[j]     = _xstate[j];
-                positionXYZ[j]     = _xstate[j+9];
+                angularVelocity[j] = _x[j+3];
+                eulerAngles[j]     = _x[j+6];
+                velocityXYZ[j]     = _x[j];
+                positionXYZ[j]     = _x[j+9];
             }
         }
 

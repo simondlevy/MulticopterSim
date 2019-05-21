@@ -1,14 +1,13 @@
 /*
- * MultirotorDynamics implementation for 3DR Iris
+ * MultirotorDynamics implementation for + confuration quadcopter:
  *
- *
- * Uses CLeanflight QuadX motor layout:
- *
- *   3cw   1ccw
- *      \ /
- *       X
- *      / \
- *   2ccw  4cw
+ *         1cw
+ *          |
+ *          |
+ *   4ccw - + - 2ccw
+ *          |
+ *          |
+ *         3cw
  *
  * See: https://charlestytler.com/modeling-vehicle-dynamics-6dof-nonlinear-simulation/#Equations-of-Motion
  *
@@ -17,9 +16,9 @@
  * MIT License
  */
 
-#include "MultirotorDynamics.hpp"
+#include "MultirotorDynamicsNew.hpp"
 
-class IrisDynamics : public MultirotorDynamics {
+class QuadPlusDynamics : public MultirotorDynamics {
 
     private:
 
@@ -46,22 +45,16 @@ class IrisDynamics : public MultirotorDynamics {
 
     protected:
 
-        // Get forces based on current motor values.
-        virtual void getForces(double & Fz, double & L, double & M, double & N) override
+        virtual void getForces(double & U1, double & U2, double & U3, double & U4) override
         {
-            // Convert motor values in [0,1] to thrusts in Newtons
-            double F1 = Fthrust(_motorvals[0], B, MAXRPM);
-            double F2 = Fthrust(_motorvals[1], B, MAXRPM);
-            double F3 = Fthrust(_motorvals[2], B, MAXRPM);
-            double F4 = Fthrust(_motorvals[3], B, MAXRPM);
+            double omega21 = rpss(_motorvals[0], MAXRPM);
+            double omega22 = rpss(_motorvals[1], MAXRPM);
+            double omega23 = rpss(_motorvals[2], MAXRPM);
+            double omega24 = rpss(_motorvals[3], MAXRPM);
 
-            // Convert motor thrusts to angular accelerations
-            L = (F2*d2y + F3*d3y) - (F1*d1y + F4*d4y);
-            M = (F1*d1x + F3*d3x) - (F2*d2x + F4*d4x); 
-            N = (T(F1,d1x,d1y) + T(F2,d2x,d2y)) - (T(F3,d3x,d3y) + T(F4,d4x,d4y)); 
-
-            // Compute orthogonal force component Fz
-            Fz = F1 + F2 + F3 + F4;
+            U1 = Bnew * (omega21 + omega22 + omega23 + omega24);
+            U2 = Bnew * (omega24 + omega22);
+            U3 = Bnew * (omega23 - omega21);
         }
 
     public:
@@ -73,11 +66,13 @@ class IrisDynamics : public MultirotorDynamics {
             }
         }
 
-}; // class IrisDynamics
+}; // class QuadPlusDynamics
 
 // Factory method
+/*
 MultirotorDynamics * MultirotorDynamics::create(void)
 {
-    return new IrisDynamics();
+    return new QuadPlusDynamics();
 }
+*/
 
