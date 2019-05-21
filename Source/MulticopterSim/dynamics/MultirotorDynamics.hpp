@@ -58,9 +58,9 @@ class MultirotorDynamics {
          *  Converts motor value in [0,1] to thrust in Newtons
          *
          */
-         static double Fthrust(double motorval, const double b, const double maxrpm)
+        static double Fthrust(double motorval, const double b, const double maxrpm)
         {
-            double omega = motorval * maxrpm * M_PI / 30;
+            double omega = motorval * maxrpm * M_PI / 30; // radians per second
 
             return b * (omega*omega);
         }
@@ -94,7 +94,7 @@ class MultirotorDynamics {
                 _x[j+9]     = position[j];
                 _xtest[j+6] = rotation[j];
                 _xtest[j+9] = position[j];
-             }
+            }
 
             _airborne = airborne;
             _airborne_test = airborne;
