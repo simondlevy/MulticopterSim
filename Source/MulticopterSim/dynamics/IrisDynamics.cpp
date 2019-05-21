@@ -60,6 +60,16 @@ class IrisDynamics : public MultirotorDynamics {
             Fz = F1 + F2 + F3 + F4;
         }
 
+        virtual void getForces2(double & U1, double & U2, double & U3, double & U4) override
+        {
+            double omega21 = rpss(_motorvals[0], MAXRPM);
+            double omega22 = rpss(_motorvals[1], MAXRPM);
+            double omega23 = rpss(_motorvals[2], MAXRPM);
+            double omega24 = rpss(_motorvals[3], MAXRPM);
+
+            U1 = B * (omega21 + omega22 + omega23 + omega24);
+        }
+
     public:
 
         void setMotors(double * motorvals)

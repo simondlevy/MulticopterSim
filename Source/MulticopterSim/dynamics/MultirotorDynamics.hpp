@@ -56,6 +56,8 @@ class MultirotorDynamics {
          */
         virtual void getForces(double & Fz, double & L, double & M, double & N) = 0;
 
+        virtual void getForces2(double & U1, double & U2, double & U3, double & U4) = 0;
+
         /*
          *  Converts motor value in [0,1] to thrust in Newtons
          *
@@ -74,6 +76,16 @@ class MultirotorDynamics {
         static double T(double F, double dx, double dy)
         {
             return F; // XXX should use dx, dy
+        }
+
+        /**
+         *  Converts motor value in [0,1] to square of radians per second
+         */
+        static double rpss(double motorval, const double maxrpm)
+        {
+            double omega = motorval * maxrpm * M_PI / 30; // radians per second
+
+            return omega*omega;
         }
 
     public:
@@ -128,14 +140,22 @@ class MultirotorDynamics {
         void update(double dt)
         {
             // Forces
+            
             double Fz = 0;
             double L  = 0;
             double M  = 0;
             double N  = 0;
 
-            // Use frame subclass (e.g., Iris) to convert motor values to forces (in
-            // reality, we get vertical thrust and angular velocities)
+            double U1 = 0;
+            double U2 = 0;
+            double U3 = 0;
+            double U4 = 0;
+
+            // Use frame subclass (e.g., Iris) to convert motor values to forces 
+            
             getForces(Fz, L, M, N);
+
+            getForces2(U1, U2, U3, U4);
 
             // XXX For now, we go directly from rotational force to angular velocity
             _xstate[3] = L; 
