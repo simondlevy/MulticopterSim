@@ -1,5 +1,5 @@
 /*
- * MultirotorDynamics implementation for + confuration quadcopter:
+ * MultirotorDynamics implementation for a plus-confuration quadcopter:
  *
  *         1cw
  *          |
@@ -9,25 +9,7 @@
  *          |
  *         3cw
  *
- * Based on:
- *
- *   @inproceedings{DBLP:conf/icra/BouabdallahMS04,
- *    author    = {Samir Bouabdallah and
- *                  Pierpaolo Murrieri and
- *                  Roland Siegwart},
- *     title     = {Design and Control of an Indoor Micro Quadrotor},
- *     booktitle = {Proceedings of the 2004 {IEEE} International Conference on Robotics
- *                  and Automation, {ICRA} 2004, April 26 - May 1, 2004, New Orleans,
- *                  LA, {USA}},
- *     pages     = {4393--4398},
- *     year      = {2004},
- *     crossref  = {DBLP:conf/icra/2004},
- *     url       = {https://doi.org/10.1109/ROBOT.2004.1302409},
- *     doi       = {10.1109/ROBOT.2004.1302409},
- *     timestamp = {Sun, 04 Jun 2017 01:00:00 +0200},
- *     biburl    = {https://dblp.org/rec/bib/conf/icra/BouabdallahMS04},
- *     bibsource = {dblp computer science bibliography, https://dblp.org}
- *   }
+ * For reference citation see MultirotorDynamics.hpp
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -70,11 +52,11 @@ class QuadPlusDynamics : public MultirotorDynamics {
             double o23 = o3 * o3;
             double o24 = o4 * o4;
 
+            // Eqn. 6
             U1 = o21 + o22 + o23 + o24;
             U2 = o24 + o22;
             U3 = o23 - o21;
             U4 = o22 + o24 - o21 - o23;
-
             Omega = o2 + o4 - o1 - o3;
         }
 
