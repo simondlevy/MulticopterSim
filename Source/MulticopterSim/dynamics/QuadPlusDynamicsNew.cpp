@@ -43,19 +43,22 @@ class QuadPlusDynamics : public MultirotorDynamics {
         // Motor constants
         double MAXRPM = 10000;
 
-        // Propeller/motor constants
-        const double B = 0.0000530216718361085;
-        const double D = 2.23656692806239E-06;
-        const double M = 16.47;
-        //const double I = 2,2,3;
-        const double Jr = 0.000308013; // Kg*m^2
-
         // Current motor values in interval [0,1]
         double _motorvals[4] = {0};
 
     protected:
 
-        virtual void getForces(double & U1, double & U2, double & U3, double & U4, double & omega) override
+        // Propeller/motor constants
+        const double b(void)  override  { return 0.0000530216718361085; }
+        const double d(void)  override  { return 2.23656692806239E-06; }
+        const double m(void)  override  { return 16.47; }
+        const double l(void)  override  { return 0.6; }
+        const double Ix(void) override  { return 2; }
+        const double Iy(void) override  { return 2; }
+        const double Iz(void) override  { return 3; }
+        const double Jr(void) override  { return 0.000308013; } // Kg*m^2
+
+        virtual void getForces(double & U1, double & U2, double & U3, double & U4, double & Omega) override
         {
             double o1 = rps(_motorvals[0], MAXRPM);
             double o2 = rps(_motorvals[1], MAXRPM);
@@ -67,12 +70,12 @@ class QuadPlusDynamics : public MultirotorDynamics {
             double o23 = o3 * o3;
             double o24 = o4 * o4;
 
-            U1 = B * (o21 + o22 + o23 + o24);
-            U2 = B * (o24 + o22);
-            U3 = B * (o23 - o21);
-            U4 = D * (o22 + o24 - o21 - o23);
+            U1 = o21 + o22 + o23 + o24;
+            U2 = o24 + o22;
+            U3 = o23 - o21;
+            U4 = o22 + o24 - o21 - o23;
 
-            omega = o2 + o4 - o1 - o3;
+            Omega = o2 + o4 - o1 - o3;
         }
 
     public:

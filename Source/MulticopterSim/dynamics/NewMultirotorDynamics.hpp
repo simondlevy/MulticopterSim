@@ -50,12 +50,24 @@ class MultirotorDynamics {
     protected:
 
         /** 
+         * You must implement these constant methods in a subclass for each vehicle.
+         */
+        virtual const double b(void)  = 0;
+        virtual const double d(void)  = 0;
+        virtual const double m(void)  = 0;
+        virtual const double l(void)  = 0;
+        virtual const double Ix(void) = 0;
+        virtual const double Iy(void) = 0;
+        virtual const double Iz(void) = 0; 
+        virtual const double Jr(void) = 0;
+
+        /** 
          * You must implement this method in a subclass for each vehicle.
          */
         virtual void getForces(double & U1, double & U2, double & U3, double & U4, double & Omega) = 0;
 
         /**
-         *  Converts motor value in [0,1] to radians per second
+         *  Use this in your subclass to convert motor value in [0,1] to radians per second
          */
         static double rps(double motorval, const double maxrpm)
         {
@@ -110,8 +122,11 @@ class MultirotorDynamics {
             double U4 = 0;
             double Omega = 0;
 
-            // Use frame subclass (e.g., Iris) to convert motor values to forces 
+            // Use frame subclass (e.g., Iris) to convert motor values to unscaled forces 
             getForces(U1, U2, U3, U4, Omega);
+
+            // Multiply unscaled forces by drag, thrust constants
+            U1 *= b();
         }
 
         /**
