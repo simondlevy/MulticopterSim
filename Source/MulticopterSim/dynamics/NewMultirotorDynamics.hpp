@@ -35,13 +35,9 @@ class MultirotorDynamics {
 
     private:
 
-        // Earth's gravitational constant.  Eventually we may want to make this a variable.
-        static constexpr double G = 9.80665;
-        
-        // M_PI is not defined on some systems
-#ifndef M_PI
-        static constexpr double M_PI = 3.14159265358979323846;
-#endif
+        // Universal constants
+        static constexpr double g  = 9.80665; // might want to allow this to vary!
+        static constexpr double pi = 3.14159;
 
         double _x   = 0;
         double _xd  = 0;
@@ -62,6 +58,11 @@ class MultirotorDynamics {
         double _psid  = 0;
         double _psidd = 0;
 
+        // 
+
+        int _nmotors;
+
+        double * _omegas;
 
         // Flag for whether we're airborne
         bool _airborne = false;
@@ -80,19 +81,31 @@ class MultirotorDynamics {
         virtual const double Iz(void) = 0; 
         virtual const double Jr(void) = 0;
 
-        /** 
-         * You must implement this method in a subclass for each vehicle.
-         */
-        virtual void getForces(double & U1, double & U2, double & U3, double & U4, double & Omega) = 0;
+        virtual const unsigned int maxrpm(void) = 0;
 
-        /**
-         *  Use this in your subclass to convert motor value in [0,1] to radians per second
-         */
-        static double rps(double motorval, const double maxrpm)
+        MultirotorDynamics(int nmotors)
         {
-            return motorval * maxrpm * M_PI / 30; 
+            _omegas = new double[nmotors];
         }
 
+        virtual ~MultirotorDynamics(void)
+        {
+            delete _omegas;
+        }
+
+        // Values computed in Equation 6
+        double _U1 = 0;
+        double _U2 = 0;
+        double _U3 = 0;
+        double _U4 = 0;
+        double _Omega = 0;
+
+        // Functions computing these values for a particular build
+        virtual double u2(double * o2)  = 0;
+        virtual double u3(double * o2)  = 0;
+        virtual double u4(double * o2)  = 0;
+        virtual double omega(double * o) = 0;
+ 
     public:
 
         /** 
@@ -101,7 +114,6 @@ class MultirotorDynamics {
         void init(double position[3], double rotation[3], bool airborne=false)
         {
             // Zero-out state first derivatives
-            
             _xd  = 0;
             _xdd = 0;
             _yd  = 0;
@@ -116,51 +128,64 @@ class MultirotorDynamics {
             _psidd = 0;
 
             // Set pose
-           
             _x = position[0];
             _y = position[1];
             _z = position[2];
-
             _phi   = rotation[0];
             _theta = rotation[1];
             _psi   = rotation[2];
 
+            // We can start on the ground (default) or in the air
             _airborne = airborne;
         }
 
         /** 
          * Updates dynamics state.
          */
-
         void update(double dt)
         {
-            // Forces
-            double U1 = 0;
-            double U2 = 0;
-            double U3 = 0;
-            double U4 = 0;
-            double Omega = 0;
-
-            // Use frame subclass (e.g., Iris) to convert motor values to unscaled forces 
-            getForces(U1, U2, U3, U4, Omega);
-
-            // Multiply unscaled forces by drag, thrust constants (Eqn. 5)
-            U1 *= b();
-            U2 *= b();
-            U3 *= b();
-            U4 *= d();
+            // Use scaled forces to update state second-derivatives (Eqn. 6)
+            _xdd = (cos(_phi)*sin(_theta)*cos(_psi) + sin(_phi)*sin(_psi)) / m() * _U1;
+            _ydd = (cos(_phi)*sin(_theta)*sin(_psi) + sin(_phi)*cos(_psi)) / m() * _U1;
+            _zdd = -g + (cos(_phi)*cos(_theta)) / m() * _U1;
         }
 
         /**
-         * Sets motor values.
-         * You must implement this method in a subclass for each vehicle.
+         * Uses motor values to implement Equations 5 and 6.
+         * @param motorvals in interval [0,1]
          */
-        virtual void setMotors(double * motorvals) = 0;
+        void setMotors(double * motorvals) 
+        {
+            // For any vehicle, U1 is always the scaled sum of the motor omegas
+            _U1 = 0;
+
+            // Convert the  motor values to radians per second, accumulating U1
+            for (int i=0; i<_nmotors; ++i) {
+                _omegas[i] = motorvals[i] * maxrpm() * pi / 30;
+                _U1 += _omegas[i];
+            }
+
+            // Scale U1
+            _U1 *= b();
+
+            // Compute Omega from Omegas
+            _Omega = omega(_omegas);
+            
+            // Square the Omegas
+            for (int i=0; i<_nmotors; ++i) {
+                _omegas[i] *= _omegas[i];
+            }
+
+            // Use the squared Omegas to implement the rest of Eqn. 6
+            _U2 = b() * u2(_omegas);
+            _U3 = b() * u3(_omegas);
+            _U4 = d() * u4(_omegas);
+
+        }
 
         /*
          *  Gets current state
          */
-
         void getState(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double positionXYZ[3])
         {
         }

@@ -20,17 +20,8 @@
 
 class QuadPlusDynamics : public MultirotorDynamics {
 
-    private:
-
-        // Motor constants
-        double MAXRPM = 10000;
-
-        // Current motor values in interval [0,1]
-        double _motorvals[4] = {0};
-
     protected:
 
-        // Propeller/motor constants
         const double b(void)  override  { return 0.0000530216718361085; }
         const double d(void)  override  { return 2.23656692806239E-06; }
         const double m(void)  override  { return 16.47; }
@@ -40,42 +31,39 @@ class QuadPlusDynamics : public MultirotorDynamics {
         const double Iz(void) override  { return 3; }
         const double Jr(void) override  { return 0.000308013; } // Kg*m^2
 
-        virtual void getForces(double & U1, double & U2, double & U3, double & U4, double & Omega) override
+        const unsigned int maxrpm(void) override { return 10000; }
+
+        QuadPlusDynamics(void) : MultirotorDynamics(4) { }
+
+        // Eqn. 6 -------------------------------------------
+        
+        virtual double u2(double * o2) override
         {
-            double o1 = rps(_motorvals[0], MAXRPM);
-            double o2 = rps(_motorvals[1], MAXRPM);
-            double o3 = rps(_motorvals[2], MAXRPM);
-            double o4 = rps(_motorvals[3], MAXRPM);
-
-            double o21 = o1 * o1;
-            double o22 = o2 * o2;
-            double o23 = o3 * o3;
-            double o24 = o4 * o4;
-
-            // Eqn. 6
-            U1 = o21 + o22 + o23 + o24;
-            U2 = o24 + o22;
-            U3 = o23 - o21;
-            U4 = o22 + o24 - o21 - o23;
-            Omega = o2 + o4 - o1 - o3;
+            return o2[3] - o2[1];
         }
 
-    public:
-
-        void setMotors(double * motorvals)
+        virtual double u3(double * o2) override
         {
-            for (uint8_t k=0; k<4; ++k) {
-                _motorvals[k] = motorvals[k];
-            }
+            return o2[2] - o2[0];
+        }
+
+        virtual double u4(double * o2) override
+        {
+            return o2[1] + o2[3] - o2[0] - o2[2];
+        }
+
+        virtual double omega(double * o)
+        {
+            return o[1] + o[3] - o[0] - o[2];
         }
 
 }; // class QuadPlusDynamics
 
 // Factory method
 /*
-MultirotorDynamics * MultirotorDynamics::create(void)
-{
-    return new QuadPlusDynamics();
-}
-*/
+   MultirotorDynamics * MultirotorDynamics::create(void)
+   {
+   return new QuadPlusDynamics();
+   }
+   */
 
