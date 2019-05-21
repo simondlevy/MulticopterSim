@@ -61,7 +61,6 @@ void FFlightManager::performTask(void)
 
         // Update dynamics
         _dynamics->update(deltaT);
-        _dynamics->update_test(deltaT);
 
         // Get vehicle state from dynamics.  We keep pose (position, rotation) in memory for use  in
         // getKinematics() method
@@ -69,14 +68,6 @@ void FFlightManager::performTask(void)
         double angularVelocityRPY[3] = {0}; // body frame
         double velocityXYZ[3] = {0};        // inertial frame
         _dynamics->getState(angularVelocityRPY, _rotation, velocityXYZ, _position);
-
-        double angularVelocityRPY_test[3] = {0}; // body frame
-        double velocityXYZ_test[3] = {0};        // inertial frame
-        double rotation_test[3] = {0};
-        double position_test[3] = {0};
-        _dynamics->getState_test(angularVelocityRPY_test, rotation_test, velocityXYZ_test, position_test);
-
-        //dbgprintf("%+3.3f  %+3.3f", angularVelocityRPY[2], angularVelocityRPY_test[2]);
 
         // Convert Euler angles to quaternion
         double imuOrientationQuat[4]={0};
