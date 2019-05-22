@@ -65,6 +65,7 @@ void FFlightManager::performTask(void)
 
         // Update dynamics
         _dynamics->update(deltaT);
+        _newDynamics->update(deltaT);
 
         // Get vehicle state from dynamics.  We keep pose (position, rotation) in memory for use  in
         // getKinematics() method
