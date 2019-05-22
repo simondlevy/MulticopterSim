@@ -42,6 +42,7 @@ class FFlightManager : public FThreadedWorker {
     protected:
 
         MultirotorDynamics * _dynamics;
+        NewMultirotorDynamics * _newDynamics;
 
         virtual void performTask(void) override;
 

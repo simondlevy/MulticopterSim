@@ -21,9 +21,11 @@ FFlightManager::FFlightManager(
 
     // Create vehicle dynamics via factory method
     _dynamics = MultirotorDynamics::create();
+    _newDynamics = NewMultirotorDynamics::create();
 
     // Initialize dynamics with initial pose
     _dynamics->init(initialPosition, initialRotation);
+    _newDynamics->init(initialPosition, initialRotation);
 
     // Initialize kinematics
     for (uint8_t j=0; j<3; ++j) {
