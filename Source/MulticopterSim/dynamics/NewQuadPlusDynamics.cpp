@@ -18,7 +18,7 @@
 
 #include "NewMultirotorDynamics.hpp"
 
-class QuadPlusDynamics : public MultirotorDynamics {
+class QuadPlusDynamics : public NewMultirotorDynamics {
 
     protected:
 
@@ -58,17 +58,13 @@ class QuadPlusDynamics : public MultirotorDynamics {
 
     public:
 
-        QuadPlusDynamics(void) : MultirotorDynamics(4) { }
+        QuadPlusDynamics(void) : NewMultirotorDynamics(4) { }
 
 }; // class QuadPlusDynamics
 
-/*
-
 // Factory method
-MultirotorDynamics * MultirotorDynamics::create(void)
+NewMultirotorDynamics * NewMultirotorDynamics::create(void)
 {
     return new QuadPlusDynamics();
 }
-
-*/
 

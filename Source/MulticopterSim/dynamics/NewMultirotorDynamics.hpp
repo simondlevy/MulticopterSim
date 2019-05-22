@@ -28,7 +28,7 @@
 
 #pragma once
 
-class MultirotorDynamics {
+class NewMultirotorDynamics {
 
     //private:
     public:
@@ -99,7 +99,7 @@ class MultirotorDynamics {
         /**
          *  Constructor
          */
-        MultirotorDynamics(int nmotors)
+        NewMultirotorDynamics(int nmotors)
         {
             _omegas = new double[nmotors];
         }
@@ -109,7 +109,7 @@ class MultirotorDynamics {
         /**
          *  Destructor
          */
-        virtual ~MultirotorDynamics(void)
+        virtual ~NewMultirotorDynamics(void)
         {
             delete _omegas;
         }
@@ -244,7 +244,7 @@ class MultirotorDynamics {
         /**
          * Factory method
          */
-        static MultirotorDynamics * create(void);
+        static NewMultirotorDynamics * create(void);
 
 }; // class MultirotorDynamics
 
