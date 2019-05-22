@@ -28,6 +28,8 @@
 
 #pragma once
 
+int dbg_nmotors = 0;
+
 class NewMultirotorDynamics {
 
     //private:
@@ -57,7 +59,7 @@ class NewMultirotorDynamics {
         };
 
         // Set by subclass constructor
-        int _nmotors;
+        unsigned int _nmotors;
 
         // Values computed in Equation 6
         double _U1 = 0;
@@ -99,9 +101,10 @@ class NewMultirotorDynamics {
         /**
          *  Constructor
          */
-        NewMultirotorDynamics(int nmotors)
+        NewMultirotorDynamics(unsigned int nmotors)
         {
             _omegas = new double[nmotors];
+            _nmotors = nmotors;
         }
 
     public:
@@ -183,8 +186,12 @@ class NewMultirotorDynamics {
          */
         void setMotors(double * motorvals) 
         {
+
+            dbg_nmotors = _nmotors;
+            return;
+
             // Convert the  motor values to radians per second
-            for (int i=0; i<_nmotors; ++i) {
+            for (unsigned int i=0; i<_nmotors; ++i) {
                 _omegas[i] = motorvals[i] * maxrpm() * pi / 30;
             }
 
@@ -193,7 +200,7 @@ class NewMultirotorDynamics {
 
             // U1 = sum of squared omegas
             _U1 = 0;
-            for (int i=0; i<_nmotors; ++i) {
+            for (unsigned int i=0; i<_nmotors; ++i) {
                 _omegas[i] *= _omegas[i];
                 _U1 += b() * _omegas[i];
             }

@@ -45,6 +45,7 @@ FFlightManager::FFlightManager(
 FFlightManager::~FFlightManager(void)
 {
     delete _dynamics;
+    delete _newDynamics;
     delete _motorvals;
 }
 
@@ -60,6 +61,10 @@ void FFlightManager::performTask(void)
 
         // Send current motor values to dynamics
         _dynamics->setMotors(_motorvals);
+        _newDynamics->setMotors(_motorvals);
+
+        extern int dbg_nmotors;
+        dbgprintf("nmotors: %d", dbg_nmotors);
 
         // Update dynamics
         _dynamics->update(deltaT);
