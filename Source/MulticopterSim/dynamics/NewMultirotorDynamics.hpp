@@ -36,9 +36,8 @@ class MultirotorDynamics {
         static constexpr double g  = 9.80665; // might want to allow this to vary!
         static constexpr double pi = 3.14159;
 
-        // State vector (see Eqn. 12)
+        // State vector (see Eqn. 11)
         double _x[12] = {0};
-
 
         // Set by subclass constructor
         int _nmotors;
@@ -52,6 +51,10 @@ class MultirotorDynamics {
 
         // Radians per second for each motor
         double * _omegas;
+
+        // Kinematics
+        double _location[3] = {0};
+        double _rotation[3] = {0};
 
         // Flag for whether we're airborne
         bool _airborne = false;
@@ -99,25 +102,23 @@ class MultirotorDynamics {
         /** 
          * Initializes pose, with flag for whether we're airbone (helps with testing gravity).
          *
-         * @param position X,Y,Z
+         * @param location X,Y,Z
          * @param rotation phi, theta, psi
          * @param airborne allows us to start on the ground (default) or in the air (e.g., gravity test)
          */
-        void init(double position[3], double rotation[3], bool airborne=false)
+        void init(double location[3], double rotation[3], bool airborne=false)
         {
             // Zero-out entire state
             for (int i=0; i<12; ++i) {
                 _x[i] = 0;
              }
 
-            // Set pose
-            _x[0]  = position[0];
-            _x[2]  = position[1];
-            _x[4]  = position[2];
-            _x[6]  = rotation[0];
-            _x[8]  = rotation[1];
-            _x[10] = rotation[2];
-
+            // Set kinematics
+            for (int i=0; i<3; ++i) {
+                _location[i] = _x[i*2]   = location[i];
+                _rotation[i] = _x[i*2+6] = rotation[i];
+            }
+ 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
         }
@@ -129,7 +130,7 @@ class MultirotorDynamics {
          */
         void update(double dt)
         {
-            // Equation 12
+            // Equation 12: replace state components with their first derivatives
             _x[0]  = _x[1];
             _x[1]  = (cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m();
             _x[2]  = _x[3];
@@ -142,6 +143,12 @@ class MultirotorDynamics {
             _x[9]  = _x[11]*_x[7]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_x[7]*_Omega   + l()/Iy()*_U3; 
             _x[10] = _x[11];
             _x[11] = _x[9]*_x[7]*(Ix()-Iy())/Iz() + l()/Iz()*_U4;
+
+            // Integrate first derivatives to get kinematics
+            for (int i=0; i<3; ++i) {
+                _location[i] += dt * _x[i*2];
+                _rotation[i] += dt * _x[i*2+6];
+            }
         }
 
         /**
@@ -183,9 +190,9 @@ class MultirotorDynamics {
          *  @param angularVelocity
          *  @param eulerAngles
          *  @param velocityXYZ
-         *  @param positionXYZ
+         *  @param locationXYZ
          */
-        void getState(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double positionXYZ[3])
+        void getState(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double locationXYZ[3])
         {
         }
 
