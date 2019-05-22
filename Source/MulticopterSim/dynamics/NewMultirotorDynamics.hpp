@@ -74,9 +74,6 @@ class NewMultirotorDynamics {
         // Flag for whether we're airborne
         bool _airborne = false;
 
-        // Debugging
-        double _netAccZ = 0;
-
     protected:
 
         /** 
@@ -152,12 +149,11 @@ class NewMultirotorDynamics {
         void update(double dt)
         {
             // Compute net vertical acceleration using Equation 12
-            //double netAccZ = -g + (cos(_x[6])*cos(_x[8])) * _U1 / m();
-            _netAccZ = -g + (cos(_x[6])*cos(_x[8])) * _U1 / m();
+            double netAccZ = -g + (cos(_x[6])*cos(_x[8])) * _U1 / m();
 
             // Once net vertical acceleration goes positive, we're airborne
             if (!_airborne) {
-                _airborne = _netAccZ > 0;
+                _airborne = netAccZ > 0;
             }
 
             // Once airborne, we can update dynamics
@@ -171,7 +167,7 @@ class NewMultirotorDynamics {
                     _x[3],
                     (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m(),
                     _x[5],
-                    _netAccZ,
+                    netAccZ,
                     _x[7],
                     _x[11]*_x[9]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[9]*_Omega + l()/Ix()*_U2,
                     _x[9],
