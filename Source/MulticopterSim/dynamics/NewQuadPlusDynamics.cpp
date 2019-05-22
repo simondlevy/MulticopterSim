@@ -16,7 +16,7 @@
  * MIT License
  */
 
-#include "MultirotorDynamics.hpp"
+#include "NewMultirotorDynamics.hpp"
 
 class QuadPlusDynamics : public MultirotorDynamics {
 

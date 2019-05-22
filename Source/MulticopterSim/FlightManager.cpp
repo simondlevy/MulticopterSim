@@ -66,6 +66,7 @@ void FFlightManager::performTask(void)
         // getKinematics() method
         
         double angularVelocityRPY[3] = {0}; // body frame
+        double earthFrameAcceleration[3] = {0}; // inertial frame
         double velocityXYZ[3] = {0};        // inertial frame
         _dynamics->getState(angularVelocityRPY, earthFrameAcceleration, _rotation, velocityXYZ, _position);
 

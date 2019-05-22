@@ -128,11 +128,13 @@ class MultirotorDynamics {
                 _x[i] = 0;
             }
 
-            // Set kinematics
-            for (int i=0; i<3; ++i) {
-                _location[i] = _x[i*2]   = location[i];
-                _rotation[i] = _x[i*2+6] = rotation[i];
-            }
+            _x[STATE_X] = location[0];
+            _x[STATE_Y] = location[1];
+            _x[STATE_Z] = location[2];
+
+            _x[STATE_PHI]   = rotation[0];
+            _x[STATE_THETA] = rotation[1];
+            _x[STATE_PSI]   = rotation[2];
 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
@@ -193,7 +195,7 @@ class MultirotorDynamics {
             _U1 = 0;
             for (int i=0; i<_nmotors; ++i) {
                 _omegas[i] *= _omegas[i];
-                U1 += b() * _omegas[i];
+                _U1 += b() * _omegas[i];
             }
 
             // Use the squared Omegas to implement the rest of Eqn. 6

@@ -171,7 +171,7 @@ class MultirotorDynamics {
                 earthFrameAcceleration[j] = 0;
                 eulerAngles[j]     = _x[j+6];
                 velocityXYZ[j]     = _x[j];
-                positionXYZ[j]     = _x[j+9];
+                locationXYZ[j]     = _x[j+9];
             }
         }
 
