@@ -74,6 +74,9 @@ class NewMultirotorDynamics {
         // Flag for whether we're airborne
         bool _airborne = false;
 
+        // Debugging
+        double _netAccZ = 0;
+
     protected:
 
         /** 
@@ -148,33 +151,45 @@ class NewMultirotorDynamics {
          */
         void update(double dt)
         {
-            // Temporal first derivative of state vector
-            double dxdt[12] = {
+            // Compute net vertical acceleration using Equation 12
+            //double netAccZ = -g + (cos(_x[6])*cos(_x[8])) * _U1 / m();
+            _netAccZ = -g + (cos(_x[6])*cos(_x[8])) * _U1 / m();
 
-                // Equation 12: replace state components with their first derivatives
-                _x[1],
-                (cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m(),
-                _x[3],
-                (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m(),
-                _x[5],
-                -g + (cos(_x[6])*cos(_x[8])) * _U1 / m(),
-                _x[7],
-                _x[11]*_x[9]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[9]*_Omega + l()/Ix()*_U2,
-                _x[9],
-                _x[11]*_x[7]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_x[7]*_Omega   + l()/Iy()*_U3, 
-                _x[11],
-                _x[9]*_x[7]*(Ix()-Iy())/Iz() + l()/Iz()*_U4,
-            };
-
-            // Compute temporal first integral of state vector
-            for (int i=0; i<12; ++i) {
-                _x[i] += dt * dxdt[i];
+            // Once net vertical acceleration goes positive, we're airborne
+            if (!_airborne) {
+                _airborne = _netAccZ > 0;
             }
 
-            // Store earth-frame acceleration for simulating accelerometer
-            _earthFrameAcceleration[0] = dxdt[1];
-            _earthFrameAcceleration[1] = dxdt[3];
-            _earthFrameAcceleration[2] = dxdt[5];
+            // Once airborne, we can update dynamics
+            if (_airborne) {
+
+                double dxdt[12] = {
+
+                    // Equation 12: compute temporal first derivative of state
+                    _x[1],
+                    (cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m(),
+                    _x[3],
+                    (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m(),
+                    _x[5],
+                    _netAccZ,
+                    _x[7],
+                    _x[11]*_x[9]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[9]*_Omega + l()/Ix()*_U2,
+                    _x[9],
+                    _x[11]*_x[7]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_x[7]*_Omega   + l()/Iy()*_U3, 
+                    _x[11],
+                    _x[9]*_x[7]*(Ix()-Iy())/Iz() + l()/Iz()*_U4,
+                };
+
+                // Compute state as first temporal integral of first temporal derivative
+                for (int i=0; i<12; ++i) {
+                    _x[i] += dt * dxdt[i];
+                }
+
+                // Store earth-frame acceleration for simulating accelerometer
+                _earthFrameAcceleration[0] = dxdt[1];
+                _earthFrameAcceleration[1] = dxdt[3];
+                _earthFrameAcceleration[2] = dxdt[5];
+            }
         }
 
         /**
@@ -240,7 +255,7 @@ class NewMultirotorDynamics {
             velocityXYZ[0] = _x[STATE_X_DOT];
             velocityXYZ[1] = _x[STATE_Y_DOT];
             velocityXYZ[2] = _x[STATE_Z_DOT];
-          }
+        }
 
         /**
          * Factory method
