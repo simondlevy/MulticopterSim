@@ -75,6 +75,13 @@ void FFlightManager::performTask(void)
         double velocityXYZ[3] = {0};        // inertial frame
         _dynamics->getState(angularVelocityRPY, earthFrameAcceleration, _rotation, velocityXYZ, _position);
 
+        double newAngularVelocityRPY[3] = {0}; // body frame
+        double newEarthFrameAcceleration[3] = {0}; // inertial frame
+        double newVelocityXYZ[3] = {0};        // inertial frame
+        double newRotation[3] = {0};
+        double newPosition[3] = {0};
+        _newDynamics->getState(newAngularVelocityRPY, newEarthFrameAcceleration, newRotation, newVelocityXYZ, newPosition);
+
         // Convert Euler angles to quaternion
         double imuOrientationQuat[4]={0};
         eulerToQuaternion(_rotation, imuOrientationQuat);
