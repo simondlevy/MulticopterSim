@@ -159,10 +159,16 @@ class MultirotorDynamics {
          *  Gets current state
          */
 
-        void getState(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double positionXYZ[3])
-        {
+        void getState(
+                double angularVelocity[3], 
+                double earthFrameAcceleration[3], 
+                double eulerAngles[3], 
+                double velocityXYZ[3], 
+                double locationXYZ[3])
+         {
             for (uint8_t j=0; j<3; ++j) {
                 angularVelocity[j] = _x[j+3];
+                earthFrameAcceleration[j] = 0;
                 eulerAngles[j]     = _x[j+6];
                 velocityXYZ[j]     = _x[j];
                 positionXYZ[j]     = _x[j+9];

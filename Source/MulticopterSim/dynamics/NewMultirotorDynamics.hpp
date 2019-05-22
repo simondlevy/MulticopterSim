@@ -40,22 +40,36 @@ class MultirotorDynamics {
         // State vector (see Eqn. 11)
         double _x[12] = {0};
 
+        // State vector position map
+        enum {
+            STATE_X, 
+            STATE_X_DOT, 
+            STATE_Y,
+            STATE_Y_DOT,
+            STATE_Z,
+            STATE_Z_DOT,
+            STATE_PHI,
+            STATE_PHI_DOT,
+            STATE_THETA,
+            STATE_THETA_DOT,
+            STATE_PSI,
+            STATE_PSI_DOT
+        };
+
         // Set by subclass constructor
         int _nmotors;
 
         // Values computed in Equation 6
         double _U1 = 0;
-        double _U2 = 0;
-        double _U3 = 0;
+        double _U2 = 0; double _U3 = 0;
         double _U4 = 0;
         double _Omega = 0;
 
         // Radians per second for each motor
         double * _omegas;
 
-        // Kinematics
-        double _location[3] = {0};
-        double _rotation[3] = {0};
+        // Earth-frame acceleration
+        double _earthFrameAcceleration[3] = {0};
 
         // Flag for whether we're airborne
         bool _airborne = false;
@@ -88,8 +102,6 @@ class MultirotorDynamics {
         MultirotorDynamics(int nmotors)
         {
             _omegas = new double[nmotors];
-
-            while (true) ;
         }
 
     public:
@@ -114,14 +126,14 @@ class MultirotorDynamics {
             // Zero-out entire state
             for (int i=0; i<12; ++i) {
                 _x[i] = 0;
-             }
+            }
 
             // Set kinematics
             for (int i=0; i<3; ++i) {
                 _location[i] = _x[i*2]   = location[i];
                 _rotation[i] = _x[i*2+6] = rotation[i];
             }
- 
+
             // We can start on the ground (default) or in the air
             _airborne = airborne;
         }
@@ -133,25 +145,33 @@ class MultirotorDynamics {
          */
         void update(double dt)
         {
-            // Equation 12: replace state components with their first derivatives
-            _x[0]  = _x[1];
-            _x[1]  = (cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m();
-            _x[2]  = _x[3];
-            _x[3]  = (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m();
-            _x[4]  = _x[5];
-            _x[5]  = -g + (cos(_x[6])*cos(_x[8])) * _U1 / m();
-            _x[6]  = _x[7];
-            _x[7]  = _x[11]*_x[9]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[9]*_Omega + l()/Ix()*_U2;
-            _x[8]  = _x[9];
-            _x[9]  = _x[11]*_x[7]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_x[7]*_Omega   + l()/Iy()*_U3; 
-            _x[10] = _x[11];
-            _x[11] = _x[9]*_x[7]*(Ix()-Iy())/Iz() + l()/Iz()*_U4;
+            // Temporal first derivative of state vector
+            double dxdt[12] = {
 
-            // Integrate first derivatives to get kinematics
-            for (int i=0; i<3; ++i) {
-                _location[i] += dt * _x[i*2];
-                _rotation[i] += dt * _x[i*2+6];
+                // Equation 12: replace state components with their first derivatives
+                _x[1],
+                (cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m(),
+                _x[3],
+                (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m(),
+                _x[5],
+                -g + (cos(_x[6])*cos(_x[8])) * _U1 / m(),
+                _x[7],
+                _x[11]*_x[9]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[9]*_Omega + l()/Ix()*_U2,
+                _x[9],
+                _x[11]*_x[7]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_x[7]*_Omega   + l()/Iy()*_U3, 
+                _x[11],
+                _x[9]*_x[7]*(Ix()-Iy())/Iz() + l()/Iz()*_U4,
+            };
+
+            // Compute temporal first integral of state vector
+            for (int i=0; i<12; ++i) {
+                _x[i] += dt * dxdt[i];
             }
+
+            // Store earth-frame acceleration for simulating accelerometer
+            _earthFrameAcceleration[0] = dxdt[1];
+            _earthFrameAcceleration[1] = dxdt[3];
+            _earthFrameAcceleration[2] = dxdt[5];
         }
 
         /**
@@ -161,48 +181,63 @@ class MultirotorDynamics {
          */
         void setMotors(double * motorvals) 
         {
-            // ====================
-            // For any vehicle, U1 is always the scaled sum of the motor omegas
-            _U1 = 0;
-
-            // Convert the  motor values to radians per second, accumulating U1
+            // Convert the  motor values to radians per second
             for (int i=0; i<_nmotors; ++i) {
-                //_omegas[i] = motorvals[i] * maxrpm() * pi / 30;
-                //_U1 += _omegas[i];
+                _omegas[i] = motorvals[i] * maxrpm() * pi / 30;
             }
-
-            return;
-
-            // Scale U1
-            _U1 *= b();
 
             // Compute Omega from Omegas
             _Omega = omega(_omegas);
 
-            // Square the Omegas
+            // U1 = sum of squared omegas
+            _U1 = 0;
             for (int i=0; i<_nmotors; ++i) {
                 _omegas[i] *= _omegas[i];
+                U1 += b() * _omegas[i];
             }
 
             // Use the squared Omegas to implement the rest of Eqn. 6
             _U2 = b() * u2(_omegas);
             _U3 = b() * u3(_omegas);
             _U4 = d() * u4(_omegas);
-
-            // ====================
         }
 
         /*
          *  Gets current state
          *
          *  @param angularVelocity
+         *  @param earthFrameAcceleration
          *  @param eulerAngles
          *  @param velocityXYZ
          *  @param locationXYZ
          */
-        void getState(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double locationXYZ[3])
+        void getState(
+                double angularVelocity[3], 
+                double earthFrameAcceleration[3], 
+                double eulerAngles[3], 
+                double velocityXYZ[3], 
+                double locationXYZ[3])
         {
-        }
+            earthFrameAcceleration[0] = _earthFrameAcceleration[0];
+            earthFrameAcceleration[1] = _earthFrameAcceleration[1];
+            earthFrameAcceleration[2] = _earthFrameAcceleration[2];
+
+            angularVelocity[0] = _x[STATE_PHI_DOT];
+            angularVelocity[1] = _x[STATE_THETA_DOT];
+            angularVelocity[2] = _x[STATE_PSI_DOT];
+
+            eulerAngles[0] = _x[STATE_PHI];
+            eulerAngles[1] = _x[STATE_THETA];
+            eulerAngles[2] = _x[STATE_PSI];
+
+            locationXYZ[0] = _x[STATE_X];
+            locationXYZ[1] = _x[STATE_Y];
+            locationXYZ[2] = _x[STATE_Z];
+
+            velocityXYZ[0] = _x[STATE_X_DOT];
+            velocityXYZ[1] = _x[STATE_Y_DOT];
+            velocityXYZ[2] = _x[STATE_Z_DOT];
+          }
 
         /**
          * Factory method

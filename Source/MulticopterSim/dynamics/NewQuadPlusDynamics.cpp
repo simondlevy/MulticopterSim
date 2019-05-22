@@ -62,9 +62,13 @@ class QuadPlusDynamics : public MultirotorDynamics {
 
 }; // class QuadPlusDynamics
 
+/*
+
 // Factory method
 MultirotorDynamics * MultirotorDynamics::create(void)
 {
     return new QuadPlusDynamics();
 }
+
+*/
 
