@@ -28,8 +28,6 @@
 
 #pragma once
 
-int dbg_nmotors = 0;
-
 class NewMultirotorDynamics {
 
     //private:
@@ -186,10 +184,6 @@ class NewMultirotorDynamics {
          */
         void setMotors(double * motorvals) 
         {
-
-            dbg_nmotors = _nmotors;
-            return;
-
             // Convert the  motor values to radians per second
             for (unsigned int i=0; i<_nmotors; ++i) {
                 _omegas[i] = motorvals[i] * maxrpm() * pi / 30;

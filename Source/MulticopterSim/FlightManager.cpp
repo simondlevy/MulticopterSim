@@ -63,9 +63,6 @@ void FFlightManager::performTask(void)
         _dynamics->setMotors(_motorvals);
         _newDynamics->setMotors(_motorvals);
 
-        extern int dbg_nmotors;
-        dbgprintf("nmotors: %d", dbg_nmotors);
-
         // Update dynamics
         _dynamics->update(deltaT);
 
