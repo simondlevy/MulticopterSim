@@ -6,9 +6,7 @@
  * Based on:
  *
  *   @inproceedings{DBLP:conf/icra/BouabdallahMS04,
- *    author    = {Samir Bouabdallah and
- *                  Pierpaolo Murrieri and
- *                  Roland Siegwart},
+ *     author    = {Samir Bouabdallah and Pierpaolo Murrieri and Roland Siegwart},
  *     title     = {Design and Control of an Indoor Micro Quadrotor},
  *     booktitle = {Proceedings of the 2004 {IEEE} International Conference on Robotics
  *                  and Automation, {ICRA} 2004, April 26 - May 1, 2004, New Orleans,
@@ -30,8 +28,6 @@
 
 #pragma once
 
-#include <math.h>
-
 class MultirotorDynamics {
 
     private:
@@ -47,6 +43,13 @@ class MultirotorDynamics {
         // Set by subclass constructor
         int _nmotors;
 
+        // Values computed in Equation 6
+        double _U1 = 0;
+        double _U2 = 0;
+        double _U3 = 0;
+        double _U4 = 0;
+        double _Omega = 0;
+
         // Radians per second for each motor
         double * _omegas;
 
@@ -56,7 +59,7 @@ class MultirotorDynamics {
     protected:
 
         /** 
-         * You must implement these constant methods in a subclass for each vehicle.
+         * You must implement these methods in a subclass for each vehicle.
          */
 
         virtual const double b(void)  = 0;
@@ -75,27 +78,30 @@ class MultirotorDynamics {
 
         virtual double omega(double * o) = 0;
 
+        /**
+         *  Constructor
+         */
         MultirotorDynamics(int nmotors)
         {
             _omegas = new double[nmotors];
         }
 
-        virtual ~MultirotorDynamics(void)
+        /**
+         *  Destructor
+         */
+         virtual ~MultirotorDynamics(void)
         {
             delete _omegas;
         }
-
-        // Values computed in Equation 6
-        double _U1 = 0;
-        double _U2 = 0;
-        double _U3 = 0;
-        double _U4 = 0;
-        double _Omega = 0;
 
     public:
 
         /** 
          * Initializes pose, with flag for whether we're airbone (helps with testing gravity).
+         *
+         * @param position X,Y,Z
+         * @param rotation phi, theta, psi
+         * @param airborne allows us to start on the ground (default) or in the air (e.g., gravity test)
          */
         void init(double position[3], double rotation[3], bool airborne=false)
         {
@@ -140,6 +146,7 @@ class MultirotorDynamics {
 
         /**
          * Uses motor values to implement Equation 6.
+         *
          * @param motorvals in interval [0,1]
          */
         void setMotors(double * motorvals) 
@@ -172,12 +179,19 @@ class MultirotorDynamics {
 
         /*
          *  Gets current state
+         *
+         *  @param angularVelocity
+         *  @param eulerAngles
+         *  @param velocityXYZ
+         *  @param positionXYZ
          */
         void getState(double angularVelocity[3], double eulerAngles[3], double velocityXYZ[3], double positionXYZ[3])
         {
         }
 
-        // Factory method
+        /**
+         * Factory method
+         */
         static MultirotorDynamics * create(void);
 
 }; // class MultirotorDynamics
