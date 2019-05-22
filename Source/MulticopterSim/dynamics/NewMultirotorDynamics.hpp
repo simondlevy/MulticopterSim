@@ -43,11 +43,6 @@ class MultirotorDynamics {
         // State vector (see Eqn. 12)
         double _x[12] = {0};
 
-        // Convenience function allowing us to use 1-based indexing
-        double x(int j) 
-        { 
-            return _x[j-1]; 
-        }
 
         // Set by subclass constructor
         int _nmotors;
@@ -122,34 +117,25 @@ class MultirotorDynamics {
         }
 
         /** 
-         * Updates state using Equation 12.
+         * Updates state.
+         *
          * @param dt time in seconds since previous update
          */
         void update(double dt)
         {
-            _x[0]  = x(2);
-
-            _x[1]  = (cos(x(7))*sin(x(9))*cos(x(11)) + sin(x(7))*sin(x(11))) * _U1 / m();
-
-            _x[2]  = x(4);
-
-            _x[3]  = (cos(x(7))*sin(x(9))*sin(x(11)) + sin(x(7))*cos(x(11))) * _U1 / m();
-
-            _x[4]  = x(6);
-
-            _x[5]  = -g + (cos(x(7))*cos(x(9))) * _U1 / m();
-
-            _x[6]  = x(8);
-
-            _x[7]  = x(12)*x(10)*(Iy()-Iz())/Ix() - Jr()/Ix()*x(10)*_Omega + l()/Ix()*_U2;
-
-            _x[8]  = x(10);
-
-            _x[9]  = x(12)*x(8)*(Iz()-Ix())/Iy()   + Jr()/Iy()*x(8)*_Omega   + l()/Iy()*_U3; 
-
-            _x[10] = x(12);
-
-            _x[11] = x(10)*x(8)*(Ix()-Iy())/Iz() + l()/Iz()*_U4;
+            // Equation 12
+            _x[0]  = _x[1];
+            _x[1]  = (cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m();
+            _x[2]  = _x[3];
+            _x[3]  = (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m();
+            _x[4]  = _x[5];
+            _x[5]  = -g + (cos(_x[6])*cos(_x[8])) * _U1 / m();
+            _x[6]  = _x[7];
+            _x[7]  = _x[11]*_x[9]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[9]*_Omega + l()/Ix()*_U2;
+            _x[8]  = _x[9];
+            _x[9]  = _x[11]*_x[7]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_x[7]*_Omega   + l()/Iy()*_U3; 
+            _x[10] = _x[11];
+            _x[11] = _x[9]*_x[7]*(Ix()-Iy())/Iz() + l()/Iz()*_U4;
         }
 
         /**

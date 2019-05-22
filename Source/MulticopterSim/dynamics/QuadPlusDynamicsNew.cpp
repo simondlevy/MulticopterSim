@@ -22,6 +22,7 @@ class QuadPlusDynamics : public MultirotorDynamics {
 
     protected:
 
+        // Constants
         const double b(void)  override  { return 0.0000530216718361085; }
         const double d(void)  override  { return 2.23656692806239E-06; }
         const double m(void)  override  { return 16.47; }
