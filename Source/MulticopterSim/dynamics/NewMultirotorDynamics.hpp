@@ -8,9 +8,8 @@
  *   @inproceedings{DBLP:conf/icra/BouabdallahMS04,
  *     author    = {Samir Bouabdallah and Pierpaolo Murrieri and Roland Siegwart},
  *     title     = {Design and Control of an Indoor Micro Quadrotor},
- *     booktitle = {Proceedings of the 2004 {IEEE} International Conference on Robotics
- *                  and Automation, {ICRA} 2004, April 26 - May 1, 2004, New Orleans,
- *                  LA, {USA}},
+ *     booktitle = {Proceedings of the 2004 {IEEE} International Conference on Robotics and 
+                    Automation, {ICRA} 2004, April 26 - May 1, 2004, New Orleans, LA, {USA}},
  *     pages     = {4393--4398},
  *     year      = {2004},
  *     crossref  = {DBLP:conf/icra/2004},
@@ -57,7 +56,7 @@ class NewMultirotorDynamics {
         };
 
         // Set by subclass constructor
-        unsigned int _nmotors;
+        unsigned int _nmotors = 0;
 
         // Values computed in Equation 6
         double _U1 = 0;
@@ -66,7 +65,7 @@ class NewMultirotorDynamics {
         double _Omega = 0;
 
         // Radians per second for each motor
-        double * _omegas;
+        double * _omegas = NULL;
 
         // Earth-frame acceleration
         double _earthFrameAcceleration[3] = {0};
@@ -259,11 +258,3 @@ class NewMultirotorDynamics {
         static NewMultirotorDynamics * create(void);
 
 }; // class MultirotorDynamics
-
-
-
-
-
-
-
-
