@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "ThreadedWorker.h"
+#include "ThreadedWorker.hpp"
+
 #include "dynamics/MultirotorDynamics.hpp"
 #include "dynamics/NewMultirotorDynamics.hpp"
 
