@@ -96,7 +96,7 @@ Joystick::Joystick(void)
     }
 }
 
-void Joystick::poll(float axes[6], uint8_t & buttonState)
+Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 {
     JOYINFOEX joyState;
     joyState.dwSize=sizeof(joyState);
@@ -156,12 +156,8 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
             break;
 
         default:
-            if (_productId) {
-                error("****** JOYSTICK PRODUCT 0x%x NOT RECOGNIZED ******", _productId);
-            }
-            else {
-                error("****** NO JOYSTICK DETECTED ******");
-            }
+
+            return _productId ? ERROR_PRODUCT : ERROR_MISSING;
     }
 
     // Normalize the axes to demands to [-1,+1]
@@ -174,6 +170,8 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
         axes[0] = -axes[0];
         axes[2] = -axes[2];
     }
+
+    return Joystick::ERROR_NOERROR;
 }
 
 bool Joystick::isRcTransmitter(void)

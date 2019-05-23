@@ -55,6 +55,7 @@ class FThreadedWorker : public FRunnable {
             vsnprintf(_message, MAXMSG, fmt, ap);
             va_end(ap);
         }
+
         const char * getMessage(void)
         {
             return (const char *)_message;

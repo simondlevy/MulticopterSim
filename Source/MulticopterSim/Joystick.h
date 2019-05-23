@@ -37,9 +37,17 @@ class Joystick {
 
     public:
 
+        typedef enum {
+
+            ERROR_NOERROR,
+            ERROR_MISSING,
+            ERROR_PRODUCT
+
+        } error_t;
+
         Joystick(void);
 
-        void poll(float axes[6], uint8_t & buttonState);
+        error_t poll(float axes[6], uint8_t & buttonState);
 
         bool isRcTransmitter(void);
 
