@@ -11,7 +11,6 @@
 #include "ThreadedWorker.hpp"
 
 #include "dynamics/MultirotorDynamics.hpp"
-#include "dynamics/NewMultirotorDynamics.hpp"
 
 class FFlightManager : public FThreadedWorker {
 
@@ -64,7 +63,6 @@ class FFlightManager : public FThreadedWorker {
     protected:
 
         MultirotorDynamics * _dynamics;
-        NewMultirotorDynamics * _newDynamics;
 
         // Called once on main thread
         FFlightManager(uint8_t motorCount, double initialPosition[3], double initialRotation[3], uint16_t updateFrequency=1000) : FThreadedWorker()
@@ -74,11 +72,9 @@ class FFlightManager : public FThreadedWorker {
 
             // Create vehicle dynamics via factory method
             _dynamics = MultirotorDynamics::create();
-            _newDynamics = NewMultirotorDynamics::create();
 
             // Initialize dynamics with initial pose
             _dynamics->init(initialPosition, initialRotation);
-            _newDynamics->init(initialPosition, initialRotation);
 
             // Initialize kinematics
             for (uint8_t j=0; j<3; ++j) {
@@ -107,28 +103,18 @@ class FFlightManager : public FThreadedWorker {
 
                 // Send current motor values to dynamics
                 _dynamics->setMotors(_motorvals);
-                _newDynamics->setMotors(_motorvals);
 
                 // Update dynamics
                 _dynamics->update(deltaT);
-                _newDynamics->update(deltaT);
 
-                dbgprintf("X: %+3.3f", _newDynamics->_x[NewMultirotorDynamics::STATE_X]);
+                dbgprintf("Z'': %+3.3f", _dynamics->z_dot_dot);
 
                 // Get vehicle state from dynamics.  We keep pose (position, rotation) in memory for use  in
                 // getKinematics() method
-
                 double angularVelocityRPY[3] = {0}; // body frame
                 double earthFrameAcceleration[3] = {0}; // inertial frame
                 double velocityXYZ[3] = {0};        // inertial frame
                 _dynamics->getState(angularVelocityRPY, earthFrameAcceleration, _rotation, velocityXYZ, _position);
-
-                //double newAngularVelocityRPY[3] = {0}; // body frame
-                //double newEarthFrameAcceleration[3] = {0}; // inertial frame
-                //double newVelocityXYZ[3] = {0};        // inertial frame
-                //double newRotation[3] = {0};
-                //double newPosition[3] = {0};
-                //_newDynamics->getState(newAngularVelocityRPY, newEarthFrameAcceleration, newRotation, newVelocityXYZ, newPosition);
 
                 // Convert Euler angles to quaternion
                 double imuOrientationQuat[4]={0};
@@ -143,8 +129,6 @@ class FFlightManager : public FThreadedWorker {
             }
         }
 
-
-
         virtual void getGimbal(float & roll, float &pitch) { roll = 0; pitch = 0; }
 
     public:
@@ -152,7 +136,6 @@ class FFlightManager : public FThreadedWorker {
         ~FFlightManager(void)
         {
             delete _dynamics;
-            delete _newDynamics;
             delete _motorvals;
         }
 

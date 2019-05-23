@@ -16,9 +16,9 @@
  * MIT License
  */
 
-#include "NewMultirotorDynamics.hpp"
+#include "MultirotorDynamics.hpp"
 
-class QuadPlusDynamics : public NewMultirotorDynamics {
+class QuadPlusDynamics : public MultirotorDynamics {
 
     protected:
 
@@ -58,12 +58,12 @@ class QuadPlusDynamics : public NewMultirotorDynamics {
 
     public:
 
-        QuadPlusDynamics(void) : NewMultirotorDynamics(4) { }
+        QuadPlusDynamics(void) : MultirotorDynamics(4) { }
 
 }; // class QuadPlusDynamics
 
 // Factory method
-NewMultirotorDynamics * NewMultirotorDynamics::create(void)
+MultirotorDynamics * MultirotorDynamics::create(void)
 {
     return new QuadPlusDynamics();
 }
