@@ -68,7 +68,7 @@ class MultirotorDynamics {
         double * _omegas = NULL;
 
         // Earth-frame acceleration
-        double _earthFrameAcceleration[3] = {0};
+        double _inertialAcc[3] = {0};
 
         // Flag for whether we're airborne
         bool _airborne = false;
@@ -183,9 +183,9 @@ class MultirotorDynamics {
                 }
 
                 // Store earth-frame acceleration for simulating accelerometer
-                _earthFrameAcceleration[0] = dxdt[STATE_X_DOT];
-                _earthFrameAcceleration[1] = dxdt[STATE_Y_DOT];
-                _earthFrameAcceleration[2] = dxdt[STATE_Z_DOT];
+                _inertialAcc[0] = dxdt[STATE_X_DOT];
+                _inertialAcc[1] = dxdt[STATE_Y_DOT];
+                _inertialAcc[2] = dxdt[STATE_Z_DOT];
             }
         }
 
@@ -220,25 +220,20 @@ class MultirotorDynamics {
         /*
          *  Gets current state
          *
-         *  @param angularVelocity
-         *  @param earthFrameAcceleration
-         *  @param eulerAngles
-         *  @param velocityXYZ
-         *  @param locationXYZ
+         *  @param angularVel  angular velocity radians / second, in body frame
+         *  @param inertialAcc linear acceleration in inertial frame
+         *  @param rotation    Euler angles in radians
+         *  @param inertialVel linear velocity in inertial frame
+         *  @param location    location in inertial frame
          */
-        void getState(
-                double angularVelocity[3], 
-                double earthFrameAcceleration[3], 
-                double eulerAngles[3], 
-                double velocityXYZ[3], 
-                double locationXYZ[3])
+        void getState(double angularVel[3], double inertialAcc[3], double rotation[3], double inertialVel[3], double location[3])
         {
             for (int i=0; i<3; ++i) {
-                earthFrameAcceleration[i] = _earthFrameAcceleration[i];
-                angularVelocity[i] = _x[STATE_PHI_DOT+2*i];
-                eulerAngles[i] = _x[STATE_PHI+2*i];
-                locationXYZ[i] = _x[STATE_X+2*i];
-                velocityXYZ[i] = _x[STATE_X_DOT+2*i];
+                inertialAcc[i] = _inertialAcc[i];
+                angularVel[i]  = _x[STATE_PHI_DOT+2*i];
+                rotation[i]    = _x[STATE_PHI+2*i];
+                location[i]    = _x[STATE_X+2*i];
+                inertialVel[i] = _x[STATE_X_DOT+2*i];
             }
         }
 
