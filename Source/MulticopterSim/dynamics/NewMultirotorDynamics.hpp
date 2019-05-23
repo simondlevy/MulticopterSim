@@ -148,11 +148,11 @@ class NewMultirotorDynamics {
         void update(double dt)
         {
             // Compute net vertical acceleration using Equation 12
-            double netAccZ = -g + (cos(_x[6])*cos(_x[8])) * _U1 / m();
+            double z_dot_dot = -g + (cos(_x[6])*cos(_x[8])) * _U1 / m();
 
             // Once net vertical acceleration goes positive, we're airborne
             if (!_airborne) {
-                _airborne = netAccZ > 0;
+                _airborne = z_dot_dot > 0;
             }
 
             // Once airborne, we can update dynamics
@@ -161,18 +161,18 @@ class NewMultirotorDynamics {
                 double dxdt[12] = {
 
                     // Equation 12: compute temporal first derivative of state
-                    _x[1],
-                    (cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m(),
-                    _x[3],
-                    (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m(),
-                    _x[5],
-                    netAccZ,
-                    _x[7],
-                    _x[11]*_x[9]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[9]*_Omega + l()/Ix()*_U2,
-                    _x[9],
-                    _x[11]*_x[7]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_x[7]*_Omega   + l()/Iy()*_U3, 
-                    _x[11],
-                    _x[9]*_x[7]*(Ix()-Iy())/Iz() + l()/Iz()*_U4,
+                    /* x'      */ _x[1],
+                    /* x''     */ (cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m(),
+                    /* y'      */ _x[3],
+                    /* y''     */ (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m(),
+                    /* z'      */ _x[5],
+                    /* z''     */ z_dot_dot,
+                    /* phi'    */ _x[7],
+                    /* phi''   */ _x[11]*_x[9]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[9]*_Omega + l()/Ix()*_U2,
+                    /* theta'  */ _x[9],
+                    /* theta'' */ _x[11]*_x[7]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_x[7]*_Omega   + l()/Iy()*_U3, 
+                    /* psi'    */ _x[11],
+                    /* psi''   */ _x[9]*_x[7]*(Ix()-Iy())/Iz() + l()/Iz()*_U4,
                 };
 
                 // Compute state as first temporal integral of first temporal derivative
