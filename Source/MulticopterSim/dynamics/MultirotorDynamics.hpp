@@ -233,25 +233,13 @@ class MultirotorDynamics {
                 double velocityXYZ[3], 
                 double locationXYZ[3])
         {
-            earthFrameAcceleration[0] = _earthFrameAcceleration[0];
-            earthFrameAcceleration[1] = _earthFrameAcceleration[1];
-            earthFrameAcceleration[2] = _earthFrameAcceleration[2];
-
-            angularVelocity[0] = _x[STATE_PHI_DOT];
-            angularVelocity[1] = _x[STATE_THETA_DOT];
-            angularVelocity[2] = _x[STATE_PSI_DOT];
-
-            eulerAngles[0] = _x[STATE_PHI];
-            eulerAngles[1] = _x[STATE_THETA];
-            eulerAngles[2] = _x[STATE_PSI];
-
-            locationXYZ[0] = _x[STATE_X];
-            locationXYZ[1] = _x[STATE_Y];
-            locationXYZ[2] = _x[STATE_Z];
-
-            velocityXYZ[0] = _x[STATE_X_DOT];
-            velocityXYZ[1] = _x[STATE_Y_DOT];
-            velocityXYZ[2] = _x[STATE_Z_DOT];
+            for (int i=0; i<3; ++i) {
+                earthFrameAcceleration[i] = _earthFrameAcceleration[i];
+                angularVelocity[i] = _x[STATE_PHI_DOT+2*i];
+                eulerAngles[i] = _x[STATE_PHI+2*i];
+                locationXYZ[i] = _x[STATE_X+2*i];
+                velocityXYZ[i] = _x[STATE_X_DOT+2*i];
+            }
         }
 
         /**
