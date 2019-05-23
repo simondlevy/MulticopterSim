@@ -6,11 +6,12 @@
 * MIT License
 */
 
-#include "OSD.h"
+#pragma once
+
 #include "Engine.h"
 #include "Engine/World.h"
 
-void osd(char * buf, bool err)
+static void osd(char * buf, bool err)
 {
     // Text properties for debugging
     FColor TEXT_COLOR = err ? FColor::Red : FColor::Yellow;

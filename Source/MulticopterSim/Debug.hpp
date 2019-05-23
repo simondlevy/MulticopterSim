@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "OSD.h"
+#include "OSD.hpp"
 
 #include <stdarg.h>
 #include <stdio.h>
