@@ -117,7 +117,7 @@ class MultirotorDynamics {
         }
 
         /** 
-         * Initializes pose, with flag for whether we're airbone (helps with testing gravity).
+         * Initializes kinematic pose, with flag for whether we're airbone (helps with testing gravity).
          *
          * @param location X,Y,Z
          * @param rotation phi, theta, psi
@@ -130,13 +130,11 @@ class MultirotorDynamics {
                 _x[i] = 0;
             }
 
-            _x[STATE_X] = location[0];
-            _x[STATE_Y] = location[1];
-            _x[STATE_Z] = location[2];
-
-            _x[STATE_PHI]   = rotation[0];
-            _x[STATE_THETA] = rotation[1];
-            _x[STATE_PSI]   = rotation[2];
+            // Initialize pose
+            for (int i=0; i<3; ++i) {
+                _x[STATE_X+i] = location[i];
+                _x[STATE_PHI+i] = rotation[i];
+            }
 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
