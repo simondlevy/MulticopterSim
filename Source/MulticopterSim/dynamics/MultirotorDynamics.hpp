@@ -163,9 +163,10 @@ class MultirotorDynamics {
 
                 double dxdt[12] = {
 
-                    // Equation 12: compute temporal first derivative of state
+                    // Equation 12: compute temporal first derivative of state.
+                    // We negate x'' and theta'' to accommodate NED coordinates
                     /* x'      */ _x[1],
-                    /* x''     */ -((cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m()),
+                    /* x''     */ -((cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10]))) * _U1 / m(),
                     /* y'      */ _x[3],
                     /* y''     */ (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m(),
                     /* z'      */ _x[5],
