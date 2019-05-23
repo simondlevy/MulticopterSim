@@ -67,7 +67,7 @@ void FFlightManager::performTask(void)
         _dynamics->update(deltaT);
         _newDynamics->update(deltaT);
 
-        dbgprintf("Z: %f", _newDynamics->_x[NewMultirotorDynamics::STATE_Z]);
+        dbgprintf("X: %+3.3f", _newDynamics->_x[NewMultirotorDynamics::STATE_X]);
 
         // Get vehicle state from dynamics.  We keep pose (position, rotation) in memory for use  in
         // getKinematics() method

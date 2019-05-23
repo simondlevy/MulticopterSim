@@ -181,9 +181,9 @@ class NewMultirotorDynamics {
                 }
 
                 // Store earth-frame acceleration for simulating accelerometer
-                _earthFrameAcceleration[0] = dxdt[1];
-                _earthFrameAcceleration[1] = dxdt[3];
-                _earthFrameAcceleration[2] = dxdt[5];
+                _earthFrameAcceleration[0] = dxdt[STATE_X_DOT];
+                _earthFrameAcceleration[1] = dxdt[STATE_Y_DOT];
+                _earthFrameAcceleration[2] = dxdt[STATE_Z_DOT];
             }
         }
 
