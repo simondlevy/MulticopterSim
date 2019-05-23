@@ -6,13 +6,14 @@
 * MIT License
 */
 
-#include "Debug.h"
+#pragma once
+
 #include "OSD.h"
 
 #include <stdarg.h>
 #include <stdio.h>
 
-void debug(const char * fmt, ...)
+static void debug(const char * fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
@@ -22,7 +23,7 @@ void debug(const char * fmt, ...)
 	va_end(ap);
 }
 
-void error(const char * fmt, ...)
+static void error(const char * fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);

@@ -7,7 +7,7 @@
 */
 
 #include "VehiclePawn.h"
-#include "Debug.h"
+#include "Debug.hpp"
 
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
