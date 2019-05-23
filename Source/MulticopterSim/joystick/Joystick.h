@@ -1,5 +1,5 @@
 /*
- * Joystick/gamepad support for MulticopterSim
+ * Joystick/gamepad support for flight simulators
  *
  * Copyright (C) 2018 Simon D. Levy
  *

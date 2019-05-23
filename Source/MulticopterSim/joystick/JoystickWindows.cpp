@@ -1,5 +1,5 @@
 /*
- * Windows implementation of joystick/gamepad support for MulticopterSim
+ * Windows implementation of joystick/gamepad support for flight controllers
  *
  * Copyright (C) 2018 Simon D. Levy
  *
