@@ -7,8 +7,6 @@
  */
 
 #include "Joystick.h"
-#include "VehiclePawn.h"
-#include "Debug.hpp"
 
 #undef TEXT
 #include <shlwapi.h>
