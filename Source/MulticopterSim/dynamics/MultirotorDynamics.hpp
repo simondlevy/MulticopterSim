@@ -60,7 +60,8 @@ class MultirotorDynamics {
 
         // Values computed in Equation 6
         double _U1 = 0;
-        double _U2 = 0; double _U3 = 0;
+        double _U2 = 0; 
+        double _U3 = 0;
         double _U4 = 0;
         double _Omega = 0;
 
