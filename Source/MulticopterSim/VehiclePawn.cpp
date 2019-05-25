@@ -156,7 +156,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
         setGimbal();
 
         // OSD for debugging messages from flight manager
-        debug("%s", _flightManager->getMessage());
+        //debug("%s", _flightManager->getMessage());
     }
 
     Super::Tick(DeltaSeconds);
@@ -169,7 +169,11 @@ void AVehiclePawn::getKinematics(void)
     // rotation, sound).
     double position[3] = {0};
     double rotation[3] = {0};
-    _flightManager->getKinematics(position, rotation, _motorvals);
+    bool crashed = _flightManager->getKinematics(position, rotation, _motorvals);
+
+    if (crashed) {
+        debug(" ****** CRASHED *******");
+    }
 
     // Negate Z position to accommodate NED coordinates, and mulitply position by 100 to convert from meters
     // to centimeters.
@@ -218,11 +222,8 @@ void AVehiclePawn::NotifyHit(
         FVector NormalImpulse, 
         const FHitResult& Hit)
 {
-    Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-    // Deflect along the surface when we collide.
-    //FRotator CurrentRotation = GetActorRotation();
-    //SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
+    Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 }
 
 void AVehiclePawn::setGimbal(void)

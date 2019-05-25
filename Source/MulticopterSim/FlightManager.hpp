@@ -33,6 +33,9 @@ class FFlightManager : public FThreadedWorker {
         // For computing _deltaT
         double   _previousTime = 0;
 
+        // Did we hit the ground?
+        bool _crashed = false;
+
         // Useful conversion function
         void eulerToQuaternion(double eulerAngles[3], double quaternion[4])
         {
@@ -89,6 +92,9 @@ class FFlightManager : public FThreadedWorker {
             // For periodic update
             _startTime = FPlatformTime::Seconds();
             _previousTime = 0;
+
+            // No crash yet
+            _crashed = false;
         }
         //
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
@@ -107,14 +113,12 @@ class FFlightManager : public FThreadedWorker {
                 // Update dynamics
                 _dynamics->update(deltaT);
 
-                dbgprintf("%s", _dynamics->getMessage());
-
                 // Get vehicle state from dynamics.  We keep pose (position, rotation) in memory for use  in
                 // getKinematics() method
                 double angularVel[3]   = {0}; // body frame
                 double inertialAcc[3]  = {0}; // inertial frame
                 double intertialVel[3] = {0}; // inertial frame
-                _dynamics->getState(angularVel, inertialAcc, _rotation, intertialVel, _position);
+                _crashed = _dynamics->getState(angularVel, inertialAcc, _rotation, intertialVel, _position);
 
                 // Convert Euler angles to quaternion
                 double imuOrientationQuat[4]={0};
@@ -142,7 +146,7 @@ class FFlightManager : public FThreadedWorker {
 
         // Called by VehiclePawn::Tick() method to get current display kinematics
         // (position, rotation) and propeller animation/sound (motorvals)
-        void getKinematics(double position[3], double rotation[3], double * motorvals)
+        bool getKinematics(double position[3], double rotation[3], double * motorvals)
         {
             for (uint8_t j=0; j<_motorCount; ++j) {
                 motorvals[j] = _motorvals[j];
@@ -152,7 +156,10 @@ class FFlightManager : public FThreadedWorker {
                 position[k] = _position[k];
                 rotation[k] = _rotation[k];
             }
+
+            return _crashed;
         }
+
         // Factory method implemented by your subclass
         static FFlightManager * createFlightManager(double initialPosition[3], double initialRotation[3]);
 };

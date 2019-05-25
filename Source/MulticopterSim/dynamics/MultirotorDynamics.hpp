@@ -229,8 +229,10 @@ class MultirotorDynamics {
          *  @param rotation    Euler angles in radians
          *  @param inertialVel linear velocity in inertial frame
          *  @param location    location in inertial frame
+         *
+         *  @return true if crashed, false otherwise
          */
-        void getState(double angularVel[3], double inertialAcc[3], double rotation[3], double inertialVel[3], double location[3])
+        bool getState(double angularVel[3], double inertialAcc[3], double rotation[3], double inertialVel[3], double location[3])
         {
             for (int i=0; i<3; ++i) {
                 inertialAcc[i] = _inertialAcc[i];
@@ -239,6 +241,8 @@ class MultirotorDynamics {
                 location[i]    = _x[STATE_X+2*i];
                 inertialVel[i] = _x[STATE_X_DOT+2*i];
             }
+
+            return _airborne ? (location[2] > 0) : false;
         }
 
         /**
