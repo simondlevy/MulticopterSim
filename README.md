@@ -71,17 +71,14 @@ where MulticopterSim [looks
 for](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L21-L24)
 the Hackflight software.)
 
-3. Copy the <b>Hackflight/extras/HackflightSim</b> folder into
-the <b>Documents/Unreal Projects/MulticopterSim/Source/MulticopterSim</b> folder.
-
-4. Right-click on the <b>MulticopterSim.uproject</b> 
+3. Right-click on the <b>MulticopterSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
-5. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
+4. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
 you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
 to build the project.
 
-6. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+5. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
 # Launch and fly!
 
