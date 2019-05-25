@@ -148,16 +148,21 @@ class FFlightManager : public FThreadedWorker {
 
         // Called by VehiclePawn::Tick() method to get current display kinematics
         // (location, rotation) and propeller animation/sound (motorvals)
-        bool getKinematics(double location[3], double rotation[3], double * motorvals)
+        bool getKinematics(FVector & location, FRotator & rotation, double * motorvals)
         {
             for (uint8_t j=0; j<_motorCount; ++j) {
                 motorvals[j] = _motorvals[j];
             }
 
-            for (uint8_t k=0; k<3; ++k) {
-                location[k] = _location[k];
-                rotation[k] = _rotation[k];
-            }
+            // Convert NED meters => ENU centimeters
+            location.X =  _location[0] * 100; 
+            location.Y =  _location[1] * 100; 
+            location.Z = -_location[2] * 100; 
+
+            // Convert radians to degrees
+            rotation.Roll =  FMath::RadiansToDegrees(_rotation[0]);
+            rotation.Pitch = FMath::RadiansToDegrees(_rotation[1]);
+            rotation.Yaw =   FMath::RadiansToDegrees(_rotation[2]);
 
             return _crashed;
         }

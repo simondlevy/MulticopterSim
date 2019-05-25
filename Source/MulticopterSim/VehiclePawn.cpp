@@ -178,9 +178,9 @@ void AVehiclePawn::getKinematics(void)
     // Get current pose kinematics and motor values dynamics (from flight
     // manager). Motor values are used only for animation effects (prop
     // rotation, sound).
-    double position[3] = {0};
-    double rotation[3] = {0};
-    bool crashed = _flightManager->getKinematics(position, rotation, _motorvals);
+    FVector location;
+    FRotator rotation;
+    bool crashed = _flightManager->getKinematics(location, rotation, _motorvals);
 
     if (crashed) {
 
@@ -189,13 +189,8 @@ void AVehiclePawn::getKinematics(void)
         startFlightManager();
     }
 
-    // Negate Z position to accommodate NED coordinates, and mulitply position by 100 to convert from meters
-    // to centimeters.
-    SetActorLocation(FVector(position[0], position[1], -position[2]) * 100);
-
-    // Set vehicle rotation using UE4 order pitch, yaw, roll = 1,2,0 = Y,Z,X); then convert radians to
-    // degrees.
-    SetActorRotation(FRotator(rotation[1], rotation[2], rotation[0]) * (180 / M_PI));
+    SetActorLocation(location);
+    SetActorRotation(rotation);
 }
 
 void AVehiclePawn::addAnimationEffects(void)
@@ -242,7 +237,7 @@ void AVehiclePawn::NotifyHit(
 
 void AVehiclePawn::setGimbal(void)
 {
-    // Get gimbal position from flight manager
+    // Get gimbal location from flight manager
     float roll = 0, pitch = 0;
     _flightManager->getGimbal(roll, pitch);
 
