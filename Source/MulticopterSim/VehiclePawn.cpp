@@ -156,7 +156,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
         setGimbal();
 
         // OSD for debugging messages from flight manager
-        //debug("%s", _flightManager->getMessage());
+        debug("%s", _flightManager->getMessage());
     }
 
     Super::Tick(DeltaSeconds);

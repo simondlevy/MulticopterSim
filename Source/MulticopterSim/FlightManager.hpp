@@ -115,8 +115,6 @@ class FFlightManager : public FThreadedWorker {
                 // Update dynamics
                 _dynamics->update(deltaT);
 
-                //dbgprintf("%s", _dynamics->getMessage());
-
                 // Get vehicle state from dynamics.  We keep pose (location, rotation) in memory for use  in
                 // getKinematics() method
                 double angularVel[3]   = {0}; // body frame
@@ -131,6 +129,8 @@ class FFlightManager : public FThreadedWorker {
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the quaternion and gyrometer, getting the resulting motor values
                 update(currentTime, imuOrientationQuat, angularVel, bodyAccel, _motorvals);
+
+                dbgprintf("AX: %+3.3f    AY: %+3.3f    AZ: %3.3f", bodyAccel[0], bodyAccel[1], bodyAccel[2]);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;

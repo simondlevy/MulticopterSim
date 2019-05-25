@@ -68,7 +68,7 @@ class MultirotorDynamics {
         double * _omegas = NULL;
 
         // Body-frame acceleration
-        double _bodyAccel[3] = {0};
+        double _inertialAccel[3] = {0};
 
         // Flag for whether we're airborne
         bool _airborne = false;
@@ -83,7 +83,15 @@ class MultirotorDynamics {
             inertial[2] = cos(body[0])*cos(body[1]);
         }
 
-     protected:
+        static void inertialToBody(double inertial[3], double body[3])
+        {
+            // XXX
+            body[0] = 0;
+            body[1] = 0;
+            body[2] = 0;
+        }
+
+      protected:
 
         /** 
          * You must implement these constant methods in a subclass for each vehicle.
@@ -196,10 +204,10 @@ class MultirotorDynamics {
                     _x[i] += dt * dxdt[i];
                 }
 
-                // Store earth-frame acceleration for simulating accelerometer
-                _bodyAccel[0] = dxdt[STATE_X_DOT];
-                _bodyAccel[1] = dxdt[STATE_Y_DOT];
-                _bodyAccel[2] = dxdt[STATE_Z_DOT];
+                // Store inertial-frame acceleration so getState() can simulate accelerometer
+                _inertialAccel[0] = dxdt[STATE_X_DOT];
+                _inertialAccel[1] = dxdt[STATE_Y_DOT];
+                _inertialAccel[2] = dxdt[STATE_Z_DOT];
             }
         }
 
@@ -244,14 +252,18 @@ class MultirotorDynamics {
          */
         bool getState(double angularVel[3], double bodyAccel[3], double rotation[3], double inertialVel[3], double location[3])
         {
+            // Get most values directly from state
             for (int i=0; i<3; ++i) {
-                bodyAccel[i]   = _bodyAccel[i];
                 angularVel[i]  = _x[STATE_PHI_DOT+2*i];
                 rotation[i]    = _x[STATE_PHI+2*i];
                 location[i]    = _x[STATE_X+2*i];
                 inertialVel[i] = _x[STATE_X_DOT+2*i];
             }
 
+            // Convert inertial acceleration to body frame
+            inertialToBody(_inertialAccel, bodyAccel);
+
+            // If we're airborne, we've crashed if we fall below ground level
             return _airborne ? (location[2] > 0) : false;
         }
 
