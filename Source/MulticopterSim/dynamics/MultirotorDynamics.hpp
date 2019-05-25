@@ -59,11 +59,11 @@ class MultirotorDynamics {
         unsigned int _nmotors = 0;
 
         // Values computed in Equation 6
-        double _U1 = 0;
-        double _U2 = 0; 
-        double _U3 = 0;
-        double _U4 = 0;
-        double _Omega = 0;
+        double _U1 = 0;     // total thrust
+        double _U2 = 0;     // roll thrust right
+        double _U3 = 0;     // pitch thrust forward
+        double _U4 = 0;     // yaw thrust clockwise
+        double _Omega = 0;  // torque clockwise
 
         // Radians per second for each motor
         double * _omegas = NULL;
