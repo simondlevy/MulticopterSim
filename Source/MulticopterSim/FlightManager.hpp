@@ -107,7 +107,7 @@ class FFlightManager : public FThreadedWorker {
                 // Update dynamics
                 _dynamics->update(deltaT);
 
-                dbgprintf("Z'': %+3.3f", _dynamics->z_dot_dot);
+                //dbgprintf("Z'': %+3.3f", _dynamics->z_dot_dot);
 
                 // Get vehicle state from dynamics.  We keep pose (position, rotation) in memory for use  in
                 // getKinematics() method

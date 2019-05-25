@@ -29,8 +29,7 @@
 
 class MultirotorDynamics {
 
-    //private:
-    public:
+    private:
 
         // Universal constants
         static constexpr double g  = 9.80665; // might want to allow this to vary!
@@ -73,8 +72,6 @@ class MultirotorDynamics {
 
         // Flag for whether we're airborne
         bool _airborne = false;
-
-        double z_dot_dot = 0;
 
     protected:
 
@@ -138,8 +135,6 @@ class MultirotorDynamics {
                 _x[STATE_PHI+i] = rotation[i];
             }
 
-            z_dot_dot = 0;
-
             // We can start on the ground (default) or in the air
             _airborne = airborne;
         }
@@ -153,7 +148,7 @@ class MultirotorDynamics {
         {
             // Compute net vertical acceleration using Equation 12,
             // then negate to accommodate NED coordinates
-            z_dot_dot = g - (cos(_x[6])*cos(_x[8])) * _U1 / m();
+            double z_dot_dot = g - (cos(_x[6])*cos(_x[8])) * _U1 / m();
 
             // We're airborne once net vertical acceleration falls below zero
             if (!_airborne) {
