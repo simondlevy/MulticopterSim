@@ -79,9 +79,8 @@ class MultirotorDynamics {
     protected:
 
         /** 
-         * You must implement these methods in a subclass for each vehicle.
+         * You must implement these constant methods in a subclass for each vehicle.
          */
-
         virtual const double b(void)  = 0;
         virtual const double d(void)  = 0;
         virtual const double m(void)  = 0;
@@ -92,10 +91,12 @@ class MultirotorDynamics {
         virtual const double Jr(void) = 0;
         virtual const unsigned int maxrpm(void) = 0;
 
+        /** 
+         * You must implement these methods in a subclass for each vehicle.
+         */
         virtual double u2(double * o2)  = 0;
         virtual double u3(double * o2)  = 0;
         virtual double u4(double * o2)  = 0;
-
         virtual double omega(double * o) = 0;
 
         /**
@@ -105,6 +106,11 @@ class MultirotorDynamics {
         {
             _omegas = new double[nmotors];
             _nmotors = nmotors;
+            
+            // Zero-out entire state
+            for (int i=0; i<12; ++i) {
+                _x[i] = 0;
+            }
         }
 
     public:
@@ -126,16 +132,13 @@ class MultirotorDynamics {
          */
         void init(double location[3], double rotation[3], bool airborne=false)
         {
-            // Zero-out entire state
-            for (int i=0; i<12; ++i) {
-                _x[i] = 0;
-            }
-
             // Initialize pose
             for (int i=0; i<3; ++i) {
                 _x[STATE_X+i] = location[i];
                 _x[STATE_PHI+i] = rotation[i];
             }
+
+            z_dot_dot = 0;
 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
