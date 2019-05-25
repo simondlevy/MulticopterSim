@@ -83,12 +83,12 @@ class MultirotorDynamics {
             inertial[2] = cos(body[0])*cos(body[1]);
         }
 
-        static void inertialToBody(double inertial[3], double body[3])
+        static void inertialToBody(double inertial[3], double rotation[3], double body[3])
         {
             // XXX
-            body[0] = 0;
-            body[1] = 0;
-            body[2] = 0;
+            body[0] = inertial[0];
+            body[1] = inertial[1];
+            body[2] = inertial[2];
         }
 
       protected:
@@ -261,7 +261,7 @@ class MultirotorDynamics {
             }
 
             // Convert inertial acceleration to body frame
-            inertialToBody(_inertialAccel, bodyAccel);
+            inertialToBody(_inertialAccel, rotation, bodyAccel);
 
             // If we're airborne, we've crashed if we fall below ground level
             return _airborne ? (location[2] > 0) : false;
