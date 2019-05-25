@@ -14,8 +14,6 @@
 
 class FFlightManager : public FThreadedWorker {
 
-    friend class AVehiclePawn;
-
     private:
 
         // Constants specified/computed in constructor
@@ -26,7 +24,7 @@ class FFlightManager : public FThreadedWorker {
         double _startTime = 0;
 
         // Kinematics
-        double   _position[3] = {0};
+        double   _location[3] = {0};
         double   _rotation[3] = {0};
         double * _motorvals = NULL; 
         
@@ -68,11 +66,7 @@ class FFlightManager : public FThreadedWorker {
         MultirotorDynamics * _dynamics;
 
         // Called once on main thread
-        FFlightManager(
-                uint8_t motorCount, 
-                double initialPosition[3], 
-                double initialRotation[3], 
-                uint16_t updateFrequency=1000) : FThreadedWorker()
+        FFlightManager(uint8_t motorCount, FVector initialLocation, FRotator initialRotation, uint16_t updateFrequency=1000) : FThreadedWorker()
         {
             // Allocate array for motor values
             _motorvals = new double[motorCount];
@@ -80,14 +74,18 @@ class FFlightManager : public FThreadedWorker {
             // Create vehicle dynamics via factory method
             _dynamics = MultirotorDynamics::create();
 
-            // Initialize dynamics with initial pose
-            _dynamics->init(initialPosition, initialRotation);
-
             // Initialize kinematics
-            for (uint8_t j=0; j<3; ++j) {
-                _position[j] = initialPosition[j];
-                _rotation[j] = initialRotation[j];
-            }
+            
+            _location[0] = initialLocation.X / 100;
+            _location[1] = initialLocation.Y / 100;
+            _location[2] = initialLocation.Z / 100;
+
+            _rotation[0] = FMath::DegreesToRadians(initialRotation.Roll);
+            _rotation[1] = FMath::DegreesToRadians(initialRotation.Pitch);
+            _rotation[2] = FMath::DegreesToRadians(initialRotation.Yaw);
+
+            // Initialize dynamics with initial pose
+            _dynamics->init(_location, _rotation);
 
             // Constants
             _deltaT = 1. / updateFrequency;
@@ -119,12 +117,12 @@ class FFlightManager : public FThreadedWorker {
 
                 //dbgprintf("%s", _dynamics->getMessage());
 
-                // Get vehicle state from dynamics.  We keep pose (position, rotation) in memory for use  in
+                // Get vehicle state from dynamics.  We keep pose (location, rotation) in memory for use  in
                 // getKinematics() method
                 double angularVel[3]   = {0}; // body frame
                 double inertialAcc[3]  = {0}; // inertial frame
                 double intertialVel[3] = {0}; // inertial frame
-                _crashed = _dynamics->getState(angularVel, inertialAcc, _rotation, intertialVel, _position);
+                _crashed = _dynamics->getState(angularVel, inertialAcc, _rotation, intertialVel, _location);
 
                 // Convert Euler angles to quaternion
                 double imuOrientationQuat[4]={0};
@@ -139,8 +137,6 @@ class FFlightManager : public FThreadedWorker {
             }
         }
 
-        virtual void getGimbal(float & roll, float &pitch) { roll = 0; pitch = 0; }
-
     public:
 
         ~FFlightManager(void)
@@ -151,21 +147,24 @@ class FFlightManager : public FThreadedWorker {
 
 
         // Called by VehiclePawn::Tick() method to get current display kinematics
-        // (position, rotation) and propeller animation/sound (motorvals)
-        bool getKinematics(double position[3], double rotation[3], double * motorvals)
+        // (location, rotation) and propeller animation/sound (motorvals)
+        bool getKinematics(double location[3], double rotation[3], double * motorvals)
         {
             for (uint8_t j=0; j<_motorCount; ++j) {
                 motorvals[j] = _motorvals[j];
             }
 
             for (uint8_t k=0; k<3; ++k) {
-                position[k] = _position[k];
+                location[k] = _location[k];
                 rotation[k] = _rotation[k];
             }
 
             return _crashed;
         }
 
+        // Implemented by subclass
+        virtual void getGimbal(float & roll, float &pitch) { roll = 0; pitch = 0; }
+
         // Factory method implemented by your subclass
-        static FFlightManager * createFlightManager(double initialPosition[3], double initialRotation[3]);
+        static FFlightManager * createFlightManager(FVector initialLocation, FRotator initialRotation);
 };

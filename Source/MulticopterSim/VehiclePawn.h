@@ -80,6 +80,10 @@ private:
         FVector _startLocation;
         FRotator _startRotation;
 
+        // Flight management thread
+        void startFlightManager(void);
+        void stopFlightManager(void);
+
 protected:
 
         // AActor overrides

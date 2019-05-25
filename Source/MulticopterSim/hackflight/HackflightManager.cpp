@@ -74,8 +74,8 @@ class FHackflightManager : public FFlightManager {
 
     public:
 
-        FHackflightManager(double initialPosition[3], double initialRotation[3]) : 
-            FFlightManager(4, initialPosition, initialRotation) // 4 motors
+        FHackflightManager(FVector initialLocation, FRotator initialRotation) : 
+            FFlightManager(4, initialLocation, initialRotation) // 4 motors
     {
         // Start Hackflight firmware, indicating already armed
         _hackflight.init(&_board, &_receiver, &_mixer, &ratePid, true);
@@ -140,9 +140,9 @@ class FHackflightManager : public FFlightManager {
 static FFlightManager * _flightManager;
 
 // Factory method for FlightManager class
-FFlightManager * FFlightManager::createFlightManager(double initialPosition[3], double initialRotation[3])
+FFlightManager * FFlightManager::createFlightManager(FVector initialLocation, FRotator initialRotation)
 {
-    _flightManager = new FHackflightManager(initialPosition, initialRotation);
+    _flightManager = new FHackflightManager(initialLocation, initialRotation);
     return _flightManager;
 }
 

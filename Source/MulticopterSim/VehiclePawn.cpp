@@ -112,14 +112,13 @@ void AVehiclePawn::BeginPlay()
         // will play continiously...
         _propellerAudioComponent->Play();
 
-        // Get vehicle ground-truth location and rotation to initialize flight manager
-        _startLocation = this->GetActorLocation() / 100; // cm => m
+        // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
+        _startLocation = this->GetActorLocation();
         _startRotation = this->GetActorRotation(); 
-        double groundTruthPosition[3] = {_startLocation.X, _startLocation.Y, _startLocation.Z};
-        double groundTruthRotation[3] = {_startRotation.Roll, _startRotation.Pitch, _startRotation.Yaw};
 
-        // Launch a new threaded flight manager 
-        _flightManager = FFlightManager::createFlightManager(groundTruthPosition, groundTruthRotation);
+        // Initialize flight manager
+        startFlightManager();
+
     }
 
     else {
@@ -131,11 +130,9 @@ void AVehiclePawn::BeginPlay()
 
 void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    // Stop the flight controller
     if (_mapSelected) {
 
-        // Stop threaded dymamics worker and free its memory
-        _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
+        stopFlightManager();
     }
 
     Super::EndPlay(EndPlayReason);
@@ -165,6 +162,17 @@ void AVehiclePawn::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 }
 
+
+void AVehiclePawn::startFlightManager(void)
+{
+    _flightManager = FFlightManager::createFlightManager(_startLocation, _startRotation);
+}
+
+void AVehiclePawn::stopFlightManager(void)
+{
+    _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
+}
+
 void AVehiclePawn::getKinematics(void)
 {
     // Get current pose kinematics and motor values dynamics (from flight
@@ -176,14 +184,9 @@ void AVehiclePawn::getKinematics(void)
 
     if (crashed) {
 
-        double groundTruthPosition[3] = {_startLocation.X, _startLocation.Y, _startLocation.Z};
-        double groundTruthRotation[3] = {_startRotation.Roll, _startRotation.Pitch, _startRotation.Yaw};
-
-        _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
-
         // Launch a new threaded flight manager 
-        _flightManager = FFlightManager::createFlightManager(groundTruthPosition, groundTruthRotation);
-     }
+        startFlightManager();
+    }
 
     // Negate Z position to accommodate NED coordinates, and mulitply position by 100 to convert from meters
     // to centimeters.
