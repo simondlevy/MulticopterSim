@@ -184,7 +184,8 @@ void AVehiclePawn::getKinematics(void)
 
     if (crashed) {
 
-        // Launch a new threaded flight manager 
+        // Restart flight manager
+        stopFlightManager();
         startFlightManager();
     }
 
