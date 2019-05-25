@@ -151,7 +151,7 @@ class MultirotorDynamics {
         {
             // Compute net vertical acceleration using Equation 12,
             // then negate to accommodate NED coordinates
-            double z_dot_dot = g - (cos(_x[6])*cos(_x[8])) * _U1 / m();
+            double z_dot_dot = g - (cos(_x[STATE_PHI])*cos(_x[STATE_THETA])) * _U1 / m();
 
             sprintf_s(_message, "Z'': %+3.3f", z_dot_dot);
 
@@ -167,18 +167,18 @@ class MultirotorDynamics {
 
                     // Equation 12: compute temporal first derivative of state.
                     // We negate x'' and theta'' to accommodate NED coordinates
-                    /* x'      */ _x[1],
-                    /* x''     */ -((cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10]))) * _U1 / m(),
-                    /* y'      */ _x[3],
-                    /* y''     */ (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m(),
-                    /* z'      */ _x[5],
+                    /* x'      */ _x[STATE_X_DOT],
+                    /* x''     */ -((cos(_x[STATE_PHI])*sin(_x[STATE_THETA])*cos(_x[STATE_PSI]) + sin(_x[STATE_PHI])*sin(_x[STATE_PSI]))) * _U1 / m(),
+                    /* y'      */ _x[STATE_Y_DOT],
+                    /* y''     */ (cos(_x[STATE_PHI])*sin(_x[STATE_THETA])*sin(_x[STATE_PSI]) + sin(_x[STATE_PHI])*cos(_x[STATE_PSI])) * _U1 / m(),
+                    /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ z_dot_dot,
-                    /* phi'    */ _x[7],
-                    /* phi''   */ _x[11]*_x[9]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[9]*_Omega + l()/Ix()*_U2,
-                    /* theta'  */ _x[9],
-                    /* theta'' */ -(_x[11]*_x[7]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_x[7]*_Omega   + l()/Iy()*_U3), 
-                    /* psi'    */ _x[11],
-                    /* psi''   */ _x[9]*_x[7]*(Ix()-Iy())/Iz() + l()/Iz()*_U4,
+                    /* phi'    */ _x[STATE_PHI_DOT],
+                    /* phi''   */ _x[STATE_PSI_DOT]*_x[STATE_THETA_DOT]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[STATE_THETA_DOT]*_Omega + l()/Ix()*_U2,
+                    /* theta'  */ _x[STATE_THETA_DOT],
+                    /* theta'' */ -(_x[STATE_PSI_DOT]*_x[STATE_PHI_DOT]*(Iz()-Ix())/Iy()   + Jr()/Iy()*_x[STATE_PHI_DOT]*_Omega   + l()/Iy()*_U3), 
+                    /* psi'    */ _x[STATE_PSI_DOT],
+                    /* psi''   */ _x[STATE_THETA_DOT]*_x[STATE_PHI_DOT]*(Ix()-Iy())/Iz() + l()/Iz()*_U4,
                 };
 
                 // Compute state as first temporal integral of first temporal derivative
