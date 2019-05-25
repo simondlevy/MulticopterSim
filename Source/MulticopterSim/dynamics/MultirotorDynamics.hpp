@@ -202,10 +202,10 @@ class MultirotorDynamics {
                 _omegas[i] = motorvals[i] * maxrpm() * pi / 30;
             }
 
-            // Compute Omega from Omegas
+            // Compute overall torque from Omegas
             _Omega = omega(_omegas);
 
-            // U1 = sum of squared omegas
+            // Overall thrust is sum of squared omegas
             _U1 = 0;
             for (unsigned int i=0; i<_nmotors; ++i) {
                 _omegas[i] *= _omegas[i];
