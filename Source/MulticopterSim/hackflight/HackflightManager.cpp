@@ -107,8 +107,11 @@ class FHackflightManager : public FFlightManager {
             pitch = _gimbalPitch;
         }
 
-        virtual void update(double time, double quat[4], double gyro[3], double * motorvals) override
+        virtual void update(double time, double quat[4], double gyro[3], double accel[3], double * motorvals) override
         {
+            // Ignore accelerometer for now
+            (void)accel;
+
             Joystick::error_t joystickError = _receiver.update();
 
             switch (joystickError) {

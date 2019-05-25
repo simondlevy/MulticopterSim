@@ -59,7 +59,7 @@ class FFlightManager : public FThreadedWorker {
 
 
         // Implement for each subclass
-        virtual void update(double time, double quat[4], double gyro[4], double * motorvals)  = 0;
+        virtual void update(double time, double quat[4], double gyro[4], double accel[3], double * motorvals)  = 0;
 
     protected:
 
@@ -120,9 +120,9 @@ class FFlightManager : public FThreadedWorker {
                 // Get vehicle state from dynamics.  We keep pose (location, rotation) in memory for use  in
                 // getKinematics() method
                 double angularVel[3]   = {0}; // body frame
-                double inertialAcc[3]  = {0}; // inertial frame
+                double bodyAccel[3]    = {0}; // body frame
                 double intertialVel[3] = {0}; // inertial frame
-                _crashed = _dynamics->getState(angularVel, inertialAcc, _rotation, intertialVel, _location);
+                _crashed = _dynamics->getState(angularVel, bodyAccel, _rotation, intertialVel, _location);
 
                 // Convert Euler angles to quaternion
                 double imuOrientationQuat[4]={0};
@@ -130,7 +130,7 @@ class FFlightManager : public FThreadedWorker {
 
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the quaternion and gyrometer, getting the resulting motor values
-                update(currentTime, imuOrientationQuat, angularVel, _motorvals);
+                update(currentTime, imuOrientationQuat, angularVel, bodyAccel, _motorvals);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;
