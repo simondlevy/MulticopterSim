@@ -68,7 +68,11 @@ class FFlightManager : public FThreadedWorker {
         MultirotorDynamics * _dynamics;
 
         // Called once on main thread
-        FFlightManager(uint8_t motorCount, double initialPosition[3], double initialRotation[3], uint16_t updateFrequency=1000) : FThreadedWorker()
+        FFlightManager(
+                uint8_t motorCount, 
+                double initialPosition[3], 
+                double initialRotation[3], 
+                uint16_t updateFrequency=1000) : FThreadedWorker()
         {
             // Allocate array for motor values
             _motorvals = new double[motorCount];

@@ -113,10 +113,10 @@ void AVehiclePawn::BeginPlay()
         _propellerAudioComponent->Play();
 
         // Get vehicle ground-truth location and rotation to initialize flight manager
-        FVector pos = this->GetActorLocation() / 100; // cm => m
-        double groundTruthPosition[3] = {pos.X, pos.Y, pos.Z};
-        FRotator rot = this->GetActorRotation(); 
-        double groundTruthRotation[3] = {rot.Roll, rot.Pitch, rot.Yaw};
+        _startLocation = this->GetActorLocation() / 100; // cm => m
+        _startRotation = this->GetActorRotation(); 
+        double groundTruthPosition[3] = {_startLocation.X, _startLocation.Y, _startLocation.Z};
+        double groundTruthRotation[3] = {_startRotation.Roll, _startRotation.Pitch, _startRotation.Yaw};
 
         // Launch a new threaded flight manager 
         _flightManager = FFlightManager::createFlightManager(groundTruthPosition, groundTruthRotation);
@@ -144,7 +144,10 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 // Called automatically on main thread
 void AVehiclePawn::Tick(float DeltaSeconds)
 {
-    if (_mapSelected) {
+    // A hack to avoid accessing kinematics before dynamics thread is ready
+    static uint64_t count;
+
+    if (_mapSelected && count++>10) {
 
         // Kinematics from dynamics
         getKinematics();
@@ -173,9 +176,8 @@ void AVehiclePawn::getKinematics(void)
 
     if (crashed) {
 
-        double groundTruthPosition[3] = {0, 0, 0};
-        FRotator rot = this->GetActorRotation(); 
-        double groundTruthRotation[3] = {0, 0, 0};
+        double groundTruthPosition[3] = {_startLocation.X, _startLocation.Y, _startLocation.Z};
+        double groundTruthRotation[3] = {_startRotation.Roll, _startRotation.Pitch, _startRotation.Yaw};
 
         _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
 
