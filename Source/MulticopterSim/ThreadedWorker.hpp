@@ -61,7 +61,6 @@ class FThreadedWorker : public FRunnable {
             return (const char *)_message;
         }
 
-
         static FThreadedWorker * stopThreadedWorker(FThreadedWorker * worker)
         {
             worker->Stop();
@@ -70,7 +69,7 @@ class FThreadedWorker : public FRunnable {
         }
 
         // FRunnable interface.
-        
+
         virtual bool Init() override
         {
             _running = false;

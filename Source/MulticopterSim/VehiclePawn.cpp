@@ -172,8 +172,16 @@ void AVehiclePawn::getKinematics(void)
     bool crashed = _flightManager->getKinematics(position, rotation, _motorvals);
 
     if (crashed) {
-        debug(" ****** CRASHED *******");
-    }
+
+        double groundTruthPosition[3] = {0, 0, 0};
+        FRotator rot = this->GetActorRotation(); 
+        double groundTruthRotation[3] = {0, 0, 0};
+
+        _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
+
+        // Launch a new threaded flight manager 
+        _flightManager = FFlightManager::createFlightManager(groundTruthPosition, groundTruthRotation);
+     }
 
     // Negate Z position to accommodate NED coordinates, and mulitply position by 100 to convert from meters
     // to centimeters.

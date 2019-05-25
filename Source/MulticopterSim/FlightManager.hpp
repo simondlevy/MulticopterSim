@@ -113,6 +113,8 @@ class FFlightManager : public FThreadedWorker {
                 // Update dynamics
                 _dynamics->update(deltaT);
 
+                //dbgprintf("%s", _dynamics->getMessage());
+
                 // Get vehicle state from dynamics.  We keep pose (position, rotation) in memory for use  in
                 // getKinematics() method
                 double angularVel[3]   = {0}; // body frame
