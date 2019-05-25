@@ -73,6 +73,9 @@ class MultirotorDynamics {
         // Flag for whether we're airborne
         bool _airborne = false;
 
+        // Support for debugging
+        char _message[200];
+
     protected:
 
         /** 
@@ -149,6 +152,8 @@ class MultirotorDynamics {
             // Compute net vertical acceleration using Equation 12,
             // then negate to accommodate NED coordinates
             double z_dot_dot = g - (cos(_x[6])*cos(_x[8])) * _U1 / m();
+
+            sprintf_s(_message, "Z'': %+3.3f", z_dot_dot);
 
             // We're airborne once net vertical acceleration falls below zero
             if (!_airborne) {
@@ -235,6 +240,17 @@ class MultirotorDynamics {
                 inertialVel[i] = _x[STATE_X_DOT+2*i];
             }
         }
+
+        /**
+         *  Supports debugging
+         *
+         * @return message string that can be displayed by calling program (e.g., FlightManager)
+         */
+        char * getMessage(void)
+        {
+            return _message;
+        }
+        
 
         /**
          * Factory method
