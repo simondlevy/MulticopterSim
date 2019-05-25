@@ -31,23 +31,26 @@ class FHackflightManager : public FFlightManager {
 
         // PID tuning
 
+        // Rate
         hf::Rate ratePid = hf::Rate(
                 0.01,	// Roll/Pitch P
                 0.01,	// Roll/Pitch I
                 0.01,	// Roll/Pitch D
-                0.01,	// Yaw P
-                0.0,	// Yaw I
-                8.f);	// Demands to rate
+                0.10,	// Yaw P
+                0.01,	// Yaw I
+                8.00);	// Demands to rate
 
-
+        // Level
         hf::Level level = hf::Level(0.05);
 
+        // Alt-hold
         hf::AltitudeHold althold = hf::AltitudeHold(
                 5.00f,  // altHoldP
                 1.00f,  // altHoldVelP
                 0.01f,  // altHoldVelI
                 0.10f); // altHoldVelD
 
+        // Pos-hold (via simulated optical flow)
         hf::FlowHold flowhold = hf::FlowHold(0.005);
 
         // Main firmware
