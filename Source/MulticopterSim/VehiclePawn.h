@@ -59,7 +59,7 @@ private:
 		bool _mapSelected = false;
 
         // Motor values for animation/sound
-        double * _motorvals = NULL;
+        float * _motorvals = NULL;
 
         // Retrieves kinematics from dynamics computed in another thread
         void getKinematics(void);

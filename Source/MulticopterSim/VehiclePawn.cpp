@@ -66,7 +66,7 @@ AVehiclePawn::AVehiclePawn()
     _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 	
 
     // Allocate space for motor values used in animation/sound
-    _motorvals = new double[getMotorCount()];
+    _motorvals = new float[getMotorCount()];
 }
 
 AVehiclePawn::~AVehiclePawn()

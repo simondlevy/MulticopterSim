@@ -74,12 +74,12 @@ class FFlightManager : public FThreadedWorker {
             // Create vehicle dynamics via factory method
             _dynamics = MultirotorDynamics::create();
 
-            // Initialize kinematics
-            
-            _location[0] = initialLocation.X / 100;
-            _location[1] = initialLocation.Y / 100;
-            _location[2] = initialLocation.Z / 100;
+            // Convert ENU centimeters => NED meters
+            _location[0] =  initialLocation.X / 100;
+            _location[1] =  initialLocation.Y / 100;
+            _location[2] = -initialLocation.Z / 100;
 
+            // Convert degrees => radians
             _rotation[0] = FMath::DegreesToRadians(initialRotation.Roll);
             _rotation[1] = FMath::DegreesToRadians(initialRotation.Pitch);
             _rotation[2] = FMath::DegreesToRadians(initialRotation.Yaw);
@@ -145,10 +145,9 @@ class FFlightManager : public FThreadedWorker {
             delete _motorvals;
         }
 
-
         // Called by VehiclePawn::Tick() method to get current display kinematics
         // (location, rotation) and propeller animation/sound (motorvals)
-        bool getKinematics(FVector & location, FRotator & rotation, double * motorvals)
+        bool getKinematics(FVector & location, FRotator & rotation, float * motorvals)
         {
             for (uint8_t j=0; j<_motorCount; ++j) {
                 motorvals[j] = _motorvals[j];
