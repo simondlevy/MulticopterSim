@@ -80,6 +80,8 @@ class MultirotorDynamics {
 
         // Support for debugging
         char _message[200];
+        FILE * _logfp = NULL;
+        double _logtime = 0;
 
         // y = Ax + b helper for frame-of-reference conversion methods
         static void dot(double A[3][3], double x[3], double y[3])
@@ -161,6 +163,7 @@ class MultirotorDynamics {
         virtual ~MultirotorDynamics(void)
         {
             delete _omegas;
+            fclose(_logfp);
         }
 
         /** 
@@ -181,6 +184,10 @@ class MultirotorDynamics {
 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
+
+            _logfp = fopen("C:\\Users\\sim\\Desktop\\log.csv", "w");
+            _logtime = 0;
+            
         }
 
         /** 
@@ -194,7 +201,8 @@ class MultirotorDynamics {
             double euler[3] = { _x[6], _x[8], _x[10] };
             bodyZToInertial(_U1/m(), euler, _inertialAccel);
 
-            sprintf_s(_message, "Z'': %+3.3f", _inertialAccel[2]);
+            // Negate accel Z for NED coordinates
+            //_inertialAccel[2] = -_inertialAccel[2];
 
             // We're airborne once net vertical acceleration goes above G
             if (!_airborne) {
@@ -232,6 +240,10 @@ class MultirotorDynamics {
                     _x[i] += dt * dxdt[i];
                 }
             }
+
+            fprintf(_logfp, "%f,%+3.3f,%+3.3f,%+3.3f\n", _logtime, g-_inertialAccel[2], _x[STATE_Z_DOT], _x[STATE_Z]);
+
+            _logtime += dt;
         }
 
         /**
