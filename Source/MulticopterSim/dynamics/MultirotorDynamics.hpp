@@ -148,10 +148,11 @@ class MultirotorDynamics {
          */
         void init(double location[3], double rotation[3], bool airborne=false)
         {
-            // Initialize pose
+            // Initialize pose, inertial acceleration
             for (int i=0; i<3; ++i) {
                 _x[STATE_X+i] = location[i];
                 _x[STATE_PHI+i] = rotation[i];
+                _inertialAccel[i] = 0;
             }
 
             // We can start on the ground (default) or in the air
@@ -168,14 +169,15 @@ class MultirotorDynamics {
             // Compute the thrust vector orthogonal to the body frame
             double Fz[3] = { 0, 0, _U1 / m() };
 
-            // Use the current Euler angles to rotate this vector into the inertial frame
+            // Use the current Euler angles to rotate this vector into the inertial frame.
+            // Because the X and Y values of the thrust vector are always zero, we could
+            // do this more efficiently.
             double euler[3] = { _x[6], _x[8], _x[10] };
-            double inertialAcc[3] = {0};
-            bodyToInertial(Fz, euler, inertialAcc);
+            bodyToInertial(Fz, euler, _inertialAccel);
 
             // We're airborne once net vertical acceleration goes above G
             if (!_airborne) {
-                _airborne = inertialAcc[2] > g;
+                _airborne = _inertialAccel[2] > g;
             }
 
             // Once airborne, we can update dynamics
@@ -191,11 +193,11 @@ class MultirotorDynamics {
                     // Equation 12: compute temporal first derivative of state.
                     // We negate x'', y'' and theta'' to accommodate NED coordinates
                     /* x'      */ _x[STATE_X_DOT],
-                    /* x''     */ -inertialAcc[0],
+                    /* x''     */ -_inertialAccel[0],
                     /* y'      */ _x[STATE_Y_DOT],
-                    /* y''     */ -inertialAcc[1],
+                    /* y''     */ -_inertialAccel[1],
                     /* z'      */ _x[STATE_Z_DOT],
-                    /* z''     */ g - inertialAcc[2],
+                    /* z''     */ g - _inertialAccel[2],
                     /* phi'    */ phidot,
                     /* phi''   */ psidot*thedot*(Iy()-Iz())/Ix()   - Jr()/Ix()*thedot*_Omega + l()/Ix()*_U2,
                     /* theta'  */ thedot,
@@ -208,11 +210,6 @@ class MultirotorDynamics {
                 for (int i=0; i<12; ++i) {
                     _x[i] += dt * dxdt[i];
                 }
-
-                // Store inertial-frame acceleration so getState() can simulate accelerometer
-                _inertialAccel[0] = dxdt[STATE_X_DOT];
-                _inertialAccel[1] = dxdt[STATE_Y_DOT];
-                _inertialAccel[2] = dxdt[STATE_Z_DOT];
             }
         }
 
