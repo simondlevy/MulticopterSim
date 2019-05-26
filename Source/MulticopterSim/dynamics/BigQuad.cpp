@@ -23,7 +23,7 @@ class BigQuadDynamics : public QuadXAPDynamics {
         const double Jr(void) override  { return 0.000308013; } // Kg*m^2
 
         // Estimated
-        const unsigned int maxrpm(void) override { return 10000; }
+        const unsigned int maxrpm(void) override { return 15000; }
 };
 
 // Factory method
