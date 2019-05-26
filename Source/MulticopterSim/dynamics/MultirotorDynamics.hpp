@@ -185,6 +185,11 @@ class MultirotorDynamics {
             // Once airborne, we can update dynamics
             if (_airborne) {
 
+                // Make some useful abbreviations
+                double phidot = _x[STATE_PHI_DOT];
+                double thedot = _x[STATE_THETA_DOT];
+                double psidot = _x[STATE_PSI_DOT];
+
                 double dxdt[12] = {
 
                     // Equation 12: compute temporal first derivative of state.
@@ -195,12 +200,12 @@ class MultirotorDynamics {
                     /* y''     */ -inertialAcc[1],
                     /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ z_dot_dot,
-                    /* phi'    */ _x[STATE_PHI_DOT],
-                    /* phi''   */ _x[STATE_PSI_DOT]*_x[STATE_THETA_DOT]*(Iy()-Iz())/Ix() - Jr()/Ix()*_x[STATE_THETA_DOT]*_Omega + l()/Ix()*_U2,
-                    /* theta'  */ _x[STATE_THETA_DOT],
-                    /* theta'' */ -(_x[STATE_PSI_DOT]*_x[STATE_PHI_DOT]*(Iz()-Ix())/Iy() + Jr()/Iy()*_x[STATE_PHI_DOT]*_Omega   + l()/Iy()*_U3), 
-                    /* psi'    */ _x[STATE_PSI_DOT],
-                    /* psi''   */ _x[STATE_THETA_DOT]*_x[STATE_PHI_DOT]*(Ix()-Iy())/Iz() + l()/Iz()*_U4,
+                    /* phi'    */ phidot,
+                    /* phi''   */ psidot*thedot*(Iy()-Iz())/Ix()   - Jr()/Ix()*thedot*_Omega + l()/Ix()*_U2,
+                    /* theta'  */ thedot,
+                    /* theta'' */ -(psidot*phidot*(Iz()-Ix())/Iy() + Jr()/Iy()*phidot*_Omega + l()/Iy()*_U3), 
+                    /* psi'    */ psidot,
+                    /* psi''   */ thedot*phidot*(Ix()-Iy())/Iz()   + l()/Iz()*_U4,
                 };
 
                 // Compute state as first temporal integral of first temporal derivative
