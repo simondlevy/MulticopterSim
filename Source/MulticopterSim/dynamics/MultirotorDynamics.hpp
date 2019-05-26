@@ -81,8 +81,6 @@ class MultirotorDynamics {
         // Support for debugging
         char _message[200];
 
-    public:
-
         // y = Ax + b helper for frame-of-reference conversion methods
         static void dot(double A[3][3], double x[3], double y[3])
         {
@@ -281,6 +279,26 @@ class MultirotorDynamics {
          *  See Section 5 of http://www.chrobotics.com/library/understanding-euler-angles
          */
 
+        static void bodyToInertial(double body[3], double rotation[3], double inertial[3])
+        {
+            double phi   = rotation[0];
+            double theta = rotation[1];
+            double psi   = rotation[2];
+
+            double cph = cos(phi);
+            double sph = sin(phi);
+            double cth = cos(theta);
+            double sth = sin(theta);
+            double cps = cos(psi);
+            double sps = sin(psi);
+
+            double R[3][3] = { {cps*cth,  cps*sph*sth - cph*sps,  sph*sps + cph*cps*sth}, 
+                               {cth*sps,  cph*cps + sph*sps*sth,  cph*sps*sth - cps*sph}, 
+                               {-sth,     cth*sph,                cph*cth}               };
+
+            dot(R, body, inertial);
+        }
+
         static void inertialToBody(double inertial[3], double rotation[3], double body[3])
         {
             double phi   = rotation[0];
@@ -298,10 +316,7 @@ class MultirotorDynamics {
                                {cps*sph*sth - cph*sps,  cph*cps + sph*sps*sth,  cth*sph}, 
                                {sph*sps + cph*cps*sth,  cph*sps*sth - cps*sph,  cph*cth} };
 
-            // XXX
-            body[0] = inertial[0];
-            body[1] = inertial[1];
-            body[2] = inertial[2];
+            dot(R, inertial, body);
         }
 
 
