@@ -206,9 +206,10 @@ class MultirotorDynamics {
             double down[3]  = {0};
             bodyZToInertial(-_U1/m(), euler, down);
 
-            // We're airborne once net down goes below zero
+            // We're airborne once net downward acceleration goes below zero
+            double netz = down[2] + g;
             if (!_airborne) {
-                _airborne = down[2] + g < 0;
+                _airborne = netz < 0;
             }
 
             // Once airborne, we can update dynamics
@@ -227,7 +228,7 @@ class MultirotorDynamics {
                     /* y'      */ _x[STATE_Y_DOT],
                     /* y''     */ down[1],
                     /* z'      */ _x[STATE_Z_DOT],
-                    /* z''     */ g + down[2],
+                    /* z''     */ netz,
                     /* phi'    */ phidot,
                     /* phi''   */ psidot*thedot*(Iy()-Iz())/Ix()   - Jr()/Ix()*thedot*_Omega + l()/Ix()*_U2,
                     /* theta'  */ thedot,
