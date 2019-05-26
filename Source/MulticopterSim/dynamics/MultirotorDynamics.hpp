@@ -176,12 +176,14 @@ class MultirotorDynamics {
          */
         void init(double location[3], double rotation[3], bool airborne=false)
         {
-            // Initialize pose, inertial acceleration
+            // Initialize pose
             for (int i=0; i<3; ++i) {
-                _x[STATE_X+i] = location[i];
+                _x[STATE_X+i]   = location[i];
                 _x[STATE_PHI+i] = rotation[i];
-                _inertialAccel[i] = 0;
             }
+
+            // Initialize inertial frame acceleration in NED coordinates
+            bodyZToInertial(-g, rotation, _inertialAccel);
 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
@@ -201,14 +203,12 @@ class MultirotorDynamics {
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
-            bodyZToInertial(-_U1/m(), euler, _inertialAccel);
+            double down[3]  = {0};
+            bodyZToInertial(-_U1/m(), euler, down);
 
-            sprintf_s(_message, "M: %3.3f  |  AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", 
-                    _motormean, _inertialAccel[0], _inertialAccel[1], _inertialAccel[2]);
-
-            // We're airborne once net vertical acceleration goes below zero
+            // We're airborne once net down goes below zero
             if (!_airborne) {
-                _airborne = _inertialAccel[2] + g < 0;
+                _airborne = down[2] + g < 0;
             }
 
             // Once airborne, we can update dynamics
@@ -223,11 +223,11 @@ class MultirotorDynamics {
 
                     // Equation 12: compute temporal first derivative of state.
                     /* x'      */ _x[STATE_X_DOT],
-                    /* x''     */ _inertialAccel[0],
+                    /* x''     */ down[0],
                     /* y'      */ _x[STATE_Y_DOT],
-                    /* y''     */ _inertialAccel[1],
+                    /* y''     */ down[1],
                     /* z'      */ _x[STATE_Z_DOT],
-                    /* z''     */ g + _inertialAccel[2],
+                    /* z''     */ g + down[2],
                     /* phi'    */ phidot,
                     /* phi''   */ psidot*thedot*(Iy()-Iz())/Ix()   - Jr()/Ix()*thedot*_Omega + l()/Ix()*_U2,
                     /* theta'  */ thedot,
@@ -240,7 +240,15 @@ class MultirotorDynamics {
                 for (int i=0; i<12; ++i) {
                     _x[i] += dt * dxdt[i];
                 }
+
+                // Once airborne, inertial-frame acceleration is same as downward acceleration
+                _inertialAccel[0] = down[0];
+                _inertialAccel[1] = down[1];
+                _inertialAccel[2] = down[2];
             }
+
+            sprintf_s(_message, "M: %3.3f  |  AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", 
+                    _motormean, _inertialAccel[0], _inertialAccel[1], _inertialAccel[2]);
 
             //fprintf(_logfp, "%f,%+3.3f,%+3.3f,%+3.3f\n", _logtime, g-_inertialAccel[2], _x[STATE_Z_DOT], _x[STATE_Z]);
 
@@ -319,7 +327,7 @@ class MultirotorDynamics {
         {
             return _message;
         }
-        
+
         /**
          *  Frame-of-reference conversion routines.
          *
