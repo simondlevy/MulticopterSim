@@ -82,6 +82,7 @@ class MultirotorDynamics {
         char _message[200];
         FILE * _logfp = NULL;
         double _logtime = 0;
+        double _motormean = 0;
 
         // y = Ax + b helper for frame-of-reference conversion methods
         static void dot(double A[3][3], double x[3], double y[3])
@@ -202,12 +203,12 @@ class MultirotorDynamics {
             double euler[3] = { _x[6], _x[8], _x[10] };
             bodyZToInertial(-_U1/m(), euler, _inertialAccel);
 
-            sprintf_s(_message, "AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", 
-                    _inertialAccel[0], _inertialAccel[1], _inertialAccel[2]);
+            sprintf_s(_message, "M: %3.3f  |  AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", 
+                    _motormean, _inertialAccel[0], _inertialAccel[1], _inertialAccel[2]);
 
-            // We're airborne vertical acceleration goes below G
+            // We're airborne once net vertical acceleration goes below zero
             if (!_airborne) {
-                _airborne = _inertialAccel[2] < -g;
+                _airborne = _inertialAccel[2] + g < 0;
             }
 
             // Once airborne, we can update dynamics
@@ -253,10 +254,16 @@ class MultirotorDynamics {
          */
         void setMotors(double * motorvals) 
         {
+            // Debugging
+            _motormean = 0;
+
             // Convert the  motor values to radians per second
             for (unsigned int i=0; i<_nmotors; ++i) {
                 _omegas[i] = motorvals[i] * maxrpm() * pi / 30;
+                _motormean += motorvals[i];
             }
+
+            _motormean /= _nmotors;
 
             // Compute overall torque from Omegas
             _Omega = omega(_omegas);
@@ -272,6 +279,7 @@ class MultirotorDynamics {
             _U2 = b() * u2(_omegas);
             _U3 = b() * u3(_omegas);
             _U4 = d() * u4(_omegas);
+
         }
 
         /*
