@@ -76,11 +76,8 @@ class MultirotorDynamics {
         // Support for debugging
         char _message[200];
 
-        static void bodyToInertial(double body[3], double inertial[3])
+        static void bodyZToInertial(double body[3], double inertial[3])
         {
-            inertial[0] = cos(body[0])*sin(body[1])*cos(body[2]) + sin(body[0])*sin(body[2]);
-            inertial[1] = cos(body[0])*sin(body[1])*sin(body[2]) + sin(body[0])*cos(body[2]);
-            inertial[2] = cos(body[0])*cos(body[1]);
         }
 
         static void inertialToBody(double inertial[3], double rotation[3], double body[3])
@@ -164,14 +161,9 @@ class MultirotorDynamics {
          */
         void update(double dt)
         {
-            // Convert body-frame angles to inertial frame
-            double body[3] = {_x[STATE_PHI], _x[STATE_THETA], _x[STATE_PSI]};
-            double inertial[3] = {0};
-            bodyToInertial(body, inertial);
-
             // Compute net vertical acceleration using Equation 12,
             // then negate to accommodate NED coordinates
-            double z_dot_dot = g - inertial[2] * _U1 / m();
+            double z_dot_dot = g - (cos(_x[6])*cos(_x[8])) * _U1 / m();
 
             // We're airborne once net vertical acceleration falls below zero
             if (!_airborne) {
@@ -186,9 +178,9 @@ class MultirotorDynamics {
                     // Equation 12: compute temporal first derivative of state.
                     // We negate x'' and theta'' to accommodate NED coordinates
                     /* x'      */ _x[STATE_X_DOT],
-                    /* x''     */ -inertial[0] * _U1 / m(),
+                    /* x''     */ (cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m(),
                     /* y'      */ _x[STATE_Y_DOT],
-                    /* y''     */  inertial[1] * _U1 / m(),
+                    /* y''     */ (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m(),
                     /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ z_dot_dot,
                     /* phi'    */ _x[STATE_PHI_DOT],
