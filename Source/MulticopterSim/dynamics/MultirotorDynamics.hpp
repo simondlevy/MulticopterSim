@@ -27,6 +27,11 @@
 
 #pragma once
 
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <math.h>
+
 class MultirotorDynamics {
 
     private:
@@ -76,16 +81,17 @@ class MultirotorDynamics {
         // Support for debugging
         char _message[200];
 
-        static void bodyZToInertial(double body[3], double inertial[3])
-        {
-        }
+    public:
 
-        static void inertialToBody(double inertial[3], double rotation[3], double body[3])
+        // y = Ax + b helper for frame-of-reference conversion methods
+        static void dot(double A[3][3], double x[3], double y[3])
         {
-            // XXX
-            body[0] = inertial[0];
-            body[1] = inertial[1];
-            body[2] = inertial[2];
+            for (uint8_t j=0; j<3; ++j) {
+                y[j] = 0;
+                for (uint8_t k=0; k<3; ++k) {
+                    y[j] += A[j][k] * x[k];
+                }
+            }
         }
 
       protected:
@@ -269,6 +275,35 @@ class MultirotorDynamics {
             return _message;
         }
         
+        /**
+         *  Frame-of-reference conversion routines.
+         *
+         *  See Section 5 of http://www.chrobotics.com/library/understanding-euler-angles
+         */
+
+        static void inertialToBody(double inertial[3], double rotation[3], double body[3])
+        {
+            double phi   = rotation[0];
+            double theta = rotation[1];
+            double psi   = rotation[2];
+
+            double cph = cos(phi);
+            double sph = sin(phi);
+            double cth = cos(theta);
+            double sth = sin(theta);
+            double cps = cos(psi);
+            double sps = sin(psi);
+
+            double R[3][3] = { {cps*cth,                cth*sps,                   -sth}, 
+                               {cps*sph*sth - cph*sps,  cph*cps + sph*sps*sth,  cth*sph}, 
+                               {sph*sps + cph*cps*sth,  cph*sps*sth - cps*sph,  cph*cth} };
+
+            // XXX
+            body[0] = inertial[0];
+            body[1] = inertial[1];
+            body[2] = inertial[2];
+        }
+
 
         /**
          * Factory method
