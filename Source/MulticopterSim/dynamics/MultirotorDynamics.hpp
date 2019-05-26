@@ -165,9 +165,17 @@ class MultirotorDynamics {
          */
         void update(double dt)
         {
+            // Compute the thrust vector orthogonal to the body frame
+            double Fz[3] = { 0, 0, _U1 / m() };
+
+            // Use the current Euler angles to rotate this vector into the inertial frame
+            double euler[3] = { _x[6], _x[8], _x[10] };
+            double inertialAcc[3] = {0};
+            bodyToInertial(Fz, euler, inertialAcc);
+
             // Compute net vertical acceleration using Equation 12,
             // then negate to accommodate NED coordinates
-            double z_dot_dot = g - (cos(_x[6])*cos(_x[8])) * _U1 / m();
+            double z_dot_dot = g - inertialAcc[2];
 
             // We're airborne once net vertical acceleration falls below zero
             if (!_airborne) {
@@ -180,11 +188,11 @@ class MultirotorDynamics {
                 double dxdt[12] = {
 
                     // Equation 12: compute temporal first derivative of state.
-                    // We negate x'' and theta'' to accommodate NED coordinates
+                    // We negate x'', y'' and theta'' to accommodate NED coordinates
                     /* x'      */ _x[STATE_X_DOT],
-                    /* x''     */ (cos(_x[6])*sin(_x[8])*cos(_x[10]) + sin(_x[6])*sin(_x[10])) * _U1 / m(),
+                    /* x''     */ -inertialAcc[0],
                     /* y'      */ _x[STATE_Y_DOT],
-                    /* y''     */ (cos(_x[6])*sin(_x[8])*sin(_x[10]) + sin(_x[6])*cos(_x[10])) * _U1 / m(),
+                    /* y''     */ -inertialAcc[1],
                     /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ z_dot_dot,
                     /* phi'    */ _x[STATE_PHI_DOT],
