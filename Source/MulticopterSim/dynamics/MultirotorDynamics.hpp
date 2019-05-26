@@ -202,14 +202,12 @@ class MultirotorDynamics {
             double euler[3] = { _x[6], _x[8], _x[10] };
             bodyZToInertial(-_U1/m(), euler, _inertialAccel);
 
-            // Negate accel Z for NED coordinates
-            _inertialAccel[2] = -_inertialAccel[2];
+            sprintf_s(_message, "AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", 
+                    _inertialAccel[0], _inertialAccel[1], _inertialAccel[2]);
 
-            sprintf_s(_message, "%+3.3f", _inertialAccel[2]);
-
-            // We're airborne once net vertical acceleration goes above G
+            // We're airborne vertical acceleration goes below G
             if (!_airborne) {
-                _airborne = _inertialAccel[2] > g;
+                _airborne = _inertialAccel[2] < -g;
             }
 
             // Once airborne, we can update dynamics
@@ -228,7 +226,7 @@ class MultirotorDynamics {
                     /* y'      */ _x[STATE_Y_DOT],
                     /* y''     */ _inertialAccel[1],
                     /* z'      */ _x[STATE_Z_DOT],
-                    /* z''     */ g - _inertialAccel[2],
+                    /* z''     */ g + _inertialAccel[2],
                     /* phi'    */ phidot,
                     /* phi''   */ psidot*thedot*(Iy()-Iz())/Ix()   - Jr()/Ix()*thedot*_Omega + l()/Ix()*_U2,
                     /* theta'  */ thedot,
