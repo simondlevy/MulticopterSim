@@ -72,7 +72,7 @@ class MultirotorDynamics {
         // Radians per second for each motor
         double * _omegas = NULL;
 
-        // Body-frame acceleration
+        // Inertial-frame acceleration
         double _inertialAccel[3] = {0};
 
         // Flag for whether we're airborne
