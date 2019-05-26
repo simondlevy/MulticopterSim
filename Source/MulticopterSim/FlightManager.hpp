@@ -130,7 +130,8 @@ class FFlightManager : public FThreadedWorker {
                 // the quaternion and gyrometer, getting the resulting motor values
                 update(currentTime, imuOrientationQuat, angularVel, bodyAccel, _motorvals);
 
-                dbgprintf("AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", bodyAccel[0], bodyAccel[1], bodyAccel[2]);
+                //dbgprintf("AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", bodyAccel[0], bodyAccel[1], bodyAccel[2]);
+                dbgprintf("%s", _dynamics->getMessage());
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;

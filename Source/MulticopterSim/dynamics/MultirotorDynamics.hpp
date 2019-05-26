@@ -92,7 +92,31 @@ class MultirotorDynamics {
             }
         }
 
-      protected:
+        // bodyToInertial() method optimized for body X=Y=0
+        static void bodyZToInertial(double bodyZ, double rotation[3], double inertial[3])
+        {
+            double phi   = rotation[0];
+            double theta = rotation[1];
+            double psi   = rotation[2];
+
+            double cph = cos(phi);
+            double sph = sin(phi);
+            double cth = cos(theta);
+            double sth = sin(theta);
+            double cps = cos(psi);
+            double sps = sin(psi);
+
+            // This is the rightmost column of the body-to-inertial rotation matrix
+            double R[3] = {sph*sps + cph*cps*sth, 
+                           cph*sps*sth - cps*sph, 
+                           cph*cth};
+
+            for (uint8_t i=0; i<3; ++i) {
+                inertial[i] = bodyZ * R[i];
+            }
+        }
+
+    protected:
 
         /** 
          * You must implement these constant methods in a subclass for each vehicle.
@@ -166,14 +190,11 @@ class MultirotorDynamics {
          */
         void update(double dt)
         {
-            // Compute the thrust vector orthogonal to the body frame
-            double Fz[3] = { 0, 0, _U1 / m() };
-
-            // Use the current Euler angles to rotate this vector into the inertial frame.
-            // Because the X and Y values of the thrust vector are always zero, we could
-            // do this more efficiently.
+            // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             double euler[3] = { _x[6], _x[8], _x[10] };
-            bodyToInertial(Fz, euler, _inertialAccel);
+            bodyZToInertial(_U1/m(), euler, _inertialAccel);
+
+            sprintf_s(_message, "Z'': %+3.3f", _inertialAccel[2]);
 
             // We're airborne once net vertical acceleration goes above G
             if (!_airborne) {
