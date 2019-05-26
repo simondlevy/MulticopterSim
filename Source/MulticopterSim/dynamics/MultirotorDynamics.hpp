@@ -163,7 +163,7 @@ class MultirotorDynamics {
         virtual ~MultirotorDynamics(void)
         {
             delete _omegas;
-            fclose(_logfp);
+            //fclose(_logfp);
         }
 
         /** 
@@ -185,7 +185,7 @@ class MultirotorDynamics {
             // We can start on the ground (default) or in the air
             _airborne = airborne;
 
-            _logfp = fopen("C:\\Users\\sim\\Desktop\\log.csv", "w");
+            //_logfp = fopen("C:\\Users\\sim\\Desktop\\log.csv", "w");
             _logtime = 0;
             
         }
@@ -198,11 +198,14 @@ class MultirotorDynamics {
         void update(double dt)
         {
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
+            // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
-            bodyZToInertial(_U1/m(), euler, _inertialAccel);
+            bodyZToInertial(-_U1/m(), euler, _inertialAccel);
 
             // Negate accel Z for NED coordinates
-            //_inertialAccel[2] = -_inertialAccel[2];
+            _inertialAccel[2] = -_inertialAccel[2];
+
+            sprintf_s(_message, "%+3.3f", _inertialAccel[2]);
 
             // We're airborne once net vertical acceleration goes above G
             if (!_airborne) {
@@ -220,11 +223,10 @@ class MultirotorDynamics {
                 double dxdt[12] = {
 
                     // Equation 12: compute temporal first derivative of state.
-                    // We negate x'', y'' and theta'' to accommodate NED coordinates
                     /* x'      */ _x[STATE_X_DOT],
-                    /* x''     */ -_inertialAccel[0],
+                    /* x''     */ _inertialAccel[0],
                     /* y'      */ _x[STATE_Y_DOT],
-                    /* y''     */ -_inertialAccel[1],
+                    /* y''     */ _inertialAccel[1],
                     /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ g - _inertialAccel[2],
                     /* phi'    */ phidot,
@@ -241,7 +243,7 @@ class MultirotorDynamics {
                 }
             }
 
-            fprintf(_logfp, "%f,%+3.3f,%+3.3f,%+3.3f\n", _logtime, g-_inertialAccel[2], _x[STATE_Z_DOT], _x[STATE_Z]);
+            //fprintf(_logfp, "%f,%+3.3f,%+3.3f,%+3.3f\n", _logtime, g-_inertialAccel[2], _x[STATE_Z_DOT], _x[STATE_Z]);
 
             _logtime += dt;
         }
