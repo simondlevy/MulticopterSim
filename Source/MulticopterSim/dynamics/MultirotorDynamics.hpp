@@ -173,13 +173,9 @@ class MultirotorDynamics {
             double inertialAcc[3] = {0};
             bodyToInertial(Fz, euler, inertialAcc);
 
-            // Compute net vertical acceleration using Equation 12,
-            // then negate to accommodate NED coordinates
-            double z_dot_dot = g - inertialAcc[2];
-
-            // We're airborne once net vertical acceleration falls below zero
+            // We're airborne once net vertical acceleration goes above G
             if (!_airborne) {
-                _airborne = z_dot_dot < 0;
+                _airborne = inertialAcc[2] > g;
             }
 
             // Once airborne, we can update dynamics
@@ -199,7 +195,7 @@ class MultirotorDynamics {
                     /* y'      */ _x[STATE_Y_DOT],
                     /* y''     */ -inertialAcc[1],
                     /* z'      */ _x[STATE_Z_DOT],
-                    /* z''     */ z_dot_dot,
+                    /* z''     */ g - inertialAcc[2],
                     /* phi'    */ phidot,
                     /* phi''   */ psidot*thedot*(Iy()-Iz())/Ix()   - Jr()/Ix()*thedot*_Omega + l()/Ix()*_U2,
                     /* theta'  */ thedot,
