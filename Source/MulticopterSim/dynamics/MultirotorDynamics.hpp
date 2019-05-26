@@ -80,9 +80,6 @@ class MultirotorDynamics {
 
         // Support for debugging
         char _message[200];
-        FILE * _logfp = NULL;
-        double _logtime = 0;
-        double _motormean = 0;
 
         // y = Ax + b helper for frame-of-reference conversion methods
         static void dot(double A[3][3], double x[3], double y[3])
@@ -164,7 +161,6 @@ class MultirotorDynamics {
         virtual ~MultirotorDynamics(void)
         {
             delete _omegas;
-            //fclose(_logfp);
         }
 
         /** 
@@ -187,10 +183,6 @@ class MultirotorDynamics {
 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
-
-            //_logfp = fopen("C:\\Users\\sim\\Desktop\\log.csv", "w");
-            _logtime = 0;
-            
         }
 
         /** 
@@ -247,13 +239,6 @@ class MultirotorDynamics {
                 _inertialAccel[1] = down[1];
                 _inertialAccel[2] = down[2];
             }
-
-            sprintf_s(_message, "M: %3.3f  |  AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", 
-                    _motormean, _inertialAccel[0], _inertialAccel[1], _inertialAccel[2]);
-
-            //fprintf(_logfp, "%f,%+3.3f,%+3.3f,%+3.3f\n", _logtime, g-_inertialAccel[2], _x[STATE_Z_DOT], _x[STATE_Z]);
-
-            _logtime += dt;
         }
 
         /**
@@ -263,16 +248,10 @@ class MultirotorDynamics {
          */
         void setMotors(double * motorvals) 
         {
-            // Debugging
-            _motormean = 0;
-
             // Convert the  motor values to radians per second
             for (unsigned int i=0; i<_nmotors; ++i) {
                 _omegas[i] = motorvals[i] * maxrpm() * pi / 30;
-                _motormean += motorvals[i];
             }
-
-            _motormean /= _nmotors;
 
             // Compute overall torque from Omegas
             _Omega = omega(_omegas);

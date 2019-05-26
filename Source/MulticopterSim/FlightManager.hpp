@@ -122,6 +122,15 @@ class FFlightManager : public FThreadedWorker {
                 double intertialVel[3] = {0}; // inertial frame
                 _crashed = _dynamics->getState(angularVel, bodyAccel, _rotation, intertialVel, _location);
 
+                // Debug
+                double motormean = 0;
+                for (uint8_t i=0; i<4; ++i) {
+                    motormean += _motorvals[i];
+                }
+                motormean /= 4;
+                dbgprintf("M: %3.3f  |  AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", 
+                        motormean, bodyAccel[0], bodyAccel[1], bodyAccel[2]);
+
                 // Convert Euler angles to quaternion
                 double imuOrientationQuat[4]={0};
                 eulerToQuaternion(_rotation, imuOrientationQuat);
@@ -129,9 +138,6 @@ class FFlightManager : public FThreadedWorker {
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the quaternion and gyrometer, getting the resulting motor values
                 update(currentTime, imuOrientationQuat, angularVel, bodyAccel, _motorvals);
-
-                //dbgprintf("AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", bodyAccel[0], bodyAccel[1], bodyAccel[2]);
-                dbgprintf("%s", _dynamics->getMessage());
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;
