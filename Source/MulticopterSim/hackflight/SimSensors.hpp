@@ -50,8 +50,8 @@ class SimSensors : public hf::Sensor {
             _dynamics->getState(dynamicsState);
 
             // Use vehicle state to modify Hackflight state values
-            vehicleState.altitude   = -dynamicsState.pose.location[2]; // Negate for NED => ENU conversion
-            vehicleState.variometer = -dynamicsState.inertialVel[2];
+            vehicleState.pose.location[2]   = -dynamicsState.pose.location[2]; // Negate for NED => ENU conversion
+            vehicleState.inertialVel[2] = -dynamicsState.inertialVel[2];
             rotateVelocity(vehicleState, dynamicsState.pose.rotation, dynamicsState.inertialVel);
         }
 
