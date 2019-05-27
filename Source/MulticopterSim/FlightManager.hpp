@@ -106,13 +106,9 @@ class FFlightManager : public FThreadedWorker {
                 dbgprintf("M: %3.3f  |  AX: %+05.3f    AY: %+05.3f    AZ: %+05.3f", 
                         motormean, state.bodyAccel[0], state.bodyAccel[1], state.bodyAccel[2]);
 
-                // Convert Euler angles to quaternion
-                double imuOrientationQuat[4]={0};
-                MultirotorDynamics::eulerToQuaternion(state.pose.rotation, imuOrientationQuat);
-
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the quaternion and gyrometer, getting the resulting motor values
-                update(currentTime, imuOrientationQuat, state.angularVel, state.bodyAccel, _motorvals);
+                update(currentTime, state.quaternion, state.angularVel, state.bodyAccel, _motorvals);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;

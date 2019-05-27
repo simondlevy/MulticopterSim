@@ -173,6 +173,7 @@ class MultirotorDynamics {
             double bodyAccel[3]; 
             double bodyVel[3]; 
             double inertialVel[3]; 
+            double quaternion[3]; 
 
             pose_t pose;
 
@@ -301,7 +302,7 @@ class MultirotorDynamics {
          */
         bool getState(state_t & state)
         {
-            // Get most values directly from state
+            // Get most values directly from state vector
             for (int i=0; i<3; ++i) {
                 state.angularVel[i]    = _x[STATE_PHI_DOT+2*i];
                 state.inertialVel[i]   = _x[STATE_X_DOT+2*i];
@@ -310,7 +311,10 @@ class MultirotorDynamics {
             }
 
             // Convert inertial acceleration and velocity to body frame
-            inertialToBody(_inertialAccel,    state.pose.rotation, state.bodyAccel);
+            inertialToBody(_inertialAccel, state.pose.rotation, state.bodyAccel);
+
+            // Convert Euler angles to quaternion
+            eulerToQuaternion(state.pose.rotation, state.quaternion);
 
             // If we're airborne, we've crashed if we fall below ground level
             return _airborne ? (state.pose.location[2] > 0) : false;
