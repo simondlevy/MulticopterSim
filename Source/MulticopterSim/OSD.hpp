@@ -13,18 +13,19 @@
 
 static void osd(char * buf, bool err)
 {
+    if (GEngine && GEngine->GameViewport) {
 
-    // Show message in yellow, error in red
-    FColor TEXT_COLOR = err ? FColor::Red : FColor::Yellow;
+        // Show message in yellow, error in red
+        FColor TEXT_COLOR = err ? FColor::Red : FColor::Yellow;
 
-    // Scale text to fit message
-    float  TEXT_SCALE = 100.f / strlen(buf);
+        // Get viewport size for scaling text
+        FVector2D ViewportSize = FVector2D(1, 1);
+        GEngine->GameViewport->GetViewportSize(ViewportSize);
 
-    // on screen
-    if (GEngine) {
+        // Scale text to fit message to screen
+        float  TEXT_SCALE = ViewportSize.X / 6 / strlen(buf);
 
         // -1 = no overwrite (0 for overwrite); 5.f = arbitrary time to display; true = newer on top
         GEngine->AddOnScreenDebugMessage(0, 5.f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
     }
 }
-~
