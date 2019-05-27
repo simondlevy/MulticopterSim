@@ -62,7 +62,7 @@ you like, it easiest to get started with the
 do the following:
 
 1. Clone this repository (MulticopterSim) into your <b>Documents/Unreal Projects</b> folder, first
-creating that folder if it doesn't exit.
+creating that folder if it doesn't exist.
 
 2. Clone the [HackflightSim](https://github.com/simondlevy/HackflightSim) repository into 
 <b>MulticopterSim/Source/MulticopterSim</b>.
