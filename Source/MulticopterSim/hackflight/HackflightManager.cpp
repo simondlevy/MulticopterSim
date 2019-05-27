@@ -41,7 +41,7 @@ class FHackflightManager : public FFlightManager {
                 8.00);	// Demands to rate
 
         // Level
-        hf::Level level = hf::Level(0.05);
+        hf::Level level = hf::Level(0.1);
 
         // Alt-hold
         hf::AltitudeHold althold = hf::AltitudeHold(
@@ -51,7 +51,7 @@ class FHackflightManager : public FFlightManager {
                 0.10f); // altHoldVelD
 
         // Pos-hold (via simulated optical flow)
-        hf::FlowHold flowhold = hf::FlowHold(0.005);
+        hf::FlowHold flowhold = hf::FlowHold(0.01);
 
         // Main firmware
         hf::Hackflight _hackflight;

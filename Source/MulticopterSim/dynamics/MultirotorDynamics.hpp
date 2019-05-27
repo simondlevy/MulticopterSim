@@ -159,16 +159,23 @@ class MultirotorDynamics {
          * Exported state representations
          */
 
+        // Kinematics
         typedef struct {
+
             double location[3];
             double rotation[3]; 
+
         } pose_t;
 
         typedef struct {
+
             double angularVel[3]; 
             double bodyAccel[3]; 
+            double bodyVel[3]; 
             double inertialVel[3]; 
+
             pose_t pose;
+
         } state_t;
 
         /**
@@ -296,14 +303,14 @@ class MultirotorDynamics {
         {
             // Get most values directly from state
             for (int i=0; i<3; ++i) {
-                state.angularVel[i]             = _x[STATE_PHI_DOT+2*i];
-                state.inertialVel[i]            = _x[STATE_X_DOT+2*i];
-                state.pose.rotation[i]    = _x[STATE_PHI+2*i];
-                state.pose.location[i]    = _x[STATE_X+2*i];
+                state.angularVel[i]    = _x[STATE_PHI_DOT+2*i];
+                state.inertialVel[i]   = _x[STATE_X_DOT+2*i];
+                state.pose.rotation[i] = _x[STATE_PHI+2*i];
+                state.pose.location[i] = _x[STATE_X+2*i];
             }
 
-            // Convert inertial acceleration to body frame
-            inertialToBody(_inertialAccel, state.pose.rotation, state.bodyAccel);
+            // Convert inertial acceleration and velocity to body frame
+            inertialToBody(_inertialAccel,    state.pose.rotation, state.bodyAccel);
 
             // If we're airborne, we've crashed if we fall below ground level
             return _airborne ? (state.pose.location[2] > 0) : false;
