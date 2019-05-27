@@ -26,8 +26,8 @@ class SimSensors : public hf::Sensor {
             float sp = sin(psi);
             float vx = velocityXYZ[0];
             float vy = velocityXYZ[1];
-            vehicleState.velocityForward    = vx * cp + vy * sp;
-            vehicleState.velocityRightward  = vy * cp - vx * sp;
+            vehicleState.inertialVel[0] = vx * cp + vy * sp;
+            vehicleState.inertialVel[1] = vy * cp - vx * sp;
         }
 
     protected:
