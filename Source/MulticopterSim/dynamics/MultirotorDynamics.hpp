@@ -372,6 +372,34 @@ class MultirotorDynamics {
             dot(R, inertial, body);
         }
 
+        /**
+         * Converts Euler angles to quaterion.
+         *
+         * @param eulerAngles input
+         * @param quaternion output
+         */
+
+        static void eulerToQuaternion(const double eulerAngles[3], double quaternion[4])
+        {
+            // Convenient renaming
+            double phi = eulerAngles[0] / 2;
+            double the = eulerAngles[1] / 2;
+            double psi = eulerAngles[2] / 2;
+
+            // Pre-computation
+            double cph = cos(phi);
+            double cth = cos(the);
+            double cps = cos(psi);
+            double sph = sin(phi);
+            double sth = sin(the);
+            double sps = sin(psi);
+
+            // Conversion
+            quaternion[0] =  cph * cth * cps + sph * sth * sps;
+            quaternion[1] =  cph * sth * sps - sph * cth * cps ;
+            quaternion[2] = -cph * sth * cps - sph * cth * sps;
+            quaternion[3] =  cph * cth * sps - sph * sth * cps;
+        }
 
         /**
          * Factory method

@@ -35,30 +35,6 @@ class FFlightManager : public FThreadedWorker {
         // Did we hit the ground?
         bool _crashed = false;
 
-        // Useful conversion function
-        void eulerToQuaternion(double eulerAngles[3], double quaternion[4])
-        {
-            // Convenient renaming
-            double phi = eulerAngles[0] / 2;
-            double the = eulerAngles[1] / 2;
-            double psi = eulerAngles[2] / 2;
-
-            // Pre-computation
-            double cph = cos(phi);
-            double cth = cos(the);
-            double cps = cos(psi);
-            double sph = sin(phi);
-            double sth = sin(the);
-            double sps = sin(psi);
-
-            // Conversion
-            quaternion[0] =  cph * cth * cps + sph * sth * sps;
-            quaternion[1] =  cph * sth * sps - sph * cth * cps ;
-            quaternion[2] = -cph * sth * cps - sph * cth * sps;
-            quaternion[3] =  cph * cth * sps - sph * sth * cps;
-        }
-
-
         // Implement for each subclass
         virtual void update(double time, double quat[4], double gyro[4], double accel[3], double * motorvals)  = 0;
 
@@ -132,7 +108,7 @@ class FFlightManager : public FThreadedWorker {
 
                 // Convert Euler angles to quaternion
                 double imuOrientationQuat[4]={0};
-                eulerToQuaternion(state.pose.rotation, imuOrientationQuat);
+                MultirotorDynamics::eulerToQuaternion(state.pose.rotation, imuOrientationQuat);
 
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the quaternion and gyrometer, getting the resulting motor values
