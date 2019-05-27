@@ -107,11 +107,8 @@ class FHackflightManager : public FFlightManager {
             pitch = _gimbalPitch;
         }
 
-        virtual void update(double time, double quat[4], double gyro[3], double accel[3], double * motorvals) override
+        virtual void update(const double time, const MultirotorDynamics::state_t & state, double * motorvals) override
         {
-            // Ignore accelerometer for now
-            (void)accel;
-
             Joystick::error_t joystickError = _receiver.update();
 
             switch (joystickError) {
@@ -133,7 +130,7 @@ class FHackflightManager : public FFlightManager {
                     _hackflight.update();
 
                     // Input deltaT, quat, gyro; output motor values
-                    _board.update(time, quat, gyro, motorvals);
+                    _board.update(time, state.quaternion, state.angularVel, motorvals);
             }
         }
 

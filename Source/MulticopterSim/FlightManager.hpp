@@ -36,7 +36,7 @@ class FFlightManager : public FThreadedWorker {
         bool _crashed = false;
 
         // Implement for each subclass
-        virtual void update(double time, double quat[4], double gyro[4], double accel[3], double * motorvals)  = 0;
+        virtual void update(const double time, const MultirotorDynamics::state_t & state, double * motorvals)  = 0;
 
     protected:
 
@@ -107,8 +107,8 @@ class FFlightManager : public FThreadedWorker {
                         motormean, state.bodyAccel[0], state.bodyAccel[1], state.bodyAccel[2]);
 
                 // PID controller: update the flight manager (e.g., HackflightManager) with
-                // the quaternion and gyrometer, getting the resulting motor values
-                update(currentTime, state.quaternion, state.angularVel, state.bodyAccel, _motorvals);
+                // the dynamics state
+                this->update(currentTime, state, _motorvals);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;

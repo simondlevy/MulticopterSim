@@ -59,7 +59,7 @@ class SimBoard : public hf::Board {
 
         virtual ~SimBoard() { }
 
-        void update(double time, double quat[4], double gyro[3], double * motors)
+        void update(const double time, const double quat[4], const double gyro[3], double * motors)
         {
             _currentTime = time;
 
