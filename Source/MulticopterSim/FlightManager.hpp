@@ -97,15 +97,6 @@ class FFlightManager : public FThreadedWorker {
                 MultirotorDynamics::state_t state = {0};
                 _crashed = _dynamics->getState(state);
 
-                // Debug
-                double motormean = 0;
-                for (uint8_t i=0; i<4; ++i) {
-                    motormean += _motorvals[i];
-                }
-                motormean /= 4;
-                dbgprintf("M: %3.3f  |  AX: %+05.3f    AY: %+05.3f    AZ: %+05.3f", 
-                        motormean, state.bodyAccel[0], state.bodyAccel[1], state.bodyAccel[2]);
-
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the dynamics state
                 this->update(currentTime, state, _motorvals);
