@@ -18,7 +18,7 @@ class SimSensors : public hf::Sensor {
 
     private:
 
-        static void rotateVelocity(state_t & state, double eulerAngles[3], double velocityXYZ[3])
+        static void rotateVelocity(state_t & vehicleState, double eulerAngles[3], double velocityXYZ[3])
         {
             // Rotate vehicle's inertial velocity into body frame
             float psi = eulerAngles[2];
@@ -26,8 +26,8 @@ class SimSensors : public hf::Sensor {
             float sp = sin(psi);
             float vx = velocityXYZ[0];
             float vy = velocityXYZ[1];
-            state.velocityForward    = vx * cp + vy * sp;
-            state.velocityRightward  = vy * cp - vx * sp;
+            vehicleState.velocityForward    = vx * cp + vy * sp;
+            vehicleState.velocityRightward  = vy * cp - vx * sp;
         }
 
     protected:
@@ -41,22 +41,18 @@ class SimSensors : public hf::Sensor {
             return true;
         }
 
-        virtual void modifyState(state_t & state, float time)
+        virtual void modifyState(state_t & vehicleState, float time)
         {
             (void)time;
 
             // Get vehicle state from dynamics
-            double angularVelocity[3] = {0};
-            double earthFrameAcceleration[3] = {0};
-            double eulerAngles[3] = {0};
-            double velocityXYZ[3] = {0};
-            double positionXYZ[3] = {0};
-            _dynamics->getState(angularVelocity, earthFrameAcceleration, eulerAngles, velocityXYZ, positionXYZ);
+            MultirotorDynamics::state_t dynamicsState = {0};
+            _dynamics->getState(dynamicsState);
 
             // Use vehicle state to modify Hackflight state values
-            state.altitude   = -positionXYZ[2]; // Negate for NED => ENU conversion
-            state.variometer = -velocityXYZ[2];
-            rotateVelocity(state, eulerAngles, velocityXYZ);
+            vehicleState.altitude   = -dynamicsState.location[2]; // Negate for NED => ENU conversion
+            vehicleState.variometer = -dynamicsState.inertialVel[2];
+            rotateVelocity(vehicleState, dynamicsState.rotation, dynamicsState.inertialVel);
         }
 
     public:

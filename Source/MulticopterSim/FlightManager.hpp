@@ -117,10 +117,8 @@ class FFlightManager : public FThreadedWorker {
 
                 // Get vehicle state from dynamics.  We keep pose (location, rotation) in memory for use  in
                 // getKinematics() method
-                double angularVel[3]   = {0}; // body frame
-                double bodyAccel[3]    = {0}; // body frame
-                double intertialVel[3] = {0}; // inertial frame
-                _crashed = _dynamics->getState(angularVel, bodyAccel, _rotation, intertialVel, _location);
+                MultirotorDynamics::state_t state = {0};
+                _crashed = _dynamics->getState(state);
 
                 // Debug
                 double motormean = 0;
@@ -128,19 +126,25 @@ class FFlightManager : public FThreadedWorker {
                     motormean += _motorvals[i];
                 }
                 motormean /= 4;
-                dbgprintf("M: %3.3f  |  AX: %+3.3f    AY: %+3.3f    AZ: %+3.3f", 
-                        motormean, bodyAccel[0], bodyAccel[1], bodyAccel[2]);
+                dbgprintf("M: %3.3f  |  AX: %+05.3f    AY: %+05.3f    AZ: %+05.3f", 
+                        motormean, state.bodyAccel[0], state.bodyAccel[1], state.bodyAccel[2]);
 
                 // Convert Euler angles to quaternion
                 double imuOrientationQuat[4]={0};
-                eulerToQuaternion(_rotation, imuOrientationQuat);
+                eulerToQuaternion(state.rotation, imuOrientationQuat);
 
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the quaternion and gyrometer, getting the resulting motor values
-                update(currentTime, imuOrientationQuat, angularVel, bodyAccel, _motorvals);
+                update(currentTime, imuOrientationQuat, state.angularVel, state.bodyAccel, _motorvals);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;
+
+                // Copy out kinematic part of state
+                for (uint8_t k=0; k<3; ++k) {
+                    _location[k] = state.location[k];
+                    _rotation[k] = state.rotation[k];
+                }
             }
         }
 

@@ -156,6 +156,17 @@ class MultirotorDynamics {
     public:
 
         /**
+         * Exported state representation
+         */
+        typedef struct {
+            double angularVel[3]; 
+            double bodyAccel[3]; 
+            double rotation[3]; 
+            double inertialVel[3]; 
+            double location[3];
+        } state_t;
+
+        /**
          *  Destructor
          */
         virtual ~MultirotorDynamics(void)
@@ -273,29 +284,25 @@ class MultirotorDynamics {
         /*
          *  Gets current state
          *
-         *  @param angularVel  angular velocity radians / second, in body frame
-         *  @param bodyAccel   linear acceleration in body frame
-         *  @param rotation    Euler angles in radians
-         *  @param inertialVel linear velocity in inertial frame
-         *  @param location    location in inertial frame
+         *  @param state data structure for state
          *
          *  @return true if crashed, false otherwise
          */
-        bool getState(double angularVel[3], double bodyAccel[3], double rotation[3], double inertialVel[3], double location[3])
+        bool getState(state_t & state)
         {
             // Get most values directly from state
             for (int i=0; i<3; ++i) {
-                angularVel[i]  = _x[STATE_PHI_DOT+2*i];
-                rotation[i]    = _x[STATE_PHI+2*i];
-                location[i]    = _x[STATE_X+2*i];
-                inertialVel[i] = _x[STATE_X_DOT+2*i];
+                state.angularVel[i]  = _x[STATE_PHI_DOT+2*i];
+                state.rotation[i]    = _x[STATE_PHI+2*i];
+                state.location[i]    = _x[STATE_X+2*i];
+                state.inertialVel[i] = _x[STATE_X_DOT+2*i];
             }
 
             // Convert inertial acceleration to body frame
-            inertialToBody(_inertialAccel, rotation, bodyAccel);
+            inertialToBody(_inertialAccel, state.rotation, state.bodyAccel);
 
             // If we're airborne, we've crashed if we fall below ground level
-            return _airborne ? (location[2] > 0) : false;
+            return _airborne ? (state.location[2] > 0) : false;
         }
 
         /**
