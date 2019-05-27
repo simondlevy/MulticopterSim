@@ -93,7 +93,7 @@ class MultirotorDynamics {
         }
 
         // bodyToInertial() method optimized for body X=Y=0
-        static void bodyZToInertial(double bodyZ, double rotation[3], double inertial[3])
+        static void bodyZToInertial(double bodyZ, const double rotation[3], double inertial[3])
         {
             double phi   = rotation[0];
             double theta = rotation[1];
@@ -156,14 +156,19 @@ class MultirotorDynamics {
     public:
 
         /**
-         * Exported state representation
+         * Exported state representations
          */
+
+        typedef struct {
+            double location[3];
+            double rotation[3]; 
+        } pose_t;
+
         typedef struct {
             double angularVel[3]; 
             double bodyAccel[3]; 
-            double rotation[3]; 
             double inertialVel[3]; 
-            double location[3];
+            pose_t pose;
         } state_t;
 
         /**
@@ -177,20 +182,19 @@ class MultirotorDynamics {
         /** 
          * Initializes kinematic pose, with flag for whether we're airbone (helps with testing gravity).
          *
-         * @param location X,Y,Z
-         * @param rotation phi, theta, psi
+         * @param pose location X,Y,Z; rotation phi,theta,psi
          * @param airborne allows us to start on the ground (default) or in the air (e.g., gravity test)
          */
-        void init(double location[3], double rotation[3], bool airborne=false)
+        void init(const pose_t & pose, bool airborne=false)
         {
             // Initialize pose
             for (int i=0; i<3; ++i) {
-                _x[STATE_X+i]   = location[i];
-                _x[STATE_PHI+i] = rotation[i];
+                _x[STATE_X+i]   = pose.location[i];
+                _x[STATE_PHI+i] = pose.rotation[i];
             }
 
             // Initialize inertial frame acceleration in NED coordinates
-            bodyZToInertial(-g, rotation, _inertialAccel);
+            bodyZToInertial(-g, pose.rotation, _inertialAccel);
 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
@@ -292,17 +296,17 @@ class MultirotorDynamics {
         {
             // Get most values directly from state
             for (int i=0; i<3; ++i) {
-                state.angularVel[i]  = _x[STATE_PHI_DOT+2*i];
-                state.rotation[i]    = _x[STATE_PHI+2*i];
-                state.location[i]    = _x[STATE_X+2*i];
-                state.inertialVel[i] = _x[STATE_X_DOT+2*i];
+                state.angularVel[i]             = _x[STATE_PHI_DOT+2*i];
+                state.inertialVel[i]            = _x[STATE_X_DOT+2*i];
+                state.pose.rotation[i]    = _x[STATE_PHI+2*i];
+                state.pose.location[i]    = _x[STATE_X+2*i];
             }
 
             // Convert inertial acceleration to body frame
-            inertialToBody(_inertialAccel, state.rotation, state.bodyAccel);
+            inertialToBody(_inertialAccel, state.pose.rotation, state.bodyAccel);
 
             // If we're airborne, we've crashed if we fall below ground level
-            return _airborne ? (state.location[2] > 0) : false;
+            return _airborne ? (state.pose.location[2] > 0) : false;
         }
 
         /**

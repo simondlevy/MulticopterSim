@@ -24,8 +24,9 @@ class FFlightManager : public FThreadedWorker {
         double _startTime = 0;
 
         // Kinematics
-        double   _location[3] = {0};
-        double   _rotation[3] = {0};
+        MultirotorDynamics::pose_t _pose = {0};
+
+        // Current motor values from PID controller
         double * _motorvals = NULL; 
         
         // For computing _deltaT
@@ -75,17 +76,17 @@ class FFlightManager : public FThreadedWorker {
             _dynamics = MultirotorDynamics::create();
 
             // Convert ENU centimeters => NED meters
-            _location[0] =  initialLocation.X / 100;
-            _location[1] =  initialLocation.Y / 100;
-            _location[2] = -initialLocation.Z / 100;
+            _pose.location[0] =  initialLocation.X / 100;
+            _pose.location[1] =  initialLocation.Y / 100;
+            _pose.location[2] = -initialLocation.Z / 100;
 
             // Convert degrees => radians
-            _rotation[0] = FMath::DegreesToRadians(initialRotation.Roll);
-            _rotation[1] = FMath::DegreesToRadians(initialRotation.Pitch);
-            _rotation[2] = FMath::DegreesToRadians(initialRotation.Yaw);
+            _pose.rotation[0] = FMath::DegreesToRadians(initialRotation.Roll);
+            _pose.rotation[1] = FMath::DegreesToRadians(initialRotation.Pitch);
+            _pose.rotation[2] = FMath::DegreesToRadians(initialRotation.Yaw);
 
             // Initialize dynamics with initial pose
-            _dynamics->init(_location, _rotation);
+            _dynamics->init(_pose);
 
             // Constants
             _deltaT = 1. / updateFrequency;
@@ -131,7 +132,7 @@ class FFlightManager : public FThreadedWorker {
 
                 // Convert Euler angles to quaternion
                 double imuOrientationQuat[4]={0};
-                eulerToQuaternion(state.rotation, imuOrientationQuat);
+                eulerToQuaternion(state.pose.rotation, imuOrientationQuat);
 
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the quaternion and gyrometer, getting the resulting motor values
@@ -142,8 +143,8 @@ class FFlightManager : public FThreadedWorker {
 
                 // Copy out kinematic part of state
                 for (uint8_t k=0; k<3; ++k) {
-                    _location[k] = state.location[k];
-                    _rotation[k] = state.rotation[k];
+                    _pose.location[k] = state.pose.location[k];
+                    _pose.rotation[k] = state.pose.rotation[k];
                 }
             }
         }
@@ -156,23 +157,24 @@ class FFlightManager : public FThreadedWorker {
             delete _motorvals;
         }
 
-        // Called by VehiclePawn::Tick() method to get current display kinematics
+        // Called by VehiclePawn::Tick() method to get current display pose
         // (location, rotation) and propeller animation/sound (motorvals)
         bool getKinematics(FVector & location, FRotator & rotation, float * motorvals)
         {
+            // Get motor values for propeller animation / motor sound
             for (uint8_t j=0; j<_motorCount; ++j) {
                 motorvals[j] = _motorvals[j];
             }
 
             // Convert NED meters => ENU centimeters
-            location.X =  _location[0] * 100; 
-            location.Y =  _location[1] * 100; 
-            location.Z = -_location[2] * 100; 
+            location.X =  _pose.location[0] * 100; 
+            location.Y =  _pose.location[1] * 100; 
+            location.Z = -_pose.location[2] * 100; 
 
             // Convert radians to degrees
-            rotation.Roll =  FMath::RadiansToDegrees(_rotation[0]);
-            rotation.Pitch = FMath::RadiansToDegrees(_rotation[1]);
-            rotation.Yaw =   FMath::RadiansToDegrees(_rotation[2]);
+            rotation.Roll =  FMath::RadiansToDegrees(_pose.rotation[0]);
+            rotation.Pitch = FMath::RadiansToDegrees(_pose.rotation[1]);
+            rotation.Yaw =   FMath::RadiansToDegrees(_pose.rotation[2]);
 
             return _crashed;
         }
