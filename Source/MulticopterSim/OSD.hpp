@@ -13,9 +13,12 @@
 
 static void osd(char * buf, bool err)
 {
-    // Text properties for debugging
+
+    // Show message in yellow, error in red
     FColor TEXT_COLOR = err ? FColor::Red : FColor::Yellow;
-    constexpr float  TEXT_SCALE = 2.f;
+
+    // Scale text to fit message
+    float  TEXT_SCALE = 100.f / strlen(buf);
 
     // on screen
     if (GEngine) {
@@ -24,3 +27,4 @@ static void osd(char * buf, bool err)
         GEngine->AddOnScreenDebugMessage(0, 5.f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
     }
 }
+~
