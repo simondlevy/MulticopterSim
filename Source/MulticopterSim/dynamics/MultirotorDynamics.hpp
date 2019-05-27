@@ -325,7 +325,7 @@ class MultirotorDynamics {
          *  See Section 5 of http://www.chrobotics.com/library/understanding-euler-angles
          */
 
-        static void bodyToInertial(double body[3], double rotation[3], double inertial[3])
+        static void bodyToInertial(double body[3], const double rotation[3], double inertial[3])
         {
             double phi   = rotation[0];
             double theta = rotation[1];
@@ -345,7 +345,7 @@ class MultirotorDynamics {
             dot(R, body, inertial);
         }
 
-        static void inertialToBody(double inertial[3], double rotation[3], double body[3])
+        static void inertialToBody(double inertial[3], const double rotation[3], double body[3])
         {
             double phi   = rotation[0];
             double theta = rotation[1];

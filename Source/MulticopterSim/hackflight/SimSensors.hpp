@@ -18,16 +18,16 @@ class SimSensors : public hf::Sensor {
 
     private:
 
-        static void rotateVelocity(state_t & vehicleState, double eulerAngles[3], double velocityXYZ[3])
+        static void rotateVelocity(double inertialVel[3], const double eulerAngles[3], float bodyVel[3])
         {
             // Rotate vehicle's inertial velocity into body frame
             float psi = eulerAngles[2];
             float cp = cos(psi);
             float sp = sin(psi);
-            float vx = velocityXYZ[0];
-            float vy = velocityXYZ[1];
-            vehicleState.inertialVel[0] = vx * cp + vy * sp;
-            vehicleState.inertialVel[1] = vy * cp - vx * sp;
+            float vx = inertialVel[0];
+            float vy = inertialVel[1];
+            bodyVel[0] = vx * cp + vy * sp;
+            bodyVel[1] = vy * cp - vx * sp;
         }
 
     protected:
@@ -52,7 +52,8 @@ class SimSensors : public hf::Sensor {
             // Use vehicle state to modify Hackflight state values
             vehicleState.location[2]    = -dynamicsState.pose.location[2]; // Negate for NED => ENU conversion
             vehicleState.inertialVel[2] = -dynamicsState.inertialVel[2];
-            rotateVelocity(vehicleState, dynamicsState.pose.rotation, dynamicsState.inertialVel);
+
+            rotateVelocity(dynamicsState.inertialVel, dynamicsState.pose.rotation, vehicleState.bodyVel);
         }
 
     public:
