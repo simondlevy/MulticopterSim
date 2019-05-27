@@ -11,6 +11,11 @@
 #include "Engine.h"
 #include "Engine/World.h"
 
+static float _min(float a, float b)
+{
+    return a < b ? a : b;
+}
+
 static void osd(char * buf, bool err)
 {
     if (GEngine && GEngine->GameViewport) {
@@ -23,9 +28,9 @@ static void osd(char * buf, bool err)
         GEngine->GameViewport->GetViewportSize(ViewportSize);
 
         // Scale text to fit message to screen
-        float  TEXT_SCALE = ViewportSize.X / 6 / strlen(buf);
+        float  textScale = _min(ViewportSize.X / 6 / strlen(buf), 2);
 
         // -1 = no overwrite (0 for overwrite); 5.f = arbitrary time to display; true = newer on top
-        GEngine->AddOnScreenDebugMessage(0, 5.f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
+        GEngine->AddOnScreenDebugMessage(0, 5.f, TEXT_COLOR, FString(buf), true, FVector2D(textScale,textScale));
     }
 }
