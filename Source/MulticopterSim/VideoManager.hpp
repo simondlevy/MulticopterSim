@@ -18,9 +18,6 @@ class FVideoManager : public FThreadedWorker {
 
     private:
 
-        UTextureRenderTarget2D * _camera1RenderTarget;
-        UTextureRenderTarget2D * _camera2RenderTarget;
-
         // Image grabbers for our two cameras
         ImageGrabber * _camera1Grabber = NULL;
         ImageGrabber * _camera2Grabber = NULL;
@@ -33,16 +30,12 @@ class FVideoManager : public FThreadedWorker {
         // Called once on main thread
         FVideoManager(UTextureRenderTarget2D * camera1RenderTarget, UTextureRenderTarget2D * camera2RenderTarget) : FThreadedWorker()
         {
-            _camera1RenderTarget = camera1RenderTarget;
-            _camera2RenderTarget = camera2RenderTarget;
-
             // Create our two camera grabbers
             _camera1Grabber = new ImageGrabber(camera1RenderTarget);
             _camera2Grabber = new ImageGrabber(camera2RenderTarget);
 
             // Start with camera 1
             _currentCameraGrabber = _camera1Grabber;
-
         }
 
 
