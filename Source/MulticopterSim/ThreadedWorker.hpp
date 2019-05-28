@@ -13,7 +13,6 @@
 
 #include <stdarg.h>
 
-
 class FThreadedWorker : public FRunnable {
 
     private:
