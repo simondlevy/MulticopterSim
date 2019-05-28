@@ -37,6 +37,23 @@ class FFlightManager : public FThreadedWorker {
 
         // Implement for each subclass
         virtual void update(const double time, const MultirotorDynamics::state_t & state, double * motorvals)  = 0;
+        //
+        // OSD
+        void showStatus(const double time, const MultirotorDynamics::state_t & state)
+        {
+            const double * accel = state.bodyAccel;
+            const double * gyro  = state.angularVel;
+            const double * quat  = state.quaternion;
+            const double * loc   = state.pose.location;
+
+            dbgprintf("t: %4.1f | a: %+2.2f %+2.2f %+2.2f | g: %+2.2f %+2.2f %+2.2f | q: %+2.2f %+2.2f %+2.2f %+2.2f | p: %+2.2f %+2.2f %+2.2f", 
+                    time, 
+                    accel[0], accel[1], accel[2],
+                    gyro[0], gyro[1], gyro[2],
+                    quat[0], quat[1], quat[2], quat[3],
+                    loc[0], loc[1], loc[2]);
+        }
+
 
     protected:
 
@@ -100,6 +117,9 @@ class FFlightManager : public FThreadedWorker {
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the dynamics state
                 this->update(currentTime, state, _motorvals);
+
+                // Show status in OSD
+                showStatus(currentTime, state);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;
