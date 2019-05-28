@@ -11,9 +11,6 @@
 #include "ThreadedWorker.hpp"
 #include "ImageGrabber.hpp"
 
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-
 class FVideoManager : public FThreadedWorker {
 
     private:
