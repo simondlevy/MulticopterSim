@@ -35,7 +35,6 @@ class FVideoManager : public FThreadedWorker {
             _currentCameraGrabber = _camera1Grabber;
         }
 
-
         // Called repeatedly on worker thread to process current image
         void performTask(void)
         {
@@ -47,7 +46,6 @@ class FVideoManager : public FThreadedWorker {
 
         // Override this method for your video application
         virtual void processImage(cv::Mat image) = 0;
-
 
     public:
 
