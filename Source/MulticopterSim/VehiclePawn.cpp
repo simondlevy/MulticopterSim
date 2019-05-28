@@ -164,8 +164,12 @@ void AVehiclePawn::Tick(float DeltaSeconds)
         // Move gimbal
         setGimbal();
 
-        // OSD for debugging messages from flight manager
-        debug("%s", _flightManager->getMessage());
+        // Tell the threaded video work to grab the current camera image
+        _videoManager->grabCurrentImage();
+
+        // OSD for debugging messages from threaded workers
+        //debug("%s", _flightManager->getMessage());
+        //debug("%s", _videoManager->getMessage());
     }
 
     Super::Tick(DeltaSeconds);

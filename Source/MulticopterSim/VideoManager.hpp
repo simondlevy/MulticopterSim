@@ -45,21 +45,6 @@ class FVideoManager : public FThreadedWorker {
 
         }
 
-        void grabCurrentImage(void)
-        {
-            _currentCameraGrabber->grabImage();
-        }
-
-        void useCamera1(void)
-        {
-            _currentCameraGrabber = _camera1Grabber;
-        }
-
-        void useCamera2(void)
-        {
-            _currentCameraGrabber = _camera2Grabber;
-        }
-
 
         // Called repeatedly on worker thread to process current image
         void performTask(void)
@@ -75,6 +60,21 @@ class FVideoManager : public FThreadedWorker {
 
 
     public:
+
+        void grabCurrentImage(void)
+        {
+            _currentCameraGrabber->grabImage();
+        }
+
+        void useCamera1(void)
+        {
+            _currentCameraGrabber = _camera1Grabber;
+        }
+
+        void useCamera2(void)
+        {
+            _currentCameraGrabber = _camera2Grabber;
+        }
 
         ~FVideoManager()
         {
