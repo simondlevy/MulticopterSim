@@ -26,7 +26,7 @@ class ImageGrabber
         FRenderTarget * _renderTargetResource = NULL;
 
         // RBGA image create from render target on main thread
-        cv::Mat _rbga_image = NULL;
+        cv::Mat _rbga_image;
 
     public:
 
