@@ -19,7 +19,6 @@
 
 class ImageGrabber
 {
-
     private:
 
         // Access to camera's render target resource
@@ -52,7 +51,6 @@ class ImageGrabber
 
             ready = false;
         }
-
 
         // Should be called on the main thread
         void grabImage(void)
