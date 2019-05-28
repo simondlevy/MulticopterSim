@@ -166,5 +166,5 @@ class FFlightManager : public FThreadedWorker {
         virtual void getGimbal(float & roll, float &pitch) { roll = 0; pitch = 0; }
 
         // Factory method implemented by your subclass
-        static FFlightManager * createFlightManager(FVector initialLocation, FRotator initialRotation);
+        static FFlightManager * create(FVector initialLocation, FRotator initialRotation);
 };

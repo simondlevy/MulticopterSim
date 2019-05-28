@@ -15,6 +15,7 @@
 #include <math.h>
 
 #include "FlightManager.hpp"
+#include "VideoManager.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -24,8 +25,6 @@
 
 UCLASS(Config=Game)
 class MULTICOPTERSIM_API AVehiclePawn : public APawn {
-
-    friend class FlightManager;
 
 private:
 
@@ -52,10 +51,11 @@ private:
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
             class USpringArmComponent* _fpvSpringArm;
 
-        // Threaded worker for running flight control
+        // Threaded workers for running flight control, video
         class FFlightManager * _flightManager = NULL;
+        class FVideoManager * _videoManager = NULL;
 
-		// Bozo filter for failure to select a map
+ 		// Bozo filter for failure to select a map
 		bool _mapSelected = false;
 
         // Motor values for animation/sound
@@ -73,6 +73,10 @@ private:
         static const int8_t  getMotorDirection(uint8_t j);
         static const char ** getPropellerMeshNames(void);
 
+        // Render targets, passed to consgtructor for threaded video worker when Start button is pressed
+        UTextureRenderTarget2D * _camera1RenderTarget;
+        UTextureRenderTarget2D * _camera2RenderTarget;
+
         // Sets axes for camera gimbal based on values returned in child class
         void setGimbal(void);
 
@@ -81,8 +85,8 @@ private:
         FRotator _startRotation;
 
         // Flight management thread
-        void startFlightManager(void);
-        void stopFlightManager(void);
+        void startThreadedWorkers(void);
+        void stopThreadedWorkers(void);
 
 protected:
 

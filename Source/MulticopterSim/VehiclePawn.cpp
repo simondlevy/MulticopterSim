@@ -36,6 +36,16 @@ AVehiclePawn::AVehiclePawn()
 	_vehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
 	_vehicleMesh->SetStaticMesh(ConstructorStatics._vehicleMesh.Get());	// Set static mesh
 	RootComponent = _vehicleMesh;
+    
+    // Accessing camera render targets from map is done statically (at compile time).
+    static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
+        camera1TextureObject(TEXT("/Game/Flying/RenderTargets/fpv1CameraTarget"));
+    static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
+        camera2TextureObject(TEXT("/Game/Flying/RenderTargets/fpv2CameraTarget"));
+
+    // Get texture object from each render target
+    _camera1RenderTarget = camera1TextureObject.Object;
+    _camera2RenderTarget = camera2TextureObject.Object;
 
     // Turn off UE4 physics
 	_vehicleMesh->SetSimulatePhysics(false);
@@ -116,9 +126,8 @@ void AVehiclePawn::BeginPlay()
         _startLocation = this->GetActorLocation();
         _startRotation = this->GetActorRotation(); 
 
-        // Initialize flight manager
-        startFlightManager();
-
+        // Initialize threaded workers
+        startThreadedWorkers();
     }
 
     else {
@@ -132,7 +141,7 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     if (_mapSelected) {
 
-        stopFlightManager();
+        stopThreadedWorkers();
     }
 
     Super::EndPlay(EndPlayReason);
@@ -163,14 +172,16 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 }
 
 
-void AVehiclePawn::startFlightManager(void)
+void AVehiclePawn::startThreadedWorkers(void)
 {
-    _flightManager = FFlightManager::createFlightManager(_startLocation, _startRotation);
+    _flightManager = FFlightManager::create(_startLocation, _startRotation);
+    _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
 }
 
-void AVehiclePawn::stopFlightManager(void)
+void AVehiclePawn::stopThreadedWorkers(void)
 {
     _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
+    _videoManager  = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
 }
 
 void AVehiclePawn::getKinematics(void)
@@ -184,9 +195,9 @@ void AVehiclePawn::getKinematics(void)
 
     if (crashed) {
 
-        // Restart flight manager
-        stopFlightManager();
-        startFlightManager();
+        // Restart threaded workers
+        stopThreadedWorkers();
+        startThreadedWorkers();
     }
 
     SetActorLocation(location);

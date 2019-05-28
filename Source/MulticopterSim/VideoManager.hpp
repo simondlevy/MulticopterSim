@@ -14,12 +14,16 @@ class FVideoManager : public FThreadedWorker {
 
     private:
 
+        UTextureRenderTarget2D * _camera1RenderTarget;
+        UTextureRenderTarget2D * _camera2RenderTarget;
 
     protected:
 
         // Called once on main thread
-        FVideoManager(uint8_t motorCount, FVector initialLocation, FRotator initialRotation, uint16_t updateFrequency=1000) : FThreadedWorker()
+        FVideoManager(UTextureRenderTarget2D * camera1RenderTarget, UTextureRenderTarget2D * camera2RenderTarget) : FThreadedWorker()
         {
+            _camera1RenderTarget = camera1RenderTarget;
+            _camera2RenderTarget = camera2RenderTarget;
         }
         
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
@@ -34,5 +38,6 @@ class FVideoManager : public FThreadedWorker {
         }
 
         // Factory method implemented by your subclass
-        static FVideoManager * createVideoManager(FVector initialLocation, FRotator initialRotation);
-};
+        static FVideoManager * create(UTextureRenderTarget2D * camera1RenderTarget, UTextureRenderTarget2D * camera2RenderTarget);
+
+}; // Class FVideoManager
