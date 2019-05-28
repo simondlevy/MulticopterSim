@@ -24,7 +24,7 @@ class ImageGrabber
         // Access to camera's render target resource
         FRenderTarget * _renderTargetResource = NULL;
 
-        // RBGA image create from render target on main thread
+        // RBGA image created from render target on main thread
         cv::Mat _rbga_image;
 
     public:
