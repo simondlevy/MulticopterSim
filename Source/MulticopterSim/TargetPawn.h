@@ -14,6 +14,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "TargetController.hpp"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "TargetPawn.generated.h"
@@ -28,7 +30,7 @@ class ATargetPawn : public APawn
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
             class UStaticMeshComponent* _targetMesh;
 
-        FVector _location;
+        TargetController * _controller;
 
     public:
 
@@ -37,6 +39,4 @@ class ATargetPawn : public APawn
         ATargetPawn();
 
         ~ATargetPawn();
-
-        void setLocation(float x, float y, float z);
 };

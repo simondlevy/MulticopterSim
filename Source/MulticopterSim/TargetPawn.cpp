@@ -8,6 +8,8 @@
 
 #include "TargetPawn.h"
 #include "UObject/ConstructorHelpers.h"
+
+//#include "TargetController.hpp"
 #include "Debug.hpp"
 
 ATargetPawn::ATargetPawn()
@@ -27,22 +29,16 @@ ATargetPawn::ATargetPawn()
 	_targetMesh->SetStaticMesh(ConstructorStatics._targetMesh.Get());	// Set static mesh
 	RootComponent = _targetMesh;
 
-    // Start in front of the main vehicle
-    setLocation(100,0,0);
+    // Create controller for kinematics
+    _controller = TargetController::create();
 }
 
 ATargetPawn::~ATargetPawn()
 {
+    delete _controller;
 }
 
 void ATargetPawn::Tick(float DeltaSeconds) 
 {
-    SetActorLocation(_location);
-}
-
-void ATargetPawn::setLocation(float x, float y, float z)
-{
-    _location.X = x;
-    _location.Y = y;
-    _location.Z = z;
+    SetActorLocation(_controller->getLocation());
 }
