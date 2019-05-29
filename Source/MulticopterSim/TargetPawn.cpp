@@ -26,6 +26,9 @@ ATargetPawn::ATargetPawn()
 	_targetMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TargetMesh0"));
 	_targetMesh->SetStaticMesh(ConstructorStatics._targetMesh.Get());	// Set static mesh
 	RootComponent = _targetMesh;
+
+    // Start in front of the main vehicle
+    setLocation(100,0,0);
 }
 
 ATargetPawn::~ATargetPawn()
