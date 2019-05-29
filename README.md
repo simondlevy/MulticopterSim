@@ -96,7 +96,7 @@ the [FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Sou
 overriding its 
 [create()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L182-L183) 
 factory method and 
-[update()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L38-L4397) 
+[update()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L38-L47) 
 method.  
 
 # Support for OpenCV
