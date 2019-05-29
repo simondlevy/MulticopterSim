@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ThreadedWorker.hpp"
-#include "ImageGrabber.hpp"
+#include "OpenCVImageGrabber.hpp"
 
 class FVideoManager : public FThreadedWorker {
 
