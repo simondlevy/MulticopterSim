@@ -169,7 +169,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
         // OSD for debugging messages from threaded workers
         //debug("%s", _flightManager->getMessage());
-        debug("%s", _videoManager->getMessage());
+        //debug("%s", _videoManager->getMessage());
     }
 
     Super::Tick(DeltaSeconds);
