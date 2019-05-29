@@ -15,7 +15,12 @@
 #include <math.h>
 
 #include "FlightManager.hpp"
-#include "VideoManager.hpp"
+
+#ifdef __USE_OPENCV
+#include "VideoManagerOpenCV.hpp"
+#else
+#include "VideoManagerStub.hpp"
+#endif
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
