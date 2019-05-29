@@ -100,7 +100,7 @@ instruction in <b>MulticopterSimBuild.cs</b>.
 2. Write a subclass of 
 [VideoManagerOpenCV](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/VideoManagerOpenCV.hpp),
 implementing the 
-[processImage()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/VideoManagerOpenCV.hpp#L43-L44)
+[processImage()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/VideoManagerOpenCV.hpp#L48-L49)
 method.
 
 3. After building the game, copy the file <b>opencv_world340.dll</b> from the <b>ThirdParty/OpenCV/Libraries/Win64/</b> to <b>Binaries/Win64/</b>.
