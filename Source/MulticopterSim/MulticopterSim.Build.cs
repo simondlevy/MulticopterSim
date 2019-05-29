@@ -34,9 +34,6 @@ public class MulticopterSim : ModuleRules
 
     public void LoadOpenCV(ReadOnlyTargetRules Target)
     {
-        // Start OpenCV linking here!
-        bool isLibrarySupported = false;
-
         // Create OpenCV Path 
         string OpenCVPath = Path.Combine(ThirdPartyPath, "OpenCV");
 
@@ -44,7 +41,6 @@ public class MulticopterSim : ModuleRules
         string LibPath = "";
         bool isdebug = Target.Configuration == UnrealTargetConfiguration.Debug && Target.bDebugBuildsActuallyUseDebugCRT;
         LibPath = Path.Combine(OpenCVPath, "lib");
-        isLibrarySupported = true;
 
         //Add Include path 
         PublicIncludePaths.AddRange(new string[] { Path.Combine(OpenCVPath, "include") });
@@ -56,7 +52,7 @@ public class MulticopterSim : ModuleRules
         PublicAdditionalLibraries.Add("opencv_world345.lib");
         PublicDelayLoadDLLs.Add("opencv_world345.dll");
 
-        PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING={0}", isLibrarySupported ? 1 : 0));
+        PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING=1"));
         PublicDefinitions.Add("_USE_OPENCV");
     }
 }

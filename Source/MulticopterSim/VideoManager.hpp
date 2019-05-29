@@ -25,7 +25,8 @@ class FVideoManager : public FThreadedWorker {
     protected:
 
         // Called once on main thread
-        FVideoManager(UTextureRenderTarget2D * camera1RenderTarget, UTextureRenderTarget2D * camera2RenderTarget) : FThreadedWorker()
+        FVideoManager(UTextureRenderTarget2D * camera1RenderTarget, UTextureRenderTarget2D * camera2RenderTarget) 
+            : FThreadedWorker()
         {
             // Create our two camera grabbers
             _camera1Grabber = new ImageGrabber(camera1RenderTarget);
@@ -69,7 +70,7 @@ class FVideoManager : public FThreadedWorker {
             delete _camera1Grabber;
             delete _camera2Grabber;
         }
-        
+
         // Factory method implemented by your subclass
         static FVideoManager * create(UTextureRenderTarget2D * camera1RenderTarget, UTextureRenderTarget2D * camera2RenderTarget);
 
