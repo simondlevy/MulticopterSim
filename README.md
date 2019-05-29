@@ -94,9 +94,9 @@ spacebar to switch between the ground camera and FPV camera.
 Instead of using HackflightSim, you can use your own flight-control software with MultiCopterSim, by subclassing
 the [FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp) class,
 overriding its 
-[create()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L174-L175) 
+[create()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L182-L183) 
 factory method and 
-[update()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L38-L39) 
+[update()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L38-L4397) 
 method.  
 
 # Support for OpenCV
