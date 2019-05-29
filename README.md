@@ -13,7 +13,7 @@ MulticopterSim differs from AirSim in a few important ways:
 * MulticopterSim can be used with the same simple flight-control 
 [firmware](https://github.com/simondlevy/Hackflight/tree/master/src) that we fly on our real-world 
 [quadcopters](http://diydrones.com/profiles/blogs/flight-of-the-ladybug).
-* MulticopterSim is tiny, using a few thousand lines of C++ code for the simulator and firmware.
+* MulticopterSim is tiny, around a thousand lines of code.
 * MulticopterSim focuses exclusively on multirotor firmware, whereas AirSim
   supports deep learning and different kinds of vehicles.
 
@@ -88,6 +88,16 @@ to build the project.
 In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Click
 the play button and you're ready to begin. Throttle up to fly.  You can use the
 spacebar to switch between the ground camera and FPV camera.
+
+# Using your own flight controller
+
+Instead of using HackflightSim, you can use your own flight-control software with MultiCopterSim, by subclassing
+the [FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp) class,
+overriding its 
+[create()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L174-L175) 
+factory method and 
+[update()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L38-L39) 
+method.  
 
 # Support for OpenCV
 

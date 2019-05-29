@@ -35,9 +35,17 @@ class FFlightManager : public FThreadedWorker {
         // Did we hit the ground?
         bool _crashed = false;
 
-        // Implement for each subclass
+        /**
+         * Flight-control method running repeatedly on its own thread.  
+         * Override this method to implement your own flight controller.
+         *
+         * @param time current time in seconds (input)
+         * @param state vehicle state (input)
+         * @param motorvals motor values returned by your controller (output)
+         *
+         */
         virtual void update(const double time, const MultirotorDynamics::state_t & state, double * motorvals)  = 0;
-        //
+        
         // OSD
         void showStatus(const double time, const MultirotorDynamics::state_t & state)
         {
@@ -98,7 +106,7 @@ class FFlightManager : public FThreadedWorker {
             // No crash yet
             _crashed = false;
         }
-        //
+        
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
         void performTask(void)
         {
