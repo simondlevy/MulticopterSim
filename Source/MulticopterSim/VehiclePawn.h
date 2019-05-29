@@ -16,7 +16,7 @@
 
 #include "FlightManager.hpp"
 
-#ifdef __USE_OPENCV
+#ifdef _USE_OPENCV
 #include "VideoManagerOpenCV.hpp"
 #else
 #include "VideoManagerStub.hpp"
