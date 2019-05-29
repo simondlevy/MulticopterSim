@@ -34,8 +34,5 @@ class TargetController {
         }
 
         // Factory method implemented by your subclass
-        static TargetController * create(void)
-        {
-            return new TargetController(0, 100, 0);
-        }
+        static TargetController * create(void);
 };
