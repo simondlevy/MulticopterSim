@@ -25,9 +25,10 @@ class ATargetPawn : public APawn
 
 		GENERATED_BODY()
 
-        // StaticMesh component that will be the visuals for our flying pawn 
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
             class UStaticMeshComponent* _targetMesh;
+
+        FVector _location;
 
     public:
 
@@ -36,4 +37,6 @@ class ATargetPawn : public APawn
         ATargetPawn();
 
         ~ATargetPawn();
+
+        void setLocation(float x, float y, float z);
 };

@@ -32,8 +32,14 @@ ATargetPawn::~ATargetPawn()
 {
 }
 
-
 void ATargetPawn::Tick(float DeltaSeconds) 
 {
-    AddActorLocalOffset(FVector(0,0,1), true);
+    SetActorLocation(_location);
+}
+
+void ATargetPawn::setLocation(float x, float y, float z)
+{
+    _location.X = x;
+    _location.Y = y;
+    _location.Z = z;
 }
