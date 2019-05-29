@@ -29,9 +29,11 @@ class TargetController {
             return _location;
         }
 
-        ~TargetController(void)
+        virtual ~TargetController(void)
         {
         }
+
+        virtual void update(void) = 0;
 
         // Factory method implemented by your subclass
         static TargetController * create(void);
