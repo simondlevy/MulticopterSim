@@ -171,7 +171,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
         _videoManager->grabCurrentImage();
 
         // OSD for debugging messages from threaded workers
-        //debug("%s", _flightManager->getMessage());
+        debug("%s", _flightManager->getMessage());
         //debug("%s", _videoManager->getMessage());
     }
 

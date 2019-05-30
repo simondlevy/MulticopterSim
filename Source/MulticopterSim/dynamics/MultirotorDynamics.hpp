@@ -178,7 +178,7 @@ class MultirotorDynamics {
             double bodyAccel[3]; 
             double bodyVel[3]; 
             double inertialVel[3]; 
-            double quaternion[3]; 
+            double quaternion[4]; 
 
             pose_t pose;
 
@@ -212,7 +212,7 @@ class MultirotorDynamics {
         void init(const pose_t & pose, bool airborne=false)
         {
             // Initialize pose
-            for (int i=0; i<3; ++i) {
+            for (uint8_t i=0; i<3; ++i) {
                 _x[STATE_X+i]   = pose.location[i];
                 _x[STATE_PHI+i] = pose.rotation[i];
             }
@@ -234,11 +234,11 @@ class MultirotorDynamics {
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
-            double down[3]  = {0};
-            bodyZToInertial(-_U1/_p.m, euler, down);
+            double ned[3] = {0};
+            bodyZToInertial(-_U1/_p.m, euler, ned);
 
             // We're airborne once net downward acceleration goes below zero
-            double netz = down[2] + g;
+            double netz = ned[2] + g;
             if (!_airborne) {
                 _airborne = netz < 0;
             }
@@ -255,9 +255,9 @@ class MultirotorDynamics {
 
                     // Equation 12: compute temporal first derivative of state.
                     /* x'      */ _x[STATE_X_DOT],
-                    /* x''     */ down[0],
+                    /* x''     */ ned[0],
                     /* y'      */ _x[STATE_Y_DOT],
-                    /* y''     */ down[1],
+                    /* y''     */ ned[1],
                     /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ netz,
                     /* phi'    */ phidot,
@@ -269,14 +269,14 @@ class MultirotorDynamics {
                 };
 
                 // Compute state as first temporal integral of first temporal derivative
-                for (int i=0; i<12; ++i) {
+                for (uint8_t i=0; i<12; ++i) {
                     _x[i] += dt * dxdt[i];
                 }
 
-                // Once airborne, inertial-frame acceleration is same as downward acceleration
-                
-                _inertialAccel[1] = down[1];
-                _inertialAccel[2] = down[2];
+                // Once airborne, inertial-frame acceleration is same as NED acceleration
+                _inertialAccel[0] = ned[0];
+                _inertialAccel[1] = ned[1];
+                _inertialAccel[2] = ned[2];
             }
         }
 
@@ -317,12 +317,14 @@ class MultirotorDynamics {
          */
         bool getState(state_t & state)
         {
+
             // Get most values directly from state vector
-            for (int i=0; i<3; ++i) {
-                state.angularVel[i]    = _x[STATE_PHI_DOT+2*i];
-                state.inertialVel[i]   = _x[STATE_X_DOT+2*i];
-                state.pose.rotation[i] = _x[STATE_PHI+2*i];
-                state.pose.location[i] = _x[STATE_X+2*i];
+            for (uint8_t i=0; i<3; ++i) {
+                uint8_t ii = 2 * i;
+                state.angularVel[i]    = _x[STATE_PHI_DOT+ii];
+                state.inertialVel[i]   = _x[STATE_X_DOT+ii];
+                state.pose.rotation[i] = _x[STATE_PHI+ii];
+                state.pose.location[i] = _x[STATE_X+ii];
             }
 
             // Convert inertial acceleration and velocity to body frame

@@ -49,6 +49,9 @@ class FFlightManager : public FThreadedWorker {
         // OSD
         void showStatus(const double time, const MultirotorDynamics::state_t & state)
         {
+            dbgprintf("%s", _dynamics->getMessage());
+            return;
+
             const double * accel = state.bodyAccel;
             const double * gyro  = state.angularVel;
             const double * quat  = state.quaternion;
