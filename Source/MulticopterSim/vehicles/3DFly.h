@@ -27,6 +27,6 @@ static MultirotorDynamics::params_t params =
     2,                     // Iy
     3,                     // Iz
     0.000308013,           // Jr (Kg*m^2)
-    5000                  // maxrpm
+    60000                  // maxrpm
 };
 
