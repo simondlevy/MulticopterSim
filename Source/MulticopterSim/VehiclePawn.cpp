@@ -28,9 +28,8 @@ AVehiclePawn::AVehiclePawn()
 	// Structure to hold one-time initialization
 	struct FConstructorStatics
 	{
-        const wchar_t * meshName = TEXT("/Game/Flying/Meshes/3DFly.3DFly");
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> _vehicleMesh;
-		FConstructorStatics() : _vehicleMesh(meshName)
+		FConstructorStatics() : _vehicleMesh(VEHICLE_MESH_NAME)
 		{
 		}
 	};
