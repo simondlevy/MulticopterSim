@@ -8,7 +8,7 @@
 
 #include "VehiclePawn.h"
 
-#include "VehicleSpec.h"
+#include "vehicles/BigQuad.h"
 
 #include "Debug.hpp"
 
