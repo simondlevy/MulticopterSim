@@ -49,9 +49,6 @@ class FFlightManager : public FThreadedWorker {
         // OSD
         void showStatus(const double time, const MultirotorDynamics::state_t & state)
         {
-            dbgprintf("%s", _dynamics->getMessage());
-            return;
-
             const double * accel = state.bodyAccel;
             const double * gyro  = state.angularVel;
             const double * quat  = state.quaternion;
@@ -141,7 +138,7 @@ class FFlightManager : public FThreadedWorker {
                 this->update(currentTime, state, _motorvals);
 
                 // Show status in OSD
-                showStatus(currentTime, state);
+                //showStatus(currentTime, state);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;

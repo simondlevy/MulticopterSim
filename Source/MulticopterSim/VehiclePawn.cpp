@@ -8,7 +8,7 @@
 
 #include "VehiclePawn.h"
 
-#include "3DFly.h"
+#include "VehicleSpec.h"
 
 #include "Debug.hpp"
 
