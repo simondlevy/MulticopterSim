@@ -79,7 +79,7 @@ AVehiclePawn::AVehiclePawn()
     _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 	
 
     // Allocate space for motor values used in animation/sound
-    _motorvals = new float[MOTOR_COUNT];
+    _motorvals = new float[frame.nmotors];
 }
 
 AVehiclePawn::~AVehiclePawn()
@@ -100,7 +100,7 @@ void AVehiclePawn::PostInitializeComponents()
     for (int i = 0; i < staticComponents.Num(); i++) {
         if (staticComponents[i]) {
             UStaticMeshComponent* child = staticComponents[i];
-            for (uint8_t j=0; j<MOTOR_COUNT; ++j) {
+            for (uint8_t j=0; j<frame.nmotors; ++j) {
                 if (child->GetName() == PROPELLER_MESH_NAMES[j]) {
                     _propMeshes[j] = child;
                 }
@@ -181,7 +181,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
 void AVehiclePawn::startThreadedWorkers(void)
 {
-    _flightManager = FFlightManager::create(_startLocation, _startRotation);
+    _flightManager = FFlightManager::create(frame, params, _startLocation, _startRotation);
     _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
 }
 
@@ -215,10 +215,10 @@ void AVehiclePawn::addAnimationEffects(void)
 {
     // Compute the mean of the motor values
     float motormean = 0;
-    for (uint8_t j=0; j<MOTOR_COUNT; ++j) {
+    for (uint8_t j=0; j<frame.nmotors; ++j) {
         motormean += _motorvals[j];
     }
-    motormean /= MOTOR_COUNT;
+    motormean /= frame.nmotors;
 
     // Use the mean motor value to modulate the pitch and voume of the propeller sound
     setAudioPitchAndVolume(motormean);
@@ -226,7 +226,7 @@ void AVehiclePawn::addAnimationEffects(void)
     // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
     if (motormean > 0) {
         static float rotation;
-        for (uint8_t j=0; j<MOTOR_COUNT; ++j) {
+        for (uint8_t j=0; j<frame.nmotors; ++j) {
             _propMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * MOTOR_DIRECTIONS[j]*100, 0));
         }
         rotation++;

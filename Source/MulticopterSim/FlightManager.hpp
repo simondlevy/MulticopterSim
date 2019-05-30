@@ -73,14 +73,19 @@ class FFlightManager : public FThreadedWorker {
         MultirotorDynamics * _dynamics;
 
         // Called once on main thread
-        FFlightManager(uint8_t motorCount, FVector initialLocation, FRotator initialRotation, uint16_t updateFrequency=1000) 
+        FFlightManager(
+                const MultirotorDynamics::frame_t frame,
+                const MultirotorDynamics::params_t params,
+                FVector initialLocation, 
+                FRotator initialRotation, 
+                uint16_t updateFrequency=1000) 
             : FThreadedWorker()
         {
             // Allocate array for motor values
-            _motorvals = new double[motorCount];
+            _motorvals = new double[frame.nmotors];
 
-            // Create vehicle dynamics via factory method
-            _dynamics = MultirotorDynamics::create();
+            // Create vehicle dynamics 
+            _dynamics = new MultirotorDynamics(frame, params);
 
             // Convert ENU centimeters => NED meters
             _pose.location[0] =  initialLocation.X / 100;
@@ -97,7 +102,7 @@ class FFlightManager : public FThreadedWorker {
 
             // Constants
             _deltaT = 1. / updateFrequency;
-            _motorCount = motorCount;
+            _motorCount = frame.nmotors;
 
             // For periodic update
             _startTime = FPlatformTime::Seconds();
@@ -180,5 +185,9 @@ class FFlightManager : public FThreadedWorker {
         virtual void getGimbal(float & roll, float &pitch) { roll = 0; pitch = 0; }
 
         // Factory method implemented by your subclass
-        static FFlightManager * create(FVector initialLocation, FRotator initialRotation);
+        static FFlightManager * create(
+                MultirotorDynamics::frame_t frame, 
+                MultirotorDynamics::params_t params, 
+                FVector initialLocation, 
+                FRotator initialRotation);
 };

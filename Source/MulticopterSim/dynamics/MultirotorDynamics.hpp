@@ -30,15 +30,60 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 class MultirotorDynamics {
+
+    public:
+
+        // Dynamics parameters
+        typedef struct {
+
+            double b;
+            double d ;
+            double m ;
+            double l ;
+            double Ix;
+            double Iy;
+            double Iz; 
+            double Jr;
+
+            unsigned int maxrpm;
+
+        } params_t;
+
+        // Frame configuration
+        typedef struct {
+
+            // number of motors
+            uint8_t nmotors;
+
+            // thrust roll right
+            double (*u2)(double * o2);
+
+            // thrust pitch forward
+            double (*u3)(double * o2);
+
+            // thrust yaw cw
+            double (*u4)(double * o2);
+
+            // torque cw
+            double (*omega)(double * o2);
+
+        } frame_t;
 
     private:
 
         // Universal constants
         static constexpr double g  = 9.80665; // might want to allow this to vary!
         static constexpr double pi = 3.14159;
+
+        // Frame functions for a vehicle configuration
+        frame_t _f;
+
+        // Parameters for a particular vehicle
+        params_t _p;
 
         // State vector (see Eqn. 11)
         double _x[12] = {0};
@@ -58,9 +103,6 @@ class MultirotorDynamics {
             STATE_PSI,
             STATE_PSI_DOT
         };
-
-        // Set by subclass constructor
-        unsigned int _nmotors = 0;
 
         // Values computed in Equation 6
         double _U1 = 0;     // total thrust
@@ -92,7 +134,7 @@ class MultirotorDynamics {
             }
         }
 
-        // bodyToInertial() method optimized for body X=Y=0
+        // bodyToInertial method optimized for body X=Y=0
         static void bodyZToInertial(double bodyZ, const double rotation[3], double inertial[3])
         {
             double phi   = rotation[0];
@@ -108,48 +150,11 @@ class MultirotorDynamics {
 
             // This is the rightmost column of the body-to-inertial rotation matrix
             double R[3] = {sph*sps + cph*cps*sth, 
-                           cph*sps*sth - cps*sph, 
-                           cph*cth};
+                cph*sps*sth - cps*sph, 
+                cph*cth};
 
             for (uint8_t i=0; i<3; ++i) {
                 inertial[i] = bodyZ * R[i];
-            }
-        }
-
-    protected:
-
-        /** 
-         * You must implement these constant methods in a subclass for each vehicle.
-         */
-        virtual const double b(void)  = 0;
-        virtual const double d(void)  = 0;
-        virtual const double m(void)  = 0;
-        virtual const double l(void)  = 0;
-        virtual const double Ix(void) = 0;
-        virtual const double Iy(void) = 0;
-        virtual const double Iz(void) = 0; 
-        virtual const double Jr(void) = 0;
-        virtual const unsigned int maxrpm(void) = 0;
-
-        /** 
-         * You must implement these methods in a subclass for each vehicle.
-         */
-        virtual double u2(double * o2)  = 0;
-        virtual double u3(double * o2)  = 0;
-        virtual double u4(double * o2)  = 0;
-        virtual double omega(double * o) = 0;
-
-        /**
-         *  Constructor
-         */
-        MultirotorDynamics(unsigned int nmotors)
-        {
-            _omegas = new double[nmotors];
-            _nmotors = nmotors;
-            
-            // Zero-out entire state
-            for (int i=0; i<12; ++i) {
-                _x[i] = 0;
             }
         }
 
@@ -178,6 +183,17 @@ class MultirotorDynamics {
             pose_t pose;
 
         } state_t;
+
+        /**
+         *  Constructor
+         */
+        MultirotorDynamics(const frame_t & frame, const params_t & params)
+        {
+            _omegas = new double[frame.nmotors];
+            memcpy(&_f, &frame, sizeof(frame_t));
+            memcpy(&_p, &params, sizeof(params_t));
+            memset(_x, 0, 12*sizeof(double));
+        }
 
         /**
          *  Destructor
@@ -219,7 +235,7 @@ class MultirotorDynamics {
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
             double down[3]  = {0};
-            bodyZToInertial(-_U1/m(), euler, down);
+            bodyZToInertial(-_U1/_p.m, euler, down);
 
             // We're airborne once net downward acceleration goes below zero
             double netz = down[2] + g;
@@ -245,11 +261,11 @@ class MultirotorDynamics {
                     /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ netz,
                     /* phi'    */ phidot,
-                    /* phi''   */ psidot*thedot*(Iy()-Iz())/Ix()   - Jr()/Ix()*thedot*_Omega + l()/Ix()*_U2,
+                    /* phi''   */ psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _p.l/_p.Ix*_U2,
                     /* theta'  */ thedot,
-                    /* theta'' */ -(psidot*phidot*(Iz()-Ix())/Iy() + Jr()/Iy()*phidot*_Omega + l()/Iy()*_U3), 
+                    /* theta'' */ -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _p.l/_p.Iy*_U3), 
                     /* psi'    */ psidot,
-                    /* psi''   */ thedot*phidot*(Ix()-Iy())/Iz()   + l()/Iz()*_U4,
+                    /* psi''   */ thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _p.l/_p.Iz*_U4,
                 };
 
                 // Compute state as first temporal integral of first temporal derivative
@@ -258,7 +274,7 @@ class MultirotorDynamics {
                 }
 
                 // Once airborne, inertial-frame acceleration is same as downward acceleration
-                _inertialAccel[0] = down[0];
+                
                 _inertialAccel[1] = down[1];
                 _inertialAccel[2] = down[2];
             }
@@ -272,25 +288,24 @@ class MultirotorDynamics {
         void setMotors(double * motorvals) 
         {
             // Convert the  motor values to radians per second
-            for (unsigned int i=0; i<_nmotors; ++i) {
-                _omegas[i] = motorvals[i] * maxrpm() * pi / 30;
+            for (unsigned int i=0; i<_f.nmotors; ++i) {
+                _omegas[i] = motorvals[i] * _p.maxrpm * pi / 30;
             }
 
             // Compute overall torque from Omegas
-            _Omega = omega(_omegas);
+            _Omega = _f.omega(_omegas);
 
             // Overall thrust is sum of squared omegas
             _U1 = 0;
-            for (unsigned int i=0; i<_nmotors; ++i) {
+            for (unsigned int i=0; i<_f.nmotors; ++i) {
                 _omegas[i] *= _omegas[i];
-                _U1 += b() * _omegas[i];
+                _U1 +=  _p.b * _omegas[i];
             }
 
             // Use the squared Omegas to implement the rest of Eqn. 6
-            _U2 = b() * u2(_omegas);
-            _U3 = b() * u3(_omegas);
-            _U4 = d() * u4(_omegas);
-
+            _U2 = _p.b * _f.u2(_omegas);
+            _U3 = _p.b * _f.u3(_omegas);
+            _U4 = _p.d * _f.u4(_omegas);
         }
 
         /*
