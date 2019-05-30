@@ -40,7 +40,7 @@ ATargetPawn::~ATargetPawn()
 
 void ATargetPawn::Tick(float DeltaSeconds) 
 {
-    _controller->update();
+    _controller->update(DeltaSeconds);
 
-    SetActorLocation(_controller->getLocation());
+    SetActorLocation(_controller->getLocation() * 100); // m => cm
 }

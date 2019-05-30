@@ -7,6 +7,9 @@
 */
 
 #include "VehiclePawn.h"
+
+#include "3DFly.h"
+
 #include "Debug.hpp"
 
 #include "UObject/ConstructorHelpers.h"
@@ -25,8 +28,9 @@ AVehiclePawn::AVehiclePawn()
 	// Structure to hold one-time initialization
 	struct FConstructorStatics
 	{
+        const wchar_t * meshName = TEXT("/Game/Flying/Meshes/3DFly.3DFly");
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> _vehicleMesh;
-		FConstructorStatics() : _vehicleMesh(TEXT("/Game/Flying/Meshes/3DFly.3DFly"))
+		FConstructorStatics() : _vehicleMesh(meshName)
 		{
 		}
 	};
@@ -76,7 +80,7 @@ AVehiclePawn::AVehiclePawn()
     _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 	
 
     // Allocate space for motor values used in animation/sound
-    _motorvals = new float[getMotorCount()];
+    _motorvals = new float[MOTOR_COUNT];
 }
 
 AVehiclePawn::~AVehiclePawn()
@@ -97,8 +101,8 @@ void AVehiclePawn::PostInitializeComponents()
     for (int i = 0; i < staticComponents.Num(); i++) {
         if (staticComponents[i]) {
             UStaticMeshComponent* child = staticComponents[i];
-            for (uint8_t j=0; j<getMotorCount(); ++j) {
-                if (child->GetName() == getPropellerMeshNames()[j]) {
+            for (uint8_t j=0; j<MOTOR_COUNT; ++j) {
+                if (child->GetName() == PROPELLER_MESH_NAMES[j]) {
                     _propMeshes[j] = child;
                 }
             }
@@ -212,10 +216,10 @@ void AVehiclePawn::addAnimationEffects(void)
 {
     // Compute the mean of the motor values
     float motormean = 0;
-    for (uint8_t j=0; j<getMotorCount(); ++j) {
+    for (uint8_t j=0; j<MOTOR_COUNT; ++j) {
         motormean += _motorvals[j];
     }
-    motormean /= getMotorCount();
+    motormean /= MOTOR_COUNT;
 
     // Use the mean motor value to modulate the pitch and voume of the propeller sound
     setAudioPitchAndVolume(motormean);
@@ -223,8 +227,8 @@ void AVehiclePawn::addAnimationEffects(void)
     // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
     if (motormean > 0) {
         static float rotation;
-        for (uint8_t j=0; j<getMotorCount(); ++j) {
-            _propMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * getMotorDirection(j)*100, 0));
+        for (uint8_t j=0; j<MOTOR_COUNT; ++j) {
+            _propMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * MOTOR_DIRECTIONS[j]*100, 0));
         }
         rotation++;
     }

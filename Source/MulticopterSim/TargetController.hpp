@@ -10,16 +10,12 @@
 
 class TargetController {
 
-    private:
+    protected:
 
         FVector _location;
 
-    protected:
-
-        TargetController(float startX, float startY, float startZ) 
+        TargetController(void)
         {
-            _location.X = startX;
-            _location.Y = startY; _location.Z = startZ;
         }
 
     public:
@@ -33,7 +29,7 @@ class TargetController {
         {
         }
 
-        virtual void update(void) = 0;
+        virtual void update(float dt) = 0;
 
         // Factory method implemented by your subclass
         static TargetController * create(void);
