@@ -8,7 +8,7 @@
 
 #include "VehiclePawn.h"
 
-#include "vehicles/BigQuad.h"
+#include "vehicles/3DFly.h"
 
 #include "Debug.hpp"
 
@@ -29,7 +29,7 @@ AVehiclePawn::AVehiclePawn()
 	struct FConstructorStatics
 	{
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> _vehicleMesh;
-		FConstructorStatics() : _vehicleMesh(VEHICLE_MESH_NAME)
+		FConstructorStatics() : _vehicleMesh(FRAME_MESH_NAME)
 		{
 		}
 	};
