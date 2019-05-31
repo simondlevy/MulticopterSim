@@ -84,6 +84,8 @@ class MultirotorDynamics {
         // Frame functions for a vehicle configuration
         frame_t _f;
 
+        MultirotorFrame * _frame = NULL;
+
         // Parameters for a particular vehicle
         params_t _p;
 
@@ -189,8 +191,9 @@ class MultirotorDynamics {
         /**
          *  Constructor
          */
-        MultirotorDynamics(const frame_t & frame, const params_t & params)
+        MultirotorDynamics(class MultirotorFrame * frameframe, const frame_t & frame, const params_t & params)
         {
+            _frame = frameframe;
             _omegas = new double[frame.nmotors];
             memcpy(&_f, &frame, sizeof(frame_t));
             memcpy(&_p, &params, sizeof(params_t));

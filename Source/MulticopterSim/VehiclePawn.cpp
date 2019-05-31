@@ -202,7 +202,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
 void AVehiclePawn::startThreadedWorkers(void)
 {
-    _flightManager = FFlightManager::create(frame, params, _startLocation, _startRotation);
+    _flightManager = FFlightManager::create(&frameframe, frame, params, _startLocation, _startRotation);
     _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
 }
 

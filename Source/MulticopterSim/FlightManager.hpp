@@ -11,6 +11,7 @@
 #include "ThreadedWorker.hpp"
 
 #include "dynamics/MultirotorDynamics.hpp"
+#include "dynamics/MultirotorFrame.hpp"
 
 class FFlightManager : public FThreadedWorker {
 
@@ -74,6 +75,7 @@ class FFlightManager : public FThreadedWorker {
 
         // Constructor, called once on main thread
         FFlightManager(
+                MultirotorFrame * frameframe,
                 const MultirotorDynamics::frame_t frame,
                 const MultirotorDynamics::params_t params,
                 FVector initialLocation, 
@@ -85,7 +87,7 @@ class FFlightManager : public FThreadedWorker {
             _motorvals = new double[frame.nmotors];
 
             // Create vehicle dynamics 
-            _dynamics = new MultirotorDynamics(frame, params);
+            _dynamics = new MultirotorDynamics(frameframe, frame, params);
 
             // Convert ENU centimeters => NED meters
             _pose.location[0] =  initialLocation.X / 100;
@@ -186,6 +188,7 @@ class FFlightManager : public FThreadedWorker {
 
         // Factory method implemented by your subclass
         static FFlightManager * create(
+                MultirotorFrame * frameframe,
                 MultirotorDynamics::frame_t frame, 
                 MultirotorDynamics::params_t params, 
                 FVector initialLocation, 
