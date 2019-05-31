@@ -55,34 +55,13 @@ class MultirotorDynamics {
 
         } params_t;
 
-        // Frame configuration
-        typedef struct {
-
-            uint8_t nmotors;
-
-            // thrust roll right
-            double (*u2)(double * o);
-
-            // thrust pitch forward
-            double (*u3)(double * o);
-
-            // thrust and torque yaw cw
-            double (*u4)(double * o);
-
-            // motor directions for animation
-            const int8_t * motordirs;
-
-        } frame_t;
-
     private:
 
         // Universal constants
         static constexpr double g  = 9.80665; // might want to allow this to vary!
         static constexpr double pi = 3.14159;
 
-        // Frame functions for a vehicle configuration
-        frame_t _f;
-
+        // Frame object
         MultirotorFrame * _frame = NULL;
 
         // Parameters for a particular vehicle
@@ -190,11 +169,10 @@ class MultirotorDynamics {
         /**
          *  Constructor
          */
-        MultirotorDynamics(class MultirotorFrame * frameframe, const frame_t & frame, const params_t & params)
+        MultirotorDynamics(class MultirotorFrame * frame, const params_t & params)
         {
-            _frame = frameframe;
+            _frame = frame;
             _omegas = new double[_frame->motorCount()];
-            memcpy(&_f, &frame, sizeof(frame_t));
             memcpy(&_p, &params, sizeof(params_t));
             memset(_x, 0, 12*sizeof(double));
         }

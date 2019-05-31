@@ -79,7 +79,7 @@ AVehiclePawn::AVehiclePawn()
     _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 	
 
     // Allocate space for motor values used in animation/sound
-    _motorvals = new float[frameframe.motorCount()];
+    _motorvals = new float[frame.motorCount()];
 }
 
 AVehiclePawn::~AVehiclePawn()
@@ -103,7 +103,7 @@ void AVehiclePawn::PostInitializeComponents()
 	}
 
     // Grab the static motor and propeller components by name
-    _propMeshes = new UStaticMeshComponent * [frameframe.motorCount()];
+    _propMeshes = new UStaticMeshComponent * [frame.motorCount()];
     TArray<UStaticMeshComponent *> staticComponents;
     this->GetComponents<UStaticMeshComponent>(staticComponents);
     for (int i = 0; i < staticComponents.Num(); i++) {
@@ -111,7 +111,7 @@ void AVehiclePawn::PostInitializeComponents()
 
             UStaticMeshComponent* child = staticComponents[i];
 
-            for (uint8_t j=0; j<frameframe.motorCount(); ++j) {
+            for (uint8_t j=0; j<frame.motorCount(); ++j) {
 
                 // Store propeller mesh for spinning later
                 if (childComponentHasName(child, "Prop%d", j)) {
@@ -202,7 +202,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
 void AVehiclePawn::startThreadedWorkers(void)
 {
-    _flightManager = FFlightManager::create(&frameframe, frame, params, _startLocation, _startRotation);
+    _flightManager = FFlightManager::create(&frame, params, _startLocation, _startRotation);
     _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
 }
 
@@ -236,10 +236,10 @@ void AVehiclePawn::addAnimationEffects(void)
 {
     // Compute the mean of the motor values
     float motormean = 0;
-    for (uint8_t j=0; j<frameframe.motorCount(); ++j) {
+    for (uint8_t j=0; j<frame.motorCount(); ++j) {
         motormean += _motorvals[j];
     }
-    motormean /= frameframe.motorCount();
+    motormean /= frame.motorCount();
 
     // Use the mean motor value to modulate the pitch and voume of the propeller sound
     setAudioPitchAndVolume(motormean);
@@ -247,8 +247,8 @@ void AVehiclePawn::addAnimationEffects(void)
     // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
     if (motormean > 0) {
         static float rotation;
-        for (uint8_t j=0; j<frameframe.motorCount(); ++j) {
-            _propMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * frame.motordirs[j]*100, 0));
+        for (uint8_t j=0; j<frame.motorCount(); ++j) {
+            _propMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * frame.motorDirection(j)*100, 0));
         }
         rotation++;
     }
