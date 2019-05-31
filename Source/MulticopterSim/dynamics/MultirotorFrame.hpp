@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-class MulticopterFrame {
+class MultirotorFrame {
 
     private:
 
@@ -22,7 +22,7 @@ class MulticopterFrame {
 
     protected:
 
-        MulticopterFrame(const double ** motorLocations, uint8_t motorCount) 
+        MultirotorFrame(const double ** motorLocations, uint8_t motorCount) 
         {
             _motorCount = motorCount;
 
@@ -34,7 +34,7 @@ class MulticopterFrame {
             }
         }
 
-        virtual ~MulticopterFrame(void)
+        virtual ~MultirotorFrame(void)
         {
             for (uint8_t i=0; i<_motorCount; ++i) {
                 delete _motorLocations[i];
@@ -53,5 +53,8 @@ class MulticopterFrame {
         // yaw cw
         virtual double u4(double * o) = 0;
 
-}; // class MulticopterFrame
+        // motor direction for animation
+        virtual int8_t motorDirection(uint8_t i)  = 0;
+
+}; // class MultirotorFrame
 
