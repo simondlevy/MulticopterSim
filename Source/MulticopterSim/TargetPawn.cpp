@@ -18,7 +18,7 @@ ATargetPawn::ATargetPawn()
 	struct FConstructorStatics
 	{
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> _targetMesh;
-		FConstructorStatics() : _targetMesh(TEXT("/Game/Flying/Meshes/Target.Target"))
+		FConstructorStatics() : _targetMesh(TEXT("/Game/Flying/Meshes/Target/Target.Target"))
 		{
 		}
 	};

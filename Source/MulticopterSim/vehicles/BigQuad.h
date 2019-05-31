@@ -15,8 +15,7 @@ static const int8_t    MOTOR_DIRECTIONS[4] = {+1, -1, -1, +1};
 
 static const char *    PROPELLER_MESH_NAMES[4] = {"Prop1", "Prop2", "Prop3", "Prop4"};
 
-// 3DFly is a pretty silly mesh for depicting a big vehicle!
-static const wchar_t * VEHICLE_MESH_NAME = TEXT("/Game/Flying/Meshes/3DFly.3DFly"); 
+static const wchar_t * VEHICLE_MESH_NAME = TEXT("/Game/Flying/Meshes/BigQuad.BigQuad"); 
 
 static MultirotorDynamics::params_t params =
 {
