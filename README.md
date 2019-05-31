@@ -64,8 +64,8 @@ do the following:
 1. Clone this repository (MulticopterSim) into your <b>Documents/Unreal Projects</b> folder, first
 creating that folder if it doesn't exist.
 
-2. Clone the [HackflightSim](https://github.com/simondlevy/HackflightSim) repository into 
-<b>MulticopterSim/Source/MulticopterSim</b>.
+2. Clone the [HackflightSim](https://github.com/simondlevy/HackflightSim) repository and copy its <b>plugin</b>
+folder into <b>MulticopterSim/Source/MulticopterSim</b>.
 
 3. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
