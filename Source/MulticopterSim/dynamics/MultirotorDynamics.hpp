@@ -33,6 +33,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "MultirotorFrame.hpp"
+
 class MultirotorDynamics {
 
     public:
