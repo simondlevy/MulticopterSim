@@ -108,9 +108,12 @@ void AVehiclePawn::PostInitializeComponents()
                 if (child->GetName() == (const char *)propname) {
                     _propMeshes[j] = child;
                 }
-                if (child->GetName() == "Motor1") {
+                char motorname[10];
+                sprintf_s(motorname, "Motor%d", j+1);
+                if (child->GetName() == (const char *)motorname) {
                     child->SetMobility(EComponentMobility::Movable);
-                    child->SetWorldLocationAndRotation(FVector(-3.75,3.7,1.0), FRotator(0,0,0));
+                    float * motorpos = (float *)MOTOR_LOCATIONS[j];
+                    child->SetWorldLocationAndRotation(FVector(motorpos[0], motorpos[1], motorpos[2]), FRotator(0,0,0));
 
                 }
             }
