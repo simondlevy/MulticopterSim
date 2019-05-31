@@ -40,7 +40,7 @@ private:
             class UStaticMeshComponent* _vehicleMesh;
 
         // Propeller meshes for spinning
-        class UStaticMeshComponent* _propMeshes[4];
+        class UStaticMeshComponent ** _propMeshes;
 
         // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))

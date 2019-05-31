@@ -84,6 +84,7 @@ AVehiclePawn::AVehiclePawn()
 
 AVehiclePawn::~AVehiclePawn()
 {
+    delete _propMeshes;
     delete _motorvals;
 }
 
@@ -95,6 +96,7 @@ void AVehiclePawn::PostInitializeComponents()
 	}
 
     // Grab the static prop mesh components by name, storing them for use in Tick()
+    _propMeshes = new UStaticMeshComponent * [frame.nmotors];
     TArray<UStaticMeshComponent *> staticComponents;
     this->GetComponents<UStaticMeshComponent>(staticComponents);
     for (int i = 0; i < staticComponents.Num(); i++) {
