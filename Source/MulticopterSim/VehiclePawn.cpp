@@ -88,6 +88,13 @@ AVehiclePawn::~AVehiclePawn()
     delete _motorvals;
 }
 
+bool AVehiclePawn::childComponentHasName(UStaticMeshComponent * child, const char * fmt, int index)
+{
+    char name[100] = {0};
+    sprintf_s(name, fmt, index+1);
+    return child->GetName() == (const char *)name;
+}
+
 
 void AVehiclePawn::PostInitializeComponents()
 {
@@ -95,22 +102,24 @@ void AVehiclePawn::PostInitializeComponents()
 		_propellerAudioComponent->SetSound(_propellerAudioCue);
 	}
 
-    // Grab the static prop mesh components by name, storing them for use in Tick()
+    // Grab the static motor and propeller components by name
     _propMeshes = new UStaticMeshComponent * [frame.nmotors];
     TArray<UStaticMeshComponent *> staticComponents;
     this->GetComponents<UStaticMeshComponent>(staticComponents);
     for (int i = 0; i < staticComponents.Num(); i++) {
         if (staticComponents[i]) {
+
             UStaticMeshComponent* child = staticComponents[i];
+
             for (uint8_t j=0; j<frame.nmotors; ++j) {
-                char propname[10];
-                sprintf_s(propname, "Prop%d", j+1);
-                if (child->GetName() == (const char *)propname) {
+
+                // Store propeller mesh for spinning later
+                if (childComponentHasName(child, "Prop%d", j)) {
                     _propMeshes[j] = child;
                 }
-                char motorname[10];
-                sprintf_s(motorname, "Motor%d", j+1);
-                if (child->GetName() == (const char *)motorname) {
+
+                // Position motor appropriately
+                if (childComponentHasName(child, "Motor%d", j)) {
                     child->SetMobility(EComponentMobility::Movable);
                     float * motorpos = (float *)MOTOR_LOCATIONS[j];
                     child->SetWorldLocationAndRotation(FVector(motorpos[0], motorpos[1], motorpos[2]), FRotator(0,0,0));

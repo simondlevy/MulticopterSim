@@ -93,6 +93,9 @@ private:
         void startThreadedWorkers(void);
         void stopThreadedWorkers(void);
 
+        // Helper
+        static bool childComponentHasName(UStaticMeshComponent * child, const char * fmt, int index);
+
 protected:
 
         // AActor overrides
