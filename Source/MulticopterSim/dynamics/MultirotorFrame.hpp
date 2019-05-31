@@ -29,7 +29,7 @@ class MultirotorFrame {
 
             _motorLocations = new double[3*motorCount];
 
-            memcpy(_motorLocations, motorLocations, 12*sizeof(double));
+            memcpy(_motorLocations, motorLocations, 3*motorCount*sizeof(double));
         }
 
         virtual ~MultirotorFrame(void)
