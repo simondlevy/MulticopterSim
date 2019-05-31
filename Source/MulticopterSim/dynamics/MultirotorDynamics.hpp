@@ -58,7 +58,6 @@ class MultirotorDynamics {
         // Frame configuration
         typedef struct {
 
-            // number of motors
             uint8_t nmotors;
 
             // thrust roll right
@@ -194,7 +193,7 @@ class MultirotorDynamics {
         MultirotorDynamics(class MultirotorFrame * frameframe, const frame_t & frame, const params_t & params)
         {
             _frame = frameframe;
-            _omegas = new double[frame.nmotors];
+            _omegas = new double[_frame->motorCount()];
             memcpy(&_f, &frame, sizeof(frame_t));
             memcpy(&_p, &params, sizeof(params_t));
             memset(_x, 0, 12*sizeof(double));
@@ -293,24 +292,24 @@ class MultirotorDynamics {
         void setMotors(double * motorvals) 
         {
             // Convert the  motor values to radians per second
-            for (unsigned int i=0; i<_f.nmotors; ++i) {
+            for (unsigned int i=0; i<_frame->motorCount(); ++i) {
                 _omegas[i] = motorvals[i] * _p.maxrpm * pi / 30;
             }
 
             // Compute overall torque from omegas before squaring
-            _Omega = _f.u4(_omegas);
+            _Omega = _frame->u4(_omegas);
 
             // Overall thrust is sum of squared omegas
             _U1 = 0;
-            for (unsigned int i=0; i<_f.nmotors; ++i) {
+            for (unsigned int i=0; i<_frame->motorCount(); ++i) {
                 _omegas[i] *= _omegas[i];
                 _U1 +=  _p.b * _omegas[i];
             }
 
             // Use the squared Omegas to implement the rest of Eqn. 6
-            _U2 = _p.b * _f.u2(_omegas);
-            _U3 = _p.b * _f.u3(_omegas);
-            _U4 = _p.d * _f.u4(_omegas);
+            _U2 = _p.b * _frame->u2(_omegas);
+            _U3 = _p.b * _frame->u3(_omegas);
+            _U4 = _p.d * _frame->u4(_omegas);
         }
 
         /*
