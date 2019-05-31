@@ -72,7 +72,7 @@ class FFlightManager : public FThreadedWorker {
 
         MultirotorDynamics * _dynamics;
 
-        // Called once on main thread
+        // Constructor, called once on main thread
         FFlightManager(
                 const MultirotorDynamics::frame_t frame,
                 const MultirotorDynamics::params_t params,

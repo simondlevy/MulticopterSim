@@ -18,26 +18,20 @@
 
 // Eqn. 6 -------------------------------------------
 
-// thrust roll right
-static double quadxap_u2(double * o2)
+// roll right
+static double quadxap_u2(double * o)
 {
-    return (o2[1] + o2[2]) - (o2[0] + o2[3]);
+    return (o[1] + o[2]) - (o[0] + o[3]);
 }
 
-// thrust pitch forward
-static double quadxap_u3(double * o2)
+// pitch forward
+static double quadxap_u3(double * o)
 {
-    return (o2[1] + o2[3]) - (o2[0] + o2[2]);
+    return (o[1] + o[3]) - (o[0] + o[2]);
 }
 
-// thrust yaw cw
-static double quadxap_u4(double * o2)
-{
-    return (o2[0] + o2[1]) - (o2[2] + o2[3]);
-}
-
-// torque cw
-static double quadxap_omega(double * o)
+// yaw cw
+static double quadxap_u4(double * o)
 {
     return (o[0] + o[1]) - (o[2] + o[3]);
 }
@@ -47,6 +41,5 @@ static MultirotorDynamics::frame_t frame =
     4,
     quadxap_u2,
     quadxap_u3,
-    quadxap_u4,
-    quadxap_omega
+    quadxap_u4
 };

@@ -60,16 +60,13 @@ class MultirotorDynamics {
             uint8_t nmotors;
 
             // thrust roll right
-            double (*u2)(double * o2);
+            double (*u2)(double * o);
 
             // thrust pitch forward
-            double (*u3)(double * o2);
+            double (*u3)(double * o);
 
-            // thrust yaw cw
-            double (*u4)(double * o2);
-
-            // torque cw
-            double (*omega)(double * o2);
+            // thrust and torque yaw cw
+            double (*u4)(double * o);
 
         } frame_t;
 
@@ -292,8 +289,8 @@ class MultirotorDynamics {
                 _omegas[i] = motorvals[i] * _p.maxrpm * pi / 30;
             }
 
-            // Compute overall torque from Omegas
-            _Omega = _f.omega(_omegas);
+            // Compute overall torque from omegas before squaring
+            _Omega = _f.u4(_omegas);
 
             // Overall thrust is sum of squared omegas
             _U1 = 0;
