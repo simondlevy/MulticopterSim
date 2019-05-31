@@ -15,7 +15,7 @@ static const int8_t    MOTOR_DIRECTIONS[4] = {+1, -1, -1, +1};
 
 static const char *    PROPELLER_MESH_NAMES[4] = {"Prop1", "Prop2", "Prop3", "Prop4"};
 
-static const wchar_t * VEHICLE_MESH_NAME = TEXT("/Game/Flying/Meshes/BigQuad.BigQuad"); 
+static const wchar_t * VEHICLE_MESH_NAME = TEXT("/Game/Flying/Meshes/BigQuad/BigQuad.BigQuad"); 
 
 static MultirotorDynamics::params_t params =
 {
