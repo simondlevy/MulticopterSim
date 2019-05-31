@@ -121,8 +121,8 @@ void AVehiclePawn::PostInitializeComponents()
                 // Position motor appropriately
                 if (childComponentHasName(child, "Motor%d", j)) {
                     child->SetMobility(EComponentMobility::Movable);
-                    float * motorpos = (float *)MOTOR_LOCATIONS[j];
-                    child->SetWorldLocationAndRotation(FVector(motorpos[0], motorpos[1], motorpos[2]), FRotator(0,0,0));
+                    float * loc = (float *)MOTOR_LOCATIONS[j];
+                    child->SetWorldLocationAndRotation(FVector(100*loc[0], 100*loc[1], 100*loc[2]), FRotator(0,0,0));
 
                 }
             }
