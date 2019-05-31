@@ -37,24 +37,6 @@
 
 class MultirotorDynamics {
 
-    public:
-
-        // Dynamics parameters
-        typedef struct {
-
-            double b;
-            double d ;
-            double m ;
-            double l ;
-            double Ix;
-            double Iy;
-            double Iz; 
-            double Jr;
-
-            unsigned int maxrpm;
-
-        } params_t;
-
     private:
 
         // Universal constants
@@ -62,10 +44,7 @@ class MultirotorDynamics {
         static constexpr double pi = 3.14159;
 
         // Frame object
-        MultirotorFrame * _frame = NULL;
-
-        // Parameters for a particular vehicle
-        params_t _p;
+        MultirotorFrame * _f = NULL;
 
         // State vector (see Eqn. 11)
         double _x[12] = {0};
@@ -169,11 +148,12 @@ class MultirotorDynamics {
         /**
          *  Constructor
          */
-        MultirotorDynamics(class MultirotorFrame * frame, const params_t & params)
+        MultirotorDynamics(class MultirotorFrame * frame)
         {
-            _frame = frame;
-            _omegas = new double[_frame->motorCount()];
-            memcpy(&_p, &params, sizeof(params_t));
+            _f = frame;
+
+            _omegas = new double[_f->motorCount()];
+
             memset(_x, 0, 12*sizeof(double));
         }
 
@@ -217,7 +197,7 @@ class MultirotorDynamics {
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
             double ned[3] = {0};
-            bodyZToInertial(-_U1/_p.m, euler, ned);
+            bodyZToInertial(-_U1/_f->m(), euler, ned);
 
             // We're airborne once net downward acceleration goes below zero
             double netz = ned[2] + g;
@@ -243,11 +223,11 @@ class MultirotorDynamics {
                     /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ netz,
                     /* phi'    */ phidot,
-                    /* phi''   */ psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _p.l/_p.Ix*_U2,
+                    /* phi''   */ psidot*thedot*(_f->Iy()-_f->Iz())/_f->Ix() - _f->Jr()/_f->Ix()*thedot*_Omega + _f->l()/_f->Ix()*_U2,
                     /* theta'  */ thedot,
-                    /* theta'' */ -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _p.l/_p.Iy*_U3), 
+                    /* theta'' */ -(psidot*phidot*(_f->Iz()-_f->Ix())/_f->Iy() + _f->Jr()/_f->Iy()*phidot*_Omega + _f->l()/_f->Iy()*_U3), 
                     /* psi'    */ psidot,
-                    /* psi''   */ thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _p.l/_p.Iz*_U4,
+                    /* psi''   */ thedot*phidot*(_f->Ix()-_f->Iy())/_f->Iz()   + _f->l()/_f->Iz()*_U4,
                 };
 
                 // Compute state as first temporal integral of first temporal derivative
@@ -270,24 +250,24 @@ class MultirotorDynamics {
         void setMotors(double * motorvals) 
         {
             // Convert the  motor values to radians per second
-            for (unsigned int i=0; i<_frame->motorCount(); ++i) {
-                _omegas[i] = motorvals[i] * _p.maxrpm * pi / 30;
+            for (unsigned int i=0; i<_f->motorCount(); ++i) {
+                _omegas[i] = motorvals[i] * _f->maxrpm() * pi / 30;
             }
 
             // Compute overall torque from omegas before squaring
-            _Omega = _frame->u4(_omegas);
+            _Omega = _f->u4(_omegas);
 
             // Overall thrust is sum of squared omegas
             _U1 = 0;
-            for (unsigned int i=0; i<_frame->motorCount(); ++i) {
+            for (unsigned int i=0; i<_f->motorCount(); ++i) {
                 _omegas[i] *= _omegas[i];
-                _U1 +=  _p.b * _omegas[i];
+                _U1 +=  _f->b() * _omegas[i];
             }
 
             // Use the squared Omegas to implement the rest of Eqn. 6
-            _U2 = _p.b * _frame->u2(_omegas);
-            _U3 = _p.b * _frame->u3(_omegas);
-            _U4 = _p.d * _frame->u4(_omegas);
+            _U2 = _f->b() * _f->u2(_omegas);
+            _U3 = _f->b() * _f->u3(_omegas);
+            _U4 = _f->d() * _f->u4(_omegas);
         }
 
         /*

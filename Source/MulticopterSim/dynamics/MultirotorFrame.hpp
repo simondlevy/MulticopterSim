@@ -27,7 +27,7 @@ class MultirotorFrame {
         {
             _motorCount = motorCount;
 
-            _motorLocations = new double[4*motorCount];
+            _motorLocations = new double[3*motorCount];
 
             memcpy(_motorLocations, motorLocations, 12*sizeof(double));
         }
@@ -35,13 +35,27 @@ class MultirotorFrame {
         virtual ~MultirotorFrame(void)
         {
             delete _motorLocations;
-         }
+        }
 
     public:
+
+        virtual double b(void) = 0;
+        virtual double d(void) = 0;
+        virtual double m(void) = 0;
+        virtual double Ix(void) = 0;
+        virtual double Iy(void) = 0;
+        virtual double Iz(void) = 0;
+        virtual double Jr(void) = 0;
+        virtual uint16_t maxrpm(void) = 0;
 
         uint8_t motorCount(void)
         {
             return _motorCount;
+        }
+
+        double l(void)
+        {
+            return fabs(_motorLocations[0]);
         }
 
         // roll right
@@ -52,6 +66,12 @@ class MultirotorFrame {
 
         // yaw cw
         virtual double u4(double * o) = 0;
+
+        // motor location for animation
+        double * motorLocation(uint8_t i)
+        {
+            return &_motorLocations[3*i];
+        }
 
         // motor direction for animation
         virtual int8_t motorDirection(uint8_t i)  = 0;

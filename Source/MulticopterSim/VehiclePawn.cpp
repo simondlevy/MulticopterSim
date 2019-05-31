@@ -121,7 +121,7 @@ void AVehiclePawn::PostInitializeComponents()
                 // Position motor appropriately
                 if (childComponentHasName(child, "Motor%d", j)) {
                     child->SetMobility(EComponentMobility::Movable);
-                    const double * loc = &MOTOR_LOCATIONS[j*3];
+                    const double * loc = frame.motorLocation(j);
                     child->SetWorldLocationAndRotation(FVector(100*loc[0], 100*loc[1], 100*loc[2]), FRotator(0,0,0));
 
                 }
@@ -202,7 +202,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
 void AVehiclePawn::startThreadedWorkers(void)
 {
-    _flightManager = FFlightManager::create(&frame, params, _startLocation, _startRotation);
+    _flightManager = FFlightManager::create(&frame, _startLocation, _startRotation);
     _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
 }
 
