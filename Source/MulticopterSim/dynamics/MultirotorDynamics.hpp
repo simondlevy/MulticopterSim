@@ -68,6 +68,9 @@ class MultirotorDynamics {
             // thrust and torque yaw cw
             double (*u4)(double * o);
 
+            // motor directions for animation
+            const int8_t * motordirs;
+
         } frame_t;
 
     private:

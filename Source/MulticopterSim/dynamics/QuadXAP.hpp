@@ -19,27 +19,31 @@
 // Eqn. 6 -------------------------------------------
 
 // roll right
-static double quadxap_u2(double * o)
+static double _quadxap_u2(double * o)
 {
     return (o[1] + o[2]) - (o[0] + o[3]);
 }
 
 // pitch forward
-static double quadxap_u3(double * o)
+static double _quadxap_u3(double * o)
 {
     return (o[1] + o[3]) - (o[0] + o[2]);
 }
 
 // yaw cw
-static double quadxap_u4(double * o)
+static double _quadxap_u4(double * o)
 {
     return (o[0] + o[1]) - (o[2] + o[3]);
 }
 
+static const int8_t _quadxap_motordirs[4] = {+1,-1,-1,+1};
+
 static MultirotorDynamics::frame_t frame = 
 {
     4,
-    quadxap_u2,
-    quadxap_u3,
-    quadxap_u4
+    _quadxap_u2,
+    _quadxap_u3,
+    _quadxap_u4,
+    _quadxap_motordirs
+
 };

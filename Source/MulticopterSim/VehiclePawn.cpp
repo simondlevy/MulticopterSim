@@ -229,7 +229,7 @@ void AVehiclePawn::addAnimationEffects(void)
     if (motormean > 0) {
         static float rotation;
         for (uint8_t j=0; j<frame.nmotors; ++j) {
-            _propMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * MOTOR_DIRECTIONS[j]*100, 0));
+            _propMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * frame.motordirs[j]*100, 0));
         }
         rotation++;
     }
