@@ -108,19 +108,24 @@ void AVehiclePawn::PostInitializeComponents()
                 if (child->GetName() == (const char *)propname) {
                     _propMeshes[j] = child;
                 }
+                if (child->GetName() == "Motor1") {
+                    child->SetMobility(EComponentMobility::Movable);
+                    child->SetWorldLocationAndRotation(FVector(-3.75,3.7,1.0), FRotator(0,0,0));
+
+                }
             }
         }
     }
 
-	Super::PostInitializeComponents();
+    Super::PostInitializeComponents();
 }
 
 // Called when the game starts or when spawned
 void AVehiclePawn::BeginPlay()
 {
     // Make sure a map has been selected
-	FString mapName = GetWorld()->GetMapName();
-	_mapSelected = !mapName.Contains("Untitled");
+    FString mapName = GetWorld()->GetMapName();
+    _mapSelected = !mapName.Contains("Untitled");
 
     if (_mapSelected) {
 
