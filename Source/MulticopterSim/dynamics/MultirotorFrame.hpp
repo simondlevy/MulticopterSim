@@ -11,6 +11,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string.h>
 
 class MultirotorFrame {
 
@@ -18,31 +19,30 @@ class MultirotorFrame {
 
         uint8_t   _motorCount;
 
-        double ** _motorLocations; 
+        double * _motorLocations; 
 
     protected:
 
-        MultirotorFrame(const double ** motorLocations, uint8_t motorCount) 
+        MultirotorFrame(const double * motorLocations, uint8_t motorCount) 
         {
             _motorCount = motorCount;
 
-            _motorLocations = new double * [motorCount];
+            _motorLocations = new double[4*motorCount];
 
-            for (uint8_t i=0; i<motorCount; ++i) {
-                _motorLocations[i] = new double[3];
-                memcpy(_motorLocations[i], motorLocations[i], 3*sizeof(double));
-            }
+            memcpy(_motorLocations, motorLocations, 12*sizeof(double));
         }
 
         virtual ~MultirotorFrame(void)
         {
-            for (uint8_t i=0; i<_motorCount; ++i) {
-                delete _motorLocations[i];
-            }
             delete _motorLocations;
          }
 
     public:
+
+        uint8_t motorCount(void)
+        {
+            return _motorCount;
+        }
 
         // roll right
         virtual double u2(double * o) = 0;

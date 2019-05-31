@@ -16,7 +16,7 @@ class QuadXAPFrame : public MultirotorFrame {
 
     public:
 
-        QuadXAPFrame(const double ** motorLocations) 
+        QuadXAPFrame(const double * motorLocations) 
             : MultirotorFrame(motorLocations, 4)
         {
         }
@@ -42,7 +42,7 @@ class QuadXAPFrame : public MultirotorFrame {
         // motor direction for animation
         virtual int8_t motorDirection(uint8_t i) override
         {
-            const int8_t dir = {+1, -1, -1, +1};
+            const int8_t dir[4] = {+1, -1, -1, +1};
             return dir[i];
         }
 
