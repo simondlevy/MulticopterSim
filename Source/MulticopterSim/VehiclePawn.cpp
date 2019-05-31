@@ -101,7 +101,9 @@ void AVehiclePawn::PostInitializeComponents()
         if (staticComponents[i]) {
             UStaticMeshComponent* child = staticComponents[i];
             for (uint8_t j=0; j<frame.nmotors; ++j) {
-                if (child->GetName() == PROPELLER_MESH_NAMES[j]) {
+                char propname[10];
+                sprintf_s(propname, "Prop%d", j+1);
+                if (child->GetName() == (const char *)propname) {
                     _propMeshes[j] = child;
                 }
             }
