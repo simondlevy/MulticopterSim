@@ -14,12 +14,13 @@ class BigQuadFrame: public QuadXAPFrame {
 
     private:
 
+        // Reverse-engineered so that sqrt(x^2+y^2) = 0.6
         static constexpr double MOTOR_LOCATIONS[12] = 
         {
-            -.6,+.6,+.01,
-            +.6,+.6,+.01,
-            -.6,-.6,+.01,
-            +.6,-.6,+.01 
+            -.42,+.42,+.01,
+            +.42,+.42,+.01,
+            -.42,-.42,+.01,
+            +.42,-.42,+.01 
         };
 
     public:
