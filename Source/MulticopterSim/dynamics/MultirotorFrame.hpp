@@ -17,9 +17,16 @@ class MultirotorFrame {
 
     private:
 
-        uint8_t   _motorCount;
+        uint8_t   _motorCount = 0;
 
-        double * _motorLocations; 
+        double * _motorLocations = NULL; 
+
+        double _l = 0;
+
+        double sqr(double x)
+        {
+            return x*x;
+        }
 
     protected:
 
@@ -30,6 +37,10 @@ class MultirotorFrame {
             _motorLocations = new double[3*motorCount];
 
             memcpy(_motorLocations, motorLocations, 3*motorCount*sizeof(double));
+
+            // Pre-compute lever length for efficiency
+            _l = sqrt(sqr(_motorLocations[0]) + sqr(_motorLocations[1]));
+
         }
 
         virtual ~MultirotorFrame(void)
@@ -55,7 +66,7 @@ class MultirotorFrame {
 
         double l(void)
         {
-            return fabs(_motorLocations[0]);
+            return _l;
         }
 
         // roll right
