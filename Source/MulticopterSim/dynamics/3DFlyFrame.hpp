@@ -31,6 +31,7 @@ class ThreeDFlyFrame: public QuadXAPFrame {
         {
         }
 
+        // These values are estimated so as to give reasonable behavior
         virtual double b(void)  override { return  5E-08; }
         virtual double d(void)  override { return  2E-06; }
         virtual double m(void)  override { return  0.1; }
@@ -38,7 +39,7 @@ class ThreeDFlyFrame: public QuadXAPFrame {
         virtual double Iy(void)  override { return  .2; }
         virtual double Iz(void)  override { return  .3; }
         virtual double Jr(void)  override { return  3E-4; }
-        virtual uint16_t maxrpm(void)  override { return  50000; }
+        virtual uint16_t maxrpm(void)  override { return  40000; }
 
 }; // class ThreeDFlyFrame
 
