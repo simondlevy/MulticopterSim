@@ -8,7 +8,8 @@
 
 #include "VehiclePawn.h"
 
-#include "plugin/vehicle.h"
+// Defines frame mesh name and frame subclass
+#include "plugin/frame.h"
 
 #include "Debug.hpp"
 
