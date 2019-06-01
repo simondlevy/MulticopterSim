@@ -24,6 +24,8 @@
 #include "Engine/StaticMesh.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 
+static const wchar_t * FRAME_MESH_NAME = TEXT("/Game/Flying/Meshes/" FRAME_NAME "/Frame.Frame");
+
 AVehiclePawn::AVehiclePawn()
 {
 	// Structure to hold one-time initialization
@@ -38,7 +40,7 @@ AVehiclePawn::AVehiclePawn()
 
 	// Create static mesh component
 	_vehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
-	_vehicleMesh->SetStaticMesh(ConstructorStatics._vehicleMesh.Get());	// Set static mesh
+	_vehicleMesh->SetStaticMesh(ConstructorStatics._vehicleMesh.Get());
 	RootComponent = _vehicleMesh;
     
     // Accessing camera render targets from map is done statically (at compile time).
