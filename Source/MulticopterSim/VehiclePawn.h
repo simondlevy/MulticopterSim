@@ -16,6 +16,8 @@
 
 #include "FlightManager.hpp"
 
+#include "dynamics/3DFlyFrame.hpp"
+
 #ifdef _USE_OPENCV
 #include "VideoManagerOpenCV.hpp"
 #else
@@ -40,7 +42,7 @@ private:
             class UStaticMeshComponent* _vehicleMesh;
 
         // Propeller meshes for spinning
-        class UStaticMeshComponent ** _propMeshes;
+        class UStaticMeshComponent ** _propellerMeshes;
 
         // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
@@ -88,6 +90,9 @@ private:
         // Starting pose for reset on crash
         FVector _startLocation;
         FRotator _startRotation;
+
+        // Frame configuration
+        ThreeDFlyFrame _frame;
 
         // Flight management thread
         void startThreadedWorkers(void);

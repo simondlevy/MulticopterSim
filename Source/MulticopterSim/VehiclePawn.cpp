@@ -8,9 +8,6 @@
 
 #include "VehiclePawn.h"
 
-// Defines frame mesh name and frame subclass
-#include "plugin/frame.h"
-
 #include "Debug.hpp"
 
 #include "UObject/ConstructorHelpers.h"
@@ -24,7 +21,7 @@
 #include "Engine/StaticMesh.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 
-static const wchar_t * FRAME_MESH_NAME = TEXT("/Game/Flying/Meshes/" FRAME_NAME "/Frame.Frame");
+static const wchar_t * FRAME_MESH_NAME = TEXT("/Game/Flying/Meshes/3DFly/Frame.Frame");
 
 AVehiclePawn::AVehiclePawn()
 {
@@ -82,12 +79,12 @@ AVehiclePawn::AVehiclePawn()
     _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 	
 
     // Allocate space for motor values used in animation/sound
-    _motorvals = new float[frame.motorCount()];
+    _motorvals = new float[_frame.motorCount()];
 }
 
 AVehiclePawn::~AVehiclePawn()
 {
-    delete _propMeshes;
+    delete _propellerMeshes;
     delete _motorvals;
 }
 
@@ -106,7 +103,7 @@ void AVehiclePawn::PostInitializeComponents()
 	}
 
     // Grab the static motor and propeller components by name
-    _propMeshes = new UStaticMeshComponent * [frame.motorCount()];
+    _propellerMeshes = new UStaticMeshComponent * [_frame.motorCount()];
     TArray<UStaticMeshComponent *> staticComponents;
     this->GetComponents<UStaticMeshComponent>(staticComponents);
     for (int i = 0; i < staticComponents.Num(); i++) {
@@ -114,17 +111,17 @@ void AVehiclePawn::PostInitializeComponents()
 
             UStaticMeshComponent* child = staticComponents[i];
 
-            for (uint8_t j=0; j<frame.motorCount(); ++j) {
+            for (uint8_t j=0; j<_frame.motorCount(); ++j) {
 
                 // Store propeller mesh for spinning later
                 if (childComponentHasName(child, "Prop%d", j)) {
-                    _propMeshes[j] = child;
+                    _propellerMeshes[j] = child;
                 }
 
                 // Position motor appropriately
                 if (childComponentHasName(child, "Motor%d", j)) {
                     child->SetMobility(EComponentMobility::Movable);
-                    const double * loc = frame.motorLocation(j);
+                    const double * loc = _frame.motorLocation(j);
                     child->SetWorldLocationAndRotation(FVector(100*loc[0], 100*loc[1], 100*loc[2]), FRotator(0,0,0));
 
                 }
@@ -205,7 +202,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 
 void AVehiclePawn::startThreadedWorkers(void)
 {
-    _flightManager = FFlightManager::create(&frame, _startLocation, _startRotation);
+    _flightManager = FFlightManager::create(&_frame, _startLocation, _startRotation);
     _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
 }
 
@@ -239,10 +236,10 @@ void AVehiclePawn::addAnimationEffects(void)
 {
     // Compute the mean of the motor values
     float motormean = 0;
-    for (uint8_t j=0; j<frame.motorCount(); ++j) {
+    for (uint8_t j=0; j<_frame.motorCount(); ++j) {
         motormean += _motorvals[j];
     }
-    motormean /= frame.motorCount();
+    motormean /= _frame.motorCount();
 
     // Use the mean motor value to modulate the pitch and voume of the propeller sound
     setAudioPitchAndVolume(motormean);
@@ -250,8 +247,8 @@ void AVehiclePawn::addAnimationEffects(void)
     // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
     if (motormean > 0) {
         static float rotation;
-        for (uint8_t j=0; j<frame.motorCount(); ++j) {
-            _propMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * frame.motorDirection(j)*100, 0));
+        for (uint8_t j=0; j<_frame.motorCount(); ++j) {
+            _propellerMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * _frame.motorDirection(j)*100, 0));
         }
         rotation++;
     }
