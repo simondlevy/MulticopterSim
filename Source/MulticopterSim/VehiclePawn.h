@@ -16,7 +16,7 @@
 
 #include "FlightManager.hpp"
 
-#include "dynamics/3DFlyFrame.hpp"
+#include "dynamics/BigQuadFrame.hpp"
 
 #ifdef _USE_OPENCV
 #include "VideoManagerOpenCV.hpp"
@@ -40,9 +40,6 @@ private:
         // StaticMesh component that will be the visuals for our flying pawn 
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
             class UStaticMeshComponent* _vehicleMesh;
-
-        // Propeller meshes for spinning
-        class UStaticMeshComponent ** _propellerMeshes;
 
         // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
@@ -92,7 +89,7 @@ private:
         FRotator _startRotation;
 
         // Frame configuration
-        ThreeDFlyFrame _frame;
+        BigQuadFrame _frame;
 
         // Flight management thread
         void startThreadedWorkers(void);

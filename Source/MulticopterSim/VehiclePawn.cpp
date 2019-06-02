@@ -21,7 +21,7 @@
 #include "Engine/StaticMesh.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 
-static const wchar_t * FRAME_MESH_NAME = TEXT("/Game/Flying/Meshes/3DFly/Frame.Frame");
+static const wchar_t * FRAME_MESH_NAME = TEXT("/Game/Flying/Meshes/BigQuad/Frame.Frame");
 
 AVehiclePawn::AVehiclePawn()
 {
@@ -84,7 +84,6 @@ AVehiclePawn::AVehiclePawn()
 
 AVehiclePawn::~AVehiclePawn()
 {
-    delete _propellerMeshes;
     delete _motorvals;
 }
 
@@ -101,33 +100,6 @@ void AVehiclePawn::PostInitializeComponents()
 	if (_propellerAudioCue->IsValidLowLevelFast()) {
 		_propellerAudioComponent->SetSound(_propellerAudioCue);
 	}
-
-    // Grab the static motor and propeller components by name
-    _propellerMeshes = new UStaticMeshComponent * [_frame.motorCount()];
-    TArray<UStaticMeshComponent *> staticComponents;
-    this->GetComponents<UStaticMeshComponent>(staticComponents);
-    for (int i = 0; i < staticComponents.Num(); i++) {
-        if (staticComponents[i]) {
-
-            UStaticMeshComponent* child = staticComponents[i];
-
-            for (uint8_t j=0; j<_frame.motorCount(); ++j) {
-
-                // Store propeller mesh for spinning later
-                if (childComponentHasName(child, "Prop%d", j)) {
-                    _propellerMeshes[j] = child;
-                }
-
-                // Position motor appropriately
-                if (childComponentHasName(child, "Motor%d", j)) {
-                    child->SetMobility(EComponentMobility::Movable);
-                    const double * loc = _frame.motorLocation(j);
-                    child->SetWorldLocationAndRotation(FVector(100*loc[0], 100*loc[1], 100*loc[2]), FRotator(0,0,0));
-
-                }
-            }
-        }
-    }
 
     Super::PostInitializeComponents();
 }
@@ -243,15 +215,6 @@ void AVehiclePawn::addAnimationEffects(void)
 
     // Use the mean motor value to modulate the pitch and voume of the propeller sound
     setAudioPitchAndVolume(motormean);
-
-    // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
-    if (motormean > 0) {
-        static float rotation;
-        for (uint8_t j=0; j<_frame.motorCount(); ++j) {
-            _propellerMeshes[j]->SetRelativeRotation(FRotator(0,  rotation * _frame.motorDirection(j)*100, 0));
-        }
-        rotation++;
-    }
 }
 
 void AVehiclePawn::setAudioPitchAndVolume(float value)
