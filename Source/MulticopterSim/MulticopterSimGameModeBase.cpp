@@ -2,7 +2,7 @@
 
 
 #include "MulticopterSimGameModeBase.h"
-#include "VehiclePawn.h"
+#include "vehicles/VehiclePawn.h"
 
 AMulticopterSimGameModeBase::AMulticopterSimGameModeBase()
 {

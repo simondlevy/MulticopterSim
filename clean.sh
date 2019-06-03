@@ -5,4 +5,4 @@
 #
 # MIT License
 
-rm -rf Binaries/ DerivedDataCache/ Intermediate/ Saved/
+rm -rf *.sln .vs/ Binaries/ DerivedDataCache/ Intermediate/ Saved/
