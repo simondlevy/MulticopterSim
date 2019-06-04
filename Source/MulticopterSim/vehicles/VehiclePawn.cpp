@@ -73,14 +73,14 @@ AVehiclePawn::AVehiclePawn()
     _camera2 = CreateDefaultSubobject<UCameraComponent>(TEXT("camera2"));
     _camera2 ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
     _camera2->SetWorldScale3D(cameraScale);
-    _camera2->SetFieldOfView(90);
+    _camera2->SetFieldOfView(135);
     _camera2->SetAspectRatio(4./3);
 
     _capture2 = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("capture2"));
     _capture2->SetWorldScale3D(cameraScale);
     _capture2->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
     _capture2->TextureTarget = _camera2RenderTarget;
-    _capture2->FOVAngle = 45;
+    _capture2->FOVAngle = 90;
 
     // Turn off UE4 physics
 	_vehicleMesh->SetSimulatePhysics(false);
@@ -193,9 +193,30 @@ void AVehiclePawn::Tick(float DeltaSeconds)
         //debug("%s", _videoManager->getMessage());
     }
 
+    // Switch cameras periodically for testing
+    switchCameras(DeltaSeconds);
+
     Super::Tick(DeltaSeconds);
 }
 
+
+void AVehiclePawn::switchCameras(float DeltaSeconds)
+{
+    static bool useCamera2;
+    static float time;
+    static float prevTime;
+    time += DeltaSeconds;
+    if (time - prevTime > 2) {
+        prevTime = time;
+        useCamera2 = !useCamera2;
+        if (useCamera2) {
+            _videoManager->useCamera2();
+        }
+        else {
+            _videoManager->useCamera1();
+        }
+    }
+}
 
 void AVehiclePawn::startThreadedWorkers(void)
 {

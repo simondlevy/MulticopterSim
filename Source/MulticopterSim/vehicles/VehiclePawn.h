@@ -91,6 +91,9 @@ private:
         // Sets axes for camera gimbal based on values returned in child class
         void setGimbal(void);
 
+        // Switch cameras perioically for testing
+        void switchCameras(float DeltaSeconds);
+
         // Starting pose for reset on crash
         FVector _startLocation;
         FRotator _startRotation;
