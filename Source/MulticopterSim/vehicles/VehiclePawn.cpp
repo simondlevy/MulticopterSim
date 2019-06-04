@@ -122,6 +122,9 @@ bool AVehiclePawn::childComponentHasName(UStaticMeshComponent * child, const cha
 
 void AVehiclePawn::PostInitializeComponents()
 {
+    // Add "Vehicle" tag for use by level blueprint
+    this->Tags.Add(FName("Vehicle"));
+
     if (_propellerAudioCue->IsValidLowLevelFast()) {
         _propellerAudioComponent->SetSound(_propellerAudioCue);
     }
