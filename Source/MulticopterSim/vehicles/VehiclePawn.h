@@ -51,9 +51,11 @@ private:
 
         // Camera support
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class UCameraComponent* _fpvCamera;
+            class UCameraComponent* _gimbalCamera;
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class USpringArmComponent* _fpvSpringArm;
+            class USpringArmComponent* _gimbalSpringArm;
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+            class USceneCaptureComponent2D * _gimbalCapture;
 
         // Threaded workers for running flight control, video
         class FFlightManager * _flightManager = NULL;
@@ -78,6 +80,7 @@ private:
         static const char ** getPropellerMeshNames(void);
 
         // Render targets, passed to consgtructor for threaded video worker when Start button is pressed
+        UTextureRenderTarget2D * _gimbalCameraRenderTarget;
         UTextureRenderTarget2D * _camera1RenderTarget;
         UTextureRenderTarget2D * _camera2RenderTarget;
 

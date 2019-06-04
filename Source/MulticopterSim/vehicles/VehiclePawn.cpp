@@ -42,6 +42,8 @@ AVehiclePawn::AVehiclePawn()
     
     // Accessing camera render targets from map is done statically (at compile time).
     static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
+        cameraTextureObject(TEXT("/Game/Flying/RenderTargets/CameraRenderTarget"));
+    static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
         camera1TextureObject(TEXT("/Game/Flying/RenderTargets/fpv1CameraTarget"));
     static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
         camera2TextureObject(TEXT("/Game/Flying/RenderTargets/fpv2CameraTarget"));
@@ -49,6 +51,7 @@ AVehiclePawn::AVehiclePawn()
     // Get texture object from each render target
     _camera1RenderTarget = camera1TextureObject.Object;
     _camera2RenderTarget = camera2TextureObject.Object;
+    _gimbalCameraRenderTarget = cameraTextureObject.Object;
 
     // Turn off UE4 physics
 	_vehicleMesh->SetSimulatePhysics(false);
@@ -72,11 +75,24 @@ AVehiclePawn::AVehiclePawn()
 	_propellerAudioComponent->SetupAttachment(GetRootComponent());
 
     // Set up the FPV camera
-    _fpvSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("fpvSpringArm"));
-    _fpvSpringArm->SetupAttachment(RootComponent);
-    _fpvSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
-    _fpvCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("fpvCamera"));
-    _fpvCamera ->SetupAttachment(_fpvSpringArm, USpringArmComponent::SocketName); 	
+
+    FVector cameraScale(0.1, 0.1, 0.1);
+
+    _gimbalSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("gimbalSpringArm"));
+    _gimbalSpringArm->SetupAttachment(RootComponent);
+    _gimbalSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
+
+    _gimbalCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("gimbalCamera"));
+    _gimbalCamera ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
+    _gimbalCamera->SetWorldScale3D(cameraScale);
+    _gimbalCamera->SetFieldOfView(90);
+    _gimbalCamera->SetAspectRatio(4./3);
+
+    _gimbalCapture = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("gimbalCapture"));
+    _gimbalCapture->SetWorldScale3D(cameraScale);
+    _gimbalCapture->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
+    _gimbalCapture->TextureTarget = _gimbalCameraRenderTarget;
+    _gimbalCapture->FOVAngle = 45;
 
     // Allocate space for motor values used in animation/sound
     _motorvals = new float[_frame.motorCount()];
@@ -97,9 +113,9 @@ bool AVehiclePawn::childComponentHasName(UStaticMeshComponent * child, const cha
 
 void AVehiclePawn::PostInitializeComponents()
 {
-	if (_propellerAudioCue->IsValidLowLevelFast()) {
-		_propellerAudioComponent->SetSound(_propellerAudioCue);
-	}
+    if (_propellerAudioCue->IsValidLowLevelFast()) {
+        _propellerAudioComponent->SetSound(_propellerAudioCue);
+    }
 
     Super::PostInitializeComponents();
 }
@@ -175,7 +191,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 void AVehiclePawn::startThreadedWorkers(void)
 {
     _flightManager = FFlightManager::create(&_frame, _startLocation, _startRotation);
-    _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
+    _videoManager  = FVideoManager::create(_gimbalCameraRenderTarget, NULL);
 }
 
 void AVehiclePawn::stopThreadedWorkers(void)
@@ -243,11 +259,11 @@ void AVehiclePawn::setGimbal(void)
     float roll = 0, pitch = 0;
     _flightManager->getGimbal(roll, pitch);
 
-    FRotator rotation = _fpvSpringArm->GetComponentRotation();
+    FRotator rotation = _gimbalSpringArm->GetComponentRotation();
 
     rotation.Roll  += roll;
     rotation.Pitch -= pitch;
 
-    _fpvSpringArm->SetWorldRotation(rotation);
+    _gimbalSpringArm->SetWorldRotation(rotation);
 }
 
