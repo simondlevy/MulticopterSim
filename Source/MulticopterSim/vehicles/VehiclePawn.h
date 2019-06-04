@@ -49,13 +49,18 @@ private:
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
             class UAudioComponent* _propellerAudioComponent;
 
-        // Camera support
-        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class UCameraComponent* _gimbalCamera;
+        // Gimbal camera support
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
             class USpringArmComponent* _gimbalSpringArm;
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class USceneCaptureComponent2D * _gimbalCapture;
+            class UCameraComponent* _camera1;
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+            class USceneCaptureComponent2D * _capture1;
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+            class UCameraComponent* _camera2;
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+            class USceneCaptureComponent2D * _capture2;
+
 
         // Threaded workers for running flight control, video
         class FFlightManager * _flightManager = NULL;

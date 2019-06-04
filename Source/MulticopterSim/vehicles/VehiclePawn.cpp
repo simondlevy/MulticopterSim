@@ -58,17 +58,29 @@ AVehiclePawn::AVehiclePawn()
     _gimbalSpringArm->SetupAttachment(RootComponent);
     _gimbalSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
 
-    _gimbalCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("gimbalCamera"));
-    _gimbalCamera ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
-    _gimbalCamera->SetWorldScale3D(cameraScale);
-    _gimbalCamera->SetFieldOfView(90);
-    _gimbalCamera->SetAspectRatio(4./3);
+    _camera1 = CreateDefaultSubobject<UCameraComponent>(TEXT("camera1"));
+    _camera1 ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
+    _camera1->SetWorldScale3D(cameraScale);
+    _camera1->SetFieldOfView(90);
+    _camera1->SetAspectRatio(4./3);
 
-    _gimbalCapture = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("gimbalCapture"));
-    _gimbalCapture->SetWorldScale3D(cameraScale);
-    _gimbalCapture->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
-    _gimbalCapture->TextureTarget = _camera1RenderTarget;
-    _gimbalCapture->FOVAngle = 45;
+    _capture1 = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("capture1"));
+    _capture1->SetWorldScale3D(cameraScale);
+    _capture1->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
+    _capture1->TextureTarget = _camera1RenderTarget;
+    _capture1->FOVAngle = 45;
+
+    _camera2 = CreateDefaultSubobject<UCameraComponent>(TEXT("camera2"));
+    _camera2 ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
+    _camera2->SetWorldScale3D(cameraScale);
+    _camera2->SetFieldOfView(90);
+    _camera2->SetAspectRatio(4./3);
+
+    _capture2 = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("capture2"));
+    _capture2->SetWorldScale3D(cameraScale);
+    _capture2->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
+    _capture2->TextureTarget = _camera2RenderTarget;
+    _capture2->FOVAngle = 45;
 
     // Turn off UE4 physics
 	_vehicleMesh->SetSimulatePhysics(false);
@@ -188,7 +200,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 void AVehiclePawn::startThreadedWorkers(void)
 {
     _flightManager = FFlightManager::create(&_frame, _startLocation, _startRotation);
-    _videoManager  = FVideoManager::create(_camera1RenderTarget, NULL);
+    _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
 }
 
 void AVehiclePawn::stopThreadedWorkers(void)
