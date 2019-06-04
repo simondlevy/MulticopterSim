@@ -28,10 +28,10 @@
 #include "GameFramework/Pawn.h"
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
-#include "VehiclePawn.generated.h"
+#include "BigQuad.generated.h"
 
 UCLASS(Config=Game)
-class MULTICOPTERSIM_API AVehiclePawn : public APawn {
+class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
 private:
 
@@ -132,8 +132,8 @@ protected:
 
 public:	
 
-        AVehiclePawn();
+        ABigQuadPawn();
 
-        ~AVehiclePawn();
+        ~ABigQuadPawn();
 
-}; // AVehiclePawn
+}; // ABigQuadPawn

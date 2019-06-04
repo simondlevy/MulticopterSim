@@ -2,12 +2,9 @@
 
 
 #include "MulticopterSimGameModeBase.h"
-#include "vehicles/VehiclePawn.h"
 
 AMulticopterSimGameModeBase::AMulticopterSimGameModeBase()
 {
-	// set default pawn class to our flying pawn
-	DefaultPawnClass = AVehiclePawn::StaticClass();
 }
 
 

@@ -6,7 +6,7 @@
 * MIT License
 */
 
-#include "VehiclePawn.h"
+#include "BigQuad.h"
 
 #include "Debug.hpp"
 
@@ -23,7 +23,7 @@
 
 static const wchar_t * FRAME_MESH_NAME = TEXT("/Game/Flying/Meshes/BigQuad/Frame.Frame");
 
-AVehiclePawn::AVehiclePawn()
+ABigQuadPawn::ABigQuadPawn()
 {
 	// Structure to hold one-time initialization
 	struct FConstructorStatics
@@ -107,12 +107,12 @@ AVehiclePawn::AVehiclePawn()
     _motorvals = new float[_frame.motorCount()];
 }
 
-AVehiclePawn::~AVehiclePawn()
+ABigQuadPawn::~ABigQuadPawn()
 {
     delete _motorvals;
 }
 
-bool AVehiclePawn::childComponentHasName(UStaticMeshComponent * child, const char * fmt, int index)
+bool ABigQuadPawn::childComponentHasName(UStaticMeshComponent * child, const char * fmt, int index)
 {
     char name[100] = {0};
     sprintf_s(name, fmt, index+1);
@@ -120,7 +120,7 @@ bool AVehiclePawn::childComponentHasName(UStaticMeshComponent * child, const cha
 }
 
 
-void AVehiclePawn::PostInitializeComponents()
+void ABigQuadPawn::PostInitializeComponents()
 {
     // Add "Vehicle" tag for use by level blueprint
     this->Tags.Add(FName("Vehicle"));
@@ -133,7 +133,7 @@ void AVehiclePawn::PostInitializeComponents()
 }
 
 // Called when the game starts or when spawned
-void AVehiclePawn::BeginPlay()
+void ABigQuadPawn::BeginPlay()
 {
     // Make sure a map has been selected
     FString mapName = GetWorld()->GetMapName();
@@ -161,7 +161,7 @@ void AVehiclePawn::BeginPlay()
     Super::BeginPlay();
 }
 
-void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void ABigQuadPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     if (_mapSelected) {
 
@@ -172,7 +172,7 @@ void AVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 // Called automatically on main thread
-void AVehiclePawn::Tick(float DeltaSeconds)
+void ABigQuadPawn::Tick(float DeltaSeconds)
 {
     // A hack to avoid accessing kinematics before dynamics thread is ready
     static uint64_t count;
@@ -203,7 +203,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 }
 
 
-void AVehiclePawn::switchCameras(float DeltaSeconds)
+void ABigQuadPawn::switchCameras(float DeltaSeconds)
 {
     static bool useCamera2;
     static float time;
@@ -221,19 +221,19 @@ void AVehiclePawn::switchCameras(float DeltaSeconds)
     }
 }
 
-void AVehiclePawn::startThreadedWorkers(void)
+void ABigQuadPawn::startThreadedWorkers(void)
 {
     _flightManager = FFlightManager::create(&_frame, _startLocation, _startRotation);
     _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
 }
 
-void AVehiclePawn::stopThreadedWorkers(void)
+void ABigQuadPawn::stopThreadedWorkers(void)
 {
     _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
     _videoManager  = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
 }
 
-void AVehiclePawn::getKinematics(void)
+void ABigQuadPawn::getKinematics(void)
 {
     // Get current pose kinematics and motor values dynamics (from flight
     // manager). Motor values are used only for animation effects (prop
@@ -253,7 +253,7 @@ void AVehiclePawn::getKinematics(void)
     SetActorRotation(rotation);
 }
 
-void AVehiclePawn::addAnimationEffects(void)
+void ABigQuadPawn::addAnimationEffects(void)
 {
     // Compute the mean of the motor values
     float motormean = 0;
@@ -266,13 +266,13 @@ void AVehiclePawn::addAnimationEffects(void)
     setAudioPitchAndVolume(motormean);
 }
 
-void AVehiclePawn::setAudioPitchAndVolume(float value)
+void ABigQuadPawn::setAudioPitchAndVolume(float value)
 {
     _propellerAudioComponent->SetFloatParameter(FName("pitch"), value);
     _propellerAudioComponent->SetFloatParameter(FName("volume"), value);
 }
 
-void AVehiclePawn::NotifyHit(
+void ABigQuadPawn::NotifyHit(
         class UPrimitiveComponent* MyComp, 
         class AActor* Other, 
         class UPrimitiveComponent* OtherComp, 
@@ -286,7 +286,7 @@ void AVehiclePawn::NotifyHit(
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 }
 
-void AVehiclePawn::setGimbal(void)
+void ABigQuadPawn::setGimbal(void)
 {
     // Get gimbal location from flight manager
     float roll = 0, pitch = 0;
