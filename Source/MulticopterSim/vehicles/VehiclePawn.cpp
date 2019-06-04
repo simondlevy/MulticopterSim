@@ -42,8 +42,6 @@ AVehiclePawn::AVehiclePawn()
     
     // Accessing camera render targets from map is done statically (at compile time).
     static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
-        cameraTextureObject(TEXT("/Game/Flying/RenderTargets/CameraRenderTarget"));
-    static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
         camera1TextureObject(TEXT("/Game/Flying/RenderTargets/fpv1CameraTarget"));
     static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
         camera2TextureObject(TEXT("/Game/Flying/RenderTargets/fpv2CameraTarget"));
@@ -51,7 +49,6 @@ AVehiclePawn::AVehiclePawn()
     // Get texture object from each render target
     _camera1RenderTarget = camera1TextureObject.Object;
     _camera2RenderTarget = camera2TextureObject.Object;
-    _gimbalCameraRenderTarget = cameraTextureObject.Object;
 
     // Turn off UE4 physics
 	_vehicleMesh->SetSimulatePhysics(false);
@@ -91,7 +88,7 @@ AVehiclePawn::AVehiclePawn()
     _gimbalCapture = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("gimbalCapture"));
     _gimbalCapture->SetWorldScale3D(cameraScale);
     _gimbalCapture->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
-    _gimbalCapture->TextureTarget = _gimbalCameraRenderTarget;
+    _gimbalCapture->TextureTarget = _camera1RenderTarget;
     _gimbalCapture->FOVAngle = 45;
 
     // Allocate space for motor values used in animation/sound
@@ -191,7 +188,7 @@ void AVehiclePawn::Tick(float DeltaSeconds)
 void AVehiclePawn::startThreadedWorkers(void)
 {
     _flightManager = FFlightManager::create(&_frame, _startLocation, _startRotation);
-    _videoManager  = FVideoManager::create(_gimbalCameraRenderTarget, NULL);
+    _videoManager  = FVideoManager::create(_camera1RenderTarget, NULL);
 }
 
 void AVehiclePawn::stopThreadedWorkers(void)

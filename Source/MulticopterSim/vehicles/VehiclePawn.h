@@ -80,7 +80,6 @@ private:
         static const char ** getPropellerMeshNames(void);
 
         // Render targets, passed to consgtructor for threaded video worker when Start button is pressed
-        UTextureRenderTarget2D * _gimbalCameraRenderTarget;
         UTextureRenderTarget2D * _camera1RenderTarget;
         UTextureRenderTarget2D * _camera2RenderTarget;
 
