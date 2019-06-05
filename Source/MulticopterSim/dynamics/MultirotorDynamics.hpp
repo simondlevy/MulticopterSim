@@ -33,18 +33,29 @@
 #include <string.h>
 #include <math.h>
 
-#include "MultirotorFrame.hpp"
-
 class MultirotorDynamics {
+
+    public:
+
+        typedef struct {
+
+            double b;
+            double d;
+            double m;
+            double Ix;
+            double Iy;
+            double Iz;
+            double Jr;
+
+            uint16_t maxrpm;
+
+        } params_t;
 
     private:
 
         // Universal constants
         static constexpr double g  = 9.80665; // might want to allow this to vary!
         static constexpr double pi = 3.14159;
-
-        // Frame object
-        MultirotorFrame * _f = NULL;
 
         // State vector (see Eqn. 11)
         double _x[12] = {0};
@@ -64,6 +75,14 @@ class MultirotorDynamics {
             STATE_PSI,
             STATE_PSI_DOT
         };
+
+        params_t _p = {0};
+
+        double _l = 0;
+
+        double * _motorLocations = NULL;
+
+        uint8_t _motorCount = 0;
 
         // Values computed in Equation 6
         double _U1 = 0;     // total thrust
@@ -119,6 +138,47 @@ class MultirotorDynamics {
             }
         }
 
+        // Helper
+        double sqr(double x)
+        {
+            return x*x;
+        }
+
+
+    protected:
+
+        // roll right
+        virtual double u2(double * o) = 0;
+
+        // pitch forward
+        virtual double u3(double * o) = 0;
+
+        // yaw cw
+        virtual double u4(double * o) = 0;
+
+        // motor direction for animation
+        virtual int8_t motorDirection(uint8_t i) = 0;
+
+         /**
+         *  Constructor
+         */
+        MultirotorDynamics(const params_t * params, const double * motorLocations, const uint8_t motorCount)
+        {
+            memcpy(&_p, params, sizeof(params_t));
+
+            _motorLocations = new double [motorCount*3*sizeof(double)];
+            memcpy(_motorLocations, motorLocations, motorCount*3*sizeof(double));
+
+            _motorCount = motorCount;
+
+            _omegas = new double[motorCount];
+
+            memset(_x, 0, 12*sizeof(double));
+
+            // Pre-compute lever length for efficiency
+            _l = sqrt(sqr(motorLocations[0]) + sqr(motorLocations[1]));
+        }
+
     public:
 
         /**
@@ -146,22 +206,11 @@ class MultirotorDynamics {
         } state_t;
 
         /**
-         *  Constructor
-         */
-        MultirotorDynamics(class MultirotorFrame * frame)
-        {
-            _f = frame;
-
-            _omegas = new double[_f->motorCount()];
-
-            memset(_x, 0, 12*sizeof(double));
-        }
-
-        /**
          *  Destructor
          */
         virtual ~MultirotorDynamics(void)
         {
+            delete _motorLocations;
             delete _omegas;
         }
 
@@ -197,7 +246,7 @@ class MultirotorDynamics {
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
             double ned[3] = {0};
-            bodyZToInertial(-_U1/_f->m(), euler, ned);
+            bodyZToInertial(-_U1/_p.m, euler, ned);
 
             // We're airborne once net downward acceleration goes below zero
             double netz = ned[2] + g;
@@ -223,11 +272,11 @@ class MultirotorDynamics {
                     /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ netz,
                     /* phi'    */ phidot,
-                    /* phi''   */ psidot*thedot*(_f->Iy()-_f->Iz())/_f->Ix() - _f->Jr()/_f->Ix()*thedot*_Omega + _f->l()/_f->Ix()*_U2,
+                    /* phi''   */ psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _l/_p.Ix*_U2,
                     /* theta'  */ thedot,
-                    /* theta'' */ -(psidot*phidot*(_f->Iz()-_f->Ix())/_f->Iy() + _f->Jr()/_f->Iy()*phidot*_Omega + _f->l()/_f->Iy()*_U3), 
+                    /* theta'' */ -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _l/_p.Iy*_U3), 
                     /* psi'    */ psidot,
-                    /* psi''   */ thedot*phidot*(_f->Ix()-_f->Iy())/_f->Iz()   + _f->l()/_f->Iz()*_U4,
+                    /* psi''   */ thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _l/_p.Iz*_U4,
                 };
 
                 // Compute state as first temporal integral of first temporal derivative
@@ -250,24 +299,24 @@ class MultirotorDynamics {
         void setMotors(double * motorvals) 
         {
             // Convert the  motor values to radians per second
-            for (unsigned int i=0; i<_f->motorCount(); ++i) {
-                _omegas[i] = motorvals[i] * _f->maxrpm() * pi / 30;
+            for (unsigned int i=0; i<_motorCount; ++i) {
+                _omegas[i] = motorvals[i] * _p.maxrpm * pi / 30;
             }
 
             // Compute overall torque from omegas before squaring
-            _Omega = _f->u4(_omegas);
+            _Omega = u4(_omegas);
 
             // Overall thrust is sum of squared omegas
             _U1 = 0;
-            for (unsigned int i=0; i<_f->motorCount(); ++i) {
+            for (unsigned int i=0; i<_motorCount; ++i) {
                 _omegas[i] *= _omegas[i];
-                _U1 +=  _f->b() * _omegas[i];
+                _U1 +=  _p.b * _omegas[i];
             }
 
             // Use the squared Omegas to implement the rest of Eqn. 6
-            _U2 = _f->b() * _f->u2(_omegas);
-            _U3 = _f->b() * _f->u3(_omegas);
-            _U4 = _f->d() * _f->u4(_omegas);
+            _U2 = _p.b * u2(_omegas);
+            _U3 = _p.b * u3(_omegas);
+            _U4 = _p.d * u4(_omegas);
         }
 
         /*
@@ -382,6 +431,14 @@ class MultirotorDynamics {
             quaternion[1] =  cph * sth * sps - sph * cth * cps ;
             quaternion[2] = -cph * sth * cps - sph * cth * sps;
             quaternion[3] =  cph * cth * sps - sph * sth * cps;
+        }
+
+        /**
+         * Accessor method
+         */
+        uint8_t motorCount(void)
+        {
+            return _motorCount;
         }
 
         /**

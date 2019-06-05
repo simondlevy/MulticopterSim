@@ -104,11 +104,15 @@ ABigQuadPawn::ABigQuadPawn()
 	_propellerAudioComponent->SetupAttachment(GetRootComponent());
 
     // Allocate space for motor values used in animation/sound
-    _motorvals = new float[_frame.motorCount()];
+    _motorvals = new float[4];
+
+    // Create dynamics
+    _dynamics = new QuadXAPDynamics(&_params, _motorLocations);
 }
 
 ABigQuadPawn::~ABigQuadPawn()
 {
+    delete _dynamics;
     delete _motorvals;
 }
 
@@ -223,7 +227,7 @@ void ABigQuadPawn::switchCameras(float DeltaSeconds)
 
 void ABigQuadPawn::startThreadedWorkers(void)
 {
-    _flightManager = FFlightManager::create(&_frame, _startLocation, _startRotation);
+    _flightManager = FFlightManager::create(_dynamics, _startLocation, _startRotation);
     _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
 }
 
@@ -257,10 +261,10 @@ void ABigQuadPawn::addAnimationEffects(void)
 {
     // Compute the mean of the motor values
     float motormean = 0;
-    for (uint8_t j=0; j<_frame.motorCount(); ++j) {
+    for (uint8_t j=0; j<4; ++j) {
         motormean += _motorvals[j];
     }
-    motormean /= _frame.motorCount();
+    motormean /= 4;
 
     // Use the mean motor value to modulate the pitch and voume of the propeller sound
     setAudioPitchAndVolume(motormean);

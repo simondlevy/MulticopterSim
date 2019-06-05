@@ -16,7 +16,7 @@
 
 #include "FlightManager.hpp"
 
-#include "dynamics/BigQuadFrame.hpp"
+#include "dynamics/QuadXAPDynamics.hpp"
 
 #ifdef _USE_OPENCV
 #include "VideoManagerOpenCV.hpp"
@@ -37,8 +37,10 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
         GENERATED_BODY()
 
+        // Physical constants ==============================================
+
         // Reverse-engineered so that sqrt(x^2+y^2) = 0.6
-        static constexpr double MOTOR_LOCATIONS[12] = 
+        static constexpr double _motorLocations[12] = 
         {
             // X     Y    Z
             -.42, +.42, +.1, 
@@ -47,7 +49,7 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
             +.42, -.42, +.1 
         };
 
-        static constexpr MultirotorFrame::params_t params = {
+        static constexpr MultirotorDynamics::params_t _params = {
 
             // Amir's calculations
             5.30216718361085E-05,   // b
@@ -62,6 +64,8 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
             15000                  
         }; 
 
+        // =================================================================
+        
         // StaticMesh component that will be the visuals for our flying pawn 
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
             class UStaticMeshComponent* _vehicleMesh;
@@ -124,7 +128,7 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
         FRotator _startRotation;
 
         // Frame configuration
-        BigQuadFrame _frame;
+        QuadXAPDynamics * _dynamics;
 
         // Flight management thread
         void startThreadedWorkers(void);

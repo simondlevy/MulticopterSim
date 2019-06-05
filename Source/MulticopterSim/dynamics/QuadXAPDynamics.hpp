@@ -1,5 +1,5 @@
 /*
- * Frame implementation for Quad-X ArduPilot layout
+ * Dynamics implementation for Quad-X ArduPilot layout
  *
  * For reference citation see MultirotorDynamics.hpp
  *
@@ -10,14 +10,14 @@
 
 #pragma once
 
-#include "MultirotorFrame.hpp"
+#include "MultirotorDynamics.hpp"
 
-class QuadXAPFrame : public MultirotorFrame {
+class QuadXAPDynamics : public MultirotorDynamics {
 
     public:
 
-        QuadXAPFrame(const double * motorLocations) 
-            : MultirotorFrame(motorLocations, 4)
+        QuadXAPDynamics(const params_t * params, const double * motorLocations) 
+            : MultirotorDynamics(params, motorLocations, 4)
         {
         }
 
@@ -46,5 +46,5 @@ class QuadXAPFrame : public MultirotorFrame {
             return dir[i];
         }
 
-}; // class QuadXAPFrame
+}; // class QuadXAPDynamics
 
