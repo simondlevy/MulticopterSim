@@ -50,6 +50,20 @@ class MultirotorFrame {
 
     public:
 
+        typedef struct {
+
+            double b;
+            double d;
+            double m;
+            double Ix;
+            double Iy;
+            double Iz;
+            double Jr;
+
+            uint16_t maxrpm;
+
+        } params_t;
+
         virtual double b(void) = 0;
         virtual double d(void) = 0;
         virtual double m(void) = 0;

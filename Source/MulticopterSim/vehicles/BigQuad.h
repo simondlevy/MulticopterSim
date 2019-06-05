@@ -33,9 +33,34 @@
 UCLASS(Config=Game)
 class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
-private:
+    private:
 
-	GENERATED_BODY()
+        GENERATED_BODY()
+
+        // Reverse-engineered so that sqrt(x^2+y^2) = 0.6
+        static constexpr double MOTOR_LOCATIONS[12] = 
+        {
+            // X     Y    Z
+            -.42, +.42, +.1, 
+            +.42, +.42, +.1, 
+            -.42, -.42, +.1, 
+            +.42, -.42, +.1 
+        };
+
+        static constexpr MultirotorFrame::params_t params = {
+
+            // Amir's calculations
+            5.30216718361085E-05,   // b
+            2.23656692806239E-06,   // d
+            16.47,                  // m
+            2,                      // Ix
+            2,                      // Iy
+            3,                      // Iz
+            3.08013E-04,            // Jr
+
+            // maxrpm, estimated
+            15000                  
+        }; 
 
         // StaticMesh component that will be the visuals for our flying pawn 
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -66,8 +91,8 @@ private:
         class FFlightManager * _flightManager = NULL;
         class FVideoManager * _videoManager = NULL;
 
- 		// Bozo filter for failure to select a map
-		bool _mapSelected = false;
+        // Bozo filter for failure to select a map
+        bool _mapSelected = false;
 
         // Motor values for animation/sound
         float * _motorvals = NULL;
@@ -108,7 +133,7 @@ private:
         // Helper
         static bool childComponentHasName(UStaticMeshComponent * child, const char * fmt, int index);
 
-protected:
+    protected:
 
         // AActor overrides
 
@@ -130,7 +155,7 @@ protected:
                 FVector NormalImpulse, 
                 const FHitResult& Hit) override;
 
-public:	
+    public:	
 
         ABigQuadPawn();
 
