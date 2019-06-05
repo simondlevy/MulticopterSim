@@ -103,6 +103,7 @@ ABigQuadPawn::ABigQuadPawn()
 	// Attach the sound to the pawn's root, the sound follows the pawn around
 	_propellerAudioComponent->SetupAttachment(GetRootComponent());
 
+
     // Allocate space for motor values used in animation/sound
     _motorvals = new float[4];
 
@@ -193,11 +194,12 @@ void ABigQuadPawn::Tick(float DeltaSeconds)
         setGimbal();
 
         // Tell the threaded video work to grab the current camera image
+#ifdef _USE_OPENCV
         _videoManager->grabCurrentImage();
+#endif
 
         // OSD for debugging messages from threaded workers
         debug("%s", _flightManager->getMessage());
-        //debug("%s", _videoManager->getMessage());
     }
 
     // Switch cameras periodically for testing
@@ -209,6 +211,7 @@ void ABigQuadPawn::Tick(float DeltaSeconds)
 
 void ABigQuadPawn::switchCameras(float DeltaSeconds)
 {
+#ifdef _USE_OPENCV
     static bool useCamera2;
     static float time;
     static float prevTime;
@@ -223,18 +226,23 @@ void ABigQuadPawn::switchCameras(float DeltaSeconds)
             _videoManager->useCamera1();
         }
     }
+#endif
 }
 
 void ABigQuadPawn::startThreadedWorkers(void)
 {
     _flightManager = FFlightManager::create(_dynamics, _startLocation, _startRotation);
+#ifdef _USE_OPENCV
     _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
+#endif
 }
 
 void ABigQuadPawn::stopThreadedWorkers(void)
 {
     _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
+#ifdef _USE_OPENCV
     _videoManager  = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
+#endif
 }
 
 void ABigQuadPawn::getKinematics(void)
