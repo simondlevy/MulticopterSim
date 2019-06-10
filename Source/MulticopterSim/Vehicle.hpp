@@ -34,6 +34,11 @@
 #include "Components/AudioComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
+#ifdef _USE_OPENCV
+#include "VideoManager.hpp"
+#endif
+
+
 // A macro for simplifying the declaration of static meshes
 #define DECLARE_STATIC_MESH(structname, assetstr, objname)   \
     static struct structname {                                             \
@@ -70,6 +75,41 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         // Motor values for animation/sound
         float * _motorvals = NULL;
+
+        // Support for camera gimbal
+        class USpringArmComponent* _gimbalSpringArm;
+        class UCameraComponent* _camera;
+        class USceneCaptureComponent2D * _capture;
+
+        // Render targets, passed to consgtructor for threaded video worker when Start button is pressed
+        UTextureRenderTarget2D * _cameraRenderTarget;
+
+        // Sets axes for camera gimbal based on values returned in child class
+        //void setGimbal(void);
+
+#ifdef _USE_OPENCV
+        // Threaded worker for managing video from camera
+        class FVideoManager * _videoManager = NULL;
+
+        void videoManagerStart(void)
+        {
+            _videoManager = FVideoManager::create(_cameraRenderTarget);
+        }
+
+        void videoManagerStop(void)
+        {
+            _videoManager = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
+        }
+
+        void videoManagerGrabImage(void)
+        {
+            _videoManager->grabImage();
+        }
+#else
+        void videoManagerStart(void) { }
+        void videoManagerStop(void) { }
+        void videoManagerGrabImage(void) { }
+#endif
 
         // Retrieves kinematics from dynamics computed in another thread
         void getKinematics(void)
@@ -132,7 +172,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         FRotator _startRotation;
 
         // Pawn
-        APawn * _pawn;
+        APawn * _pawn = NULL;
 
         // Flight management thread
         void startThreadedWorkers(void)
@@ -144,6 +184,26 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         {
             _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
         }
+
+    protected:
+
+        void addMotor( uint8_t index, int8_t direction, const wchar_t * mMeshName, UStaticMesh * mMesh, FVector mLocation,
+                const wchar_t * pMeshName, UStaticMesh * pMesh, FVector pLocation)
+        {
+            UStaticMeshComponent * mMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(mMeshName);
+            mMeshComponent->SetStaticMesh(mMesh);
+            mMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName); 	
+            mMeshComponent->AddRelativeLocation(mLocation*100); // m => cm
+
+            UStaticMeshComponent * pMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(pMeshName);
+            pMeshComponent->SetStaticMesh(pMesh);
+            pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
+            pMeshComponent->AddRelativeLocation(pLocation*100); // m => cm
+
+            _propellerMeshComponents[index] = pMeshComponent;
+            _propellerDirections[index] = direction;
+        }
+
 
     public:
 
@@ -199,6 +259,32 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
             // Store vehicle pawn and dynamics for later
             _pawn = pawn;
+
+
+            // Accessing camera render targets from map is done statically (at compile time).
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
+                cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
+
+            // Get texture object from each render target
+            _cameraRenderTarget = cameraTextureObject.Object;
+
+            FVector cameraScale(0.1, 0.1, 0.1);
+
+            _gimbalSpringArm = pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("gimbalSpringArm"));
+            _gimbalSpringArm->SetupAttachment(pawn->GetRootComponent());
+            _gimbalSpringArm->TargetArmLength = 0.f; 
+
+            _camera = pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("camera"));
+            _camera ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
+            _camera->SetWorldScale3D(cameraScale);
+            _camera->SetFieldOfView(90);
+            _camera->SetAspectRatio(4./3);
+
+            _capture = pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("capture"));
+            _capture->SetWorldScale3D(cameraScale);
+            _capture->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
+            _capture->TextureTarget = _cameraRenderTarget;
+            _capture->FOVAngle = 45;
         }        
 
         ~Vehicle(void) 
@@ -206,23 +292,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             delete _propellerMeshComponents;
             delete _propellerDirections;
             delete _motorvals;
-        }
-
-        void addMotor( uint8_t index, int8_t direction, const wchar_t * mMeshName, UStaticMesh * mMesh, FVector mLocation,
-                const wchar_t * pMeshName, UStaticMesh * pMesh, FVector pLocation)
-        {
-            UStaticMeshComponent * mMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(mMeshName);
-            mMeshComponent->SetStaticMesh(mMesh);
-            mMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName); 	
-            mMeshComponent->AddRelativeLocation(mLocation*100); // m => cm
-
-            UStaticMeshComponent * pMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(pMeshName);
-            pMeshComponent->SetStaticMesh(pMesh);
-            pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
-            pMeshComponent->AddRelativeLocation(pLocation*100); // m => cm
-
-            _propellerMeshComponents[index] = pMeshComponent;
-            _propellerDirections[index] = direction;
         }
 
         void BeginPlay()
@@ -262,11 +331,11 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 // Kinematics from dynamics
                 getKinematics();
 
-                // Camera fun
-                setGimbal();
-
                 // Keepin' it real(istic)!
                 addAnimationEffects();
+
+                // Move gimbal
+                setGimbal();
 
                 // OSD for debugging messages from threaded workers
                 //debug("%s", _flightManager->getMessage());
@@ -291,20 +360,24 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             }
         }
 
+        void setCameraFOV(float cameraFieldOfView)
+        {
+            _camera->SetFieldOfView(cameraFieldOfView);
+            _capture->FOVAngle = cameraFieldOfView - 45;
+        }
+
         void setGimbal(void)
         {
             // Get gimbal location from flight manager
             float roll = 0, pitch = 0;
             _flightManager->getGimbal(roll, pitch);
 
-            debug("roll: %+3.3f   pitch: %+3.3f", roll, pitch);
+            FRotator rotation = _gimbalSpringArm->GetComponentRotation();
 
-            //FRotator rotation = _gimbalSpringArm->GetComponentRotation();
+            rotation.Roll  += roll;
+            rotation.Pitch -= pitch;
 
-            //rotation.Roll  += roll;
-            //rotation.Pitch -= pitch;
-
-            //_gimbalSpringArm->SetWorldRotation(rotation);
+            _gimbalSpringArm->SetWorldRotation(rotation);
         }
 
-}; // Vehicle
+}; // class Vehicle
