@@ -64,30 +64,19 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
         }; 
 
         // =================================================================
-        
+
         // StaticMesh component that will be the visuals for our flying pawn 
-        UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-            class UStaticMeshComponent* _vehicleMesh;
+        class UStaticMeshComponent* _vehicleMesh;
 
         // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
-        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
-            class USoundCue* _propellerAudioCue;
-        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
-            class USoundCue* _propellerStartupCue;
-        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
-            class UAudioComponent* _propellerAudioComponent;
+        class USoundCue* _propellerAudioCue;
+        class USoundCue* _propellerStartupCue;
+        class UAudioComponent* _propellerAudioComponent;
 
         // Gimbal camera support
-        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class USpringArmComponent* _gimbalSpringArm;
-        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class UCameraComponent* _camera1;
-        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class USceneCaptureComponent2D * _capture1;
-        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class UCameraComponent* _camera2;
-        UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-            class USceneCaptureComponent2D * _capture2;
+        class USpringArmComponent* _gimbalSpringArm;
+        class UCameraComponent* _camera1;
+        class USceneCaptureComponent2D * _capture1;
 
 
         // Threaded workers for running flight control, video
@@ -116,7 +105,6 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
         // Render targets, passed to consgtructor for threaded video worker when Start button is pressed
         UTextureRenderTarget2D * _camera1RenderTarget;
-        UTextureRenderTarget2D * _camera2RenderTarget;
 
         // Sets axes for camera gimbal based on values returned in child class
         void setGimbal(void);

@@ -43,12 +43,9 @@ ABigQuadPawn::ABigQuadPawn()
     // Accessing camera render targets from map is done statically (at compile time).
     static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
         camera1TextureObject(TEXT("/Game/Flying/RenderTargets/camera1RenderTarget"));
-    static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
-        camera2TextureObject(TEXT("/Game/Flying/RenderTargets/camera2RenderTarget"));
 
     // Get texture object from each render target
     _camera1RenderTarget = camera1TextureObject.Object;
-    _camera2RenderTarget = camera2TextureObject.Object;
 
     // Set up the FPV camera
 
@@ -69,18 +66,6 @@ ABigQuadPawn::ABigQuadPawn()
     _capture1->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
     _capture1->TextureTarget = _camera1RenderTarget;
     _capture1->FOVAngle = 45;
-
-    _camera2 = CreateDefaultSubobject<UCameraComponent>(TEXT("camera2"));
-    _camera2 ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
-    _camera2->SetWorldScale3D(cameraScale);
-    _camera2->SetFieldOfView(135);
-    _camera2->SetAspectRatio(4./3);
-
-    _capture2 = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("capture2"));
-    _capture2->SetWorldScale3D(cameraScale);
-    _capture2->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
-    _capture2->TextureTarget = _camera2RenderTarget;
-    _capture2->FOVAngle = 90;
 
     // Turn off UE4 physics
 	_vehicleMesh->SetSimulatePhysics(false);
