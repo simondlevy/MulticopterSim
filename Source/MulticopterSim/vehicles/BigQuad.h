@@ -54,6 +54,17 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
             15000                  
         }; 
 
+        static constexpr Vehicle::frame_t _frame = {
+
+            -0.59, // cx
+            +0.13, // cy
+             0.01, // mo
+             0.35, // wd
+             0.35, // ln
+             0.45, // mz
+             0.45  // pz
+        };
+
         // =================================================================
 
         Vehicle * _vehicle = NULL;

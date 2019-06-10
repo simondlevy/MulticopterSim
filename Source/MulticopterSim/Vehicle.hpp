@@ -210,12 +210,12 @@ class MULTICOPTERSIM_API Vehicle {
             UStaticMeshComponent * mMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(mMeshName);
             mMeshComponent->SetStaticMesh(mMesh);
             mMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName); 	
-            mMeshComponent->AddRelativeLocation(mLocation);
+            mMeshComponent->AddRelativeLocation(mLocation*100); // m => cm
 
             UStaticMeshComponent * pMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(pMeshName);
             pMeshComponent->SetStaticMesh(pMesh);
             pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
-            pMeshComponent->AddRelativeLocation(pLocation);
+            pMeshComponent->AddRelativeLocation(pLocation*100); // m => cm
 
             _propellerMeshComponents[index] = pMeshComponent;
             _propellerDirections[index] = direction;
