@@ -15,6 +15,7 @@
 #include <math.h>
 
 #include "FlightManager.hpp"
+#include "Vehicle.hpp"
 
 #ifdef _USE_OPENCV
 #include "VideoManager.hpp"
