@@ -1,27 +1,17 @@
 /*
-* Class implementation for pawn class in MulticopterSim
+* Class implementation for big quadcopter pawn class in MulticopterSim
 *
-* Copyright (C) 2018 Simon D. Levy
+* Copyright (C) 2019 Simon D. Levy
 *
 * MIT License
 */
 
 #include "BigQuad.h"
-
-#include "Debug.hpp"
+#include "dynamics/QuadXAPDynamics.hpp"
 
 #include "UObject/ConstructorHelpers.h"
-#include "Camera/CameraComponent.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Engine.h"
-#include "Engine/World.h"
-#include "Engine/StaticMesh.h"
-#include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 
-static const wchar_t * FRAME_MESH_NAME = TEXT("/Game/Flying/Meshes/BigQuad/Frame.Frame");
 //
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics,  "BigQuad/Frame.Frame",     FrameStatics)
@@ -31,12 +21,11 @@ DECLARE_STATIC_MESH(FProp2WStatics, "BigQuad/PropCCW.PropCCW", Prop2Statics)
 DECLARE_STATIC_MESH(FProp3WStatics, "BigQuad/PropCW.PropCW",   Prop3Statics)
 DECLARE_STATIC_MESH(FProp4WStatics, "BigQuad/PropCW.PropCW",   Prop4Statics)
 
-
 // Constructor
 ABigQuadPawn::ABigQuadPawn()
 {
 	// The Vehicle object will handle most of the work for the pawn
-	_vehicle = new Vehicle(this, FrameStatics.mesh.Get(), new QuadXAPDynamics(&_params), 4);
+	_vehicle = new QuadXAP(this, FrameStatics.mesh.Get(), &_params);
 
     // Build the motor and propeller meshes specific to this vehicle
 
