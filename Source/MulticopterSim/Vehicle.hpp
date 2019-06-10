@@ -362,12 +362,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             }
         }
 
-        void setCameraFOV(float cameraFieldOfView)
-        {
-            _camera->SetFieldOfView(cameraFieldOfView);
-            _capture->FOVAngle = cameraFieldOfView - 45;
-        }
-
         void setGimbal(void)
         {
             // Get gimbal location from flight manager
@@ -380,6 +374,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             rotation.Pitch -= pitch;
 
             _gimbalSpringArm->SetWorldRotation(rotation);
+
+            _camera->FieldOfView = fov;
+            _capture->FOVAngle = fov - 45;
         }
 
 }; // class Vehicle
