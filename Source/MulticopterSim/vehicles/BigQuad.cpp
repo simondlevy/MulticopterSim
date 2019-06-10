@@ -42,10 +42,10 @@ ABigQuadPawn::ABigQuadPawn()
     
     // Accessing camera render targets from map is done statically (at compile time).
     static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
-        camera1TextureObject(TEXT("/Game/Flying/RenderTargets/camera1RenderTarget"));
+        cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
 
     // Get texture object from each render target
-    _camera1RenderTarget = camera1TextureObject.Object;
+    _cameraRenderTarget = cameraTextureObject.Object;
 
     // Set up the FPV camera
 
@@ -55,17 +55,17 @@ ABigQuadPawn::ABigQuadPawn()
     _gimbalSpringArm->SetupAttachment(RootComponent);
     _gimbalSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
 
-    _camera1 = CreateDefaultSubobject<UCameraComponent>(TEXT("camera1"));
-    _camera1 ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
-    _camera1->SetWorldScale3D(cameraScale);
-    _camera1->SetFieldOfView(90);
-    _camera1->SetAspectRatio(4./3);
+    _camera = CreateDefaultSubobject<UCameraComponent>(TEXT("camera"));
+    _camera ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
+    _camera->SetWorldScale3D(cameraScale);
+    _camera->SetFieldOfView(90);
+    _camera->SetAspectRatio(4./3);
 
-    _capture1 = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("capture1"));
-    _capture1->SetWorldScale3D(cameraScale);
-    _capture1->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
-    _capture1->TextureTarget = _camera1RenderTarget;
-    _capture1->FOVAngle = 45;
+    _capture = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("capture"));
+    _capture->SetWorldScale3D(cameraScale);
+    _capture->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
+    _capture->TextureTarget = _cameraRenderTarget;
+    _capture->FOVAngle = 45;
 
     // Turn off UE4 physics
 	_vehicleMesh->SetSimulatePhysics(false);
@@ -217,7 +217,7 @@ void ABigQuadPawn::startThreadedWorkers(void)
 {
     _flightManager = FFlightManager::create(_dynamics, _startLocation, _startRotation);
 #ifdef _USE_OPENCV
-    _videoManager  = FVideoManager::create(_camera1RenderTarget);
+    _videoManager  = FVideoManager::create(_cameraRenderTarget);
 #endif
 }
 

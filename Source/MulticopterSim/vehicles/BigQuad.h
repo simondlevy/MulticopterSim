@@ -75,8 +75,8 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
         // Gimbal camera support
         class USpringArmComponent* _gimbalSpringArm;
-        class UCameraComponent* _camera1;
-        class USceneCaptureComponent2D * _capture1;
+        class UCameraComponent* _camera;
+        class USceneCaptureComponent2D * _capture;
 
 
         // Threaded workers for running flight control, video
@@ -104,7 +104,7 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
         static const char ** getPropellerMeshNames(void);
 
         // Render targets, passed to consgtructor for threaded video worker when Start button is pressed
-        UTextureRenderTarget2D * _camera1RenderTarget;
+        UTextureRenderTarget2D * _cameraRenderTarget;
 
         // Sets axes for camera gimbal based on values returned in child class
         void setGimbal(void);
