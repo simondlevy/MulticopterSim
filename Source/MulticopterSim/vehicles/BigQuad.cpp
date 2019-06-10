@@ -93,7 +93,7 @@ ABigQuadPawn::ABigQuadPawn()
     _motorvals = new float[4];
 
     // Create dynamics
-    _dynamics = new QuadXAPDynamics(&_params, _motorLocations);
+    _dynamics = new QuadXAPDynamics(&_params);
 }
 
 ABigQuadPawn::~ABigQuadPawn()

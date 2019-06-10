@@ -79,8 +79,6 @@ class MultirotorDynamics {
 
         params_t _p = {0};
 
-        double * _motorLocations = NULL;
-
         uint8_t _motorCount = 0;
 
         // Values computed in Equation 6
@@ -161,12 +159,9 @@ class MultirotorDynamics {
          /**
          *  Constructor
          */
-        MultirotorDynamics(const params_t * params, const double * motorLocations, const uint8_t motorCount)
+        MultirotorDynamics(const params_t * params, const uint8_t motorCount)
         {
             memcpy(&_p, params, sizeof(params_t));
-
-            _motorLocations = new double [motorCount*3*sizeof(double)];
-            memcpy(_motorLocations, motorLocations, motorCount*3*sizeof(double));
 
             _motorCount = motorCount;
 
@@ -206,7 +201,6 @@ class MultirotorDynamics {
          */
         virtual ~MultirotorDynamics(void)
         {
-            delete _motorLocations;
             delete _omegas;
         }
 
