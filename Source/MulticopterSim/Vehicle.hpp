@@ -84,9 +84,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         // Render targets, passed to consgtructor for threaded video worker when Start button is pressed
         UTextureRenderTarget2D * _cameraRenderTarget;
 
-        // Sets axes for camera gimbal based on values returned in child class
-        //void setGimbal(void);
-
 #ifdef _USE_OPENCV
         // Threaded worker for managing video from camera
         class FVideoManager * _videoManager = NULL;
@@ -336,7 +333,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 // Keepin' it real(istic)!
                 addAnimationEffects();
 
-                // Move gimbal
+                // Move gimbal and get Field-Of-View
                 setGimbal();
 
                 // Grab image
@@ -374,8 +371,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         void setGimbal(void)
         {
             // Get gimbal location from flight manager
-            float roll = 0, pitch = 0;
-            _flightManager->getGimbal(roll, pitch);
+            float roll = 0, pitch = 0, fov = 0;
+            _flightManager->getGimbal(roll, pitch, fov);
 
             FRotator rotation = _gimbalSpringArm->GetComponentRotation();
 
