@@ -19,8 +19,6 @@ class MULTICOPTERSIM_API A3DFlyPawn : public APawn {
 
         GENERATED_BODY()
 
-        // Physical constants ==============================================
-
         static constexpr MultirotorDynamics::params_t _params = {
 
             // Amir's calculations
@@ -47,8 +45,6 @@ class MULTICOPTERSIM_API A3DFlyPawn : public APawn {
             0.0050,  // motor Z
             0.0250   // propeller Z
         };
-
-        // =================================================================
 
         QuadXAP * _vehicle;
         

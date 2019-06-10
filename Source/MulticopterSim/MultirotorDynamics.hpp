@@ -37,6 +37,7 @@ class MultirotorDynamics {
 
     public:
 
+        // Parameters from the table below Equation 3
         typedef struct {
 
             double b;
@@ -97,6 +98,9 @@ class MultirotorDynamics {
         // Flag for whether we're airborne
         bool _airborne = false;
 
+        // Takeoff altitude, for detecting a crash
+        double _zstart;
+
         // Support for debugging
         char _message[200];
 
@@ -134,13 +138,6 @@ class MultirotorDynamics {
                 inertial[i] = bodyZ * R[i];
             }
         }
-
-        // Helper
-        double sqr(double x)
-        {
-            return x*x;
-        }
-
 
     protected:
 
@@ -231,6 +228,9 @@ class MultirotorDynamics {
 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
+
+            // Remember our altitude at takeoff
+            _zstart = pose.location[2];
         }
 
         /** 
@@ -343,7 +343,7 @@ class MultirotorDynamics {
             eulerToQuaternion(state.pose.rotation, state.quaternion);
 
             // If we're airborne, we've crashed if we fall below ground level
-            return _airborne ? (state.pose.location[2] > 0) : false;
+            return _airborne ? (state.pose.location[2] > _zstart) : false;
         }
 
         /**
