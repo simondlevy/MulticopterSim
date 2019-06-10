@@ -113,7 +113,6 @@ ABigQuadPawn::ABigQuadPawn()
 
 ABigQuadPawn::~ABigQuadPawn()
 {
-    delete _dynamics;
     delete _motorvals;
 }
 
@@ -195,7 +194,7 @@ void ABigQuadPawn::Tick(float DeltaSeconds)
 
         // Tell the threaded video work to grab the current camera image
 #ifdef _USE_OPENCV
-        _videoManager->grabCurrentImage();
+        _videoManager->grabImage();
 #endif
 
         // OSD for debugging messages from threaded workers
@@ -220,10 +219,10 @@ void ABigQuadPawn::switchCameras(float DeltaSeconds)
         prevTime = time;
         useCamera2 = !useCamera2;
         if (useCamera2) {
-            _videoManager->useCamera2();
+            //_videoManager->useCamera2();
         }
         else {
-            _videoManager->useCamera1();
+            //_videoManager->useCamera1();
         }
     }
 #endif
@@ -233,7 +232,7 @@ void ABigQuadPawn::startThreadedWorkers(void)
 {
     _flightManager = FFlightManager::create(_dynamics, _startLocation, _startRotation);
 #ifdef _USE_OPENCV
-    _videoManager  = FVideoManager::create(_camera1RenderTarget, _camera2RenderTarget);
+    _videoManager  = FVideoManager::create(_camera1RenderTarget);
 #endif
 }
 

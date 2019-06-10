@@ -21,7 +21,7 @@ public class MulticopterSim : ModuleRules
 
         PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src");
 
-        //LoadOpenCV(Target);
+        LoadOpenCV(Target);
     }
 
     private string ThirdPartyPath

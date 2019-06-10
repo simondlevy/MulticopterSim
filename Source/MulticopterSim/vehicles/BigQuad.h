@@ -16,6 +16,10 @@
 
 #include "FlightManager.hpp"
 
+#ifdef _USE_OPENCV
+#include "VideoManager.hpp"
+#endif
+
 #include "dynamics/QuadXAPDynamics.hpp"
 
 #include "CoreMinimal.h"
@@ -87,6 +91,9 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
         // Threaded workers for running flight control, video
         class FFlightManager * _flightManager = NULL;
+
+        // Threaded workers for running flight control, video
+        class FVideoManager * _videoManager = NULL;
 
         // Bozo filter for failure to select a map
         bool _mapSelected = false;
