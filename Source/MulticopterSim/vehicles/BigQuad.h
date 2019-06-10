@@ -21,8 +21,6 @@
 #include "VideoManager.hpp"
 #endif
 
-#include "dynamics/QuadXAPDynamics.hpp"
-
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"

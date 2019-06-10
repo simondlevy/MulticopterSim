@@ -7,7 +7,6 @@
 */
 
 #include "BigQuad.h"
-#include "dynamics/QuadXAPDynamics.hpp"
 
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/SpringArmComponent.h"

@@ -7,7 +7,6 @@
 */
 
 #include "3DFly.h"
-#include "dynamics/QuadXAPDynamics.hpp"
 
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "3DFly/Frame.Frame", FrameStatics)

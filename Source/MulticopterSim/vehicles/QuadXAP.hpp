@@ -9,7 +9,6 @@
 #pragma once
 
 #include "Vehicle.hpp"
-#include "dynamics/QuadXAPDynamics.hpp"
 
 class QuadXAP : public Vehicle {
 
