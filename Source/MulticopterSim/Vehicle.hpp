@@ -156,6 +156,7 @@ class MULTICOPTERSIM_API Vehicle {
 
         } frame_t;
 
+        // Constructor
         Vehicle(APawn * pawn, UStaticMesh * frameMesh, MultirotorDynamics * dynamics, uint8_t motorCount)
         {
             /*

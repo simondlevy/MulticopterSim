@@ -38,16 +38,6 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
         // Physical constants ==============================================
 
-        // Reverse-engineered so that sqrt(x^2+y^2) = 0.6
-        static constexpr double _motorLocations[12] = 
-        {
-            // X     Y    Z
-            -.42, +.42, +.1, 
-            +.42, +.42, +.1, 
-            -.42, -.42, +.1, 
-            +.42, -.42, +.1 
-        };
-
         static constexpr MultirotorDynamics::params_t _params = {
 
             // Amir's calculations
