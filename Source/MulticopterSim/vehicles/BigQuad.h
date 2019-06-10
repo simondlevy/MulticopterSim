@@ -58,43 +58,20 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
         Vehicle * _vehicle = NULL;
 
-        // StaticMesh component that will be the visuals for our flying pawn 
-        class UStaticMeshComponent* _frameMesh;
-
-        // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
-        class USoundCue* _propellerAudioCue;
-        class USoundCue* _propellerStartupCue;
-        class UAudioComponent* _propellerAudioComponent;
-
         // Gimbal camera support
         class USpringArmComponent* _gimbalSpringArm;
         class UCameraComponent* _camera;
         class USceneCaptureComponent2D * _capture;
 
 
-        // Threaded workers for running flight control, video
-        class FFlightManager * _flightManager = NULL;
-
-        // Threaded workers for running flight control, video
+        // Threaded worker for managing video from camera
         class FVideoManager * _videoManager = NULL;
+        void videoManagerStart(void);
+        void videoManagerStop(void);
+        void videoManagerGrabImage(void);
 
         // Bozo filter for failure to select a map
         bool _mapSelected = false;
-
-        // Motor values for animation/sound
-        float * _motorvals = NULL;
-
-        // Retrieves kinematics from dynamics computed in another thread
-        void getKinematics(void);
-
-        // Animation effects (sound, spinning props)
-        void addAnimationEffects(void);
-        void setAudioPitchAndVolume(float value);
-
-        // Implement for each vehicle mesh
-        static const uint8_t getMotorCount(void);
-        static const int8_t  getMotorDirection(uint8_t j);
-        static const char ** getPropellerMeshNames(void);
 
         // Render targets, passed to consgtructor for threaded video worker when Start button is pressed
         UTextureRenderTarget2D * _cameraRenderTarget;
@@ -104,20 +81,6 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
         // Switch cameras perioically for testing
         void switchCameras(float DeltaSeconds);
-
-        // Starting pose for reset on crash
-        FVector _startLocation;
-        FRotator _startRotation;
-
-        // Frame configuration
-        QuadXAPDynamics * _dynamics;
-
-        // Flight management thread
-        void startThreadedWorkers(void);
-        void stopThreadedWorkers(void);
-
-        // Helper
-        static bool childComponentHasName(UStaticMeshComponent * child, const char * fmt, int index);
 
         // Set camera field of view
         void setCameraFOV(float cameraFieldOfView, float captureFOVAngle);

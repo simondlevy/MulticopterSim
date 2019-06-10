@@ -28,11 +28,11 @@
 
 // A macro for simplifying the declaration of static meshes
 #define DECLARE_STATIC_MESH(structname, assetstr, objname)   \
-static struct structname {                                             \
-    ConstructorHelpers::FObjectFinderOptional<UStaticMesh> mesh;   \
-    structname() : mesh(TEXT("/Game/Flying/Meshes/" assetstr)) { } \
-};                                                                     \
-static structname objname;
+    static struct structname {                                             \
+        ConstructorHelpers::FObjectFinderOptional<UStaticMesh> mesh;   \
+        structname() : mesh(TEXT("/Game/Flying/Meshes/" assetstr)) { } \
+    };                                                                     \
+    static structname objname;
 
 class MULTICOPTERSIM_API Vehicle {
 
@@ -57,7 +57,6 @@ class MULTICOPTERSIM_API Vehicle {
 
         // Threaded workers for running flight control, video
         class FFlightManager * _flightManager = NULL;
-        class FVideoManager * _videoManager = NULL;
 
         // Bozo filter for failure to select a map
         bool _mapSelected = false;
@@ -106,7 +105,7 @@ class MULTICOPTERSIM_API Vehicle {
             if (motormean > 0) {
                 static float rotation;
                 for (uint8_t i=0; i<_motorCount; ++i) {
-                    _propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * _propellerDirections[i] * 100, 0));
+                    //_propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * _propellerDirections[i] * 100, 0));
                 }
                 rotation++;
             }
@@ -135,7 +134,7 @@ class MULTICOPTERSIM_API Vehicle {
         void startThreadedWorkers(void)
         {
             _flightManager = FFlightManager::create(_dynamics, _startLocation, _startRotation);
-        }
+        }        
 
         void stopThreadedWorkers(void)
         {
@@ -159,8 +158,7 @@ class MULTICOPTERSIM_API Vehicle {
         // Constructor
         Vehicle(APawn * pawn, UStaticMesh * frameMesh, MultirotorDynamics * dynamics, uint8_t motorCount)
         {
-            /*
-            _motorCount = motorCount;
+			_motorCount = motorCount;
 
             _propellerMeshComponents = new UStaticMeshComponent * [motorCount];
 
@@ -197,7 +195,6 @@ class MULTICOPTERSIM_API Vehicle {
             // Store vehicle pawn and dynamics for later
             _pawn = pawn;
             _dynamics = dynamics;
-            */
         }        
 
         ~Vehicle(void) 

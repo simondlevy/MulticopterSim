@@ -35,59 +35,14 @@ DECLARE_STATIC_MESH(FProp4WStatics, "BigQuad/PropCW.PropCW",   Prop4Statics)
 // Constructor
 ABigQuadPawn::ABigQuadPawn()
 {
-    // The Vehicle object will handle most of the work for the pawn
-    _vehicle = new Vehicle(this, FrameStatics.mesh.Get(), new QuadXAPDynamics(&_params), 4);
+    // Set up the FPV camera ===============================================================================
 
-	// Structure to hold one-time initialization
-	struct FConstructorStatics
-	{
-		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> _frameMesh;
-		FConstructorStatics() : _frameMesh(FRAME_MESH_NAME)
-		{
-		}
-	};
-	static FConstructorStatics ConstructorStatics;
-
-	// Create static mesh component
-	_frameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
-	_frameMesh->SetStaticMesh(ConstructorStatics._frameMesh.Get());
-	RootComponent = _frameMesh;
-    
-    // Turn off UE4 physics
-	_frameMesh->SetSimulatePhysics(false);
-
-	// Load our Sound Cue for the propeller sound we created in the editor... 
-	// note your path may be different depending
-	// on where you store the asset on disk.
-	static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/Flying/Audio/MotorSoundCue'"));
-	
-	// Store a reference to the Cue asset - we'll need it later.
-	_propellerAudioCue = propellerCue.Object;
-
-	// Create an audio component, the audio component wraps the Cue, 
-	// and allows us to ineract with it, and its parameters from code.
-	_propellerAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
-
-	// Stop the sound from sound playing the moment it's created.
-	_propellerAudioComponent->bAutoActivate = false;
-
-	// Attach the sound to the pawn's root, the sound follows the pawn around
-	_propellerAudioComponent->SetupAttachment(GetRootComponent());
-
-
-    // Allocate space for motor values used in animation/sound
-    _motorvals = new float[4];
-
-    // Create dynamics
-    _dynamics = new QuadXAPDynamics(&_params);
     // Accessing camera render targets from map is done statically (at compile time).
     static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
         cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
 
     // Get texture object from each render target
     _cameraRenderTarget = cameraTextureObject.Object;
-
-    // Set up the FPV camera ===============================================================================
 
     FVector cameraScale(0.1, 0.1, 0.1);
 
@@ -107,30 +62,19 @@ ABigQuadPawn::ABigQuadPawn()
     _capture->TextureTarget = _cameraRenderTarget;
     _capture->FOVAngle = 45;
 
+	// The Vehicle object will handle most of the work for the pawn
+	_vehicle = new Vehicle(this, FrameStatics.mesh.Get(), new QuadXAPDynamics(&_params), 4);
+
 }
 
 ABigQuadPawn::~ABigQuadPawn()
 {
     delete _vehicle;
-    delete _motorvals;
 }
-
-bool ABigQuadPawn::childComponentHasName(UStaticMeshComponent * child, const char * fmt, int index)
-{
-    char name[100] = {0};
-    sprintf_s(name, fmt, index+1);
-    return child->GetName() == (const char *)name;
-}
-
 
 void ABigQuadPawn::PostInitializeComponents()
 {
-    // Add "Vehicle" tag for use by level blueprint
-    this->Tags.Add(FName("Vehicle"));
-
-    if (_propellerAudioCue->IsValidLowLevelFast()) {
-        _propellerAudioComponent->SetSound(_propellerAudioCue);
-    }
+    _vehicle->PostInitializeComponents();
 
     Super::PostInitializeComponents();
 }
@@ -138,38 +82,18 @@ void ABigQuadPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void ABigQuadPawn::BeginPlay()
 {
-    // Make sure a map has been selected
-    FString mapName = GetWorld()->GetMapName();
-    _mapSelected = !mapName.Contains("Untitled");
+    videoManagerStart();
 
-    if (_mapSelected) {
-
-        // Start the audio for the propellers Note that because the
-        // Cue Asset is set to loop the sound, once we start playing the sound, it
-        // will play continiously...
-        _propellerAudioComponent->Play();
-
-        // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
-        _startLocation = this->GetActorLocation();
-        _startRotation = this->GetActorRotation(); 
-
-        // Initialize threaded workers
-        startThreadedWorkers();
-    }
-
-    else {
-        error("NO MAP SELECTED");
-    }
+    _vehicle->BeginPlay();
 
     Super::BeginPlay();
 }
 
 void ABigQuadPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    if (_mapSelected) {
+    videoManagerStop();
 
-        stopThreadedWorkers();
-    }
+    _vehicle->EndPlay();
 
     Super::EndPlay(EndPlayReason);
 }
@@ -177,90 +101,14 @@ void ABigQuadPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 // Called automatically on main thread
 void ABigQuadPawn::Tick(float DeltaSeconds)
 {
-    // A hack to avoid accessing kinematics before dynamics thread is ready
-    static uint64_t count;
-
-    if (_mapSelected && count++>10) {
-
-        // Kinematics from dynamics
-        getKinematics();
-
-        // Keepin' it real(istic)!
-        addAnimationEffects();
-
-        // Move gimbal
-        setGimbal();
-
-        // Tell the threaded video work to grab the current camera image
-#ifdef _USE_OPENCV
-        _videoManager->grabImage();
-#endif
-
-        // OSD for debugging messages from threaded workers
-        debug("%s", _flightManager->getMessage());
-    }
-
     // Switch cameras periodically for testing
     switchCameras(DeltaSeconds);
 
+    videoManagerGrabImage();
+
+    _vehicle->Tick();
+
     Super::Tick(DeltaSeconds);
-}
-
-
-
-void ABigQuadPawn::startThreadedWorkers(void)
-{
-    _flightManager = FFlightManager::create(_dynamics, _startLocation, _startRotation);
-#ifdef _USE_OPENCV
-    _videoManager  = FVideoManager::create(_cameraRenderTarget);
-#endif
-}
-
-void ABigQuadPawn::stopThreadedWorkers(void)
-{
-    _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
-#ifdef _USE_OPENCV
-    _videoManager  = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
-#endif
-}
-
-void ABigQuadPawn::getKinematics(void)
-{
-    // Get current pose kinematics and motor values dynamics (from flight
-    // manager). Motor values are used only for animation effects (prop
-    // rotation, sound).
-    FVector location;
-    FRotator rotation;
-    bool crashed = _flightManager->getKinematics(location, rotation, _motorvals);
-
-    if (crashed) {
-
-        // Restart threaded workers
-        stopThreadedWorkers();
-        startThreadedWorkers();
-    }
-
-    SetActorLocation(location);
-    SetActorRotation(rotation);
-}
-
-void ABigQuadPawn::addAnimationEffects(void)
-{
-    // Compute the mean of the motor values
-    float motormean = 0;
-    for (uint8_t j=0; j<4; ++j) {
-        motormean += _motorvals[j];
-    }
-    motormean /= 4;
-
-    // Use the mean motor value to modulate the pitch and voume of the propeller sound
-    setAudioPitchAndVolume(motormean);
-}
-
-void ABigQuadPawn::setAudioPitchAndVolume(float value)
-{
-    _propellerAudioComponent->SetFloatParameter(FName("pitch"), value);
-    _propellerAudioComponent->SetFloatParameter(FName("volume"), value);
 }
 
 void ABigQuadPawn::setCameraFOV(float cameraFieldOfView, float captureFOVAngle)
@@ -271,7 +119,6 @@ void ABigQuadPawn::setCameraFOV(float cameraFieldOfView, float captureFOVAngle)
 
 void ABigQuadPawn::switchCameras(float DeltaSeconds)
 {
-#ifdef _USE_OPENCV
     static bool useWideAngle;
     static float time;
     static float prevTime;
@@ -286,15 +133,13 @@ void ABigQuadPawn::switchCameras(float DeltaSeconds)
             setCameraFOV(90, 45);
         }
     }
-#endif
 }
-
 
 void ABigQuadPawn::setGimbal(void)
 {
     // Get gimbal location from flight manager
     float roll = 0, pitch = 0;
-    _flightManager->getGimbal(roll, pitch);
+    //_flightManager->getGimbal(roll, pitch);
 
     FRotator rotation = _gimbalSpringArm->GetComponentRotation();
 
@@ -303,4 +148,31 @@ void ABigQuadPawn::setGimbal(void)
 
     _gimbalSpringArm->SetWorldRotation(rotation);
 }
+
+#ifdef _USE_OPENCV
+
+void ABigQuadPawn::videoManagerStart(void)
+{
+    _videoManager = FVideoManager::create(_cameraRenderTarget);
+}
+
+void ABigQuadPawn::videoManagerStop(void)
+{
+    _videoManager = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
+}
+
+void ABigQuadPawn::videoManagerGrabImage(void)
+{
+    _videoManager->grabImage();
+}
+
+#else
+
+void ABigQuadPawn::videoManagerStart(void) { }
+void ABigQuadPawn::videoManagerStop(void) { }
+void ABigQuadPawn::videoManagerGrabImage(void) { }
+
+#endif
+
+
 
