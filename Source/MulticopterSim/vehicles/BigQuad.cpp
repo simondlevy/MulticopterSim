@@ -193,25 +193,6 @@ void ABigQuadPawn::Tick(float DeltaSeconds)
 }
 
 
-void ABigQuadPawn::switchCameras(float DeltaSeconds)
-{
-#ifdef _USE_OPENCV
-    static bool useCamera2;
-    static float time;
-    static float prevTime;
-    time += DeltaSeconds;
-    if (time - prevTime > 2) {
-        prevTime = time;
-        useCamera2 = !useCamera2;
-        if (useCamera2) {
-            //_videoManager->useCamera2();
-        }
-        else {
-            //_videoManager->useCamera1();
-        }
-    }
-#endif
-}
 
 void ABigQuadPawn::startThreadedWorkers(void)
 {
@@ -281,6 +262,33 @@ void ABigQuadPawn::NotifyHit(
 
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 }
+
+void ABigQuadPawn::setCameraFOV(float cameraFieldOfView, float captureFOVAngle)
+{
+    _camera->SetFieldOfView(cameraFieldOfView);
+    _capture->FOVAngle = captureFOVAngle;
+}
+
+void ABigQuadPawn::switchCameras(float DeltaSeconds)
+{
+#ifdef _USE_OPENCV
+    static bool useWideAngle;
+    static float time;
+    static float prevTime;
+    time += DeltaSeconds;
+    if (time - prevTime > 2) {
+        prevTime = time;
+        useWideAngle = !useWideAngle;
+        if (useWideAngle) {
+            setCameraFOV(135, 90);
+        }
+        else {
+            setCameraFOV(90, 45);
+        }
+    }
+#endif
+}
+
 
 void ABigQuadPawn::setGimbal(void)
 {

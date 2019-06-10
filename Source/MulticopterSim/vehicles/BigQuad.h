@@ -126,6 +126,9 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
         // Helper
         static bool childComponentHasName(UStaticMeshComponent * child, const char * fmt, int index);
 
+        // Set camera field of view
+        void setCameraFOV(float cameraFieldOfView, float captureFOVAngle);
+
     protected:
 
         // AActor overrides
