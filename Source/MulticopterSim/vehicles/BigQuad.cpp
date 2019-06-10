@@ -249,20 +249,6 @@ void ABigQuadPawn::setAudioPitchAndVolume(float value)
     _propellerAudioComponent->SetFloatParameter(FName("volume"), value);
 }
 
-void ABigQuadPawn::NotifyHit(
-        class UPrimitiveComponent* MyComp, 
-        class AActor* Other, 
-        class UPrimitiveComponent* OtherComp, 
-        bool bSelfMoved, 
-        FVector HitLocation, 
-        FVector HitNormal, 
-        FVector NormalImpulse, 
-        const FHitResult& Hit)
-{
-
-    Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
-}
-
 void ABigQuadPawn::setCameraFOV(float cameraFieldOfView, float captureFOVAngle)
 {
     _camera->SetFieldOfView(cameraFieldOfView);
