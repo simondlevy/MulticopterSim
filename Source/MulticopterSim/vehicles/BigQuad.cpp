@@ -22,9 +22,22 @@
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 
 static const wchar_t * FRAME_MESH_NAME = TEXT("/Game/Flying/Meshes/BigQuad/Frame.Frame");
+//
+// Structures to hold static mesh initializations
+DECLARE_STATIC_MESH(FFrameStatics,  "BigQuad/Frame.Frame",     FrameStatics)
+DECLARE_STATIC_MESH(FMotorStatics,  "BigQuad/Motor.Motor",     MotorStatics)
+DECLARE_STATIC_MESH(FProp1WStatics, "BigQuad/PropCCW.PropCCW", Prop1Statics)
+DECLARE_STATIC_MESH(FProp2WStatics, "BigQuad/PropCCW.PropCCW", Prop2Statics)
+DECLARE_STATIC_MESH(FProp3WStatics, "BigQuad/PropCW.PropCW",   Prop3Statics)
+DECLARE_STATIC_MESH(FProp4WStatics, "BigQuad/PropCW.PropCW",   Prop4Statics)
 
+
+// Constructor
 ABigQuadPawn::ABigQuadPawn()
 {
+    // The Vehicle object will handle most of the work for the pawn
+    _vehicle = new Vehicle(this, FrameStatics.mesh.Get(), new QuadXAPDynamics(&_params), 4);
+
 	// Structure to hold one-time initialization
 	struct FConstructorStatics
 	{
@@ -98,6 +111,7 @@ ABigQuadPawn::ABigQuadPawn()
 
 ABigQuadPawn::~ABigQuadPawn()
 {
+    delete _vehicle;
     delete _motorvals;
 }
 

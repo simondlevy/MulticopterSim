@@ -56,6 +56,8 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
         // =================================================================
 
+        Vehicle * _vehicle = NULL;
+
         // StaticMesh component that will be the visuals for our flying pawn 
         class UStaticMeshComponent* _frameMesh;
 
