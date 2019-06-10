@@ -20,23 +20,16 @@ DECLARE_STATIC_MESH(FProp4Statics, "3DFly/Prop4.Prop4", Prop4Statics)
 A3DFlyPawn::A3DFlyPawn()
 {
     // The Vehicle object will handle most of the work for the pawn
-    _vehicle = new Vehicle(this, FrameStatics.mesh.Get(), new QuadXAPDynamics(&_params), 4);
-
-    // Build the motor and propeller meshes specific to this vehicle
-
-    float cx = 0.00, cy = 0.00, w = 3.75, h = 3.75, mo = -1.00, mz = 0.50, pz = 2.50;
-
-    _vehicle->addMotor(0, -1, TEXT("Motor1Mesh"), MotorStatics.mesh.Get(), FVector(cx+w, cy+h+mo, mz), 
-            TEXT("Prop1Mesh"), Prop1Statics.mesh.Get(), FVector(cx+w, cy+h, pz)); 
-
-    _vehicle->addMotor(1, -1, TEXT("Motor2Mesh"), MotorStatics.mesh.Get(), FVector(cx-w, cy-h+mo, mz), 
-            TEXT("Prop2Mesh"), Prop2Statics.mesh.Get(), FVector(cx-w, cy-h, pz)); 
-
-    _vehicle->addMotor(2, +1, TEXT("Motor3Mesh"), MotorStatics.mesh.Get(), FVector(cx+w, cy-h+mo, mz),
-            TEXT("Prop3Mesh"), Prop3Statics.mesh.Get(), FVector(cx+w, cy-h, pz)); 
-
-    _vehicle->addMotor(3, +1, TEXT("Motor4Mesh"), MotorStatics.mesh.Get(), FVector(cx-w, cy+h+mo, mz),
-            TEXT("Prop4Mesh"), Prop4Statics.mesh.Get(), FVector(cx-w, cy+h, pz)); 
+    _vehicle = new QuadXAP(
+            this, 
+            &_frame,
+            &_params,
+            FrameStatics.mesh.Get(), 
+            MotorStatics.mesh.Get(), 
+            Prop1Statics.mesh.Get(), 
+            Prop2Statics.mesh.Get(), 
+            Prop3Statics.mesh.Get(), 
+            Prop4Statics.mesh.Get());
 }
 
 A3DFlyPawn::~A3DFlyPawn()

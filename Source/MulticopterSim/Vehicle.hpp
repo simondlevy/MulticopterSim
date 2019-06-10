@@ -1,6 +1,6 @@
 /*
- * Header-only support for vehicle pawns in MulticopterSim
- *
+ * Header-only support for vehicles in MulticopterSim
+ * 
  * Copyright (C) 2019 Simon D. Levy, Daniel Katzav
  *
  * MIT License
@@ -34,8 +34,7 @@
     };                                                                     \
     static structname objname;
 
-class MULTICOPTERSIM_API Vehicle {
-
+class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
     private:
 
@@ -127,13 +126,10 @@ class MULTICOPTERSIM_API Vehicle {
         // Pawn
         APawn * _pawn;
 
-        // Dynamics
-        MultirotorDynamics * _dynamics;
-
         // Flight management thread
         void startThreadedWorkers(void)
         {
-            _flightManager = FFlightManager::create(_dynamics, _startLocation, _startRotation);
+            _flightManager = FFlightManager::create(this, _startLocation, _startRotation);
         }        
 
         void stopThreadedWorkers(void)
@@ -156,7 +152,8 @@ class MULTICOPTERSIM_API Vehicle {
         } frame_t;
 
         // Constructor
-        Vehicle(APawn * pawn, UStaticMesh * frameMesh, MultirotorDynamics * dynamics, uint8_t motorCount)
+        Vehicle(APawn * pawn, UStaticMesh * frameMesh, const params_t * params, uint8_t motorCount)
+            : MultirotorDynamics(params, motorCount)
         {
 			_motorCount = motorCount;
 
@@ -194,7 +191,6 @@ class MULTICOPTERSIM_API Vehicle {
 
             // Store vehicle pawn and dynamics for later
             _pawn = pawn;
-            _dynamics = dynamics;
         }        
 
         ~Vehicle(void) 

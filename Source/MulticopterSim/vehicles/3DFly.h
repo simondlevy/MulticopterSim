@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "Vehicle.hpp"
+#include "vehicles/QuadXAP.hpp"
 #include "GameFramework/Pawn.h"
 #include "3DFly.generated.h"
 
@@ -50,7 +50,7 @@ class MULTICOPTERSIM_API A3DFlyPawn : public APawn {
 
         // =================================================================
 
-        Vehicle * _vehicle;
+        QuadXAP * _vehicle;
         
     protected:
 
