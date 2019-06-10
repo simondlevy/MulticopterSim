@@ -176,7 +176,7 @@ class MultirotorDynamics {
             memset(_x, 0, 12*sizeof(double));
 
             // Pre-compute lever length for efficiency
-            _l = sqrt(sqr(motorLocations[0]) + sqr(motorLocations[1]));
+            _l = 0.6;  //sqrt(sqr(motorLocations[0]) + sqr(motorLocations[1]));
         }
 
     public:
