@@ -28,17 +28,17 @@ ABigQuadPawn::ABigQuadPawn()
 	// Structure to hold one-time initialization
 	struct FConstructorStatics
 	{
-		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> _vehicleMesh;
-		FConstructorStatics() : _vehicleMesh(FRAME_MESH_NAME)
+		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> _frameMesh;
+		FConstructorStatics() : _frameMesh(FRAME_MESH_NAME)
 		{
 		}
 	};
 	static FConstructorStatics ConstructorStatics;
 
 	// Create static mesh component
-	_vehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
-	_vehicleMesh->SetStaticMesh(ConstructorStatics._vehicleMesh.Get());
-	RootComponent = _vehicleMesh;
+	_frameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
+	_frameMesh->SetStaticMesh(ConstructorStatics._frameMesh.Get());
+	RootComponent = _frameMesh;
     
     // Accessing camera render targets from map is done statically (at compile time).
     static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
@@ -68,7 +68,7 @@ ABigQuadPawn::ABigQuadPawn()
     _capture->FOVAngle = 45;
 
     // Turn off UE4 physics
-	_vehicleMesh->SetSimulatePhysics(false);
+	_frameMesh->SetSimulatePhysics(false);
 
 	// Load our Sound Cue for the propeller sound we created in the editor... 
 	// note your path may be different depending

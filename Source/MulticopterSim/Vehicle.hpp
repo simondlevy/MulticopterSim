@@ -158,6 +158,7 @@ class MULTICOPTERSIM_API Vehicle {
 
         Vehicle(APawn * pawn, UStaticMesh * frameMesh, MultirotorDynamics * dynamics, uint8_t motorCount)
         {
+            /*
             _motorCount = motorCount;
 
             _propellerMeshComponents = new UStaticMeshComponent * [motorCount];
@@ -195,6 +196,7 @@ class MULTICOPTERSIM_API Vehicle {
             // Store vehicle pawn and dynamics for later
             _pawn = pawn;
             _dynamics = dynamics;
+            */
         }        
 
         ~Vehicle(void) 

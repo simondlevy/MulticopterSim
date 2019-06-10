@@ -67,7 +67,7 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
         // =================================================================
 
         // StaticMesh component that will be the visuals for our flying pawn 
-        class UStaticMeshComponent* _vehicleMesh;
+        class UStaticMeshComponent* _frameMesh;
 
         // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
         class USoundCue* _propellerAudioCue;
