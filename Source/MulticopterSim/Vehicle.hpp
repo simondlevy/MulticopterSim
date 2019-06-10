@@ -262,11 +262,14 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 // Kinematics from dynamics
                 getKinematics();
 
+                // Camera fun
+                setGimbal();
+
                 // Keepin' it real(istic)!
                 addAnimationEffects();
 
                 // OSD for debugging messages from threaded workers
-                debug("%s", _flightManager->getMessage());
+                //debug("%s", _flightManager->getMessage());
             }
         }
 
@@ -288,9 +291,20 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             }
         }
 
-        void getGimbal(float & roll, float & pitch)
+        void setGimbal(void)
         {
+            // Get gimbal location from flight manager
+            float roll = 0, pitch = 0;
             _flightManager->getGimbal(roll, pitch);
+
+            debug("roll: %+3.3f   pitch: %+3.3f", roll, pitch);
+
+            //FRotator rotation = _gimbalSpringArm->GetComponentRotation();
+
+            //rotation.Roll  += roll;
+            //rotation.Pitch -= pitch;
+
+            //_gimbalSpringArm->SetWorldRotation(rotation);
         }
 
 }; // Vehicle
