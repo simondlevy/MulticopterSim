@@ -218,11 +218,19 @@ class MultirotorDynamics {
          */
         void init(const pose_t & pose, bool airborne=false)
         {
-            // Initialize pose
-            for (uint8_t i=0; i<3; ++i) {
-                _x[STATE_X+i]   = pose.location[i];
-                _x[STATE_PHI+i] = pose.rotation[i];
-            }
+            // Initialize state
+            _x[STATE_X]         = pose.location[0];
+            _x[STATE_X_DOT]     = 0;
+            _x[STATE_Y]         = pose.location[1];
+            _x[STATE_Y_DOT]     = 0;
+            _x[STATE_Z]         = pose.location[2];
+            _x[STATE_Z_DOT]     = 0;
+            _x[STATE_PHI]       = pose.rotation[0];
+            _x[STATE_PHI_DOT]   = 0;
+            _x[STATE_THETA]     = pose.rotation[1];
+            _x[STATE_THETA_DOT] = 0;
+            _x[STATE_PSI]       = pose.rotation[2];
+            _x[STATE_PSI_DOT]   = 0;
 
             // Initialize inertial frame acceleration in NED coordinates
             bodyZToInertial(-g, pose.rotation, _inertialAccel);
