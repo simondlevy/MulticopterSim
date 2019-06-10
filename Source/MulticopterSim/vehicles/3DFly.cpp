@@ -33,7 +33,6 @@ A3DFlyPawn::A3DFlyPawn()
 
 A3DFlyPawn::~A3DFlyPawn()
 {
-    delete _vehicle;
 }
 
 

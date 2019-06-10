@@ -37,7 +37,6 @@ ABigQuadPawn::ABigQuadPawn()
 
 ABigQuadPawn::~ABigQuadPawn()
 {
-    delete _vehicle;
 }
 
 void ABigQuadPawn::PostInitializeComponents()
