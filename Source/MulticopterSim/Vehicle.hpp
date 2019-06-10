@@ -105,7 +105,7 @@ class MULTICOPTERSIM_API Vehicle {
             if (motormean > 0) {
                 static float rotation;
                 for (uint8_t i=0; i<_motorCount; ++i) {
-                    //_propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * _propellerDirections[i] * 100, 0));
+                    _propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * _propellerDirections[i] * 100, 0));
                 }
                 rotation++;
             }
@@ -199,10 +199,9 @@ class MULTICOPTERSIM_API Vehicle {
 
         ~Vehicle(void) 
         {
-            //delete _propellerMeshComponents;
-            //delete _propellerDirections;
-            //delete _dynamics;
-            //delete _motorvals;
+            delete _propellerMeshComponents;
+            delete _propellerDirections;
+            delete _motorvals;
         }
 
         void addMotor( uint8_t index, int8_t direction, const wchar_t * mMeshName, UStaticMesh * mMesh, FVector mLocation,
