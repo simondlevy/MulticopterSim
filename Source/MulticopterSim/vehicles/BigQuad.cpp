@@ -53,33 +53,6 @@ ABigQuadPawn::ABigQuadPawn()
 	_frameMesh->SetStaticMesh(ConstructorStatics._frameMesh.Get());
 	RootComponent = _frameMesh;
     
-    // Accessing camera render targets from map is done statically (at compile time).
-    static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
-        cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
-
-    // Get texture object from each render target
-    _cameraRenderTarget = cameraTextureObject.Object;
-
-    // Set up the FPV camera
-
-    FVector cameraScale(0.1, 0.1, 0.1);
-
-    _gimbalSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("gimbalSpringArm"));
-    _gimbalSpringArm->SetupAttachment(RootComponent);
-    _gimbalSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
-
-    _camera = CreateDefaultSubobject<UCameraComponent>(TEXT("camera"));
-    _camera ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
-    _camera->SetWorldScale3D(cameraScale);
-    _camera->SetFieldOfView(90);
-    _camera->SetAspectRatio(4./3);
-
-    _capture = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("capture"));
-    _capture->SetWorldScale3D(cameraScale);
-    _capture->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
-    _capture->TextureTarget = _cameraRenderTarget;
-    _capture->FOVAngle = 45;
-
     // Turn off UE4 physics
 	_frameMesh->SetSimulatePhysics(false);
 
@@ -107,6 +80,33 @@ ABigQuadPawn::ABigQuadPawn()
 
     // Create dynamics
     _dynamics = new QuadXAPDynamics(&_params);
+    // Accessing camera render targets from map is done statically (at compile time).
+    static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
+        cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
+
+    // Get texture object from each render target
+    _cameraRenderTarget = cameraTextureObject.Object;
+
+    // Set up the FPV camera ===============================================================================
+
+    FVector cameraScale(0.1, 0.1, 0.1);
+
+    _gimbalSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("gimbalSpringArm"));
+    _gimbalSpringArm->SetupAttachment(RootComponent);
+    _gimbalSpringArm->TargetArmLength = 0.f; // The camera follows at this distance behind the character
+
+    _camera = CreateDefaultSubobject<UCameraComponent>(TEXT("camera"));
+    _camera ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
+    _camera->SetWorldScale3D(cameraScale);
+    _camera->SetFieldOfView(90);
+    _camera->SetAspectRatio(4./3);
+
+    _capture = CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("capture"));
+    _capture->SetWorldScale3D(cameraScale);
+    _capture->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
+    _capture->TextureTarget = _cameraRenderTarget;
+    _capture->FOVAngle = 45;
+
 }
 
 ABigQuadPawn::~ABigQuadPawn()
