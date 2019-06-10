@@ -42,6 +42,7 @@ class MultirotorDynamics {
             double b;
             double d;
             double m;
+            double l;
             double Ix;
             double Iy;
             double Iz;
@@ -77,8 +78,6 @@ class MultirotorDynamics {
         };
 
         params_t _p = {0};
-
-        double _l = 0;
 
         double * _motorLocations = NULL;
 
@@ -174,9 +173,6 @@ class MultirotorDynamics {
             _omegas = new double[motorCount];
 
             memset(_x, 0, 12*sizeof(double));
-
-            // Pre-compute lever length for efficiency
-            _l = 0.6;  //sqrt(sqr(motorLocations[0]) + sqr(motorLocations[1]));
         }
 
     public:
@@ -272,11 +268,11 @@ class MultirotorDynamics {
                     /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ netz,
                     /* phi'    */ phidot,
-                    /* phi''   */ psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _l/_p.Ix*_U2,
+                    /* phi''   */ psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _p.l/_p.Ix*_U2,
                     /* theta'  */ thedot,
-                    /* theta'' */ -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _l/_p.Iy*_U3), 
+                    /* theta'' */ -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _p.l/_p.Iy*_U3), 
                     /* psi'    */ psidot,
-                    /* psi''   */ thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _l/_p.Iz*_U4,
+                    /* psi''   */ thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _p.l/_p.Iz*_U4,
                 };
 
                 // Compute state as first temporal integral of first temporal derivative

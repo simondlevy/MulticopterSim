@@ -53,6 +53,7 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
             5.30216718361085E-05,   // b
             2.23656692806239E-06,   // d
             16.47,                  // m
+            0.6,                    // l
             2,                      // Ix
             2,                      // Iy
             3,                      // Iz
