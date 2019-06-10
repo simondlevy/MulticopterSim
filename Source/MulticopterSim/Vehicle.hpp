@@ -178,11 +178,13 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         void startThreadedWorkers(void)
         {
             _flightManager = FFlightManager::create(this, _startLocation, _startRotation);
+            videoManagerStart();
         }        
 
         void stopThreadedWorkers(void)
         {
             _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
+            videoManagerStop();
         }
 
     protected:
@@ -204,9 +206,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             _propellerDirections[index] = direction;
         }
 
-
     public:
 
+        // Frame constants
         typedef struct {
 
             float cx;   // center X
@@ -336,6 +338,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
                 // Move gimbal
                 setGimbal();
+
+                // Grab image
+                videoManagerGrabImage();
 
                 // OSD for debugging messages from threaded workers
                 //debug("%s", _flightManager->getMessage());
