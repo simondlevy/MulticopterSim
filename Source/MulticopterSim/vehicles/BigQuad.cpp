@@ -35,7 +35,24 @@ DECLARE_STATIC_MESH(FProp4WStatics, "BigQuad/PropCW.PropCW",   Prop4Statics)
 // Constructor
 ABigQuadPawn::ABigQuadPawn()
 {
-    // Set up the FPV camera ===============================================================================
+	// The Vehicle object will handle most of the work for the pawn
+	_vehicle = new Vehicle(this, FrameStatics.mesh.Get(), new QuadXAPDynamics(&_params), 4);
+
+    // Build the motor and propeller meshes specific to this vehicle
+
+    float cx = -58.5, cy = +13, w = 35, h = 35, mo = +1, mz = 45, pz = 45;
+
+    _vehicle->addMotor(0, -1, TEXT("Motor1Mesh"), MotorStatics.mesh.Get(), FVector(cx+w, cy+h+mo, mz), 
+            TEXT("Prop1Mesh"), Prop1Statics.mesh.Get(), FVector(cx+w, cy+h, pz)); 
+
+    _vehicle->addMotor(1, -1, TEXT("Motor2Mesh"), MotorStatics.mesh.Get(), FVector(cx-w, cy-h+mo, mz), 
+            TEXT("Prop2Mesh"), Prop2Statics.mesh.Get(), FVector(cx-w, cy-h, pz)); 
+
+    _vehicle->addMotor(2, +1, TEXT("Motor3Mesh"), MotorStatics.mesh.Get(), FVector(cx+w, cy-h+mo, mz),
+            TEXT("Prop3Mesh"), Prop3Statics.mesh.Get(), FVector(cx+w, cy-h, pz)); 
+
+    _vehicle->addMotor(3, +1, TEXT("Motor4Mesh"), MotorStatics.mesh.Get(), FVector(cx-w, cy+h+mo, mz),
+            TEXT("Prop4Mesh"), Prop4Statics.mesh.Get(), FVector(cx-w, cy+h, pz)); 
 
     // Accessing camera render targets from map is done statically (at compile time).
     static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
@@ -61,9 +78,6 @@ ABigQuadPawn::ABigQuadPawn()
     _capture->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
     _capture->TextureTarget = _cameraRenderTarget;
     _capture->FOVAngle = 45;
-
-	// The Vehicle object will handle most of the work for the pawn
-	_vehicle = new Vehicle(this, FrameStatics.mesh.Get(), new QuadXAPDynamics(&_params), 4);
 
 }
 
