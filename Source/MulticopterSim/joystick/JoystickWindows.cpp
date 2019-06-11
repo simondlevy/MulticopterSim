@@ -6,6 +6,8 @@
  * MIT License
  */
 
+#ifdef _WIN32
+
 #include "Joystick.h"
 
 #define WIN32_LEAN_AND_MEAN
@@ -193,3 +195,5 @@ void Joystick::rescaleAxis(float & value, float minval, float maxval)
         value = 32767 *((value - 32767) / (maxval - 32767)  + 1);
     }
 }
+
+#endif

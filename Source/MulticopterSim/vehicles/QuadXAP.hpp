@@ -57,17 +57,17 @@ class QuadXAP : public Vehicle {
 
             : Vehicle(pawn, frameMesh, params, 4)
         {
-            addMotor(0, -1, TEXT("Motor1Mesh"), motorMesh, FVector(f->cx+f->wd, f->cy+f->ln+f->mo, f->mz), 
-                    TEXT("Prop1Mesh"), prop1Mesh, FVector(f->cx+f->wd, f->cy+f->ln, f->pz)); 
+            addMotor(0, -1, "Motor1Mesh", motorMesh, FVector(f->cx+f->wd, f->cy+f->ln+f->mo, f->mz), 
+                    "Prop1Mesh", prop1Mesh, FVector(f->cx+f->wd, f->cy+f->ln, f->pz)); 
 
-            addMotor(1, -1, TEXT("Motor2Mesh"), motorMesh, FVector(f->cx-f->wd, f->cy-f->ln+f->mo, f->mz), 
-                    TEXT("Prop2Mesh"), prop2Mesh, FVector(f->cx-f->wd, f->cy-f->ln, f->pz)); 
+            addMotor(1, -1, "Motor2Mesh", motorMesh, FVector(f->cx-f->wd, f->cy-f->ln+f->mo, f->mz), 
+                    "Prop2Mesh", prop2Mesh, FVector(f->cx-f->wd, f->cy-f->ln, f->pz)); 
 
-            addMotor(2, +1, TEXT("Motor3Mesh"), motorMesh, FVector(f->cx+f->wd, f->cy-f->ln+f->mo, f->mz),
-                    TEXT("Prop3Mesh"), prop3Mesh, FVector(f->cx+f->wd, f->cy-f->ln, f->pz)); 
+            addMotor(2, +1, "Motor3Mesh", motorMesh, FVector(f->cx+f->wd, f->cy-f->ln+f->mo, f->mz),
+                    "Prop3Mesh", prop3Mesh, FVector(f->cx+f->wd, f->cy-f->ln, f->pz)); 
 
-            addMotor(3, +1, TEXT("Motor4Mesh"), motorMesh, FVector(f->cx-f->wd, f->cy+f->ln+f->mo, f->mz),
-                    TEXT("Prop4Mesh"), prop4Mesh, FVector(f->cx-f->wd, f->cy+f->ln, f->pz)); 
+            addMotor(3, +1, "Motor4Mesh", motorMesh, FVector(f->cx-f->wd, f->cy+f->ln+f->mo, f->mz),
+                    "Prop4Mesh", prop4Mesh, FVector(f->cx-f->wd, f->cy+f->ln, f->pz)); 
         }
 
 }; // class QuadXAP

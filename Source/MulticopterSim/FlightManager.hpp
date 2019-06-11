@@ -24,7 +24,7 @@ class FFlightManager : public FThreadedWorker {
         double _startTime = 0;
 
         // Kinematics
-        MultirotorDynamics::pose_t _pose = {0};
+        MultirotorDynamics::pose_t _pose;
 
         // Current motor values from PID controller
         double * _motorvals = NULL; 
@@ -124,7 +124,7 @@ class FFlightManager : public FThreadedWorker {
 
                 // Get vehicle state from dynamics.  We keep pose (location, rotation) in memory for use  in
                 // getKinematics() method
-                MultirotorDynamics::state_t state = {0};
+                MultirotorDynamics::state_t state;
                 _crashed = _dynamics->getState(state);
 
                 // PID controller: update the flight manager (e.g., HackflightManager) with

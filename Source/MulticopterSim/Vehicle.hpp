@@ -41,7 +41,7 @@
 
 // A macro for simplifying the declaration of static meshes
 #define DECLARE_STATIC_MESH(structname, assetstr, objname)   \
-    static struct structname {                                             \
+    struct structname {                                             \
         ConstructorHelpers::FObjectFinderOptional<UStaticMesh> mesh;   \
         structname() : mesh(TEXT("/Game/Flying/Meshes/" assetstr)) { } \
     };                                                                     \
@@ -186,15 +186,15 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
     protected:
 
-        void addMotor( uint8_t index, int8_t direction, const wchar_t * mMeshName, UStaticMesh * mMesh, FVector mLocation,
-                const wchar_t * pMeshName, UStaticMesh * pMesh, FVector pLocation)
+        void addMotor( uint8_t index, int8_t direction, const char * mMeshName, UStaticMesh * mMesh, FVector mLocation,
+                const char * pMeshName, UStaticMesh * pMesh, FVector pLocation)
         {
-            UStaticMeshComponent * mMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(mMeshName);
+            UStaticMeshComponent * mMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(mMeshName));
             mMeshComponent->SetStaticMesh(mMesh);
             mMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName); 	
             mMeshComponent->AddRelativeLocation(mLocation*100); // m => cm
 
-            UStaticMeshComponent * pMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(pMeshName);
+            UStaticMeshComponent * pMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(pMeshName));
             pMeshComponent->SetStaticMesh(pMesh);
             pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
             pMeshComponent->AddRelativeLocation(pLocation*100); // m => cm
