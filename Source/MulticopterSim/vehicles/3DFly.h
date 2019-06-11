@@ -26,10 +26,10 @@ class MULTICOPTERSIM_API A3DFlyPawn : public APawn {
             5.30E-07,               // b
             2.24E-06,               // d
             0.110,                  // m
-            0.6,                    // l
-            2,                      // Ix
-            2,                      // Iy
-            3,                      // Iz
+            0.050,                  // l
+            0.02,                      // Ix
+            0.02,                      // Iy
+            0.03,                      // Iz
             3.08E-04,               // Jr
             
             15000                  // maxrpm
