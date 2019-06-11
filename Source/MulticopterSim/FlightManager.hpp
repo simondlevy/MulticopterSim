@@ -149,8 +149,6 @@ class FFlightManager : public FThreadedWorker {
 
         ~FFlightManager(void)
         {
-            delete _dynamics;
-            delete _motorvals;
         }
 
         // Called by VehiclePawn::Tick() method to get current display pose

@@ -21,18 +21,18 @@ class MULTICOPTERSIM_API A3DFlyPawn : public APawn {
 
         static constexpr MultirotorDynamics::params_t _params = {
 
-            // Amir's calculations
-            5.30216718361085E-05,   // b
-            2.23656692806239E-06,   // d
-            16.47,                  // m
+            // Estimated
+
+            5.30E-07,               // b
+            2.24E-06,               // d
+            0.110,                  // m
             0.6,                    // l
             2,                      // Ix
             2,                      // Iy
             3,                      // Iz
-            3.08013E-04,            // Jr
-
-            // maxrpm, estimated
-            15000                  
+            3.08E-04,               // Jr
+            
+            15000                  // maxrpm
         }; 
 
         static constexpr Vehicle::frame_t _frame = {
