@@ -21,7 +21,7 @@ A3DFlyPawn::A3DFlyPawn()
     // The Vehicle object will handle most of the work for the pawn
     _vehicle = new QuadXAP(
             this, 
-            &_frame,
+            _layout,
             _params,
             FrameStatics.mesh.Get(), 
             MotorStatics.mesh.Get(), 

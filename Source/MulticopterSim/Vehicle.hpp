@@ -216,7 +216,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             float mz;   // motor Z
             float pz;   // propeller Z
 
-        } frame_t;
+        } layout_t;
 
         // Constructor
         Vehicle(APawn * pawn, UStaticMesh * frameMesh, const params_t & params, uint8_t motorCount)
