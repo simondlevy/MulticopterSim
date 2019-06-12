@@ -12,6 +12,10 @@
 
 class QuadXAP : public Vehicle {
 
+    private:
+
+        const int8_t directions[4] = {+1, +1, +1, +1};
+
     protected:
 
         // MultirotorDynamics method overrides
@@ -37,36 +41,41 @@ class QuadXAP : public Vehicle {
         // motor direction for animation
         virtual int8_t motorDirection(uint8_t i) override
         {
-            const int8_t dir[4] = {+1, -1, -1, +1};
+            const int8_t dir[4] = {-1, -1, +1, +1};
             return dir[i];
         }
 
 
     public:	
 
-        QuadXAP(
+        QuadXAP(APawn * pawn, UStaticMeshComponent * propellerMeshComponents[4], const params_t & params)
+            : Vehicle(pawn, propellerMeshComponents, params, 4) 
+        {
+        }
+
+        static void build(
                 APawn * pawn, 
                 const layout_t & l,
-                const params_t & params, 
                 UStaticMesh * frameMesh, 
                 UStaticMesh * motorMesh,
+                UStaticMeshComponent * propellerMeshComponents[4],
                 UStaticMesh * prop1Mesh,
                 UStaticMesh * prop2Mesh,
                 UStaticMesh * prop3Mesh,
                 UStaticMesh * prop4Mesh)
-
-            : Vehicle(pawn, frameMesh, params, 4)
         {
-            addMotor(pawn, 0, -1, "Motor1Mesh", motorMesh, FVector(l.cx+l.wd, l.cy+l.ln+l.mo, l.mz), 
+            UStaticMeshComponent * frameMeshComponent = Vehicle::build(pawn, frameMesh);
+
+            propellerMeshComponents[0] = addMotor(pawn, frameMeshComponent, "Motor1Mesh", motorMesh, FVector(l.cx+l.wd, l.cy+l.ln+l.mo, l.mz), 
                     "Prop1Mesh", prop1Mesh, FVector(l.cx+l.wd, l.cy+l.ln, l.pz)); 
 
-            addMotor(pawn, 1, -1, "Motor2Mesh", motorMesh, FVector(l.cx-l.wd, l.cy-l.ln+l.mo, l.mz), 
+            propellerMeshComponents[1] = addMotor(pawn, frameMeshComponent, "Motor2Mesh", motorMesh, FVector(l.cx-l.wd, l.cy-l.ln+l.mo, l.mz), 
                     "Prop2Mesh", prop2Mesh, FVector(l.cx-l.wd, l.cy-l.ln, l.pz)); 
 
-            addMotor(pawn, 2, +1, "Motor3Mesh", motorMesh, FVector(l.cx+l.wd, l.cy-l.ln+l.mo, l.mz),
+            propellerMeshComponents[2] = addMotor(pawn, frameMeshComponent, "Motor3Mesh", motorMesh, FVector(l.cx+l.wd, l.cy-l.ln+l.mo, l.mz),
                     "Prop3Mesh", prop3Mesh, FVector(l.cx+l.wd, l.cy-l.ln, l.pz)); 
 
-            addMotor(pawn, 3, +1, "Motor4Mesh", motorMesh, FVector(l.cx-l.wd, l.cy+l.ln+l.mo, l.mz),
+            propellerMeshComponents[3] = addMotor(pawn, frameMeshComponent, "Motor4Mesh", motorMesh, FVector(l.cx-l.wd, l.cy+l.ln+l.mo, l.mz),
                     "Prop4Mesh", prop4Mesh, FVector(l.cx-l.wd, l.cy+l.ln, l.pz)); 
         }
 

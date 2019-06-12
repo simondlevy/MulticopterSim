@@ -53,14 +53,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         uint8_t _motorCount = 0;
 
-        // Static mesh component for the vehicle frame
-        class UStaticMeshComponent* _frameMeshComponent = NULL;
-
         // Static mesh components for the propellers
         class UStaticMeshComponent ** _propellerMeshComponents = NULL;
-
-        // Spin directions for animating propellers
-        int8_t * _propellerDirections = NULL;
 
         // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
         class USoundCue* _propellerAudioCue;
@@ -133,7 +127,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             _pawn->SetActorRotation(rotation);
         }
 
-
         // Animation effects (sound, spinning props)
 
         void addAnimationEffects(void)
@@ -149,7 +142,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             if (motormean > 0) {
                 static float rotation;
                 for (uint8_t i=0; i<_motorCount; ++i) {
-                    _propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * _propellerDirections[i] * 100, 0));
+                    _propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirection(i) * 100, 0));
                 }
                 rotation++;
             }
@@ -186,21 +179,39 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
     protected:
 
-        void addMotor(APawn * pawn, uint8_t index, int8_t direction, const char * mMeshName, UStaticMesh * mMesh, FVector mLocation,
-                const char * pMeshName, UStaticMesh * pMesh, FVector pLocation)
+        static UStaticMeshComponent *  build(APawn * pawn, UStaticMesh * frameMesh)
+        {
+            UStaticMeshComponent * frameMeshComponent = pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
+            frameMeshComponent->SetStaticMesh(frameMesh);
+            pawn->SetRootComponent(frameMeshComponent);
+
+            // Turn off UE4 physics
+            frameMeshComponent->SetSimulatePhysics(false);
+
+            return frameMeshComponent;
+        }
+
+        static UStaticMeshComponent * addMotor(
+                APawn * pawn, 
+                UStaticMeshComponent * frameMeshComponent,
+                const char * mMeshName, 
+                UStaticMesh * mMesh, 
+                FVector mLocation,
+                const char * pMeshName, 
+                UStaticMesh * pMesh, 
+                FVector pLocation)
         {
             UStaticMeshComponent * mMeshComponent = pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(mMeshName));
             mMeshComponent->SetStaticMesh(mMesh);
-            mMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName); 	
+            mMeshComponent->SetupAttachment(frameMeshComponent, USpringArmComponent::SocketName); 	
             mMeshComponent->AddRelativeLocation(mLocation*100); // m => cm
 
             UStaticMeshComponent * pMeshComponent = pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(pMeshName));
             pMeshComponent->SetStaticMesh(pMesh);
-            pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
+            pMeshComponent->SetupAttachment(frameMeshComponent, USpringArmComponent::SocketName);
             pMeshComponent->AddRelativeLocation(pLocation*100); // m => cm
 
-            _propellerMeshComponents[index] = pMeshComponent;
-            _propellerDirections[index] = direction;
+            return pMeshComponent;
         }
 
     public:
@@ -219,21 +230,15 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         } layout_t;
 
         // Constructor
-        Vehicle(APawn * pawn, UStaticMesh * frameMesh, const params_t & params, uint8_t motorCount)
+        Vehicle(APawn * pawn, UStaticMeshComponent ** propellerMeshComponents, const params_t & params, uint8_t motorCount)
             : MultirotorDynamics(params, motorCount)
         {
 			_motorCount = motorCount;
 
             _propellerMeshComponents = new UStaticMeshComponent * [motorCount];
-
-            _propellerDirections = new int8_t [motorCount];
-
-            _frameMeshComponent = pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
-            _frameMeshComponent->SetStaticMesh(frameMesh);
-            pawn->SetRootComponent(_frameMeshComponent);
-
-            // Turn off UE4 physics
-            _frameMeshComponent->SetSimulatePhysics(false);
+            for (uint8_t i=0; i<motorCount; ++i) {
+                _propellerMeshComponents[i] = propellerMeshComponents[i];
+            }
 
             // Load our Sound Cue for the propeller sound we created in the editor... 
             // note your path may be different depending
@@ -258,7 +263,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
             // Store vehicle pawn and dynamics for later
             _pawn = pawn;
-
 
             // Accessing camera render targets from map is done statically (at compile time).
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
@@ -289,7 +293,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         ~Vehicle(void) 
         {
             delete _propellerMeshComponents;
-            delete _propellerDirections;
             delete _motorvals;
         }
 

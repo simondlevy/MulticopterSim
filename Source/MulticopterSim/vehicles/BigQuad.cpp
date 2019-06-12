@@ -23,16 +23,12 @@ DECLARE_STATIC_MESH(FProp4WStatics, "BigQuad/PropCW.PropCW",   Prop4Statics)
 // Constructor
 ABigQuadPawn::ABigQuadPawn()
 {
-    _vehicle = new QuadXAP(
-            this, 
-            _layout, 
-            _params, 
-            FrameStatics.mesh.Get(),  
-            MotorStatics.mesh.Get(), 
-            Prop1Statics.mesh.Get(), 
-            Prop2Statics.mesh.Get(), 
-            Prop3Statics.mesh.Get(), 
-            Prop4Statics.mesh.Get());
+    UStaticMeshComponent * propellerMeshComponents[4];
+
+    QuadXAP::build(this, _layout, FrameStatics.mesh.Get(),  MotorStatics.mesh.Get(), propellerMeshComponents,
+            Prop1Statics.mesh.Get(), Prop2Statics.mesh.Get(), Prop3Statics.mesh.Get(), Prop4Statics.mesh.Get()); 
+
+    _vehicle = new QuadXAP(this, propellerMeshComponents, _params);
 }
 
 ABigQuadPawn::~ABigQuadPawn()
