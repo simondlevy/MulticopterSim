@@ -78,7 +78,7 @@ class MultirotorDynamics {
             STATE_PSI_DOT
         };
 
-        params_t _p = {0};
+        params_t _p;
 
         uint8_t _motorCount = 0;
 
@@ -156,15 +156,26 @@ class MultirotorDynamics {
          /**
          *  Constructor
          */
-        MultirotorDynamics(const params_t * params, const uint8_t motorCount)
+        MultirotorDynamics(const params_t & params, const uint8_t motorCount)
         {
-            memcpy(&_p, params, sizeof(params_t));
-
             _motorCount = motorCount;
 
             _omegas = new double[motorCount];
 
-            memset(_x, 0, 12*sizeof(double));
+            _p.b = params.b;
+            _p.d = params.d;
+            _p.m = params.m;
+            _p.l = params.l;
+            _p.Ix = params.Ix;
+            _p.Iy = params.Iy;
+            _p.Iz = params.Iz;
+            _p.Jr = params.Jr;
+
+            _p.maxrpm = params.maxrpm;
+
+            for (uint8_t i=0; i<12; ++i) {
+                _x[i] = 0;
+            }
         }
 
     public:

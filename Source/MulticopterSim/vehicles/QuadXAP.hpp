@@ -47,7 +47,7 @@ class QuadXAP : public Vehicle {
         QuadXAP(
                 APawn * pawn, 
                 const frame_t * f,
-                const params_t * params, 
+                const params_t & params, 
                 UStaticMesh * frameMesh, 
                 UStaticMesh * motorMesh,
                 UStaticMesh * prop1Mesh,

@@ -26,7 +26,7 @@ ABigQuadPawn::ABigQuadPawn()
     _vehicle = new QuadXAP(
             this, 
             &_frame, 
-            &_params, 
+            _params, 
             FrameStatics.mesh.Get(),  
             MotorStatics.mesh.Get(), 
             Prop1Statics.mesh.Get(), 

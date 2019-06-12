@@ -219,7 +219,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         } frame_t;
 
         // Constructor
-        Vehicle(APawn * pawn, UStaticMesh * frameMesh, const params_t * params, uint8_t motorCount)
+        Vehicle(APawn * pawn, UStaticMesh * frameMesh, const params_t & params, uint8_t motorCount)
             : MultirotorDynamics(params, motorCount)
         {
 			_motorCount = motorCount;
