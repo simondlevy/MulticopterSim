@@ -58,7 +58,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
         class USoundCue* _propellerAudioCue;
-        class USoundCue* _propellerStartupCue;
         class UAudioComponent* _propellerAudioComponent;
 
         // Threaded workers for running flight control, video
