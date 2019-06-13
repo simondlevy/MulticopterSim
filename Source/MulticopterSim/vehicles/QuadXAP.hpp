@@ -53,15 +53,22 @@ class QuadXAP : public Vehicle {
         {
         }
 
-        static void build(objects_t & objects, const layout_t & l,
+        static void addMotor(objects_t & objects, uint8_t index, int8_t dx, int8_t dy, const layout_t & l, UStaticMesh * propMesh)
+        {
+            float cx = l.cx + dx * l.wd;
+            float cy = l.cy + dy * l.ln;
+            Vehicle::addMotor(objects, index, FVector(cx, cy+l.mo, l.mz), propMesh, FVector(cx, cy, l.pz)); 
+        }
+
+        static void build(objects_t & objects, const layout_t & layout,
                 UStaticMesh * prop1Mesh, UStaticMesh * prop2Mesh, UStaticMesh * prop3Mesh, UStaticMesh * prop4Mesh)
         {
             Vehicle::build(objects);
 
-            addMotor(objects, 0, FVector(l.cx+l.wd, l.cy+l.ln+l.mo, l.mz), prop1Mesh, FVector(l.cx+l.wd, l.cy+l.ln, l.pz)); 
-            addMotor(objects, 1, FVector(l.cx-l.wd, l.cy-l.ln+l.mo, l.mz), prop2Mesh, FVector(l.cx-l.wd, l.cy-l.ln, l.pz)); 
-            addMotor(objects, 2, FVector(l.cx+l.wd, l.cy-l.ln+l.mo, l.mz), prop3Mesh, FVector(l.cx+l.wd, l.cy-l.ln, l.pz)); 
-            addMotor(objects, 3, FVector(l.cx-l.wd, l.cy+l.ln+l.mo, l.mz), prop4Mesh, FVector(l.cx-l.wd, l.cy+l.ln, l.pz)); 
+            QuadXAP::addMotor(objects, 0, +1, +1, layout, prop1Mesh);
+            QuadXAP::addMotor(objects, 1, -1, -1, layout, prop2Mesh);
+            QuadXAP::addMotor(objects, 2, +1, -1, layout, prop3Mesh);
+            QuadXAP::addMotor(objects, 3, -1, +1, layout, prop4Mesh);
         }
 
 }; // class QuadXAP
