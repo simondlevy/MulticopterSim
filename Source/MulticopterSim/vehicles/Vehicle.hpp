@@ -70,7 +70,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void videoManagerStart(void)
         {
-            _videoManager = FVideoManager::create(_renderTarget);
+            _videoManager = FVideoManager::create(_objects.renderTarget);
         }
 
         void videoManagerStop(void)
@@ -211,10 +211,10 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             _objects.frameMeshComponent = objects.frameMeshComponent;
             _objects.soundCue           = objects.soundCue;
             _objects.audioComponent     = objects.audioComponent;
-            _objects.springArm    = objects.springArm;
+            _objects.springArm          = objects.springArm;
             _objects.camera             = objects.camera;
             _objects.capture            = objects.capture;
-            _objects.renderTarget = objects.renderTarget;
+            _objects.renderTarget       = objects.renderTarget;
 
             for (uint8_t i=0; i<motorCount; ++i) {
                 _objects.propellerMeshComponents[i] = objects.propellerMeshComponents[i]; 
