@@ -51,14 +51,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
     private:
 
+        static const uint8_t MAX_MOTORS = 100; // silly but simple
+
         uint8_t _motorCount = 0;
-
-        // Static mesh components for the propellers
-        class UStaticMeshComponent ** _propellerMeshComponents = NULL;
-
-        // Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
-        class USoundCue* _propellerAudioCue;
-        class UAudioComponent* _propellerAudioComponent;
 
         // Threaded workers for running flight control, video
         class FFlightManager * _flightManager = NULL;
@@ -67,15 +62,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         bool _mapSelected = false;
 
         // Motor values for animation/sound
-        float * _motorvals = NULL;
-
-        // Support for camera gimbal
-        class USpringArmComponent* _gimbalSpringArm;
-        class UCameraComponent* _camera;
-        class USceneCaptureComponent2D * _capture;
-
-        // Render targets, passed to consgtructor for threaded video worker when Start button is pressed
-        UTextureRenderTarget2D * _cameraRenderTarget;
+        float  _motorvals[MAX_MOTORS] = {0};
 
 #ifdef _USE_OPENCV
         // Threaded worker for managing video from camera
@@ -83,7 +70,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void videoManagerStart(void)
         {
-            _videoManager = FVideoManager::create(_cameraRenderTarget);
+            _videoManager = FVideoManager::create(_renderTarget);
         }
 
         void videoManagerStop(void)
@@ -122,8 +109,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             //debug("sx: %+3.3f sy: %+3.3f  | x: %+3.3f y: %+3.3f | crashed: %d", 
             //        _startLocation.X, _startLocation.Y, location.X, location.Y, crashed);
 
-            _pawn->SetActorLocation(location);
-            _pawn->SetActorRotation(rotation);
+            _objects.pawn->SetActorLocation(location);
+            _objects.pawn->SetActorRotation(rotation);
         }
 
         // Animation effects (sound, spinning props)
@@ -141,7 +128,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             if (motormean > 0) {
                 static float rotation;
                 for (uint8_t i=0; i<_motorCount; ++i) {
-                    _propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirection(i) * 100, 0));
+                    _objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirection(i) * 100, 0));
                 }
                 rotation++;
             }
@@ -152,16 +139,13 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void setAudioPitchAndVolume(float value)
         {
-            _propellerAudioComponent->SetFloatParameter(FName("pitch"), value);
-            _propellerAudioComponent->SetFloatParameter(FName("volume"), value);
+            _objects.audioComponent->SetFloatParameter(FName("pitch"), value);
+            _objects.audioComponent->SetFloatParameter(FName("volume"), value);
         }
 
         // Starting pose for reset on crash
         FVector _startLocation;
         FRotator _startRotation;
-
-        // Pawn
-        APawn * _pawn = NULL;
 
         // Flight management thread
         void startThreadedWorkers(void)
@@ -176,41 +160,11 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             videoManagerStop();
         }
 
-    protected:
-
-        static UStaticMeshComponent *  build(APawn * pawn, UStaticMesh * frameMesh)
+        static const FName makeName(const char * prefix, const uint8_t index)
         {
-            UStaticMeshComponent * frameMeshComponent = pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
-            frameMeshComponent->SetStaticMesh(frameMesh);
-            pawn->SetRootComponent(frameMeshComponent);
-
-            // Turn off UE4 physics
-            frameMeshComponent->SetSimulatePhysics(false);
-
-            return frameMeshComponent;
-        }
-
-        static UStaticMeshComponent * addMotor(
-                APawn * pawn, 
-                UStaticMeshComponent * frameMeshComponent,
-                const char * mMeshName, 
-                UStaticMesh * mMesh, 
-                FVector mLocation,
-                const char * pMeshName, 
-                UStaticMesh * pMesh, 
-                FVector pLocation)
-        {
-            UStaticMeshComponent * mMeshComponent = pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(mMeshName));
-            mMeshComponent->SetStaticMesh(mMesh);
-            mMeshComponent->SetupAttachment(frameMeshComponent, USpringArmComponent::SocketName); 	
-            mMeshComponent->AddRelativeLocation(mLocation*100); // m => cm
-
-            UStaticMeshComponent * pMeshComponent = pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(pMeshName));
-            pMeshComponent->SetStaticMesh(pMesh);
-            pMeshComponent->SetupAttachment(frameMeshComponent, USpringArmComponent::SocketName);
-            pMeshComponent->AddRelativeLocation(pLocation*100); // m => cm
-
-            return pMeshComponent;
+            char name[100];
+            sprintf(name, "%s%dMesh", prefix, index+1);
+            return FName(name);
         }
 
     public:
@@ -228,77 +182,53 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         } layout_t;
 
+        // UE4 objects that must be built statically
+        typedef struct {
+
+            APawn                    * pawn;
+            UStaticMesh              * frameMesh;
+            UStaticMesh              * motorMesh;
+            UStaticMeshComponent     * frameMeshComponent;
+            UStaticMeshComponent     * propellerMeshComponents[MAX_MOTORS];
+            USoundCue                * soundCue;
+            UAudioComponent          * audioComponent;
+            USpringArmComponent      * springArm;
+            UCameraComponent         * camera;
+            USceneCaptureComponent2D * capture;
+            UTextureRenderTarget2D   * renderTarget;
+
+        } objects_t;
+
         // Constructor
-        Vehicle(APawn * pawn, UStaticMeshComponent ** propellerMeshComponents, const params_t & params, uint8_t motorCount)
+        Vehicle(const objects_t & objects, const params_t & params, uint8_t motorCount)
             : MultirotorDynamics(params, motorCount)
         {
-			_motorCount = motorCount;
+            _motorCount = motorCount;
 
-            _propellerMeshComponents = new UStaticMeshComponent * [motorCount];
+            _objects.pawn               = objects.pawn;
+            _objects.frameMesh          = objects.frameMesh;
+            _objects.motorMesh          = objects.motorMesh;
+            _objects.frameMeshComponent = objects.frameMeshComponent;
+            _objects.soundCue           = objects.soundCue;
+            _objects.audioComponent     = objects.audioComponent;
+            _objects.springArm    = objects.springArm;
+            _objects.camera             = objects.camera;
+            _objects.capture            = objects.capture;
+            _objects.renderTarget = objects.renderTarget;
+
             for (uint8_t i=0; i<motorCount; ++i) {
-                _propellerMeshComponents[i] = propellerMeshComponents[i];
+                _objects.propellerMeshComponents[i] = objects.propellerMeshComponents[i]; 
             }
-
-            // Load our Sound Cue for the propeller sound we created in the editor... 
-            // note your path may be different depending
-            // on where you store the asset on disk.
-            static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/Flying/Audio/MotorSoundCue'"));
-
-            // Store a reference to the Cue asset - we'll need it later.
-            _propellerAudioCue = propellerCue.Object;
-
-            // Create an audio component, the audio component wraps the Cue, 
-            // and allows us to ineract with it, and its parameters from code.
-            _propellerAudioComponent = pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
-
-            // Stop the sound from sound playing the moment it's created.
-            _propellerAudioComponent->bAutoActivate = false;
-
-            // Attach the sound to the pawn's root, the sound follows the pawn around
-            _propellerAudioComponent->SetupAttachment(pawn->GetRootComponent());
-
-            // Allocate space for motor values used in animation/sound
-            _motorvals = new float[motorCount];
-
-            // Store vehicle pawn and dynamics for later
-            _pawn = pawn;
-
-            // Accessing camera render targets from map is done statically (at compile time).
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
-                cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
-
-            // Get texture object from each render target
-            _cameraRenderTarget = cameraTextureObject.Object;
-
-            FVector cameraScale(0.1, 0.1, 0.1);
-
-            _gimbalSpringArm = pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("gimbalSpringArm"));
-            _gimbalSpringArm->SetupAttachment(pawn->GetRootComponent());
-            _gimbalSpringArm->TargetArmLength = 0.f; 
-
-            _camera = pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("camera"));
-            _camera ->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName); 	
-            _camera->SetWorldScale3D(cameraScale);
-            _camera->SetFieldOfView(90);
-            _camera->SetAspectRatio(4./3);
-
-            _capture = pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("capture"));
-            _capture->SetWorldScale3D(cameraScale);
-            _capture->SetupAttachment(_gimbalSpringArm, USpringArmComponent::SocketName);
-            _capture->TextureTarget = _cameraRenderTarget;
-            _capture->FOVAngle = 45;
         }        
 
         ~Vehicle(void) 
         {
-            delete _propellerMeshComponents;
-            delete _motorvals;
         }
 
         void BeginPlay()
         {
             // Make sure a map has been selected
-            FString mapName = _pawn->GetWorld()->GetMapName();
+            FString mapName = _objects.pawn->GetWorld()->GetMapName();
             _mapSelected = !mapName.Contains("Untitled");
 
             if (_mapSelected) {
@@ -306,11 +236,11 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 // Start the audio for the propellers Note that because the
                 // Cue Asset is set to loop the sound, once we start playing the sound, it
                 // will play continiously...
-                _propellerAudioComponent->Play();
+                _objects.audioComponent->Play();
 
                 // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
-                _startLocation = _pawn->GetActorLocation();
-                _startRotation = _pawn->GetActorRotation(); 
+                _startLocation = _objects.pawn->GetActorLocation();
+                _startRotation = _objects.pawn->GetActorRotation(); 
 
                 // Initialize threaded workers
                 startThreadedWorkers();
@@ -349,10 +279,10 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         void PostInitializeComponents()
         {
             // Add "Vehicle" tag for use by level blueprint
-            _pawn->Tags.Add(FName("Vehicle"));
+            _objects.pawn->Tags.Add(FName("Vehicle"));
 
-            if (_propellerAudioCue->IsValidLowLevelFast()) {
-                _propellerAudioComponent->SetSound(_propellerAudioCue);
+            if (_objects.soundCue->IsValidLowLevelFast()) {
+                _objects.audioComponent->SetSound(_objects.soundCue);
             }
         }
 
@@ -370,15 +300,93 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             float roll = 0, pitch = 0, fov = 0;
             _flightManager->getGimbal(roll, pitch, fov);
 
-            FRotator rotation = _gimbalSpringArm->GetComponentRotation();
+            FRotator rotation = _objects.springArm->GetComponentRotation();
 
             rotation.Roll  += roll;
             rotation.Pitch -= pitch;
 
-            _gimbalSpringArm->SetWorldRotation(rotation);
+            _objects.springArm->SetWorldRotation(rotation);
 
-            _camera->FieldOfView = fov;
-            _capture->FOVAngle = fov - 45;
+            _objects.camera->FieldOfView = fov;
+            _objects.capture->FOVAngle = fov - 45;
         }
+
+    protected:
+
+        static void build(objects_t & objects)
+        {
+            objects.frameMeshComponent = objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
+            objects.frameMeshComponent->SetStaticMesh(objects.frameMesh);
+            objects.pawn->SetRootComponent(objects.frameMeshComponent);
+
+            // Turn off UE4 physics
+            objects.frameMeshComponent->SetSimulatePhysics(false);
+
+            // Get sound cue from Contents
+            static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("'/Game/Flying/Audio/MotorSoundCue'"));
+
+            // Store a reference to the Cue asset - we'll need it later.
+            objects.soundCue = soundCue.Object;
+
+            // Create an audio component, the audio component wraps the Cue, 
+            // and allows us to ineract with it, and its parameters from code.
+            objects.audioComponent = objects.pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
+
+            // Stop the sound from sound playing the moment it's created.
+            objects.audioComponent->bAutoActivate = false;
+
+            // Attach the sound to the pawn's root, the sound follows the pawn around
+            objects.audioComponent->SetupAttachment(objects.pawn->GetRootComponent());
+
+            // Get camera render target from Contents
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
+                cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
+
+            // Get texture object from each render target
+            objects.renderTarget = cameraTextureObject.Object;
+
+            // Make the camera appear small in the editor so it doesn't obscure the vehicle
+            FVector cameraScale(0.1, 0.1, 0.1);
+
+            // Create a spring-arm for the gimbal
+            objects.springArm = objects.pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+            objects.springArm->SetupAttachment(objects.pawn->GetRootComponent());
+            objects.springArm->TargetArmLength = 0.f; 
+
+            // Create a camera component 
+            objects.camera = objects.pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+            objects.camera ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
+            objects.camera->SetWorldScale3D(cameraScale);
+            objects.camera->SetFieldOfView(90);
+            objects.camera->SetAspectRatio(4./3);
+
+            // Create a scene-capture component and set its target to the render target
+            objects.capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("Capture"));
+            objects.capture->SetWorldScale3D(cameraScale);
+            objects.capture->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
+            objects.capture->TextureTarget = objects.renderTarget;
+            objects.capture->FOVAngle = 45;
+         }
+
+        static void addMotor(objects_t & objects, uint8_t index, FVector mLocation, UStaticMesh * pMesh, FVector pLocation)
+        {
+            UStaticMeshComponent * mMeshComponent = 
+                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Motor", index));
+            mMeshComponent->SetStaticMesh(objects.motorMesh);
+            mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
+            mMeshComponent->AddRelativeLocation(mLocation*100); // m => cm
+
+            UStaticMeshComponent * pMeshComponent = 
+                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index));
+            pMeshComponent->SetStaticMesh(pMesh);
+            pMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName);
+            pMeshComponent->AddRelativeLocation(pLocation*100); // m => cm
+
+            objects.propellerMeshComponents[index] = pMeshComponent;
+        }
+
+    private:
+
+        objects_t _objects;
 
 }; // class Vehicle

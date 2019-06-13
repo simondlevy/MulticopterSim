@@ -18,12 +18,16 @@ DECLARE_STATIC_MESH(FProp4Statics, "3DFly/Prop4.Prop4", Prop4Statics)
 
 A3DFlyPawn::A3DFlyPawn()
 {
-    UStaticMeshComponent * propellerMeshComponents[4];
+    Vehicle::objects_t objects = {0};
 
-    QuadXAP::build(this, _layout, FrameStatics.mesh.Get(),  MotorStatics.mesh.Get(),  propellerMeshComponents,
+    objects.pawn = this;
+    objects.frameMesh = FrameStatics.mesh.Get();
+    objects.motorMesh = MotorStatics.mesh.Get();
+
+    QuadXAP::build(objects, _layout,
             Prop1Statics.mesh.Get(), Prop2Statics.mesh.Get(), Prop3Statics.mesh.Get(), Prop4Statics.mesh.Get()); 
 
-    _vehicle = new QuadXAP(this, propellerMeshComponents, _params);
+    _vehicle = new QuadXAP(objects, _params);
 }
 
 A3DFlyPawn::~A3DFlyPawn()
