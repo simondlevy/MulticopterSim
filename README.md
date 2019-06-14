@@ -69,7 +69,7 @@ of the repository into your <b>Documents/Unreal Projects</b> folder, first creat
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
 where MulticopterSim 
-[looks for](com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L21-L24)
+[looks for](https://github.com/simondlevy/MulticopterSim/blob/HackflightPlugin/Source/SimPlugin/SimPlugin.Build.cs#L23)
 the Hackflight software.)
 
 3. Right-click on the <b>MulticopterSim.uproject</b> 
