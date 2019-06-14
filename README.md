@@ -61,27 +61,25 @@ you like, it easiest to get started with the
 [Hackflight](https://github.com/simondlevy/Hackflight) software. So to get started, you should 
 do the following:
 
-1. Clone this repository (MulticopterSim) into your <b>Documents/Unreal Projects</b> folder, first
-creating that folder if it doesn't exist.
+1. Clone the [HackflightPlugin branch](https://github.com/simondlevy/MulticopterSim/tree/HackflightPlugin) 
+of the repository into your <b>Documents/Unreal Projects</b> folder, first creating that folder if it
+   doesn't exist.
 
-2. Clone the [HackflightSim](https://github.com/simondlevy/HackflightSim) repository and copy its <b>plugin</b>
-folder into <b>MulticopterSim/Source/MulticopterSim</b>.
-
-3. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
+2. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
-where MulticopterSim [looks
-for](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L21-L24)
+where MulticopterSim 
+[looks for](com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L21-L24)
 the Hackflight software.)
 
-4. Right-click on the <b>MulticopterSim.uproject</b> 
+3. Right-click on the <b>MulticopterSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
-5. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
+4. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
 you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
 to build the project.
 
-6. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+5. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
 # Launch and fly!
 
@@ -91,26 +89,19 @@ spacebar to switch between the ground camera and FPV camera.
 
 # Using your own flight controller
 
-Instead of using HackflightSim, you can use your own flight-control software with MultiCopterSim, by subclassing
-the [FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp) class,
-overriding its 
-[create()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L182-L183) 
-factory method and 
-[update()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L38-L47) 
-method.  
+Instead of using HackflightSim, you can use your own flight-control software with MultiCopterSim, by 
+creating your own <b>SimPlugin</b> folder in the <b>Source</b> folder.  The 
+[NullPlugin branch](https://github.com/simondlevy/MulticopterSim/tree/NullPlugin) contains a 
+stubbed implementation of the 
+[FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp)
+class that should help you get started.
 
 # Support for OpenCV
 
 To enable projects using machine vision, MulticopterSim includes support for the popular OpenCV package.
-To use OpenCV with MulticopterSim, you should do the following:
+To get started using OpenCV with MulticopterSim, you should do the following:
 
-1. Un-comment the <a href="https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/MulticopterSim.Build.cs#L20"><tt>LoadOpenCV</tt></a> 
-instruction in <b>MulticopterSimBuild.cs</b>.
-
-2. Write a subclass of 
-[VideoManagerOpenCV](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/VideoManagerOpenCV.hpp),
-implementing the 
-[processImage()](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/VideoManagerOpenCV.hpp#L48-L49)
-method.
+1. Clone the [OpenCVPlugin branch](https://github.com/simondlevy/MulticopterSim/tree/OpenCVPlugin) 
+of the repository.
 
 3. After building the game, copy the file <b>opencv_world340.dll</b> from the <b>ThirdParty/OpenCV/Libraries/Win64/</b> to <b>Binaries/Win64/</b>.
