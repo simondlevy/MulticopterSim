@@ -10,7 +10,7 @@
 
 #include "ThreadedWorker.hpp"
 
-#include "MultirotorDynamics.hpp"
+#include "dynamics/MultirotorDynamics.hpp"
 
 class FFlightManager : public FThreadedWorker {
 

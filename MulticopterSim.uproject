@@ -8,9 +8,12 @@
 			"Name": "MulticopterSim",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine"
-			]
+			"AdditionalDependencies": [ "Engine" ]
+		},
+		{
+			"Name": "SimPlugin",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
-	]
+			]
 }
