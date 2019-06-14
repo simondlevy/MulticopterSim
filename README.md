@@ -91,7 +91,7 @@ spacebar to switch between the ground camera and FPV camera.
 
 Instead of using HackflightSim, you can use your own flight-control software with MultiCopterSim, by 
 creating your own <b>SimPlugin</b> folder in the <b>Source</b> folder.  The 
-[NullPlugin branch](https://github.com/simondlevy/MulticopterSim/tree/NullPlugin) contains a 
+[NullPlugin](https://github.com/simondlevy/MulticopterSim/tree/NullPlugin) branch contains a 
 stubbed implementation of the 
 [FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp)
 class that should help you get started.
