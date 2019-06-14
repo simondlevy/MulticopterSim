@@ -61,7 +61,7 @@ you like, it easiest to get started with the
 [Hackflight](https://github.com/simondlevy/Hackflight) software. So to get started, you should 
 do the following:
 
-1. Clone the [HackflightPlugin branch](https://github.com/simondlevy/MulticopterSim/tree/HackflightPlugin) 
+1. Clone the [HackflightPlugin](https://github.com/simondlevy/MulticopterSim/tree/HackflightPlugin) branch
 of the repository into your <b>Documents/Unreal Projects</b> folder, first creating that folder if it
    doesn't exist.
 
