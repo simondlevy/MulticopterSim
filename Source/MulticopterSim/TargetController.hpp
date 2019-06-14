@@ -8,7 +8,9 @@
 
 #pragma once
 
-class TargetController {
+#include "Runtime/Core/Public/Math/Vector.h"
+
+class  TargetController {
 
     protected:
 

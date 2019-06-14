@@ -24,7 +24,7 @@
 
 #include "Debug.hpp"
 
-#include "MultirotorDynamics.hpp"
+#include "dynamics/MultirotorDynamics.hpp"
 
 #include "FlightManager.hpp"
 
@@ -150,7 +150,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         // Flight management thread
         void startThreadedWorkers(void)
         {
-            _flightManager = FFlightManager::create(this, _startLocation, _startRotation);
+            extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
+            _flightManager = createFlightManager(this, _startLocation, _startRotation);
             videoManagerStart();
         }        
 
@@ -163,7 +164,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         static const FName makeName(const char * prefix, const uint8_t index)
         {
             char name[100];
-            sprintf(name, "%s%dMesh", prefix, index+1);
+            sprintf_s(name, "%s%dMesh", prefix, index+1);
             return FName(name);
         }
 

@@ -29,8 +29,8 @@ ATargetPawn::ATargetPawn()
 	_targetMesh->SetStaticMesh(ConstructorStatics._targetMesh.Get());	// Set static mesh
 	RootComponent = _targetMesh;
 
-    // Create controller for kinematics
-    _controller = TargetController::create();
+    extern TargetController * createTargetController(void);
+    _controller = createTargetController();
 }
 
 ATargetPawn::~ATargetPawn()

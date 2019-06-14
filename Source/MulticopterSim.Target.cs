@@ -15,6 +15,6 @@ public class MulticopterSimTarget : TargetRules
 	{
 		Type = TargetType.Game;
 
-		ExtraModuleNames.AddRange( new string[] { "MulticopterSim" } );
+		ExtraModuleNames.AddRange( new string[] { "MulticopterSim", "SimPlugin" } );
 	}
 }
