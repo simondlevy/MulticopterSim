@@ -5,4 +5,4 @@
 #
 # MIT License
 
-rm -rf *.sln .vs/ Binaries/ DerivedDataCache/ Intermediate/ Saved/
+rm -rf *.txt Makefile *.sln *.pri *.kdev4 *.pro *.*workspace .vs/ Binaries/ DerivedDataCache/ Intermediate/ Saved/
