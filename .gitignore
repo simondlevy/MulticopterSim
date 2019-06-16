@@ -1,10 +1,9 @@
-# VisualStuio
 DerivedDataCache/
 Binaries/
 Intermediate/
 Saved/
-Content/StarterContent
-Source/MulticopterSim/plugin
+Content/StarterContent/
+Source/SimPlugin/
 *.sln
 *.swp
 *.VC.db

@@ -38,11 +38,7 @@
 #include "VideoManager.hpp"
 #endif
 
-#ifdef _WIN32
-#define SPRINTF sprintf_s
-#else
-#define SPRINTF sprintf
-#endif
+#include "compat.h"
 
 // A macro for simplifying the declaration of static meshes
 #define DECLARE_STATIC_MESH(structname, assetstr, objname)   \
