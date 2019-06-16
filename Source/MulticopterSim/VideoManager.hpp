@@ -92,7 +92,4 @@ class FVideoManager : public FThreadedWorker {
         {
         }
 
-        // Factory method implemented by your subclass
-        static FVideoManager * create(UTextureRenderTarget2D * cameraRenderTarget);
-
 }; // Class FVideoManager
