@@ -196,7 +196,6 @@ class MultirotorDynamics {
 
             double angularVel[3]; 
             double bodyAccel[3]; 
-            double bodyVel[3]; 
             double inertialVel[3]; 
             double quaternion[4]; 
 
