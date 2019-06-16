@@ -15,3 +15,11 @@ Source/MulticopterSim/plugin
 .kdev4
 .vscode
 *~
+
+# Linux
+*.txt
+Makefile
+*.*workspace
+*.kdev4
+*.pro
+*.pri
