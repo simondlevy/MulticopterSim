@@ -19,7 +19,7 @@ class MULTICOPTERSIM_API A3DFlyPawn : public APawn {
 
         GENERATED_BODY()
 
-        static constexpr MultirotorDynamics::params_t _params = {
+        MultirotorDynamics::params_t _params = {
 
             // Estimated
 

@@ -21,7 +21,7 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
 
         GENERATED_BODY()
 
-        static constexpr MultirotorDynamics::params_t _params = {
+        MultirotorDynamics::params_t _params = {
 
             // Dynamics: Amir's calculations
             5.30216718361085E-05,   // b
