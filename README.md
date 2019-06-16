@@ -65,7 +65,7 @@ do the following:
    doesn't exist.
    
 2. Clone the  [HackflightPlugin](https://github.com/simondlevy/MulticopterSim/tree/HackflightPlugin) branch
-of the repository into the <b>MulticopterSim/Source</b> folder.
+of the repository onto your desktop, and drag the <b>SimPlugin</b> folder into the <b>MulticopterSim/Source</b> folder.
 
 3. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
