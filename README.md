@@ -61,25 +61,27 @@ you like, it easiest to get started with the
 [Hackflight](https://github.com/simondlevy/Hackflight) software. So to get started, you should 
 do the following:
 
-1. Clone the [HackflightPlugin](https://github.com/simondlevy/MulticopterSim/tree/HackflightPlugin) branch
-of the repository into your <b>Documents/Unreal Projects</b> folder, first creating that folder if it
+1. Clone the master branch of this repostitory into your <b>Documents/Unreal Projects</b> folder, first creating that folder if it
    doesn't exist.
+   
+2. Clone the  [HackflightPlugin](https://github.com/simondlevy/MulticopterSim/tree/HackflightPlugin) branch
+of the repository into the <b>MulticopterSim/Source</b> folder.
 
-2. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
+3. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
 where MulticopterSim 
 [looks for](https://github.com/simondlevy/MulticopterSim/blob/HackflightPlugin/Source/SimPlugin/SimPlugin.Build.cs#L23)
 the Hackflight software.)
 
-3. Right-click on the <b>MulticopterSim.uproject</b> 
+4. Right-click on the <b>MulticopterSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
-4. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
+5. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
 you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
 to build the project.
 
-5. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+6. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
 # Launch and fly!
 
