@@ -275,7 +275,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 videoManagerGrabImage();
 
                 // OSD for debugging messages from threaded workers
-                debug("%s", _videoManager->getMessage());
+                //debug("%s", _videoManager->getMessage());
             }
         }
 
