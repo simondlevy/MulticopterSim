@@ -201,6 +201,8 @@ class MultirotorDynamics {
 
             pose_t pose;
 
+            bool airborne;
+
         } state_t;
 
         /**
@@ -330,11 +332,9 @@ class MultirotorDynamics {
         /*
          *  Gets current state
          *
-         *  @param state data structure for state
-         *
-         *  @return true if crashed, false otherwise
+         *  @param state data structure that will contain state
          */
-        bool getState(state_t & state)
+        void getState(state_t & state)
         {
 
             // Get most values directly from state vector
@@ -352,8 +352,8 @@ class MultirotorDynamics {
             // Convert Euler angles to quaternion
             eulerToQuaternion(state.pose.rotation, state.quaternion);
 
-            // If we're airborne, we've crashed if we fall below ground level
-            return _airborne ? (state.pose.location[2] > _zstart) : false;
+            // This is useful to know
+            state.airborne  = _airborne;
         }
 
         /**
@@ -442,7 +442,8 @@ class MultirotorDynamics {
         }
 
         /**
-         * Accessor method
+         * Gets motor count set by constructor.
+         * @return motor count
          */
         uint8_t motorCount(void)
         {

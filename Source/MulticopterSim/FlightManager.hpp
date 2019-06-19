@@ -32,8 +32,9 @@ class FFlightManager : public FThreadedWorker {
         // For computing _deltaT
         double   _previousTime = 0;
 
-        // Did we hit the ground?
+        // Did we hit the ground?  If we return to our starting altitude, yes.
         bool _crashed = false;
+        double _zstart = 0;
 
         /**
          * Flight-control method running repeatedly on its own thread.  
@@ -102,7 +103,8 @@ class FFlightManager : public FThreadedWorker {
             _startTime = FPlatformTime::Seconds();
             _previousTime = 0;
 
-            // No crash yet
+            // No crash yet; we'll use initial altitude to track it
+            _zstart = _pose.location[2];
             _crashed = false;
         }
         
@@ -125,7 +127,13 @@ class FFlightManager : public FThreadedWorker {
                 // Get vehicle state from dynamics.  We keep pose (location, rotation) in memory for use  in
                 // getKinematics() method
                 MultirotorDynamics::state_t state;
-                _crashed = _dynamics->getState(state);
+                _dynamics->getState(state);
+
+                // If we're airborne, we've crashed if we fall below ground level
+                if (state.airborne && (state.pose.location[2] > _zstart)) {
+                    _crashed = true;
+                }
+
 
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the dynamics state
