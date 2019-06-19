@@ -359,6 +359,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             // Create a camera component 
             objects.camera = objects.pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
             objects.camera ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
+			objects.camera->SetRelativeLocation(FVector(0, 0, 25));
             objects.camera->SetWorldScale3D(cameraScale);
             objects.camera->SetFieldOfView(90);
             objects.camera->SetAspectRatio(4./3);
