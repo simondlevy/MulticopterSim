@@ -8,7 +8,7 @@
    MIT License
 */
 
-#include "../MulticopterSim/TargetController.hpp"
+#include "../MulticopterSim/target/TargetController.hpp"
 
 class NullTargetController : public TargetController {
 
