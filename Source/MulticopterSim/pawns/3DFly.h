@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "vehicles/QuadXAP.hpp"
+#include "pawns/QuadXAP.hpp"
 #include "GameFramework/Pawn.h"
 #include "3DFly.generated.h"
 

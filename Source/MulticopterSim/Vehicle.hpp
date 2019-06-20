@@ -126,6 +126,11 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             }
             motormean /= _motorCount;
 
+            static uint32_t count;
+            static float avgmean;
+
+            avgmean += motormean;
+
             // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
             if (motormean > 0) {
                 static float rotation;
