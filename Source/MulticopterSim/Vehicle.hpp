@@ -40,6 +40,8 @@
 
 #include "compat.h"
 
+#include <stdio.h>
+
 // A macro for simplifying the declaration of static meshes
 #define DECLARE_STATIC_MESH(structname, assetstr, objname)   \
     struct structname {                                             \
@@ -64,6 +66,10 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         // Motor values for animation/sound
         float  _motorvals[MAX_MOTORS] = {0};
+
+        // Circular buffer for moving average of motor values
+        TCircularBuffer<float> * _motorBuffer = NULL;
+        uint32_t _bufferIndex = 0;
 
 #ifdef _USE_OPENCV
         // Threaded worker for managing video from camera
@@ -108,9 +114,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 startThreadedWorkers();
             }
 
-            //debug("sx: %+3.3f sy: %+3.3f  | x: %+3.3f y: %+3.3f | crashed: %d", 
-            //        _startLocation.X, _startLocation.Y, location.X, location.Y, crashed);
-
             _objects.pawn->SetActorLocation(location);
             _objects.pawn->SetActorRotation(rotation);
         }
@@ -119,20 +122,14 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void addAnimationEffects(void)
         {
-            // Compute the mean of the motor values
-            float motormean = 0;
+            // Compute the sum of the motor values
+            float motorsum = 0;
             for (uint8_t j=0; j<_motorCount; ++j) {
-                motormean += _motorvals[j];
+                motorsum += _motorvals[j];
             }
-            motormean /= _motorCount;
-
-            static uint32_t count;
-            static float avgmean;
-
-            avgmean += motormean;
 
             // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
-            if (motormean > 0) {
+            if (motorsum > 0) {
                 static float rotation;
                 for (uint8_t i=0; i<_motorCount; ++i) {
                     _objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirection(i) * 100, 0));
@@ -140,15 +137,22 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 rotation++;
             }
 
+            // Add mean to circular buffer for moving average
+            _bufferIndex = _motorBuffer->GetNextIndex(_bufferIndex);
+            (*_motorBuffer)[_bufferIndex] = motorsum / _motorCount;
+
+            // Compute the mean motor value over the buffer frames
+            float smoothedMotorMean = 0;
+            for (uint8_t i=0; i<_motorBuffer->Capacity(); ++i) {
+                smoothedMotorMean += (*_motorBuffer)[i];
+            }
+            smoothedMotorMean /= _motorBuffer->Capacity();
+
             // Use the mean motor value to modulate the pitch and voume of the propeller sound
-            setAudioPitchAndVolume(motormean);
+            _objects.audioComponent->SetFloatParameter(FName("pitch"), smoothedMotorMean);
+            _objects.audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
         }
 
-        void setAudioPitchAndVolume(float value)
-        {
-            _objects.audioComponent->SetFloatParameter(FName("pitch"), value);
-            _objects.audioComponent->SetFloatParameter(FName("volume"), value);
-        }
 
         // Starting pose for reset on crash
         FVector _startLocation;
@@ -250,6 +254,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 _startLocation = _objects.pawn->GetActorLocation();
                 _startRotation = _objects.pawn->GetActorRotation(); 
 
+                // Create circular queue for moving-average of motor values
+                _motorBuffer = new TCircularBuffer<float>(20);
+
                 // Initialize threaded workers
                 startThreadedWorkers();
             }
@@ -280,7 +287,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 videoManagerGrabImage();
 
                 // OSD for debugging messages from threaded workers
-                //debug("%s", _videoManager->getMessage());
+                debug("%s", _flightManager->getMessage());
             }
         }
 
