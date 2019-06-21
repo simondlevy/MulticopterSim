@@ -16,9 +16,8 @@ class FFlightManager : public FThreadedWorker {
 
     private:
 
-        // Constants specified/computed in constructor
-        uint8_t _motorCount = 0;
-        double  _deltaT = 0;
+        // Compute in constructor based on update frequency
+        double _deltaT = 0;
 
         // Start-time offset so timing begins at zero
         double _startTime = 0;
@@ -70,6 +69,8 @@ class FFlightManager : public FThreadedWorker {
 
 
     protected:
+
+        uint8_t _motorCount = 0;
 
         MultirotorDynamics * _dynamics;
 
