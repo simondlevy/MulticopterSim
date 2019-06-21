@@ -108,3 +108,10 @@ To get started using OpenCV with MulticopterSim, you should do the following:
 of the repository.
 
 3. After building the game, copy the file <b>opencv_world340.dll</b> from the <b>ThirdParty/OpenCV/Libraries/Win64/</b> to <b>Binaries/Win64/</b>.
+
+# Support for Nengo
+
+The [NengoPlugin](https://github.com/simondlevy/MulticopterSim/tree/NengoPlugin) branch supports flying with a combination
+of Hackflight for general flight control and an altitude-hold PID controller
+using the [Nengo](https://www.nengo.ai/) neural simulation package.  To use this plugin, you should first install Nengo.
+Then install the plugin in a folder called <b>SimPlugin</b> in the <b>MulticopterSim/Source</b> folder.
