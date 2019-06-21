@@ -23,9 +23,11 @@ class FThreadedWorker : public FRunnable {
 
         // Supports debugging on main thread
         static const uint16_t MAXMSG = 1000;
-        char _message[MAXMSG] = {0};
 
     protected:
+
+        // Supports debugging on main thread
+        char _message[MAXMSG] = {0};
 
         // Implemented differently by each subclass
         virtual void performTask(void) = 0;
