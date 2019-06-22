@@ -18,7 +18,9 @@ int main(int argc, char ** argv)
         float axes[6];
         uint8_t buttons;
 
-        printf("%d\n", js.poll(axes, buttons));
+        if (!js.poll(axes, buttons)) {
+            printf("%f\n", axes[0]);
+        }
     }
 
     return 0;

@@ -68,7 +68,7 @@ Joystick::Joystick(void)
         else if (strstr(productName, "Generic X-Box pad")) {
             _productId = PRODUCT_XBOX360_CLONE;
         }
-        else if (strstr(productName, "Logitech Gamepad F310")) {
+        else if (strstr(productName, "Logitech Logitech Dual Action")) {
             _productId = PRODUCT_F310;
         }
         else if (strstr(productName, "Xbox 360 Wireless Receiver")) {
@@ -87,7 +87,7 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 
     read(_joystickId, &js, sizeof(struct js_event));
 
-    if (js.type & JS_EVENT_INIT) return ERROR_MISSING;
+    if (js.type & JS_EVENT_INIT) return ERROR_NOERROR;
 
     static float _axes[6];
 
