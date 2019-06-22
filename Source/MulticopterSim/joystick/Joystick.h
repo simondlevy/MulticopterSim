@@ -56,7 +56,13 @@ class Joystick {
 
         MULTICOPTERSIM_API error_t poll(float axes[6], uint8_t & buttonState);
 
-        MULTICOPTERSIM_API bool isRcTransmitter(void);
+        MULTICOPTERSIM_API bool isRcTransmitter(void)
+        {
+            return _isRcTransmitter;
+        }
 
-        MULTICOPTERSIM_API bool inGimbalMode(void);
+        MULTICOPTERSIM_API bool inGimbalMode(void)
+        {
+            return _inGimbalMode;
+        }
 };

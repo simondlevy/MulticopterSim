@@ -18,7 +18,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
-static const char * DEVNAME = "/dev/input/js0";
+static const char * DEVNAME = "/dev/input/js1";
 
 #ifndef debug
 #define debug printf

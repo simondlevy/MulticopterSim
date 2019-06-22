@@ -176,24 +176,3 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
     return Joystick::ERROR_NOERROR;
 }
 
-bool Joystick::isRcTransmitter(void)
-{
-    return _isRcTransmitter;
-}
-        
-bool Joystick::inGimbalMode(void)
-{
-    return _inGimbalMode;
-}
-        
-void Joystick::rescaleAxis(float & value, float minval, float maxval)
-{
-    if (value <= 32767) {
-        value = (value - minval) / (1 - minval/32767);
-    }
-    else {
-        value = 32767 *((value - 32767) / (maxval - 32767)  + 1);
-    }
-}
-
-#endif

@@ -7,10 +7,13 @@
  */
 
 #include <Joystick.h>
+#include <stdio.h>
 
 int main(int argc, char ** argv)
 {
     Joystick js;
+
+    printf("%d\n", js.isRcTransmitter());
 
     return 0;
 }
