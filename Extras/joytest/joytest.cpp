@@ -13,7 +13,13 @@ int main(int argc, char ** argv)
 {
     Joystick js;
 
-    printf("%d\n", js.isRcTransmitter());
+    while (true) {
+
+        float axes[6];
+        uint8_t buttons;
+
+        printf("%d\n", js.poll(axes, buttons));
+    }
 
     return 0;
 }
