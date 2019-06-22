@@ -6,12 +6,12 @@
  * MIT License
  */
 
-#define MULTICOPTERSIM_API
-
 #include <Joystick.h>
 
 int main(int argc, char ** argv)
 {
+    Joystick js;
+
     return 0;
 }
 

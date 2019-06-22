@@ -11,6 +11,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifndef MULTICOPTERSIM_API
+#define MULTICOPTERSIM_API
+#endif
+
 class Joystick {
 
     private:

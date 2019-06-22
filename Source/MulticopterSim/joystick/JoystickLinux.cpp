@@ -10,11 +10,19 @@
 
 #include "Joystick.h"
 
-#include <unistd.h>
-#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <linux/joystick.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdio.h>
 
 static const char * DEVNAME = "/dev/input/js0";
+
+#ifndef debug
+#define debug printf
+#endif
 
 enum {
 
@@ -48,11 +56,11 @@ Joystick::Joystick(void)
 
         if (strstr(productName, "Taranis") || strstr(productName, "DeviationTx Deviation GamePad")) {
             _productId = PRODUCT_TARANIS;
-            isRcTransmitter = true;
+            _isRcTransmitter = true;
         }
         else if (strstr(productName, "Horizon Hobby SPEKTRUM")) {
             _productId = PRODUCT_SPEKTRUM;
-            isRcTransmitter = true;
+            _isRcTransmitter = true;
         }
         else if (strstr(productName, "Extreme 3D")) {
             _productId = PRODUCT_EXTREMEPRO3D;
@@ -71,15 +79,15 @@ Joystick::Joystick(void)
     }
 }
 
-void Joystick::poll(float axes[6], uint8_t & buttonState)
+Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 {
-    if (_joystickId <= 0) return;
+    if (_joystickId <= 0) return ERROR_PRODUCT;
 
     struct js_event js;
 
     read(_joystickId, &js, sizeof(struct js_event));
 
-    if (js.type & JS_EVENT_INIT) return;
+    if (js.type & JS_EVENT_INIT) return ERROR_MISSING;
 
     static float _axes[6];
 
@@ -101,7 +109,7 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
 
         default:
             debug("JOYSTICK %s NOT RECOGNIZED", productName);
-            return;
+            return ERROR_PRODUCT;
     }
 
     switch (js.type) {
@@ -120,10 +128,12 @@ void Joystick::poll(float axes[6], uint8_t & buttonState)
     }
 
     // Invert axes 0, 2 for unless R/C transmitter
-    if (!isRcTransmitter) {
+    if (!_isRcTransmitter) {
         axes[0] = -axes[0];
         axes[2] = -axes[2];
     }
+
+    return ERROR_NOERROR;
 }  
 
 #endif
