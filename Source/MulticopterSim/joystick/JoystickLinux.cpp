@@ -9,8 +9,6 @@
 #ifdef __linux__
 
 #include "Joystick.h"
-#include "VehiclePawn.h"
-#include "Debug.h"
 
 #include <unistd.h>
 #include <sys/time.h>
