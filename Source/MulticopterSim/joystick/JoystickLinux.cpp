@@ -34,7 +34,7 @@ enum {
 };
 
 //                                            0         1              2          3           4
-static uint8_t F310_MAP[5]             = {AXIS_YAW, AXIS_THROTTLE, AXIS_NONE, AXIS_ROLL,  AXIS_PITCH};
+static uint8_t F310_MAP[5]             = {AXIS_YAW, AXIS_THROTTLE, AXIS_ROLL, AXIS_PITCH, AXIS_NONE};
 static uint8_t SPEKTRUM_MAP[5]         = {AXIS_YAW, AXIS_THROTTLE, AXIS_ROLL, AXIS_PITCH, AXIS_NONE};
 static uint8_t XBOX360_WIRELESS_MAP[5] = {AXIS_YAW, AXIS_THROTTLE, AXIS_NONE, AXIS_ROLL,  AXIS_PITCH};
 
