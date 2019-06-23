@@ -12,6 +12,7 @@
 int main(int argc, char ** argv)
 {
     Joystick js;
+    uint32_t count = 0;
 
     while (true) {
 
@@ -19,7 +20,7 @@ int main(int argc, char ** argv)
         uint8_t buttons;
 
         if (!js.poll(axes, buttons)) {
-            printf("%f %f %f %f %f %f\n", axes[0], axes[1], axes[2], axes[3], axes[4], axes[5]);
+            printf("%05d: %f %f %f %f %f %f\n", count++, axes[0], axes[1], axes[2], axes[3], axes[4], axes[5]);
         }
     }
 

@@ -18,8 +18,6 @@
 #include <unistd.h>
 #include <stdio.h>
 
-static const char * DEVNAME = "/dev/input/js1";
-
 #ifndef debug
 #define debug printf
 #endif
@@ -40,9 +38,9 @@ static uint8_t XBOX360_WIRELESS_MAP[5] = {AXIS_YAW, AXIS_THROTTLE, AXIS_NONE, AX
 
 static char productName[128];
 
-Joystick::Joystick(void) 
+Joystick::Joystick(const char * devname) 
 {
-    _joystickId = open(DEVNAME, O_RDONLY);
+    _joystickId = open(devname, O_RDONLY);
 
     if (_joystickId > 0) {
 

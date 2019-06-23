@@ -75,7 +75,7 @@ static void getButtonsExtra(
     }
 }
 
-Joystick::Joystick(void)
+Joystick::Joystick(const char * devname)
 {
     JOYCAPS joycaps = {0};
 

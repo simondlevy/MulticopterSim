@@ -19,6 +19,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <stdio.h>
+
 class FVideoManager : public FThreadedWorker {
 
     private:
@@ -61,6 +63,9 @@ class FVideoManager : public FThreadedWorker {
         // Called repeatedly on worker thread to process current image
         void performTask(void)
         {
+            static uint64_t count;
+            printf("%ld\n", count++);
+
             if (_ready) {
 
                 processImage(_image);

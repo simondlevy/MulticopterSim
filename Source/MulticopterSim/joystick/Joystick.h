@@ -52,7 +52,7 @@ class Joystick {
 
         } error_t;
 
-        MULTICOPTERSIM_API Joystick(void);
+        MULTICOPTERSIM_API Joystick(const char * devname="/dev/input/js0"); // ignored by Windows
 
         MULTICOPTERSIM_API error_t poll(float axes[6], uint8_t & buttonState);
 
