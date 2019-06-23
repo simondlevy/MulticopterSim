@@ -113,6 +113,13 @@ of the repository.
 
 3. After building the game, copy the file <b>opencv_world340.dll</b> from the <b>ThirdParty/OpenCV/Libraries/Win64/</b> to <b>Binaries/Win64/</b>.
 
+# Support for Python
+
+The [PythonPlugin](https://github.com/simondlevy/MulticopterSim/tree/PythonPlugin) branch supports a FlightManager written entirely in Python.
+To try this out, clone this branch into <b>MulticopterSim/Source</b>, rename it <b>SimPlugin</b>, and in the <b>SimPlugin/python<b> folder run
+<tt>python3 setup.py install</tt>.
+
+
 # Support for Nengo
 
 The [NengoPlugin](https://github.com/simondlevy/MulticopterSim/tree/NengoPlugin) branch supports flying with a combination
