@@ -117,8 +117,10 @@ of the repository.
 
 The [PythonPlugin](https://github.com/simondlevy/MulticopterSim/tree/PythonPlugin) branch supports a FlightManager written entirely in Python.
 To try this out, clone this branch into <b>MulticopterSim/Source</b>, rename it <b>SimPlugin</b>, and in the <b>SimPlugin/python<b> folder run
-<tt>python3 setup.py install</tt>.
-
+<tt>python3 setup.py install</tt>.  This basic demo will make the vehicle climb to an altitude of 20m, then descend back to the ground.
+Once you've got the basic demo working, you can modify the Python 
+[FlightManager.py](https://github.com/simondlevy/MulticopterSim/blob/PythonPlugin/python/multicopter_sim/__init__.py#L8-L25)
+class to do what you like.
 
 # Support for Nengo
 
