@@ -108,7 +108,7 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
             break;
 
         default:
-            debug("JOYSTICK %s NOT RECOGNIZED", productName);
+            debug("JOYSTICK %s NOT RECOGNIZED\n", productName);
             return ERROR_PRODUCT;
     }
 
