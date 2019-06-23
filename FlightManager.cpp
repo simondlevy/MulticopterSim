@@ -104,8 +104,30 @@ class FHackflightFlightManager : public FFlightManager {
 
         virtual void update(const double time, const MultirotorDynamics::state_t & state, double * motorvals) override
         {
-            motorvals[0] = 0.1;
-        }
+            Joystick::error_t joystickError = _receiver.update();
+
+            switch (joystickError) {
+
+                case Joystick::ERROR_MISSING:
+                    dbgprintf("*** NO JOYSTICK DETECTED ***");
+                    break;
+
+                case Joystick::ERROR_PRODUCT:
+                    dbgprintf("*** JOYSTICK NOT RECOGNIZED ***");
+                    break;
+
+                default:
+
+                    if (_receiver.inGimbalMode()) {
+                        _receiver.getGimbal(_gimbalRoll, _gimbalPitch, _gimbalFOV);
+                    }
+
+                    _hackflight.update();
+
+                    // Input deltaT, quat, gyro; output motor values
+                    _board.update(time, state.quaternion, state.angularVel, motorvals);
+            }
+         }
 
 }; // HackflightFlightManager
 
