@@ -33,10 +33,11 @@ enum {
     AX_NIL
 };
 
-//                                        0       1       2       3       4       5       6       7
-static uint8_t F310_MAP[8]             = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL, AX_NIL};
-static uint8_t SPEKTRUM_MAP[8]         = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_AU2, AX_NIL, AX_AU1, AX_NIL};
-static uint8_t XBOX360_WIRELESS_MAP[8] = {AX_YAW, AX_THR, AX_NIL, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL};
+//                                            0       1       2       3       4       5       6       7
+static uint8_t F310_MAP[8]                 = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL, AX_NIL};
+static uint8_t SPEKTRUM_MAP[8]             = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_AU2, AX_NIL, AX_AU1, AX_NIL};
+static uint8_t XBOX360_WIRELESS_MAP[8]     = {AX_YAW, AX_THR, AX_NIL, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL};
+static uint8_t REALFLIGHT_INTERLINK_MAP[8] = {AX_ROL, AX_PIT, AX_THR, AX_NIL, AX_YAW, AX_NIL, AX_NIL, AX_NIL};
 
 static char productName[128];
 
@@ -74,6 +75,9 @@ Joystick::Joystick(const char * devname)
         else if (strstr(productName, "Xbox 360 Wireless Receiver")) {
             _productId = PRODUCT_XBOX360_WIRELESS;
         }
+        else if (strstr(productName, "GREAT PLANES InterLink Elite")) {
+            _productId = PRODUCT_REALFLIGHT_INTERLINK;
+        }
 
         // XXX should check for PS3 clone
     }
@@ -107,8 +111,12 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
             axisMap = XBOX360_WIRELESS_MAP;
             break;
 
+        case PRODUCT_REALFLIGHT_INTERLINK:
+            axisMap = REALFLIGHT_INTERLINK_MAP;
+	    break;
+
         default:
-            debug("JOYSTICK %s NOT RECOGNIZED\n", productName);
+            debug("JOYSTICK '%s' NOT RECOGNIZED\n", productName);
             return ERROR_PRODUCT;
     }
 
