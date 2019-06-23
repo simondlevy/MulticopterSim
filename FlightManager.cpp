@@ -10,6 +10,9 @@
 
 #include "../MulticopterSim/FlightManager.hpp"
 
+#include "SimBoard.hpp"
+#include "SimSensors.hpp"
+
 class FNullFlightManager : public FFlightManager {
 
     public:
