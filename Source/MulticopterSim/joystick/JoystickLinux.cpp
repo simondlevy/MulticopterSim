@@ -24,17 +24,19 @@
 
 enum {
 
-    AXIS_THROTTLE,
-    AXIS_ROLL,
-    AXIS_PITCH,
-    AXIS_YAW,
-    AXIS_NONE
+    AX_THR,
+    AX_ROL,
+    AX_PIT,
+    AX_YAW,
+    AX_AU1,
+    AX_AU2,
+    AX_NIL
 };
 
-//                                            0         1              2          3           4
-static uint8_t F310_MAP[5]             = {AXIS_YAW, AXIS_THROTTLE, AXIS_ROLL, AXIS_PITCH, AXIS_NONE};
-static uint8_t SPEKTRUM_MAP[5]         = {AXIS_YAW, AXIS_THROTTLE, AXIS_ROLL, AXIS_PITCH, AXIS_NONE};
-static uint8_t XBOX360_WIRELESS_MAP[5] = {AXIS_YAW, AXIS_THROTTLE, AXIS_NONE, AXIS_ROLL,  AXIS_PITCH};
+//                                        0       1       2       3       4       5       6       7
+static uint8_t F310_MAP[8]             = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL, AX_NIL};
+static uint8_t SPEKTRUM_MAP[8]         = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_AU1, AX_NIL, AX_AU2, AX_NIL};
+static uint8_t XBOX360_WIRELESS_MAP[8] = {AX_YAW, AX_THR, AX_NIL, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL};
 
 static char productName[128];
 
