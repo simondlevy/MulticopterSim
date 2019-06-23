@@ -54,12 +54,12 @@ class FFlightManager : public FThreadedWorker {
             const double * quat  = state.quaternion;
             const double * loc   = state.pose.location;
 
-            dbgprintf(
+            fprintf(stderr, 
                     "t: %4.1f"
-                    " | a: %+2.2f %+2.2f %+2.2f"
-                    " | g: %+2.2f %+2.2f %+2.2f"
-                    " | q: %+2.2f %+2.2f %+2.2f %+2.2f"
-                    " | p: %+2.2f %+2.2f %+2.2f", 
+                    " | a: %+6.6f %+6.6f %+6.6f"
+                    " | g: %+6.6f %+6.6f %+6.6f"
+                    " | q: %+6.6f %+6.6f %+6.6f %+6.6f"
+                    " | p: %+6.6f %+6.6f %+6.6f\n", 
                     time, 
                     accel[0], accel[1], accel[2], 
                     gyro[0], gyro[1], gyro[2], 
@@ -141,7 +141,7 @@ class FFlightManager : public FThreadedWorker {
                 this->update(currentTime, state, _motorvals);
 
                 // Show status in OSD
-                //showStatus(currentTime, state);
+                showStatus(currentTime, state);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;
