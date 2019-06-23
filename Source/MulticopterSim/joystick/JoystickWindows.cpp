@@ -176,3 +176,4 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
     return Joystick::ERROR_NOERROR;
 }
 
+#endif
