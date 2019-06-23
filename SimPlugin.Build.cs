@@ -27,12 +27,13 @@ public class SimPlugin : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "MulticopterSim" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
         if (IsLinux) {
             PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("HOME") + "/Documents/Arduino/libraries/Hackflight/src");
         }
         else {
+            PublicDependencyModuleNames.Add("MulticopterSim");
             PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src");
         }
     }
