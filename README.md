@@ -131,7 +131,7 @@ class supports modeling interaction with other moving objects having their own d
 in a predator/prey scenario.
 
 This simplicity of our flight-control scheme makes it easy to connect
-MulticopterSim to existing flight-control software like Hackflight, even to 
+MulticopterSim to existing flight-control software like Hackflight, or even to 
 another programming languge like Python, as
 plugins to the main MulticopterSim codebase.  With the Hackflight plugin, for
 example, we treat the control device (e.g., joystick, Xbox game controller) as
