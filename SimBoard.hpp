@@ -9,7 +9,8 @@
 #pragma once
 
 #include <board.hpp>
-#include <debugger.hpp>
+
+#include "../MulticopterSim/OSD.hpp"
 
 class SimBoard : public hf::Board {
 
@@ -83,5 +84,5 @@ class SimBoard : public hf::Board {
 
 void hf::Board::outbuf(char * buf)
 {
-    Debugger::printf("%s", buf);
+    osd(buf, false);
 }
