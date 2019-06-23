@@ -132,15 +132,12 @@ in a predator/prey scenario.
 
 This simplicity of our flight-control scheme makes it easy to connect
 MulticopterSim to existing flight-control software like Hackflight, or even to 
-another programming languge like Python, as
-plugins to the main MulticopterSim codebase.  
-
-# Using your own flight controller
-
-Instead of using HackflightSim, you can use your own flight-control software with MultiCopterSim, by 
-creating your own <b>SimPlugin</b> folder in the <b>Source</b> folder.  The 
-[NullPlugin](https://github.com/simondlevy/MulticopterSim/tree/NullPlugin) branch contains a 
-stubbed implementation of the 
+another programming languge like Python, as plugins to the main MulticopterSim
+codebase.  Instead of using HackflightSim, you can use your own flight-control
+software with MultiCopterSim, by creating your own <b>SimPlugin</b> folder in
+the <b>Source</b> folder.  The
+[NullPlugin](https://github.com/simondlevy/MulticopterSim/tree/NullPlugin)
+branch contains a stubbed implementation of the
 [FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp)
 class that should help you get started.
 
