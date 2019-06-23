@@ -49,8 +49,6 @@ void ABigQuadPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void ABigQuadPawn::BeginPlay()
 {
-    fprintf(stderr, "ABigQuadPawn::BeginPlay\n");
-
     _vehicle->BeginPlay();
 
     Super::BeginPlay();
@@ -58,8 +56,6 @@ void ABigQuadPawn::BeginPlay()
 
 void ABigQuadPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    fprintf(stderr, "ABigQuadPawn::EndPlay\n");
-
     _vehicle->EndPlay();
 
     Super::EndPlay(EndPlayReason);

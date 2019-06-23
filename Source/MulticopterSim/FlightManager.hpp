@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ThreadedWorker.hpp"
-
+#include "Debug.hpp"
 #include "dynamics/MultirotorDynamics.hpp"
 
 class FFlightManager : public FThreadedWorker {
@@ -35,6 +35,9 @@ class FFlightManager : public FThreadedWorker {
         bool _crashed = false;
         double _zstart = 0;
 
+        // For FPS reporting
+        uint32_t _count;
+
         /**
          * Flight-control method running repeatedly on its own thread.  
          * Override this method to implement your own flight controller.
@@ -49,12 +52,13 @@ class FFlightManager : public FThreadedWorker {
         // OSD
         void showStatus(const double time, const MultirotorDynamics::state_t & state)
         {
+            /*
             const double * accel = state.bodyAccel;
             const double * gyro  = state.angularVel;
             const double * quat  = state.quaternion;
             const double * loc   = state.pose.location;
 
-            fprintf(stderr, 
+            dbgprintf(
                     "t: %4.1f"
                     " | a: %+6.6f %+6.6f %+6.6f"
                     " | g: %+6.6f %+6.6f %+6.6f"
@@ -65,8 +69,12 @@ class FFlightManager : public FThreadedWorker {
                     gyro[0], gyro[1], gyro[2], 
                     quat[0], quat[1], quat[2], quat[3], 
                     loc[0], loc[1], loc[2]);
-        }
+                    */
 
+            dbgprintf("FPS: %d", (int)(++_count/time));
+
+
+        }
 
     protected:
 
@@ -107,6 +115,9 @@ class FFlightManager : public FThreadedWorker {
             // No crash yet; we'll use initial altitude to track it
             _zstart = _pose.location[2];
             _crashed = false;
+
+            // Start FPS timing
+            _count = 0;
         }
         
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
@@ -140,7 +151,7 @@ class FFlightManager : public FThreadedWorker {
                 this->update(currentTime, state, _motorvals);
 
                 // Show status in OSD
-                //showStatus(currentTime, state);
+                showStatus(currentTime, state);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;

@@ -239,8 +239,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void BeginPlay()
         {
-            fprintf(stderr, "Vehicle::BeginPlay\n");
-
             // Make sure a map has been selected
             FString mapName = _objects.pawn->GetWorld()->GetMapName();
             _mapSelected = !mapName.Contains("Untitled");
@@ -288,7 +286,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 videoManagerGrabImage();
 
                 // OSD for debugging messages from threaded workers
-                //debug("%s", _flightManager->getMessage());
+                debug("%s", _flightManager->getMessage());
             }
         }
 
@@ -304,8 +302,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void EndPlay(void)
         {
-            fprintf(stderr, "Vehicle::EndPlay\n");
-
             if (_mapSelected) {
 
                 stopThreadedWorkers();
