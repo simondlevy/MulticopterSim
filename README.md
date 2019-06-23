@@ -133,9 +133,7 @@ in a predator/prey scenario.
 This simplicity of our flight-control scheme makes it easy to connect
 MulticopterSim to existing flight-control software like Hackflight, or even to 
 another programming languge like Python, as
-plugins to the main MulticopterSim codebase.  With the Hackflight plugin, for
-example, we treat the control device (e.g., joystick, Xbox game controller) as
-&ldquo;virtual receiver&rdquo;.
+plugins to the main MulticopterSim codebase.  
 
 # Using your own flight controller
 
