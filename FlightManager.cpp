@@ -24,7 +24,7 @@
 // Mixer
 #include <mixers/quadxap.hpp>
 
-class FNullFlightManager : public FFlightManager {
+class FHackflightFlightManager : public FFlightManager {
 
     private:
 
@@ -75,12 +75,30 @@ class FNullFlightManager : public FFlightManager {
     public:
 
         // Constructor
-        FNullFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation) 
+        FHackflightFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation) 
             : FFlightManager(dynamics, initialLocation, initialRotation) 
         {
+            // Start Hackflight firmware, indicating already armed
+            _hackflight.init(&_board, &_receiver, &_mixer, &ratePid, true);
+
+            // Add simulated sensor suite
+            _sensors = new SimSensors(_dynamics);
+            _hackflight.addSensor(_sensors);
+
+            // Add level PID controller for aux switch position 1
+            _hackflight.addPidController(&level, 1);
+
+            // Add altitude-hold and position-hold PID controllers in switch position 2
+            _hackflight.addPidController(&althold, 2);    
+            _hackflight.addPidController(&flowhold, 2);    
+
+            // Start gimbal in center, medium Field-Of-View
+            _gimbalRoll = 0;
+            _gimbalPitch = 0;
+            _gimbalFOV = 90;
         }
 
-        virtual ~FNullFlightManager(void)
+        virtual ~FHackflightFlightManager(void)
         {
         }
 
@@ -89,11 +107,11 @@ class FNullFlightManager : public FFlightManager {
             motorvals[0] = 0.1;
         }
 
-}; // NullFlightManager
+}; // HackflightFlightManager
 
 
 // Factory method for FlightManager class
 SIMPLUGIN_API FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation)
 {
-    return new FNullFlightManager(dynamics, initialLocation, initialRotation);
+    return new FHackflightFlightManager(dynamics, initialLocation, initialRotation);
 }
