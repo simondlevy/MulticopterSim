@@ -268,7 +268,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             }
         }
 
-
         void Tick(void)
         {
             // A hack to avoid accessing kinematics before dynamics thread is ready
@@ -289,7 +288,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 videoManagerGrabImage();
 
                 // OSD for debugging messages from threaded workers
-                debug("%s", _flightManager->getMessage());
+                //debug("%s", _flightManager->getMessage());
             }
         }
 
