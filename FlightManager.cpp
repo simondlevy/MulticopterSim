@@ -129,6 +129,13 @@ class FHackflightFlightManager : public FFlightManager {
             }
          }
 
+        virtual void getGimbal(float & roll, float &pitch, float & fov) override
+        {
+            roll  = _gimbalRoll;
+            pitch = _gimbalPitch;
+            fov   = _gimbalFOV;
+        }
+
 }; // HackflightFlightManager
 
 
