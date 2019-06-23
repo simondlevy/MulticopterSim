@@ -135,13 +135,12 @@ class FFlightManager : public FThreadedWorker {
                     _crashed = true;
                 }
 
-
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the dynamics state
                 this->update(currentTime, state, _motorvals);
 
                 // Show status in OSD
-                showStatus(currentTime, state);
+                //showStatus(currentTime, state);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;
