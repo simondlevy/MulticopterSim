@@ -135,7 +135,7 @@ MulticopterSim to existing flight-control software like Hackflight, or even to
 another programming languge like Python, as
 plugins to the main MulticopterSim codebase.  With the Hackflight plugin, for
 example, we treat the control device (e.g., joystick, Xbox game controller) as
-&ldqup;virtual receiver&rdquo;.
+&ldquo;virtual receiver&rdquo;.
 
 # Using your own flight controller
 
