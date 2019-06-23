@@ -94,6 +94,49 @@ In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Click
 the play button and you're ready to begin. Throttle up to fly.  You can use the
 spacebar to switch between the ground camera and FPV camera.
 
+# Design principles
+
+The core of MulticopterSim is the abstract C++ 
+[FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp) 
+class. This class provides support for running the vehicle dynamics and the PID control
+regime (e.g., Hackflight) on its own thread, after it first disables the
+built-in physics in UE4.  The dynamics we used are based directly on the model
+presented in this [paper](https://infoscience.epfl.ch/record/97532/files/325.pdf), 
+written as a standalone, header-only C++ 
+[class](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/dynamics/MultirotorDynamics.hpp)
+that can be easily adapted for other simulators and applications if
+desired. This class also supports different frame configurations (quadcopter,
+hexacopter) via virtual methods. By running the FlightManager on its own
+thread, we are able to achieve arbitrarily fast updates of the dynamics and
+flight-control.  We currently limit the update rate to 1kHz, based on the data
+output rate of current MEMS gyrometers.  It would also be possible to run the
+dynamics and control on separate threads, though we have not yet found it
+advantageous to do that.
+
+The FlightManager API contains a single virtual 
+[update](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L41-L51)
+method that accepts the current time and the state of the vehicle (as computed by the
+dynamics), and returns the current motor values.  The motor values are then
+passed to the dynamics object, which computes the new vehicle state.  On the
+main thread, UE4's <b>Tick()</b> method queries the flight manager for the
+current vehicle pose (location, rotation) and displays the vehicle and its
+environment kinematically at the 60-120Hz frame rate of the game engine.  In a
+similar manner, the threaded 
+[VideoManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/VideoManager.hpp)
+class can be used to process
+the images collected by a simulated gimbal-mounted camera on the vehicle, using
+OpenCV.  An abstract C++ 
+[TargetController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/target/TargetController.hpp)
+class supports modeling interaction with other moving objects having their own dynamics; for example,
+in a predator/prey scenario.
+
+This simplicity of our flight-control scheme makes it easy to connect
+MulticopterSim to existing flight-control software like Hackflight, even to 
+another programming languge like Python, as
+plugins to the main MulticopterSim codebase.  With the Hackflight plugin, for
+example, we treat the control device (e.g., joystick, Xbox game controller) as
+&ldqup;virtual receiver&rdquo;.
+
 # Using your own flight controller
 
 Instead of using HackflightSim, you can use your own flight-control software with MultiCopterSim, by 
