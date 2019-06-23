@@ -22,8 +22,8 @@ MulticopterSim differs from AirSim in a few important ways:
 ## Hardware
 
 I am currently developing MulticopterSim on an HP Z440 workstation with 32GB
-RAM and NVIDIA GeForce GTX 1080 Ti, running Windows 10. It may however be
-possible to develop on a less &ldquo;loaded&rdquo; machine &ndash; see
+RAM and NVIDIA GeForce GTX 1080 Ti. It may however be possible to develop on a
+less &ldquo;loaded&rdquo; machine &ndash; see
 [here](https://docs.unrealengine.com/latest/INT/GettingStarted/RecommendedSpecifications/)
 for the minimum requirements recommended by Unreal Engine.
 
@@ -44,15 +44,7 @@ through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/
 ## Toolchain
 
 You will need Unreal Engine 4 (UE4). I am attempting to use the latest version, which as of the time of this
-writing is UE4.22.0.  
-
-Windows users will need Visual Studio Community (we're using the latest version, 2017).
-If you don't have UE4 or Visual Studio 2017 installed, these
-[instructions](https://docs.unrealengine.com/latest/INT/Programming/Development/VisualStudioSetup/#visualstudio2017users) 
-will help get you started. If you've already been using C++ to develop video games with
-older versions of these tools (Visual Studio 2015, UE 4.16), we recommend sticking with those, as we've found that
-the differences between Visual Studio 2015 and 2017 can cause problems for UE4 if you're not careful (inability
-to generate a .sln file from a .uproject file, inability to compile source code, etc.).
+writing is UE4.22.0. To install UE4, follow these [instructions](https://docs.unrealengine.com/en-US/GettingStarted/Installation/index.html).
 
 # Build
 
@@ -75,14 +67,26 @@ where MulticopterSim
 [looks for](https://github.com/simondlevy/MulticopterSim/blob/HackflightPlugin/Source/SimPlugin/SimPlugin.Build.cs#L23)
 the Hackflight software.)
 
-4. Right-click on the <b>MulticopterSim.uproject</b> 
+4. Follow the next steps to complete the build on your OS.
+
+## Windows
+
+1. Right-click on the <b>MulticopterSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
-5. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
+2. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
 you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
 to build the project.
 
-6. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+3. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+
+## Linux
+
+```
+% cd ~/Documents/Unreal\ Projects/MulticopterSim/
+% ./build.sh
+% ./run.sh
+```
 
 # Launch and fly!
 
