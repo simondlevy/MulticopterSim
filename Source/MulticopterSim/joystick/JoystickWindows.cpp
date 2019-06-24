@@ -25,29 +25,6 @@ static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD 
     axes[4] = (float)axis4;
 }
 
-static void getButtons(DWORD dwButtons, uint8_t & buttonState, uint8_t button0, uint8_t button1, uint8_t button2)
-{
-    if (dwButtons == button0) {
-        buttonState = 0;
-    }
-    else if (dwButtons == button1) {
-        buttonState = 1;
-    }
-    else if (dwButtons == button2) {
-        buttonState = 2;
-    }
-}
-
-static void getButtonsExtra(
-        DWORD dwButtons, 
-        uint8_t & buttonState, 
-        uint8_t button0, 
-        uint8_t button1, 
-        uint8_t button2,
-        uint8_t button3)
-{
-}
-
 Joystick::Joystick(const char * devname)
 {
     JOYCAPS joycaps = {0};
@@ -69,7 +46,7 @@ Joystick::Joystick(const char * devname)
     }
 }
 
-Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
+Joystick::error_t Joystick::pollProduct(float axes[6])
 {
     JOYINFOEX joyState;
     joyState.dwSize=sizeof(joyState);
@@ -91,7 +68,6 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
         case PRODUCT_PS3_CLONE:      
         case PRODUCT_PS4:
             getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos, 0);
-            getButtons(joyState.dwButtons, buttonState, 1, 2, 4);
             break;
 
 
@@ -107,7 +83,6 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 
         case PRODUCT_EXTREMEPRO3D:  
             getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
-            getButtons(joyState.dwButtons, buttonState, 1, 2, 4);
             break;
 
         case PRODUCT_INTERLINK:
@@ -120,7 +95,7 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
             rescaleAxis(axes[2], 13698, 51335);
             rescaleAxis(axes[3], 11818, 55159);
 
-            getButtons(joyState.dwButtons&0xFE, buttonState, 10, 2, 18); // use other bits for aux state
+            //getButtons(joyState.dwButtons&0xFE, buttonState, 10, 2, 18); // use other bits for aux state
 
             break;
 
@@ -132,12 +107,6 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
     // Normalize the axes to demands to [-1,+1]
     for (uint8_t k=0; k<5; ++k) {
         axes[k] = axes[k] / 32767 - 1;
-    }
-
-    // Invert axes 0, 2 for unless R/C transmitter
-    if (!_isRcTransmitter) {
-        axes[0] = -axes[0];
-        axes[2] = -axes[2];
     }
 
     return Joystick::ERROR_NOERROR;

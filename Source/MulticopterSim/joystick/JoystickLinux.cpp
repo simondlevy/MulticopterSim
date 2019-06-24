@@ -73,7 +73,7 @@ Joystick::Joystick(const char * devname)
     }
 }
 
-Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
+Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttonState)
 {
     if (_joystickId <= 0) return ERROR_PRODUCT;
 
@@ -125,7 +125,7 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 
             // Handle buttons on non-R/C devices
             if (!_isRcTransmitter) {
-                buttonsToAxes(js.number, js.value, _axes);
+                buttonsToAxes(js.number, 1<<js.value, _axes);
             }
 
             break;
@@ -133,12 +133,6 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 
     for (uint8_t k=0; k<6; ++k) {
         axes[k] = _axes[k];
-    }
-
-    // Invert axes 0, 2 except on R/C transmitters
-    if (!_isRcTransmitter) {
-        axes[0] = -axes[0];
-        axes[2] = -axes[2];
     }
 
     // Rescale axes for RealFlight InterLink (should be done in RealFlight!)
@@ -161,6 +155,5 @@ void Joystick::rescaleAxis(float & value, float minval, float maxval)
         value /= maxval;
     }
 }
-
 
 #endif

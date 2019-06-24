@@ -42,6 +42,16 @@ class Joystick {
         // handles failure to calibrate transmitter before run
         void rescaleAxis(float & value, float minval, float maxval);
 
+    public:
+
+        typedef enum {
+
+            ERROR_NOERROR,
+            ERROR_MISSING,
+            ERROR_PRODUCT
+
+        } error_t;
+
     protected:
 
         enum {
@@ -83,7 +93,7 @@ class Joystick {
                     break;
 
                 case PRODUCT_F310:
-                    buttonsToAxesGamepad(number, value, axes, 3, 2, 1, 0);
+                    buttonsToAxesGamepad(number, value, axes, 8, 4, 2, 1);
 
                 case PRODUCT_XBOX360:
                     buttonsToAxesGamepad(number, value, axes, 3, 1, 0, 2);
@@ -115,19 +125,24 @@ class Joystick {
             }
         }
 
+        error_t pollProduct(float axes[6]);
+
     public:
-
-        typedef enum {
-
-            ERROR_NOERROR,
-            ERROR_MISSING,
-            ERROR_PRODUCT
-
-        } error_t;
 
         MULTICOPTERSIM_API Joystick(const char * devname="/dev/input/js0"); // ignored by Windows
 
-        MULTICOPTERSIM_API error_t poll(float axes[6], uint8_t & buttonState);
+        MULTICOPTERSIM_API error_t poll(float axes[6]) 
+        {
+            error_t error = pollProduct(axes);
+
+            // Invert axes 0, 2 except on R/C transmitters
+            if (!_isRcTransmitter) {
+                axes[0] = -axes[0];
+                axes[2] = -axes[2];
+            }
+
+            return error;
+        }
 
         MULTICOPTERSIM_API bool isRcTransmitter(void)
         {
