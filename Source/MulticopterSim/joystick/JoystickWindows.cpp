@@ -142,7 +142,7 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
             getButtons(joyState.dwButtons, buttonState, 1, 2, 4);
             break;
 
-        case PRODUCT_REALFLIGHT_INTERLINK:
+        case PRODUCT_INTERLINK:
 
             getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos, 0);
 

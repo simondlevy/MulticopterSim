@@ -23,7 +23,7 @@ class Joystick {
         static const uint16_t PRODUCT_XBOX360			    = 0x02a1;
         static const uint16_t PRODUCT_XBOX360_CLONE2		= 0x028e;
         static const uint16_t PRODUCT_XBOX360_WIRELESS		= 0x0719;
-        static const uint16_t PRODUCT_REALFLIGHT_INTERLINK	= 0x0e56;
+        static const uint16_t PRODUCT_INTERLINK	            = 0x0e56;
         static const uint16_t PRODUCT_TARANIS			    = 0x5710;
         static const uint16_t PRODUCT_SPEKTRUM			    = 0x572b;
         static const uint16_t PRODUCT_EXTREMEPRO3D		    = 0xc215;
@@ -45,8 +45,8 @@ class Joystick {
         void rescaleAxis(float & value, float minval, float maxval);
 
         void buttonsToAxes(uint8_t number, uint16_t value, float * axes);
+        void buttonsToAxesGamepad(uint8_t number, uint16_t value, float * axes, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft);
         void buttonsToAxesInterlink(uint8_t number, uint16_t value, float * axes);
-        void buttonsToAxesF310(uint8_t number, uint16_t value, float * axes);
 
     public:
 
