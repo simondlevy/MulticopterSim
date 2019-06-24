@@ -44,8 +44,6 @@ static char productName[128];
 
 Joystick::Joystick(const char * devname) 
 {
-    _inGimbalMode = false;
-
     _joystickId = open(devname, O_RDONLY);
 
     if (_joystickId <= 0) return;
@@ -221,9 +219,6 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
         rescaleAxis(axes[2], -.64, +.64);
         rescaleAxis(axes[3], -.68, +.78);
     }
-
-    // Check gimbal mode 
-    _inGimbalMode = axes[AX_AU2] > 0.5;
 
     return ERROR_NOERROR;
 }  

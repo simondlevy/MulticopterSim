@@ -39,8 +39,6 @@ class Joystick {
 
         bool _isRcTransmitter = false;
 
-        bool _inGimbalMode = false;
-
         // handles failure to calibrate transmitter before run
         void rescaleAxis(float & value, float minval, float maxval);
 
@@ -65,10 +63,5 @@ class Joystick {
         MULTICOPTERSIM_API bool isRcTransmitter(void)
         {
             return _isRcTransmitter;
-        }
-
-        MULTICOPTERSIM_API bool inGimbalMode(void)
-        {
-            return _inGimbalMode;
         }
 };

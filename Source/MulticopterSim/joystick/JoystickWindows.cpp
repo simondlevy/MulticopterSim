@@ -44,35 +44,8 @@ static void getButtonsExtra(
         uint8_t button0, 
         uint8_t button1, 
         uint8_t button2,
-        uint8_t button3,
-        bool & inGimbalMode)
+        uint8_t button3)
 {
-    static bool button3WasDown;
-
-    if (dwButtons == button3) {
-
-        if (!button3WasDown) {
-            inGimbalMode = !inGimbalMode;
-        }
-
-        button3WasDown = true;
-    }
-
-    else {
-
-        button3WasDown = false;
-
-        if (dwButtons == button0) {
-            buttonState = 0;
-        }
-        else if (dwButtons == button1) {
-            buttonState = 1;
-        }
-        else if (dwButtons == button2) {
-            buttonState = 2;
-        }
-
-    }
 }
 
 Joystick::Joystick(const char * devname)
@@ -82,8 +55,6 @@ Joystick::Joystick(const char * devname)
     _productId = 0;
 
     _isRcTransmitter = false;
-
-    _inGimbalMode = false;
 
     // Grab the first available joystick
     for (_joystickId=0; _joystickId<16; _joystickId++)
@@ -111,7 +82,6 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 
         case PRODUCT_SPEKTRUM:
             getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwXpos, joyState.dwUpos);
-            _inGimbalMode = !(joyState.dwButtons & 0x01); // rightmost is zero for gimbal mode
             break;
 
         case PRODUCT_TARANIS:
@@ -127,14 +97,12 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 
         case PRODUCT_F310:
             getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos, 0);
-            getButtonsExtra(joyState.dwButtons, buttonState, 8, 4, 2, 1, _inGimbalMode);
             break;
 
         case PRODUCT_XBOX360:  
         case PRODUCT_XBOX360_CLONE:
         case PRODUCT_XBOX360_CLONE2:
             getAxes(axes, joyState.dwYpos, joyState.dwUpos, joyState.dwRpos, joyState.dwXpos, 0);
-            getButtonsExtra(joyState.dwButtons, buttonState, 8, 2, 1, 4, _inGimbalMode);
             break;
 
         case PRODUCT_EXTREMEPRO3D:  
@@ -152,7 +120,6 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
             rescaleAxis(axes[2], 13698, 51335);
             rescaleAxis(axes[3], 11818, 55159);
 
-            _inGimbalMode = !(joyState.dwButtons & 0x01);                // rightmost bit is zero for gimbal mode
             getButtons(joyState.dwButtons&0xFE, buttonState, 10, 2, 18); // use other bits for aux state
 
             break;
