@@ -85,7 +85,9 @@ Joystick::Joystick(const char * devname)
 // On RealFlight InterLink, auxiliary switches appear as buttons
 static void handleRealflightInterlinkButtons(uint8_t number, int16_t value, float axes[6]) 
 {
-    //printf("%d %d\n", number, value);
+    if (number == 0) {
+        axes[AX_AU2] = (float)!value;
+    }
 
     if (number == 3 && value == 1) {
         axes[AX_AU1] = 0.0;
