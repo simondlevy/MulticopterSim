@@ -18,11 +18,11 @@
 
 static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4)
 {
-    axes[0] = axis0;
-    axes[1] = axis1;
-    axes[2] = axis2;
-    axes[3] = axis3;
-    axes[4] = axis4;
+    axes[0] = (float)axis0;
+    axes[1] = (float)axis1;
+    axes[2] = (float)axis2;
+    axes[3] = (float)axis3;
+    axes[4] = (float)axis4;
 }
 
 static void getButtons(DWORD dwButtons, uint8_t & buttonState, uint8_t button0, uint8_t button1, uint8_t button2)
