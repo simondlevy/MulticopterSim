@@ -81,6 +81,9 @@ Joystick::Joystick(const char * devname)
     else if (strstr(productName, "Xbox 360 Wireless Receiver")) {
         _productId = PRODUCT_XBOX360_WIRELESS;
     }
+    else if (strstr(productName, "Microsoft X-Box 360 pad")) {
+        _productId = PRODUCT_XBOX360_WIRELESS;
+    }
 }
 
 void Joystick::buttonsToAxesF310(uint8_t number, uint16_t value, float * axes)
