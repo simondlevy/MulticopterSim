@@ -37,7 +37,7 @@ enum {
 static uint8_t F310_MAP[8]                 = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL, AX_NIL};
 static uint8_t SPEKTRUM_MAP[8]             = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_AU2, AX_NIL, AX_AU1, AX_NIL};
 static uint8_t XBOX360_WIRELESS_MAP[8]     = {AX_YAW, AX_THR, AX_NIL, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL};
-static uint8_t REALFLIGHT_INTERLINK_MAP[8] = {AX_ROL, AX_PIT, AX_THR, AX_NIL, AX_YAW, AX_NIL, AX_NIL, AX_NIL};
+static uint8_t REALFLIGHT_INTERLINK_MAP[8] = {AX_ROL, AX_PIT, AX_THR, AX_NIL, AX_YAW, AX_AU1, AX_NIL, AX_NIL};
 
 static char productName[128];
 
@@ -63,7 +63,11 @@ Joystick::Joystick(const char * devname)
             _productId = PRODUCT_SPEKTRUM;
             _isRcTransmitter = true;
         }
-        else if (strstr(productName, "Extreme 3D")) {
+        else if (strstr(productName, "GREAT PLANES InterLink Elite")) {
+            _productId = PRODUCT_REALFLIGHT_INTERLINK;
+            _isRcTransmitter = true;
+        }
+         else if (strstr(productName, "Extreme 3D")) {
             _productId = PRODUCT_EXTREMEPRO3D;
         }
         else if (strstr(productName, "Generic X-Box pad")) {
@@ -75,13 +79,32 @@ Joystick::Joystick(const char * devname)
         else if (strstr(productName, "Xbox 360 Wireless Receiver")) {
             _productId = PRODUCT_XBOX360_WIRELESS;
         }
-        else if (strstr(productName, "GREAT PLANES InterLink Elite")) {
-            _productId = PRODUCT_REALFLIGHT_INTERLINK;
-        }
-
-        // XXX should check for PS3 clone
-    }
+   }
 }
+
+// On RealFlight InterLink, auxiliary switches appear as buttons
+static void handleRealflightInterlinkButtons(uint8_t number, int16_t value, float axes[6]) 
+{
+    //printf("%d %d\n", number, value);
+
+    if (number == 3 && value == 1) {
+        axes[AX_AU1] = 0.0;
+    }
+
+    if (number == 3 && value == 0) {
+        axes[AX_AU1] = 0.5;
+    }
+
+    if (number == 4 && value == 0) {
+        axes[AX_AU1] = 0.5;
+    }
+
+    if (number == 4 && value == 1) {
+        axes[AX_AU1] = 1.0;
+    }
+
+}
+
 
 Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 {
@@ -113,7 +136,7 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 
         case PRODUCT_REALFLIGHT_INTERLINK:
             axisMap = REALFLIGHT_INTERLINK_MAP;
-	    break;
+            break;
 
         default:
             debug("JOYSTICK '%s' NOT RECOGNIZED\n", productName);
@@ -127,7 +150,12 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
             break;
 
         case JS_EVENT_BUTTON:
-            //_buttons = js.number + 1; // avoid zero
+
+            // Special handling for RealFlight InterLink
+            if (_productId == PRODUCT_REALFLIGHT_INTERLINK) {
+                handleRealflightInterlinkButtons(js.number, js.value, _axes);
+            }
+
             break;
     }
 
@@ -136,7 +164,7 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
     }
 
     // Invert axes 0, 2 for unless R/C transmitter
-    if (!_isRcTransmitter) {
+    if (_productId == PRODUCT_REALFLIGHT_INTERLINK || !_isRcTransmitter) {
         axes[0] = -axes[0];
         axes[2] = -axes[2];
     }
