@@ -1,0 +1,4 @@
+﻿  joytest.cpp
+JoystickWindows.obj : error LNK2001: unresolved external symbol __imp__joyGetPosEx@8
+JoystickWindows.obj : error LNK2001: unresolved external symbol __imp__joyGetDevCapsW@12
+C:\Users\sim\Documents\Unreal Projects\MulticopterSim\Extras\joytest\windows\JoyTest\Release\JoyTest.exe : fatal error LNK1120: 2 unresolved externals

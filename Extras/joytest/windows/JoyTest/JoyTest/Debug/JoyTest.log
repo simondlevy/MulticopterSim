@@ -1,0 +1,2 @@
+﻿  joytest.cpp
+c:\users\sim\documents\unreal projects\multicoptersim\extras\joytest\joytest.cpp(30): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
