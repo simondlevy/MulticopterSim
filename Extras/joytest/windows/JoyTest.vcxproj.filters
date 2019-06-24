@@ -20,10 +20,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Source\MulticopterSim\joystick\JoystickWindows.cpp">
+    <ClCompile Include="..\joytest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\joytest.cpp">
+    <ClCompile Include="..\..\..\Source\MulticopterSim\joystick\JoystickWindows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

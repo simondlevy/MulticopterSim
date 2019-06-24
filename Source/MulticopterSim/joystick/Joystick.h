@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #ifndef MULTICOPTERSIM_API
 #define MULTICOPTERSIM_API
@@ -17,135 +18,145 @@
 
 class Joystick {
 
-    private:
+private:
 
-        static const uint16_t PRODUCT_PS3_CLONE			    = 0x0003;
-        static const uint16_t PRODUCT_XBOX360			    = 0x02a1;
-        static const uint16_t PRODUCT_XBOX360_CLONE2		= 0x028e;
-        static const uint16_t PRODUCT_XBOX360_WIRELESS		= 0x0719;
-        static const uint16_t PRODUCT_INTERLINK	            = 0x0e56;
-        static const uint16_t PRODUCT_TARANIS			    = 0x5710;
-        static const uint16_t PRODUCT_SPEKTRUM			    = 0x572b;
-        static const uint16_t PRODUCT_EXTREMEPRO3D		    = 0xc215;
-        static const uint16_t PRODUCT_F310			        = 0xc216;
-        static const uint16_t PRODUCT_PS4			        = 0x09cc;
-        static const uint16_t PRODUCT_XBOX360_CLONE		    = 0xfafe;
+	static const uint16_t PRODUCT_PS3_CLONE = 0x0003;
+	static const uint16_t PRODUCT_XBOX360 = 0x02a1;
+	static const uint16_t PRODUCT_XBOX360_CLONE2 = 0x028e;
+	static const uint16_t PRODUCT_XBOX360_WIRELESS = 0x0719;
+	static const uint16_t PRODUCT_INTERLINK = 0x0e56;
+	static const uint16_t PRODUCT_TARANIS = 0x5710;
+	static const uint16_t PRODUCT_SPEKTRUM = 0x572b;
+	static const uint16_t PRODUCT_EXTREMEPRO3D = 0xc215;
+	static const uint16_t PRODUCT_F310 = 0xc216;
+	static const uint16_t PRODUCT_PS4 = 0x09cc;
+	static const uint16_t PRODUCT_XBOX360_CLONE = 0xfafe;
 
-        static constexpr float AUX1_MID = 0.3f; // positve but less than 0.5
+	static constexpr float AUX1_MID = 0.3f; // positve but less than 0.5
 
-        uint16_t _productId = 0;
+	uint16_t _productId = 0;
 
-        int _joystickId = 0;
+	int _joystickId = 0;
 
-        bool _isRcTransmitter = false;
+	bool _isRcTransmitter = false;
 
-        // handles failure to calibrate transmitter before run
-        void rescaleAxis(float & value, float minval, float maxval);
+	float _aux1 = 0;
+	float _aux2 = -1;
 
-    public:
+	// handles failure to calibrate transmitter before run
+	void rescaleAxis(float & value, float minval, float maxval);
 
-        typedef enum {
+public:
 
-            ERROR_NOERROR,
-            ERROR_MISSING,
-            ERROR_PRODUCT
+	typedef enum {
 
-        } error_t;
+		ERROR_NOERROR,
+		ERROR_MISSING,
+		ERROR_PRODUCT
 
-    protected:
+	} error_t;
 
-        enum {
+protected:
 
-            AX_THR,
-            AX_ROL,
-            AX_PIT,
-            AX_YAW,
-            AX_AU1,
-            AX_AU2,
-            AX_NIL
-        };
+	enum {
 
-        void buttonsToAxesInterlink(uint8_t number, uint16_t value, float * axes)
-        {
-            if (number == 0) {
-                axes[AX_AU2] = (float)!value;
-            }
+		AX_THR,
+		AX_ROL,
+		AX_PIT,
+		AX_YAW,
+		AX_AU1,
+		AX_AU2,
+		AX_NIL
+	};
 
-            if (number == 3 && value == 1) {
-                axes[AX_AU1] = -1.0;
-            }
+	void buttonsToAxesInterlink(uint8_t buttons, float * axes)
+	{
+		/*
+		if (number == 0) {
+			axes[AX_AU2] = (float)!value;
+		}
 
-            if ((number == 3 || number == 4) && value == 0) {
-                axes[AX_AU1] = AUX1_MID;
-            }
+		if (number == 3 && value == 1) {
+			axes[AX_AU1] = -1.0;
+		}
 
-            if (number == 4 && value == 1) {
-                axes[AX_AU1] = 1.0;
-            }
-        }
+		if ((number == 3 || number == 4) && value == 0) {
+			axes[AX_AU1] = AUX1_MID;
+		}
 
-        void buttonsToAxes(uint8_t number, uint16_t value, float * axes)
-        {
-            switch (_productId) {
+		if (number == 4 && value == 1) {
+			axes[AX_AU1] = 1.0;
+		}
+		*/
+	}
 
-                case PRODUCT_INTERLINK:
-                    buttonsToAxesInterlink(number, value, axes);
-                    break;
+	void buttonsToAxesGamepad(uint8_t buttons, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft)
+	{
+		static bool _down;
 
-                case PRODUCT_F310:
-                    buttonsToAxesGamepad(number, value, axes, 8, 4, 2, 1);
+		if (buttons) {
 
-                case PRODUCT_XBOX360:
-                    buttonsToAxesGamepad(number, value, axes, 3, 1, 0, 2);
-            }
-        }
+			if (!_down) {
 
-        void buttonsToAxesGamepad(uint8_t number, uint16_t value, float * axes, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft)
-        {
-            static bool down;
+				// Left button sets AUX2
+				if (buttons == lft) {
+					_aux2 *= -1;
+				}
 
-            if (value) {
+				// Other buttons set AUX1
+				else {
+					_aux1 = (buttons == top) ? -1 : (buttons == rgt ? AUX1_MID : +1);
+				}
 
-                if (!down) {
+				_down = true;
+			}
+		}
 
-                    // Left button sets AUX2
-                    if (number == lft) {
-                        axes[AX_AU2] *= -1;
-                    }
+		else {
+			_down = false;
+		}
+	}
 
-                    // Other buttons set AUX1
-                    else {
-                        axes[AX_AU1] = (number == top) ? -1 : (number == rgt ? AUX1_MID : +1);
-                    }
-                }
-                down = true;
-            }
-            else {
-                down = false;
-            }
-        }
 
-        error_t pollProduct(float axes[6]);
+	error_t pollProduct(float axes[6], uint8_t & buttons);
 
-    public:
+public:
 
-        MULTICOPTERSIM_API Joystick(const char * devname="/dev/input/js0"); // ignored by Windows
+	MULTICOPTERSIM_API Joystick(const char * devname = "/dev/input/js0"); // ignored by Windows
 
-        MULTICOPTERSIM_API error_t poll(float axes[6]) 
-        {
-            error_t error = pollProduct(axes);
+	MULTICOPTERSIM_API error_t poll(float axes[6])
+	{
+		uint8_t buttons = 0;
 
-            // Invert axes 0, 2 except on R/C transmitters
-            if (!_isRcTransmitter) {
-                axes[0] = -axes[0];
-                axes[2] = -axes[2];
-            }
+		error_t status = pollProduct(axes, buttons);
 
-            return error;
-        }
+		// Invert throttle, pitch axes except on R/C transmitters
+		if (!_isRcTransmitter) {
+			axes[AX_THR] *= -1;
+			axes[AX_PIT] *= -1;
+		}
 
-        MULTICOPTERSIM_API bool isRcTransmitter(void)
-        {
-            return _isRcTransmitter;
-        }
+		switch (_productId) {
+
+		case PRODUCT_INTERLINK:
+			//buttonsToAxesInterlink(number, value, axes);
+			break;
+
+		case PRODUCT_F310:
+			buttonsToAxesGamepad(buttons, 8, 4, 2, 1);
+
+		case PRODUCT_XBOX360:
+			buttonsToAxesGamepad(buttons, 8, 2, 1, 4);
+		}
+
+		axes[AX_AU1] = _aux1;
+		axes[AX_AU2] = _aux2;
+
+		return status;
+	}
+
+	MULTICOPTERSIM_API bool isRcTransmitter(void)
+	{
+		return _isRcTransmitter;
+	}
 };
