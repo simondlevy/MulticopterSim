@@ -43,7 +43,6 @@ class SimReceiver : public hf::Receiver {
         return 1;
     }
 
-
     // Simulate auxiliary switch via pushbuttons
     uint8_t _buttonState;
     const float buttonsToAux[3] = {-.1f, 0.f, .8f};
@@ -78,10 +77,6 @@ class SimReceiver : public hf::Receiver {
 
     void readRawvals(void)
     {
-        // For game controllers, use buttons to fake up values in a three-position aux switch
-        if (!_joystick->isRcTransmitter()) {
-            rawvals[4] = buttonsToAux[_buttonState];
-        }
     }
 
     Joystick::error_t update(void)
@@ -97,7 +92,6 @@ class SimReceiver : public hf::Receiver {
             _gimbalFOV   = 90 - rawvals[0] * 45;
             _gimbalRoll  = rawvals[1];
             _gimbalPitch = rawvals[2];
-
 
             // Clam throttle, roll, and yaw to neutral values
             rawvals[0] = 0;
