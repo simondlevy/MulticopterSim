@@ -84,28 +84,23 @@ Joystick::Joystick(const char * devname)
 }
 
 // On RealFlight InterLink, auxiliary switches appear as buttons
-static void handleRealflightInterlinkButtons(uint8_t number, int16_t value, float axes[6]) 
+static void handleRealflightInterlinkSwitches(uint8_t number, int16_t value, float axes[6]) 
 {
     if (number == 0) {
         axes[AX_AU2] = (float)!value;
     }
 
     if (number == 3 && value == 1) {
-        axes[AX_AU1] = 0.0;
+        axes[AX_AU1] = -1.0;
     }
 
-    if (number == 3 && value == 0) {
-        axes[AX_AU1] = 0.5;
-    }
-
-    if (number == 4 && value == 0) {
-        axes[AX_AU1] = 0.5;
+    if ((number == 3 || number == 4) && value == 0) {
+        axes[AX_AU1] = 0.3; // positve but less than 0.5
     }
 
     if (number == 4 && value == 1) {
         axes[AX_AU1] = 1.0;
     }
-
 }
 
 
@@ -156,7 +151,7 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 
             // Special handling for RealFlight InterLink
             if (_productId == PRODUCT_REALFLIGHT_INTERLINK) {
-                handleRealflightInterlinkButtons(js.number, js.value, _axes);
+                handleRealflightInterlinkSwitches(js.number, js.value, _axes);
             }
 
             break;
