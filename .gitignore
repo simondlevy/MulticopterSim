@@ -4,7 +4,7 @@ Intermediate/
 Saved/
 Content/StarterContent/
 Source/SimPlugin/
-*.sln
+MulticopterSim.sln
 *.swp
 *.VC.db
 *.suo
@@ -13,4 +13,7 @@ Source/SimPlugin/
 .idea
 .kdev4
 .vscode
+Extras/joytest/windows/Debug/
+Extras/joytest/windows/Release/
+Extras/joytest/windows/x64/Release/
 *~
