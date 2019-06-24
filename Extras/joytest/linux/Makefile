@@ -8,7 +8,7 @@
 
 ALL = joytest 
 
-JOYDIR = ../../Source/MulticopterSim/joystick
+JOYDIR = ../../../Source/MulticopterSim/joystick
 
 all: $(ALL)
 
@@ -22,8 +22,8 @@ test: joytest
 joytest: joytest.o JoystickLinux.o
 	g++ -o joytest joytest.o JoystickLinux.o
 
-joytest.o: joytest.cpp 
-	g++ -c $(CFLAGS) -I$(JOYDIR) joytest.cpp 
+joytest.o: ../joytest.cpp 
+	g++ -c $(CFLAGS) -I$(JOYDIR) ../joytest.cpp 
 
 JoystickLinux.o: $(JOYDIR)/JoystickLinux.cpp
 	g++ -c $(CFLAGS) -I$(JOYDIR) $(JOYDIR)/JoystickLinux.cpp
@@ -32,4 +32,4 @@ clean:
 	rm -rf $(ALL) *.o *~
 
 edit:
-	vim joytest.cpp
+	vim ../joytest.cpp
