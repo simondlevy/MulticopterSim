@@ -78,14 +78,14 @@ class Joystick {
         {
             switch (_productId) {
 
-                case Joystick::PRODUCT_INTERLINK:
+                case PRODUCT_INTERLINK:
                     buttonsToAxesInterlink(number, value, axes);
                     break;
 
-                case Joystick::PRODUCT_F310:
+                case PRODUCT_F310:
                     buttonsToAxesGamepad(number, value, axes, 3, 2, 1, 0);
 
-                case Joystick::PRODUCT_XBOX360:
+                case PRODUCT_XBOX360:
                     buttonsToAxesGamepad(number, value, axes, 3, 1, 0, 2);
             }
         }
