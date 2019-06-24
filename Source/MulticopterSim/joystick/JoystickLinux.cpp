@@ -22,14 +22,7 @@
 #define debug printf
 #endif
 
-// ------------------------------- 0       1       2       3       4       5       6       7 -----
-static uint8_t F310_MAP[8]      = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL, AX_NIL};
-static uint8_t SPEKTRUM_MAP[8]  = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_AU2, AX_NIL, AX_AU1, AX_NIL};
-static uint8_t XBOX360_MAP[8]   = {AX_YAW, AX_THR, AX_NIL, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL};
-static uint8_t INTERLINK_MAP[8] = {AX_ROL, AX_PIT, AX_THR, AX_NIL, AX_YAW, AX_AU1, AX_NIL, AX_NIL};
-// ------------------------------------------------------------------------------------------------
-
-static char productName[128];
+static char _productName[128];
 
 Joystick::Joystick(const char * devname) 
 {
@@ -39,42 +32,48 @@ Joystick::Joystick(const char * devname)
 
     fcntl(_joystickId, F_SETFL, O_NONBLOCK);
 
-    *productName = 0;
+    *_productName = 0;
 
-    if (ioctl(_joystickId, JSIOCGNAME(sizeof(productName)), productName) < 0) {
+    if (ioctl(_joystickId, JSIOCGNAME(sizeof(_productName)), _productName) < 0) {
         return;
     }
 
-    if (strstr(productName, "Taranis") || strstr(productName, "DeviationTx Deviation GamePad")) {
+    if (strstr(_productName, "Taranis") || strstr(_productName, "DeviationTx Deviation GamePad")) {
         _productId = PRODUCT_TARANIS;
         _isRcTransmitter = true;
     }
-    else if (strstr(productName, "Horizon Hobby SPEKTRUM")) {
+    else if (strstr(_productName, "Horizon Hobby SPEKTRUM")) {
         _productId = PRODUCT_SPEKTRUM;
         _isRcTransmitter = true;
     }
-    else if (strstr(productName, "GREAT PLANES InterLink Elite")) {
+    else if (strstr(_productName, "GREAT PLANES InterLink Elite")) {
         _productId = PRODUCT_INTERLINK;
     }
-    else if (strstr(productName, "Extreme 3D")) {
+    else if (strstr(_productName, "Extreme 3D")) {
         _productId = PRODUCT_EXTREMEPRO3D;
     }
-    else if (strstr(productName, "Generic X-Box pad")) {
+    else if (strstr(_productName, "Generic X-Box pad")) {
         _productId = PRODUCT_XBOX360_CLONE;
     }
-    else if (strstr(productName, "Logitech Logitech Dual Action")) {
+    else if (strstr(_productName, "Logitech Logitech Dual Action")) {
         _productId = PRODUCT_F310;
     }
-    else if (strstr(productName, "Xbox 360 Wireless Receiver")) {
+    else if (strstr(_productName, "Xbox 360 Wireless Receiver")) {
         _productId = PRODUCT_XBOX360;
     }
-    else if (strstr(productName, "Microsoft X-Box 360 pad")) {
+    else if (strstr(_productName, "Microsoft X-Box 360 pad")) {
         _productId = PRODUCT_XBOX360;
     }
 }
 
-Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttonState)
+Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 {
+    // ------------------------------- 0       1       2       3       4       5       6       7 -----
+    static uint8_t F310_MAP[8]      = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL, AX_NIL};
+    static uint8_t SPEKTRUM_MAP[8]  = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_AU2, AX_NIL, AX_AU1, AX_NIL};
+    static uint8_t XBOX360_MAP[8]   = {AX_YAW, AX_THR, AX_NIL, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL};
+    static uint8_t INTERLINK_MAP[8] = {AX_ROL, AX_PIT, AX_THR, AX_NIL, AX_YAW, AX_AU1, AX_NIL, AX_NIL};
+
     if (_joystickId <= 0) return ERROR_PRODUCT;
 
     struct js_event js;
@@ -104,7 +103,7 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttonState)
             break;
 
         default:
-            debug("JOYSTICK '%s' NOT RECOGNIZED\n", productName);
+            debug("JOYSTICK '%s' NOT RECOGNIZED\n", _productName);
             return ERROR_PRODUCT;
     }
 
@@ -122,12 +121,7 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttonState)
             break;
 
         case JS_EVENT_BUTTON:
-
-            // Handle buttons on non-R/C devices
-            if (!_isRcTransmitter) {
-                buttonsToAxes(js.number, 1<<js.value, _axes);
-            }
-
+            buttons = js.value ? 1 << js.number : 0; // for Windows compatibility
             break;
     }
 
