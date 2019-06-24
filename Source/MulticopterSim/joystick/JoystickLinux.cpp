@@ -33,11 +33,12 @@ enum {
     AX_NIL
 };
 
-//                                            0       1       2       3       4       5       6       7
+// ------------------------------------------ 0       1       2       3       4       5       6       7 -----
 static uint8_t F310_MAP[8]                 = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL, AX_NIL};
 static uint8_t SPEKTRUM_MAP[8]             = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_AU2, AX_NIL, AX_AU1, AX_NIL};
 static uint8_t XBOX360_WIRELESS_MAP[8]     = {AX_YAW, AX_THR, AX_NIL, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL};
 static uint8_t REALFLIGHT_INTERLINK_MAP[8] = {AX_ROL, AX_PIT, AX_THR, AX_NIL, AX_YAW, AX_AU1, AX_NIL, AX_NIL};
+// -----------------------------------------------------------------------------------------------------------
 
 static char productName[128];
 
@@ -165,13 +166,32 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
         axes[k] = _axes[k];
     }
 
-    // Invert axes 0, 2 for unless R/C transmitter
+    // Invert axes 0, 2 for RealflightInterlink, game controllers
     if (_productId == PRODUCT_REALFLIGHT_INTERLINK || !_isRcTransmitter) {
         axes[0] = -axes[0];
         axes[2] = -axes[2];
     }
 
+    // Rescale axes for RealFlight InterLink (should be done in RealFlight!)
+    if (_productId == PRODUCT_REALFLIGHT_INTERLINK) {
+        rescaleAxis(axes[0], -.64, +.64);
+        rescaleAxis(axes[1], -.68, +.79);
+        rescaleAxis(axes[2], -.64, +.64);
+        rescaleAxis(axes[3], -.68, +.78);
+    }
+
     return ERROR_NOERROR;
 }  
+
+void Joystick::rescaleAxis(float & value, float minval, float maxval)
+{
+    if (value <= 0) {
+        value = -(value / minval);
+    }
+    else {
+        value /= maxval;
+    }
+}
+
 
 #endif
