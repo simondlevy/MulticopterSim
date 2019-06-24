@@ -48,40 +48,60 @@ Joystick::Joystick(const char * devname)
 
     _joystickId = open(devname, O_RDONLY);
 
-    if (_joystickId > 0) {
+    if (_joystickId <= 0) return;
 
-        fcntl(_joystickId, F_SETFL, O_NONBLOCK);
+    fcntl(_joystickId, F_SETFL, O_NONBLOCK);
 
-        *productName = 0;
+    *productName = 0;
 
-        if (ioctl(_joystickId, JSIOCGNAME(sizeof(productName)), productName) < 0) {
-            return;
-        }
+    if (ioctl(_joystickId, JSIOCGNAME(sizeof(productName)), productName) < 0) {
+        return;
+    }
 
-        if (strstr(productName, "Taranis") || strstr(productName, "DeviationTx Deviation GamePad")) {
-            _productId = PRODUCT_TARANIS;
-            _isRcTransmitter = true;
+    if (strstr(productName, "Taranis") || strstr(productName, "DeviationTx Deviation GamePad")) {
+        _productId = PRODUCT_TARANIS;
+        _isRcTransmitter = true;
+    }
+    else if (strstr(productName, "Horizon Hobby SPEKTRUM")) {
+        _productId = PRODUCT_SPEKTRUM;
+        _isRcTransmitter = true;
+    }
+    else if (strstr(productName, "GREAT PLANES InterLink Elite")) {
+        _productId = PRODUCT_REALFLIGHT_INTERLINK;
+    }
+    else if (strstr(productName, "Extreme 3D")) {
+        _productId = PRODUCT_EXTREMEPRO3D;
+    }
+    else if (strstr(productName, "Generic X-Box pad")) {
+        _productId = PRODUCT_XBOX360_CLONE;
+    }
+    else if (strstr(productName, "Logitech Logitech Dual Action")) {
+        _productId = PRODUCT_F310;
+    }
+    else if (strstr(productName, "Xbox 360 Wireless Receiver")) {
+        _productId = PRODUCT_XBOX360_WIRELESS;
+    }
+}
+
+void Joystick::buttonsToAxesF310(uint8_t number, uint16_t value, float * axes)
+{
+    static bool down;
+
+    if (value) {
+        if (!down) {
+
+            if (number > 0) {
+            }
+            else {
+                axes[AX_AU2] *= -1;
+            }
+
         }
-        else if (strstr(productName, "Horizon Hobby SPEKTRUM")) {
-            _productId = PRODUCT_SPEKTRUM;
-            _isRcTransmitter = true;
-        }
-        else if (strstr(productName, "GREAT PLANES InterLink Elite")) {
-            _productId = PRODUCT_REALFLIGHT_INTERLINK;
-        }
-         else if (strstr(productName, "Extreme 3D")) {
-            _productId = PRODUCT_EXTREMEPRO3D;
-        }
-        else if (strstr(productName, "Generic X-Box pad")) {
-            _productId = PRODUCT_XBOX360_CLONE;
-        }
-        else if (strstr(productName, "Logitech Logitech Dual Action")) {
-            _productId = PRODUCT_F310;
-        }
-        else if (strstr(productName, "Xbox 360 Wireless Receiver")) {
-            _productId = PRODUCT_XBOX360_WIRELESS;
-        }
-   }
+        down = true;
+    }
+    else {
+        down = false;
+    }
 }
 
 void Joystick::buttonsToAxesInterlink(uint8_t number, uint16_t value, float * axes)
@@ -110,6 +130,10 @@ void Joystick::buttonsToAxes(uint8_t number, uint16_t value, float * axes)
         case Joystick::PRODUCT_REALFLIGHT_INTERLINK:
             buttonsToAxesInterlink(number, value, axes);
             break;
+
+        case Joystick::PRODUCT_F310:
+            buttonsToAxesF310(number, value, axes);
+            break;
     }
 }
 
@@ -122,8 +146,6 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
     read(_joystickId, &js, sizeof(struct js_event));
 
     if (js.type & JS_EVENT_INIT) return ERROR_NOERROR;
-
-    static float _axes[6];
 
     uint8_t * axisMap = NULL;
 
@@ -148,6 +170,13 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
         default:
             debug("JOYSTICK '%s' NOT RECOGNIZED\n", productName);
             return ERROR_PRODUCT;
+    }
+
+    static float _axes[6];
+
+    if (!_axes[AX_AU1]) {
+        _axes[AX_AU1] = -1;
+        _axes[AX_AU2] = -1;
     }
 
     switch (js.type) {
