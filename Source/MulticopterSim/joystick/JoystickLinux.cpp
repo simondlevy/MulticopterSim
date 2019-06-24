@@ -44,6 +44,8 @@ static char productName[128];
 
 Joystick::Joystick(const char * devname) 
 {
+    _inGimbalMode = false;
+
     _joystickId = open(devname, O_RDONLY);
 
     if (_joystickId > 0) {
@@ -173,6 +175,11 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
         rescaleAxis(axes[1], -.68, +.79);
         rescaleAxis(axes[2], -.64, +.64);
         rescaleAxis(axes[3], -.68, +.78);
+    }
+
+    // Check gimbal mode for R/C transmitters
+    if (_isRcTransmitter) {
+        _inGimbalMode = axes[AX_AU2] > 0.5;
     }
 
     return ERROR_NOERROR;
