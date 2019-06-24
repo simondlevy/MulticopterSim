@@ -84,10 +84,8 @@ Joystick::Joystick(const char * devname)
    }
 }
 
-static void getButtons(uint8_t number, uint16_t value, float * axes)
+void Joystick::buttonsToAxesInterlink(uint8_t number, uint16_t value, float * axes)
 {
-    //fprintf(stderr, "%d %d\n", number, value);
-
     if (number == 0) {
         axes[AX_AU2] = (float)!value;
     }
@@ -102,6 +100,16 @@ static void getButtons(uint8_t number, uint16_t value, float * axes)
 
     if (number == 4 && value == 1) {
         axes[AX_AU1] = 1.0;
+    }
+}
+
+void Joystick::buttonsToAxes(uint8_t number, uint16_t value, float * axes)
+{
+    switch (_productId) {
+
+        case Joystick::PRODUCT_REALFLIGHT_INTERLINK:
+            buttonsToAxesInterlink(number, value, axes);
+            break;
     }
 }
 
@@ -152,7 +160,7 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 
             // Handle buttons on non-R/C devices
             if (!_isRcTransmitter) {
-                getButtons(js.number, js.value, _axes);
+                buttonsToAxes(js.number, js.value, _axes);
             }
 
             break;
