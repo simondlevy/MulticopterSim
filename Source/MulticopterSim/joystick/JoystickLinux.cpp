@@ -68,7 +68,6 @@ Joystick::Joystick(const char * devname)
         }
         else if (strstr(productName, "GREAT PLANES InterLink Elite")) {
             _productId = PRODUCT_REALFLIGHT_INTERLINK;
-            _isRcTransmitter = true;
         }
          else if (strstr(productName, "Extreme 3D")) {
             _productId = PRODUCT_EXTREMEPRO3D;
@@ -85,9 +84,10 @@ Joystick::Joystick(const char * devname)
    }
 }
 
-// On RealFlight InterLink, auxiliary switches appear as buttons
-static void handleRealflightInterlinkSwitches(uint8_t number, int16_t value, float axes[6]) 
+static void getButtons(uint8_t number, uint16_t value, float * axes)
 {
+    //fprintf(stderr, "%d %d\n", number, value);
+
     if (number == 0) {
         axes[AX_AU2] = (float)!value;
     }
@@ -104,7 +104,6 @@ static void handleRealflightInterlinkSwitches(uint8_t number, int16_t value, flo
         axes[AX_AU1] = 1.0;
     }
 }
-
 
 Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 {
@@ -151,9 +150,9 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
 
         case JS_EVENT_BUTTON:
 
-            // Special handling for RealFlight InterLink
-            if (_productId == PRODUCT_REALFLIGHT_INTERLINK) {
-                handleRealflightInterlinkSwitches(js.number, js.value, _axes);
+            // Handle buttons on non-R/C devices
+            if (!_isRcTransmitter) {
+                getButtons(js.number, js.value, _axes);
             }
 
             break;
@@ -163,8 +162,8 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
         axes[k] = _axes[k];
     }
 
-    // Invert axes 0, 2 for RealflightInterlink, game controllers
-    if (_productId == PRODUCT_REALFLIGHT_INTERLINK || !_isRcTransmitter) {
+    // Invert axes 0, 2 except on R/C transmitters
+    if (!_isRcTransmitter) {
         axes[0] = -axes[0];
         axes[2] = -axes[2];
     }
@@ -177,10 +176,8 @@ Joystick::error_t Joystick::poll(float axes[6], uint8_t & buttonState)
         rescaleAxis(axes[3], -.68, +.78);
     }
 
-    // Check gimbal mode for R/C transmitters
-    if (_isRcTransmitter) {
-        _inGimbalMode = axes[AX_AU2] > 0.5;
-    }
+    // Check gimbal mode 
+    _inGimbalMode = axes[AX_AU2] > 0.5;
 
     return ERROR_NOERROR;
 }  
