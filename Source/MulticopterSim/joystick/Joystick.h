@@ -42,9 +42,78 @@ class Joystick {
         // handles failure to calibrate transmitter before run
         void rescaleAxis(float & value, float minval, float maxval);
 
-        void buttonsToAxes(uint8_t number, uint16_t value, float * axes);
-        void buttonsToAxesGamepad(uint8_t number, uint16_t value, float * axes, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft);
-        void buttonsToAxesInterlink(uint8_t number, uint16_t value, float * axes);
+    protected:
+
+        enum {
+
+            AX_THR,
+            AX_ROL,
+            AX_PIT,
+            AX_YAW,
+            AX_AU1,
+            AX_AU2,
+            AX_NIL
+        };
+
+        void buttonsToAxesInterlink(uint8_t number, uint16_t value, float * axes)
+        {
+            if (number == 0) {
+                axes[AX_AU2] = (float)!value;
+            }
+
+            if (number == 3 && value == 1) {
+                axes[AX_AU1] = -1.0;
+            }
+
+            if ((number == 3 || number == 4) && value == 0) {
+                axes[AX_AU1] = AUX1_MID;
+            }
+
+            if (number == 4 && value == 1) {
+                axes[AX_AU1] = 1.0;
+            }
+        }
+
+        void buttonsToAxes(uint8_t number, uint16_t value, float * axes)
+        {
+            switch (_productId) {
+
+                case Joystick::PRODUCT_INTERLINK:
+                    buttonsToAxesInterlink(number, value, axes);
+                    break;
+
+                case Joystick::PRODUCT_F310:
+                    buttonsToAxesGamepad(number, value, axes, 3, 2, 1, 0);
+
+                case Joystick::PRODUCT_XBOX360:
+                    buttonsToAxesGamepad(number, value, axes, 3, 1, 0, 2);
+            }
+        }
+
+        void buttonsToAxesGamepad(uint8_t number, uint16_t value, float * axes, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft)
+        {
+            static bool down;
+
+            if (value) {
+
+                if (!down) {
+
+                    // Left button sets AUX2
+                    if (number == lft) {
+                        axes[AX_AU2] *= -1;
+                    }
+
+                    // Other buttons set AUX1
+                    else {
+                        axes[AX_AU1] = (number == top) ? -1 : (number == rgt ? AUX1_MID : +1);
+                    }
+                }
+                down = true;
+            }
+            else {
+                down = false;
+            }
+        }
 
     public:
 

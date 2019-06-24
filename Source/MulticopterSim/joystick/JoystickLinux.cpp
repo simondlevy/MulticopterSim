@@ -22,17 +22,6 @@
 #define debug printf
 #endif
 
-enum {
-
-    AX_THR,
-    AX_ROL,
-    AX_PIT,
-    AX_YAW,
-    AX_AU1,
-    AX_AU2,
-    AX_NIL
-};
-
 // ------------------------------- 0       1       2       3       4       5       6       7 -----
 static uint8_t F310_MAP[8]      = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_NIL, AX_NIL, AX_NIL, AX_NIL};
 static uint8_t SPEKTRUM_MAP[8]  = {AX_YAW, AX_THR, AX_ROL, AX_PIT, AX_AU2, AX_NIL, AX_AU1, AX_NIL};
@@ -81,66 +70,6 @@ Joystick::Joystick(const char * devname)
     }
     else if (strstr(productName, "Microsoft X-Box 360 pad")) {
         _productId = PRODUCT_XBOX360;
-    }
-}
-
-void Joystick::buttonsToAxesGamepad(uint8_t number, uint16_t value, float * axes, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft)
-{
-    static bool down;
-
-    if (value) {
-
-        if (!down) {
-
-            // Left button sets AUX2
-            if (number == lft) {
-                axes[AX_AU2] *= -1;
-            }
-
-            // Other buttons set AUX1
-            else {
-                axes[AX_AU1] = (number == top) ? -1 : (number == rgt ? AUX1_MID : +1);
-            }
-        }
-        down = true;
-    }
-    else {
-        down = false;
-    }
-}
-
-void Joystick::buttonsToAxesInterlink(uint8_t number, uint16_t value, float * axes)
-{
-    if (number == 0) {
-        axes[AX_AU2] = (float)!value;
-    }
-
-    if (number == 3 && value == 1) {
-        axes[AX_AU1] = -1.0;
-    }
-
-    if ((number == 3 || number == 4) && value == 0) {
-        axes[AX_AU1] = AUX1_MID;
-    }
-
-    if (number == 4 && value == 1) {
-        axes[AX_AU1] = 1.0;
-    }
-}
-
-void Joystick::buttonsToAxes(uint8_t number, uint16_t value, float * axes)
-{
-    switch (_productId) {
-
-        case Joystick::PRODUCT_INTERLINK:
-            buttonsToAxesInterlink(number, value, axes);
-            break;
-
-        case Joystick::PRODUCT_F310:
-            buttonsToAxesGamepad(number, value, axes, 3, 2, 1, 0);
-
-        case Joystick::PRODUCT_XBOX360:
-            buttonsToAxesGamepad(number, value, axes, 3, 1, 0, 2);
     }
 }
 
