@@ -88,14 +88,16 @@ void Joystick::buttonsToAxesF310(uint8_t number, uint16_t value, float * axes)
     static bool down;
 
     if (value) {
+
         if (!down) {
 
             if (number > 0) {
+                static float auxvals[3] = {-1, AUX1_MID, +1};
+                axes[AX_AU1] = auxvals[3-number];
             }
             else {
                 axes[AX_AU2] *= -1;
             }
-
         }
         down = true;
     }
@@ -115,7 +117,7 @@ void Joystick::buttonsToAxesInterlink(uint8_t number, uint16_t value, float * ax
     }
 
     if ((number == 3 || number == 4) && value == 0) {
-        axes[AX_AU1] = 0.3; // positve but less than 0.5
+        axes[AX_AU1] = AUX1_MID;
     }
 
     if (number == 4 && value == 1) {

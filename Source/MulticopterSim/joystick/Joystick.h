@@ -31,6 +31,8 @@ class Joystick {
         static const uint16_t PRODUCT_PS4			        = 0x09cc;
         static const uint16_t PRODUCT_XBOX360_CLONE		    = 0xfafe;
 
+        static constexpr float AUX1_MID = 0.3f; // positve but less than 0.5
+
         uint16_t _productId = 0;
 
         int _joystickId = 0;
