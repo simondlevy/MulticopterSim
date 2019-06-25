@@ -54,6 +54,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
     private:
 
+		static constexpr float CAMERA_Z = 25;
+
         static const uint8_t MAX_MOTORS = 100; // silly but simple
 
         uint8_t _motorCount = 0;
@@ -370,7 +372,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             // Create a camera component 
             objects.camera = objects.pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
             objects.camera ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-			objects.camera->SetRelativeLocation(FVector(0, 0, 25));
+			objects.camera->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
             objects.camera->SetWorldScale3D(cameraScale);
             objects.camera->SetFieldOfView(90);
             objects.camera->SetAspectRatio(4./3);
@@ -379,6 +381,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             objects.capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("Capture"));
             objects.capture->SetWorldScale3D(cameraScale);
             objects.capture->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
+			objects.capture->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
             objects.capture->TextureTarget = objects.renderTarget;
             objects.capture->FOVAngle = 45;
          }
