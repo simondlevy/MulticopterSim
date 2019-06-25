@@ -40,10 +40,6 @@ private:
 
 	bool _isRcTransmitter = false;
 
-	// Special handling for RealFlight InterLink
-
-    void getAuxInterlink(float * axes, uint8_t number, uint8_t value);
-
 public:
 
     typedef enum {

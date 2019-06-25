@@ -67,22 +67,22 @@ Joystick::Joystick(const char * devname)
 }
 
 // Convert InterLink aux switches to unique gamepad buttons
-void Joystick::getAuxInterlink(float * axes, uint8_t number, uint8_t value)
+static void getAuxInterlink(float * axes, uint8_t number, uint8_t value, uint8_t aux1, uint8_t aux2, float auxMid)
 {
     if (number == 0) {
-        axes[AX_AU2] = (float)!value;
+        axes[aux2] = (float)!value;
     }
 
     if (number == 3 && value == 1) {
-        axes[AX_AU1] = -1.0;
+        axes[aux1] = -1.0;
     }
 
     if ((number == 3 || number == 4) && value == 0) {
-        axes[AX_AU1] = AUX1_MID;
+        axes[aux1] = auxMid;
     }
 
     if (number == 4 && value == 1) {
-        axes[AX_AU1] = 1.0;
+        axes[aux1] = 1.0;
     }
 }
 
@@ -143,7 +143,7 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 
         case JS_EVENT_BUTTON:
             if (_productId == PRODUCT_INTERLINK)  {
-                getAuxInterlink(_axes, js.number, js.value);
+                getAuxInterlink(_axes, js.number, js.value, AX_AU1, AX_AU2, AUX1_MID);
             }
             else {
                 buttons = js.value ? 1 << js.number : 0; // for Windows compatibility

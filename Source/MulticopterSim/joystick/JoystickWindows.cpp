@@ -55,6 +55,26 @@ Joystick::Joystick(const char * devname)
     }
 }
 
+// Convert InterLink aux switches to unique gamepad buttons
+static void getAuxInterlink(float * axes, uint8_t buttons, uint8_t aux1, uint8_t aux2, float auxMid)
+{
+	axes[aux1] = -1;
+	axes[aux2] = (buttons & 0x01) ? -1 : 1;
+
+	switch (buttons) {
+
+	case 3:
+	case 2:
+		axes[aux1] = auxMid;
+		break;
+
+	case 19:
+	case 18:
+		axes[aux1] = 1;
+	}
+}
+
+
 Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 {
     JOYINFOEX joyState;
@@ -94,8 +114,8 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
             break;
 
         case PRODUCT_INTERLINK:
-
             getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos);
+			getAuxInterlink(axes, joyState.dwButtons, AX_AU1, AX_AU2, AUX1_MID);
             break;
 
         default:
@@ -104,7 +124,7 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
     }
 
     // Normalize the axes to demands to [-1,+1]
-    for (uint8_t k=0; k<5; ++k) {
+    for (uint8_t k=0; k<4; ++k) {
         axes[k] = axes[k] / 32767 - 1;
     }
 
@@ -112,5 +132,6 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 
     return Joystick::ERROR_NOERROR;
 }
+
 
 #endif
