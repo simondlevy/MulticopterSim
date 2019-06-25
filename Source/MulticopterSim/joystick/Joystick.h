@@ -100,7 +100,6 @@ protected:
 		axes[AX_AU2] = _aux2;
 	}
 
-
 	error_t pollProduct(float axes[6], uint8_t & buttons);
 
 public:
