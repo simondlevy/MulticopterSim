@@ -64,7 +64,6 @@ class FVideoManager : public FThreadedWorker {
         void performTask(void)
         {
             static uint64_t count;
-            printf("%ld\n", count++);
 
             if (_ready) {
 
