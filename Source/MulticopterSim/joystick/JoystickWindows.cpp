@@ -97,13 +97,6 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
         case PRODUCT_INTERLINK:
 
             getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos);
-
-            // rescale axes (should be done in RealFlight!)
-            rescaleAxis(axes[0], 13161, 51336);                          
-            rescaleAxis(axes[1], 12623, 55342);
-            rescaleAxis(axes[2], 13698, 51335);
-            rescaleAxis(axes[3], 11818, 55159);
-
             break;
 
         default:
@@ -119,16 +112,6 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
     buttons = joyState.dwButtons;
 
     return Joystick::ERROR_NOERROR;
-}
-
-void Joystick::rescaleAxis(float & value, float minval, float maxval)
-{
-    if (value <= 32767) {
-        value = (value - minval) / (1 - minval/32767);
-    }
-    else {
-        value = 32767 *((value - 32767) / (maxval - 32767)  + 1);
-    }
 }
 
 #endif

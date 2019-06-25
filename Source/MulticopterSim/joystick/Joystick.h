@@ -41,34 +41,34 @@ private:
 	bool _isRcTransmitter = false;
 
 	// Special handling for RealFlight InterLink
-	void rescaleAxis(float & value, float minval, float maxval);
+
     void getAuxInterlink(float * axes, uint8_t number, uint8_t value);
 
 public:
 
-	typedef enum {
+    typedef enum {
 
-		ERROR_NOERROR,
-		ERROR_MISSING,
-		ERROR_PRODUCT
+        ERROR_NOERROR,
+        ERROR_MISSING,
+        ERROR_PRODUCT
 
-	} error_t;
+    } error_t;
 
 protected:
 
-	enum {
+    enum {
 
-		AX_THR,
-		AX_ROL,
-		AX_PIT,
-		AX_YAW,
-		AX_AU1,
-		AX_AU2,
-		AX_NIL
-	};
+        AX_THR,
+        AX_ROL,
+        AX_PIT,
+        AX_YAW,
+        AX_AU1,
+        AX_AU2,
+        AX_NIL
+    };
 
-	void buttonsToAxes(uint8_t buttons, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft, float * axes)
-	{
+    void buttonsToAxes(uint8_t buttons, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft, float * axes)
+    {
         static float _aux1 = 0;
         static float _aux2 = -1;
 
@@ -80,59 +80,59 @@ protected:
 
                 // Left button sets AUX2
                 if (buttons == lft) {
-					_aux2 *= -1;
-				}
+                    _aux2 *= -1;
+                }
 
-				// Other buttons set AUX1
-				else {
-					_aux1 = (buttons == top) ? -1 : (buttons == rgt ? AUX1_MID : +1);
-				}
+                // Other buttons set AUX1
+                else {
+                    _aux1 = (buttons == top) ? -1 : (buttons == rgt ? AUX1_MID : +1);
+                }
 
-				_down = true;
-			}
-		}
+                _down = true;
+            }
+        }
 
-		else {
-			_down = false;
-		}
+        else {
+            _down = false;
+        }
 
-		axes[AX_AU1] = _aux1;
-		axes[AX_AU2] = _aux2;
-	}
+        axes[AX_AU1] = _aux1;
+        axes[AX_AU2] = _aux2;
+    }
 
-	error_t pollProduct(float axes[6], uint8_t & buttons);
+    error_t pollProduct(float axes[6], uint8_t & buttons);
 
 public:
 
-	MULTICOPTERSIM_API Joystick(const char * devname = "/dev/input/js0"); // ignored by Windows
+    MULTICOPTERSIM_API Joystick(const char * devname = "/dev/input/js0"); // ignored by Windows
 
-	MULTICOPTERSIM_API error_t poll(float axes[6])
-	{
-		uint8_t buttons = 0;
+    MULTICOPTERSIM_API error_t poll(float axes[6])
+    {
+        uint8_t buttons = 0;
 
-		error_t status = pollProduct(axes, buttons);
+        error_t status = pollProduct(axes, buttons);
 
-		// Invert throttle, pitch axes except on R/C transmitters
-		if (!_isRcTransmitter) {
-			axes[AX_THR] *= -1;
-			axes[AX_PIT] *= -1;
-		}
+        // Invert throttle, pitch axes except on R/C transmitters
+        if (!_isRcTransmitter) {
+            axes[AX_THR] *= -1;
+            axes[AX_PIT] *= -1;
+        }
 
-		switch (_productId) {
+        switch (_productId) {
 
-		case PRODUCT_F310:
-			buttonsToAxes(buttons, 8, 4, 2, 1, axes);
-            break;
+            case PRODUCT_F310:
+                buttonsToAxes(buttons, 8, 4, 2, 1, axes);
+                break;
 
-		case PRODUCT_XBOX360:
-			buttonsToAxes(buttons, 8, 2, 1, 4, axes);
-		}
+            case PRODUCT_XBOX360:
+                buttonsToAxes(buttons, 8, 2, 1, 4, axes);
+        }
 
-		return status;
-	}
+        return status;
+    }
 
-	MULTICOPTERSIM_API bool isRcTransmitter(void)
-	{
-		return _isRcTransmitter;
-	}
+    MULTICOPTERSIM_API bool isRcTransmitter(void)
+    {
+        return _isRcTransmitter;
+    }
 };

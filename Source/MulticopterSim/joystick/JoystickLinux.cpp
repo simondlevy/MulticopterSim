@@ -155,25 +155,8 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
         axes[k] = _axes[k];
     }
 
-    // Rescale axes for RealFlight InterLink (should be done in RealFlight!)
-    if (_productId == PRODUCT_INTERLINK) {
-        rescaleAxis(axes[0], -.64, +.64);
-        rescaleAxis(axes[1], -.68, +.79);
-        rescaleAxis(axes[2], -.64, +.64);
-        rescaleAxis(axes[3], -.68, +.78);
-    }
-
     return ERROR_NOERROR;
 }  
 
-void Joystick::rescaleAxis(float & value, float minval, float maxval)
-{
-    if (value <= 0) {
-        value = -(value / minval);
-    }
-    else {
-        value /= maxval;
-    }
-}
 
 #endif
