@@ -20,17 +20,17 @@ class Joystick {
 
 private:
 
-	static const uint16_t PRODUCT_PS3_CLONE = 0x0003;
-	static const uint16_t PRODUCT_XBOX360 = 0x02a1;
-	static const uint16_t PRODUCT_XBOX360_CLONE2 = 0x028e;
+	static const uint16_t PRODUCT_PS3_CLONE        = 0x0003;
+	static const uint16_t PRODUCT_XBOX360          = 0x02a1;
+	static const uint16_t PRODUCT_XBOX360_CLONE2   = 0x028e;
 	static const uint16_t PRODUCT_XBOX360_WIRELESS = 0x0719;
-	static const uint16_t PRODUCT_INTERLINK = 0x0e56;
-	static const uint16_t PRODUCT_TARANIS = 0x5710;
-	static const uint16_t PRODUCT_SPEKTRUM = 0x572b;
-	static const uint16_t PRODUCT_EXTREMEPRO3D = 0xc215;
-	static const uint16_t PRODUCT_F310 = 0xc216;
-	static const uint16_t PRODUCT_PS4 = 0x09cc;
-	static const uint16_t PRODUCT_XBOX360_CLONE = 0xfafe;
+	static const uint16_t PRODUCT_INTERLINK        = 0x0e56;
+	static const uint16_t PRODUCT_TARANIS          = 0x5710;
+	static const uint16_t PRODUCT_SPEKTRUM         = 0x572b;
+	static const uint16_t PRODUCT_EXTREMEPRO3D     = 0xc215;
+	static const uint16_t PRODUCT_F310             = 0xc216;
+	static const uint16_t PRODUCT_PS4              = 0x09cc;
+	static const uint16_t PRODUCT_XBOX360_CLONE    = 0xfafe;
 
 	static constexpr float AUX1_MID = 0.3f; // positve but less than 0.5
 
@@ -40,11 +40,9 @@ private:
 
 	bool _isRcTransmitter = false;
 
-	float _aux1 = 0;
-	float _aux2 = -1;
-
-	// handles failure to calibrate transmitter before run
+	// Special handling for RealFlight InterLink
 	void rescaleAxis(float & value, float minval, float maxval);
+    void getAuxInterlink(float * axes, uint8_t number, uint8_t value);
 
 public:
 
@@ -69,37 +67,19 @@ protected:
 		AX_NIL
 	};
 
-	void buttonsToAxesInterlink(uint8_t buttons, float * axes)
+	void buttonsToAxes(uint8_t buttons, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft, float * axes)
 	{
-		/*
-		if (number == 0) {
-			axes[AX_AU2] = (float)!value;
-		}
+        static float _aux1 = 0;
+        static float _aux2 = -1;
 
-		if (number == 3 && value == 1) {
-			axes[AX_AU1] = -1.0;
-		}
+        static bool _down;
 
-		if ((number == 3 || number == 4) && value == 0) {
-			axes[AX_AU1] = AUX1_MID;
-		}
+        if (buttons) {
 
-		if (number == 4 && value == 1) {
-			axes[AX_AU1] = 1.0;
-		}
-		*/
-	}
+            if (!_down) {
 
-	void buttonsToAxesGamepad(uint8_t buttons, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft)
-	{
-		static bool _down;
-
-		if (buttons) {
-
-			if (!_down) {
-
-				// Left button sets AUX2
-				if (buttons == lft) {
+                // Left button sets AUX2
+                if (buttons == lft) {
 					_aux2 *= -1;
 				}
 
@@ -115,6 +95,9 @@ protected:
 		else {
 			_down = false;
 		}
+
+		axes[AX_AU1] = _aux1;
+		axes[AX_AU2] = _aux2;
 	}
 
 
@@ -138,19 +121,13 @@ public:
 
 		switch (_productId) {
 
-		case PRODUCT_INTERLINK:
-			//buttonsToAxesInterlink(number, value, axes);
-			break;
-
 		case PRODUCT_F310:
-			buttonsToAxesGamepad(buttons, 8, 4, 2, 1);
+			buttonsToAxes(buttons, 8, 4, 2, 1, axes);
+            break;
 
 		case PRODUCT_XBOX360:
-			buttonsToAxesGamepad(buttons, 8, 2, 1, 4);
+			buttonsToAxes(buttons, 8, 2, 1, 4, axes);
 		}
-
-		axes[AX_AU1] = _aux1;
-		axes[AX_AU2] = _aux2;
 
 		return status;
 	}

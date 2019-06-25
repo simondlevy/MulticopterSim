@@ -25,7 +25,7 @@ joytest: joytest.o JoystickLinux.o
 joytest.o: ../joytest.cpp 
 	g++ -c $(CFLAGS) -I$(JOYDIR) ../joytest.cpp 
 
-JoystickLinux.o: $(JOYDIR)/JoystickLinux.cpp
+JoystickLinux.o: $(JOYDIR)/JoystickLinux.cpp $(JOYDIR)/Joystick.h
 	g++ -c $(CFLAGS) -I$(JOYDIR) $(JOYDIR)/JoystickLinux.cpp
 
 clean:
