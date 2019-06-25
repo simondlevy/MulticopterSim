@@ -17,15 +17,6 @@
 #include <shlwapi.h>
 #include "joystickapi.h"
 
-static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4)
-{
-    axes[0] = (float)axis0;
-    axes[1] = (float)axis1;
-    axes[2] = (float)axis2;
-    axes[3] = (float)axis3;
-    axes[4] = (float)axis4;
-}
-
 static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3)
 {
 	axes[0] = (float)axis0;
@@ -33,6 +24,15 @@ static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD 
 	axes[2] = (float)axis2;
 	axes[3] = (float)axis3;
 }
+
+static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4)
+{
+	getAxes(axes, axis0, axis1, axis2, axis3);
+
+    axes[4] = (float)axis4;
+}
+
+
 
 Joystick::Joystick(const char * devname)
 {
