@@ -83,7 +83,7 @@ class SimReceiver : public hf::Receiver {
         if (!pollResult && inGimbalMode()) {
 
             // Get FOV from throttle, gimbal roll and yaw from cyclic stick
-            _gimbalFOV   = 90 - rawvals[0] * 45;
+            _gimbalFOV   = 90 - rawvals[0] * 45 + .5; // .5 = saftey margin
             _gimbalRoll  = rawvals[1];
             _gimbalPitch = rawvals[2];
 
