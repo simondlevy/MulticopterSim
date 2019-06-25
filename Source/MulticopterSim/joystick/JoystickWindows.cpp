@@ -79,7 +79,6 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
             getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos);
             break;
 
-
         case PRODUCT_F310:
             getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos);
             break;

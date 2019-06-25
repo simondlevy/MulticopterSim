@@ -125,6 +125,7 @@ public:
                 break;
 
             case PRODUCT_XBOX360:
+			case PRODUCT_XBOX360_CLONE2:
                 buttonsToAxes(buttons, 8, 2, 1, 4, axes);
         }
 
