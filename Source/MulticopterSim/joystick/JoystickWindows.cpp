@@ -32,8 +32,6 @@ static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD 
     axes[4] = (float)axis4;
 }
 
-
-
 Joystick::Joystick(const char * devname)
 {
     JOYCAPS joycaps = {0};
@@ -73,7 +71,6 @@ static void getAuxInterlink(float * axes, uint8_t buttons, uint8_t aux1, uint8_t
 		axes[aux1] = 1;
 	}
 }
-
 
 Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 {
