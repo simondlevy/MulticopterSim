@@ -5,4 +5,4 @@
 #
 # MIT License
 
-rm -rf *.txt Makefile *.sln *.pri *.kdev4 *.pro *.*workspace .vs/ Binaries/ DerivedDataCache/ Intermediate/ Saved/
+rm -rf WindowsNoEditor *.txt Makefile *.sln *.pri *.kdev4 *.pro *.*workspace .vs/ Build/ Binaries/ DerivedDataCache/ Intermediate/ Saved/

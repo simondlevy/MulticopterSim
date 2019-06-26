@@ -15,5 +15,7 @@ MulticopterSim.sln
 .vscode
 Extras/joytest/windows/Debug/
 Extras/joytest/windows/Release/
+Build/
+WindowsNoEditor/
 Extras/joytest/windows/x64/Release/
 *~
