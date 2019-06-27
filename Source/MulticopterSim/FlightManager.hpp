@@ -71,7 +71,7 @@ class FFlightManager : public FThreadedWorker {
                     loc[0], loc[1], loc[2]);
                     */
 
-            dbgprintf("FPS: %d", (int)(++_count/time));
+            //dbgprintf("FPS: %d", (int)(++_count/time));
         }
 
     protected:
