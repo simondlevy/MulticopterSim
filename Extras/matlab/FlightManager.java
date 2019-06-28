@@ -36,8 +36,6 @@ class FlightManager {
             while (true) {
                 long time = System.currentTimeMillis();
                 if (time != prev) {
-                    System.out.printf("%02x %02x %02x %02x %02x %02x %02x %02x\n",
-                            bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]);
                     socket.send(packet);
                     prev = time;
                 }
