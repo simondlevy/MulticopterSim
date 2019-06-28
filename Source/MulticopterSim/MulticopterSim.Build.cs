@@ -18,6 +18,6 @@ public class MulticopterSim : ModuleRules
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PublicDependencyModuleNames.AddRange(new string[] 
-                { "Core", "CoreUObject", "Engine", "InputCore", "SimPlugin" });
+                { "Core", "CoreUObject", "Engine", "InputCore", "SimModule" });
     }
 }
