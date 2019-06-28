@@ -1,11 +1,6 @@
-import java.io.*;
-import java.net.DatagramSocket;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.nio.ByteBuffer;
-
 class ByteConverter {
 
+    // Adapted from view-source:https://stackoverflow.com/questions/2905556/how-can-i-convert-a-byte-array-into-a-double-and-back
     public static byte[] toByteArray(double d) {
 
         long l = Double.doubleToRawLongBits(d);
@@ -17,31 +12,5 @@ class ByteConverter {
         }
 
         return bytes;
-    }
-
-    private static String HOST = "127.0.0.1";
-    private static short  PORT = 5000;
-
-    public static void main(String [] args)
-    {
-        try {
-            InetAddress addr = InetAddress.getByName(HOST);
-            DatagramSocket socket = new DatagramSocket();
-            byte [] bytes = toByteArray(53);
-            DatagramPacket packet = new DatagramPacket(bytes, 8, addr, PORT);
-
-            long prev = 0;
-
-            while (true) {
-                long time = System.currentTimeMillis();
-                if (time != prev) {
-                    socket.send(packet);
-                    prev = time;
-                }
-            }
-
-        } catch (Exception e) {
-            System.err.println(e);
-        }
     }
 }

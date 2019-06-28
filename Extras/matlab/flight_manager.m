@@ -9,8 +9,6 @@
 %
 % MIT License
 
-msg = uint8([1,2,3,4,5,6,7,8]);
-
 host = '127.0.0.1';
 port = 5000;
 
@@ -18,6 +16,10 @@ import java.io.*
 import java.net.DatagramSocket
 import java.net.DatagramPacket
 import java.net.InetAddress
+
+import ByteConverter
+
+msg = ByteConverter.toByteArray(45)
 
 addr = InetAddress.getByName(host);
 socket = DatagramSocket;
