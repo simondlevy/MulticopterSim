@@ -56,15 +56,15 @@ do the following:
 1. Clone the master branch of this repostitory into your <b>Documents/Unreal Projects</b> folder, first creating that folder if it
    doesn't exist.
    
-2. Clone the  [HackflightPlugin](https://github.com/simondlevy/MulticopterSim/tree/HackflightPlugin) branch
-of the repository onto your desktop, rename it <b>SimPlugin</b>, and drag the
-<b>SimPlugin</b> folder into the <b>MulticopterSim/Source</b> folder.
+2. Clone the  [HackflightModule](https://github.com/simondlevy/MulticopterSim/tree/HackflightModule) branch
+of the repository onto your desktop, rename it <b>SimModule</b>, and drag the
+<b>SimModule</b> folder into the <b>MulticopterSim/Source</b> folder.
 
 3. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
 where MulticopterSim 
-[looks for](https://github.com/simondlevy/MulticopterSim/blob/HackflightPlugin/Source/SimPlugin/SimPlugin.Build.cs#L23)
+[looks for](https://github.com/simondlevy/MulticopterSim/blob/HackflightModule/Source/SimModule/SimModule.Build.cs#L23)
 the Hackflight software.)
 
 4. Follow the next steps to complete the build on your OS.
@@ -132,11 +132,11 @@ in a predator/prey scenario.
 
 This simplicity of our flight-control scheme makes it easy to connect
 MulticopterSim to existing flight-control software like Hackflight, or even to 
-another programming languge like Python, as plugins to the main MulticopterSim
+another programming languge like Python, as modules to the main MulticopterSim
 codebase.  Instead of using HackflightSim, you can use your own flight-control
-software with MultiCopterSim, by creating your own <b>SimPlugin</b> folder in
+software with MultiCopterSim, by creating your own <b>SimModule</b> folder in
 the <b>Source</b> folder.  The
-[NullPlugin](https://github.com/simondlevy/MulticopterSim/tree/NullPlugin)
+[NullModule](https://github.com/simondlevy/MulticopterSim/tree/NullModule)
 branch contains a stubbed implementation of the
 [FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp)
 class that should help you get started.
@@ -146,26 +146,26 @@ class that should help you get started.
 To enable projects using machine vision, MulticopterSim includes support for the popular OpenCV package.
 To get started using OpenCV with MulticopterSim, you should do the following:
 
-1. Clone the [OpenCVPlugin](https://github.com/simondlevy/MulticopterSim/tree/OpenCVPlugin) branch
+1. Clone the [OpenCVModule](https://github.com/simondlevy/MulticopterSim/tree/OpenCVModule) branch
 of the repository.
 
 3. After building the game, copy the file <b>opencv_world340.dll</b> from the <b>ThirdParty/OpenCV/Libraries/Win64/</b> to <b>Binaries/Win64/</b>.
 
 # Support for Python
 
-The [PythonPlugin](https://github.com/simondlevy/MulticopterSim/tree/PythonPlugin) branch supports a FlightManager written entirely in Python.
-To try this out, clone this branch into <b>MulticopterSim/Source</b>, rename it <b>SimPlugin</b>, and in the <b>SimPlugin/python</b> folder run
+The [PythonModule](https://github.com/simondlevy/MulticopterSim/tree/PythonModule) branch supports a FlightManager written entirely in Python.
+To try this out, clone this branch into <b>MulticopterSim/Source</b>, rename it <b>SimModule</b>, and in the <b>SimModule/python</b> folder run
 <tt>python3 setup.py install</tt>.  This basic demo will make the vehicle climb to an altitude of 20m, then descend back to the ground.
 Once you've got the basic demo working, you can modify the Python 
-[FlightManager.py](https://github.com/simondlevy/MulticopterSim/blob/PythonPlugin/python/multicopter_sim/__init__.py#L8-L25)
+[FlightManager.py](https://github.com/simondlevy/MulticopterSim/blob/PythonModule/python/multicopter_sim/__init__.py#L8-L25)
 class to do what you like.
 
 # Support for Nengo
 
-The [NengoPlugin](https://github.com/simondlevy/MulticopterSim/tree/NengoPlugin) branch supports flying with a combination
+The [NengoModule](https://github.com/simondlevy/MulticopterSim/tree/NengoModule) branch supports flying with a combination
 of Hackflight for general flight control and an altitude-hold PID controller
-using the [Nengo](https://www.nengo.ai/) neural simulation package.  To use this plugin, you should first install Nengo.
-Then install the plugin in a folder called <b>SimPlugin</b> in the <b>MulticopterSim/Source</b> folder.  Finally, in the
-<b>MulticopterSim/Source/SimPlugin/python</b> folder, run <tt>python3 setup.py
+using the [Nengo](https://www.nengo.ai/) neural simulation package.  To use this module, you should first install Nengo.
+Then install the module in a folder called <b>SimModule</b> in the <b>MulticopterSim/Source</b> folder.  Finally, in the
+<b>MulticopterSim/Source/SimModule/python</b> folder, run <tt>python3 setup.py
 install</tt>.  The altitude-hold will kick in when you move the auxiliary
 switch to its third position.
