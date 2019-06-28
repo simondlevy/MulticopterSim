@@ -10,17 +10,21 @@ class FlightManager {
     private static short  PORT = 5000;
 
     private static byte[] toByteArray(double d) {
+
         long l = Double.doubleToRawLongBits(d);
-        return new byte[] {
-            (byte)((l >> 0) & 0xff),
-                (byte)((l >> 8) & 0xff),
-                (byte)((l >> 16) & 0xff), 
-                (byte)((l >> 24) & 0xff),
-                (byte)((l >> 32) & 0xff),
-                (byte)((l >> 40) & 0xff),
-                (byte)((l >> 48) & 0xff),
-                (byte)((l >> 56) & 0xff),
-        };
+
+        byte [] bytes = new byte[8];
+
+        bytes[0] = (byte)((l >> 0) & 0xff);
+        bytes[1] = (byte)((l >> 8) & 0xff);
+        bytes[2] = (byte)((l >> 16) & 0xff); 
+        bytes[3] = (byte)((l >> 24) & 0xff);
+        bytes[4] = (byte)((l >> 32) & 0xff);
+        bytes[5] = (byte)((l >> 40) & 0xff);
+        bytes[6] = (byte)((l >> 48) & 0xff);
+        bytes[7] = (byte)((l >> 56) & 0xff);
+
+        return bytes;
     }
 
     public static void main(String [] args)
