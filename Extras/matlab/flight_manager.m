@@ -9,8 +9,9 @@
 %
 % MIT License
 
-host = '127.0.0.1';
-port = 5000;
+HOST = '127.0.0.1';
+MOTOR_PORT = 5000;
+TELEM_PORT = 5001;
 
 import java.io.*
 import java.net.DatagramSocket
@@ -19,17 +20,18 @@ import java.net.InetAddress
 
 import ByteConverter
 
-msg = ByteConverter.toByteArray([2,3,5,7]);
+addr = InetAddress.getByName(HOST);
 
-addr = InetAddress.getByName(host);
-socket = DatagramSocket;
-socket.setReuseAddress(1);
-packet = DatagramPacket(msg, length(msg), addr, port);
+motorSocket = DatagramSocket;
+motorSocket.setReuseAddress(1);
 
-for k = 1:10000
+while true
+    
+    motorBytes = ByteConverter.toByteArray(0.6*ones(1,4));
+    motorPacket = DatagramPacket(motorBytes, length(motorBytes), addr, MOTOR_PORT);
     
     try
-        socket.send(packet);
+        motorSocket.send(motorPacket);
     catch sendPacketError
         try
             socket.close;
@@ -41,10 +43,8 @@ for k = 1:10000
         
     end % try
     
-    fprintf('%d\n', k)
-    
 end
 
-socket.close
+motorSocket.close
 
 
