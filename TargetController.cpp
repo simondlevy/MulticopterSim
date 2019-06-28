@@ -58,7 +58,7 @@ class LorenzTargetController : public TargetController {
 }; 
 
 // Factory method for TargetController class
-SIMPLUGIN_API TargetController * createTargetController(void)
+FLIGHTMODULE_API TargetController * createTargetController(void)
 {
     return new LorenzTargetController();
 }
