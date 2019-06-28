@@ -9,7 +9,7 @@
 %
 % MIT License
 
-msg = int8([1,2,3,4]);
+msg = uint8([1,2,3,4,5,6,7,8]);
 
 host = '127.0.0.1';
 port = 5000;
