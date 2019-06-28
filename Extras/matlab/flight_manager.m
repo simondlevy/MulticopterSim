@@ -65,7 +65,9 @@ while true
     
     end % try   
     
-    fprintf('%d\n', count);
+    telemetry = telemetryPacket.getData;
+    
+    fprintf('%5d: %d\n', count, length(telemetry));
     count = count + 1;
         
 
