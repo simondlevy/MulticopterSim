@@ -1,5 +1,5 @@
 /*
- * Build script for SimPlugin
+ * Build script for FlightModule
  *
  * Copyright (C) 2018 Simon D. Levy
  *
@@ -11,7 +11,7 @@ using UnrealBuildTool;
 using System;
 using System.IO;
 
-public class SimPlugin : ModuleRules
+public class FlightModule : ModuleRules
 {
     // https://stackoverflow.com/questions/5116977/how-to-check-the-os-version-at-runtime-e-g-windows-or-linux-without-using-a-con
     private static bool IsLinux
@@ -23,7 +23,7 @@ public class SimPlugin : ModuleRules
         }
     }
 
-    public SimPlugin(ReadOnlyTargetRules Target) : base(Target)
+    public FlightModule(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
