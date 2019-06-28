@@ -54,15 +54,15 @@ while true
     
     try
         telemetrySocket.receive(telemetryPacket);
+        
     catch receivePacketError
         try
             telemetrySocket.close;
         catch
-            break
         end % try
-        
-        error('%s.m--Failed to receive UDP packet.\nJava error message follows:\n%s',mfilename,receivePacketError.message);
-        
+    
+        break
+    
     end % try   
     
     fprintf('%d\n', count);
