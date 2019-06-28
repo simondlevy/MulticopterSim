@@ -3,7 +3,7 @@ Binaries/
 Intermediate/
 Saved/
 Content/StarterContent/
-Source/SimPlugin/
+Source/FlightModule/
 MulticopterSim.sln
 *.swp
 *.VC.db

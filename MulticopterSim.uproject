@@ -13,7 +13,7 @@
 			]
 		},
 		{
-			"Name": "SimPlugin",
+			"Name": "FlightModule",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
