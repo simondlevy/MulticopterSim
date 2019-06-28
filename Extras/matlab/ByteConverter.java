@@ -1,9 +1,9 @@
 class ByteConverter {
 
     // Adapted from view-source:https://stackoverflow.com/questions/2905556/how-can-i-convert-a-byte-array-into-a-double-and-back
-    public static byte[] toByteArray(double d) {
-
-        long l = Double.doubleToRawLongBits(d);
+    public static byte[] toByteArray(double [] vals)
+    {
+        long l = Double.doubleToRawLongBits(vals[0]);
 
         byte [] bytes = new byte[8];
 
