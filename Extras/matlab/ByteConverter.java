@@ -4,12 +4,9 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
-class FlightManager {
+class ByteConverter {
 
-    private static String HOST = "127.0.0.1";
-    private static short  PORT = 5000;
-
-    private static byte[] toByteArray(double d) {
+    public static byte[] toByteArray(double d) {
 
         long l = Double.doubleToRawLongBits(d);
 
@@ -21,6 +18,9 @@ class FlightManager {
 
         return bytes;
     }
+
+    private static String HOST = "127.0.0.1";
+    private static short  PORT = 5000;
 
     public static void main(String [] args)
     {
