@@ -25,8 +25,17 @@ addr = InetAddress.getByName(HOST);
 motorSocket = DatagramSocket;
 motorSocket.setReuseAddress(1);
 
+telemetrySocket = DatagramSocket(TELEM_PORT);
+telemetrySocket.setReuseAddress(1);
+telemetrySocket.setSoTimeout(1000);
+
+telemetryBytes = ByteConverter.toByteArray(zeros(1,1));
+telemetryPacket = DatagramPacket(telemetryBytes, 8);
+
+count = 0;
+
 while true
-    
+   
     motorBytes = ByteConverter.toByteArray(0.6*ones(1,4));
     motorPacket = DatagramPacket(motorBytes, length(motorBytes), addr, MOTOR_PORT);
     
@@ -34,14 +43,32 @@ while true
         motorSocket.send(motorPacket);
     catch sendPacketError
         try
-            socket.close;
+            motorSocket.close;
         catch
             % do nothing.
         end % try
         
         error('%s.m--Failed to send UDP packet.\nJava error message follows:\n%s',mfilename,sendPacketError.message);
         
-    end % try
+    end % try    
+    
+    try
+        telemetrySocket.receive(telemetryPacket);
+    catch receivePacketError
+        try
+            telemetrySocket.close;
+        catch
+            break
+        end % try
+        
+        error('%s.m--Failed to receive UDP packet.\nJava error message follows:\n%s',mfilename,receivePacketError.message);
+        
+    end % try   
+    
+    fprintf('%d\n', count);
+    count = count + 1;
+        
+
     
 end
 
