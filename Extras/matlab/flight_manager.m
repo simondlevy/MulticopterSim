@@ -17,11 +17,9 @@ import java.net.DatagramSocket
 import java.net.DatagramPacket
 import java.net.InetAddress
 
-javaaddpath('.')
-
 import ByteConverter
 
-msg = ByteConverter.toByteArray([1,2,3]);
+msg = ByteConverter.toByteArray([2,3,5,7]);
 
 addr = InetAddress.getByName(host);
 socket = DatagramSocket;
