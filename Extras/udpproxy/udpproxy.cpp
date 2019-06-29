@@ -18,6 +18,63 @@ static const short  MOTOR_PORT = 5000;
 static const short  TELEM_PORT = 5001;
 static const double DELTA_T    = 0.001;
 
+static MultirotorDynamics::params_t _params = {
+
+    // Dynamics: Amir's calculations
+    5.30216718361085E-05,   // b
+    2.23656692806239E-06,   // d
+    16.47,                  // m
+    0.6,                    // l
+    2,                      // Ix
+    2,                      // Iy
+    3,                      // Iz
+    3.08013E-04,            // Jr
+
+    // maxrpm, estimated
+    15000
+};
+
+class QuadXAP : public MultirotorDynamics {
+
+    protected:
+
+        // MultirotorDynamics method overrides
+
+        // roll right
+        virtual double u2(double * o) override
+        {
+            return (o[1] + o[2]) - (o[0] + o[3]);
+        }
+
+        // pitch forward
+        virtual double u3(double * o) override
+        {
+            return (o[1] + o[3]) - (o[0] + o[2]);
+        }
+
+        // yaw cw
+        virtual double u4(double * o) override
+        {
+            return (o[0] + o[1]) - (o[2] + o[3]);
+        }
+
+        // motor direction for animation
+        virtual int8_t motorDirection(uint8_t i) override
+        {
+            const int8_t dir[4] = {-1, -1, +1, +1};
+            return dir[i];
+        }
+
+
+    public:
+
+        QuadXAP(const params_t & params)
+            : MultirotorDynamics(params, 4)
+        {
+        }
+
+}; // class QuadXAP
+
 int main(int argc, char ** argv)
 {
     UdpServerSocket motorServer = UdpServerSocket(MOTOR_PORT);
