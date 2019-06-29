@@ -20,10 +20,11 @@ int main(int argc, char ** argv)
 
         motorServer.receiveData(motorvals, 32);
 
-        double tmp = 0;
-        telemClient.sendData(&tmp, sizeof(double));
+        double telem = 99;
+        telemClient.sendData(&telem, sizeof(double));
 
-        printf("%d\n", count++);
+        printf("%06d: %f %f %f %f\n", 
+                count++, motorvals[0], motorvals[1], motorvals[2], motorvals[3], motorvals[4]);
     }
 
     motorServer.closeConnection();

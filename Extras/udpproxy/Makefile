@@ -23,6 +23,9 @@ udpproxy.o: udpproxy.cpp
 test: udpproxy
 	./udpproxy
 
+run: udpproxy
+	./udpproxy
+
 edit:
 	vim udpproxy.cpp
 

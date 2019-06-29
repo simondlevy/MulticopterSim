@@ -58,7 +58,11 @@ class Multicopter extends Thread {
             catch (Exception e) {
             }
 
-            System.out.printf("%05d\n", count);
+            System.out.printf("%d: ", count);
+            for (int i=0; i<8; ++i) {
+                System.out.printf("%X ", telemetryBytes[i]);
+            }
+            System.out.println();
             count++;
 
             yield();
