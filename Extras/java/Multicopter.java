@@ -1,12 +1,12 @@
 /*
- Java Multicopter class
+   Java Multicopter class
 
- Uses UDP sockets to communicate with MulticopterSim
+   Uses UDP sockets to communicate with MulticopterSim
 
- Copyright(C) 2019 Simon D.Levy
+   Copyright(C) 2019 Simon D.Levy
 
- MIT License
-*/
+   MIT License
+ */
 
 import java.lang.Thread;
 import java.io.*;
@@ -32,9 +32,11 @@ class Multicopter extends Thread {
 
         while (_running) {
 
-            //_motorVals[0] = 0.6;
-           //byte [] motorBytes = ByteConverter.toByteArray(0.6*ones(1,4));
-           //motorPacket = DatagramPacket(motorBytes, length(motorBytes), addr, MOTOR_PORT);
+            getMotors();
+
+            byte [] motorBytes = doublesToBytes(_motorVals);
+
+            DatagramPacket motorPacket = new DatagramPacket(motorBytes, motorBytes.length, _addr, _motorPort);
 
             yield();
         }
@@ -42,44 +44,13 @@ class Multicopter extends Thread {
         _motorSocket.close();
         _telemSocket.close();
 
-        //telemetryBytes = ByteConverter.toByteArray(zeros(1,1));
-        //telemetryPacket = DatagramPacket(telemetryBytes, 8);
-        /*
-           while true
+    } // run
 
-           try
-           motorSocket.send(motorPacket);
-           catch sendPacketError
-           try
-           motorSocket.close;
-           catch
-           % do nothing.
-           end % try
-
-           error('%s.m--Failed to send UDP packet.\nJava error message follows:\n%s',mfilename,sendPacketError.message);
-
-           end % try    
-
-           try
-           _telemSocket.receive(telemetryPacket);
-
-           catch receivePacketError
-           try
-           _telemSocket.close;
-           catch
-           end % try
-
-           break
-
-           end % try   
-
-           telemetry = telemetryPacket.getData;
-
-           %fprintf('%5d: %d\n', count, length(telemetry));
-           count = count + 1;
-
-           end
-         */
+    private void getMotors()
+    {
+        for (int i=0; i<_motorVals.length; ++i) {
+            _motorVals[i] = 0.6;
+        }
     }
 
     public void halt()
