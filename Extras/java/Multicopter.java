@@ -125,7 +125,7 @@ class Multicopter extends Thread {
 
     // Adapted from view-source:https://stackoverflow.com/questions/2905556/how-can-i-convert-a-byte-array-into-a-double-and-back
 
-    public static byte[] doublesToBytes(double [] doubles)
+    private static byte[] doublesToBytes(double [] doubles)
     {
         int n = doubles.length;
 
@@ -143,7 +143,7 @@ class Multicopter extends Thread {
         return bytes;
     }
 
-    public static double[] bytesToDoubles(byte [] bytes)
+    private static double[] bytesToDoubles(byte [] bytes)
     {
         int n = bytes.length>>3;
 
