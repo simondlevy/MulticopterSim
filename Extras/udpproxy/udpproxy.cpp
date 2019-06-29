@@ -18,7 +18,7 @@ static const short  MOTOR_PORT = 5000;
 static const short  TELEM_PORT = 5001;
 static const double DELTA_T    = 0.001;
 
-static MultirotorDynamics::params_t _params = {
+static MultirotorDynamics::params_t bigQuadParams = {
 
     // Dynamics: Amir's calculations
     5.30216718361085E-05,   // b
@@ -58,14 +58,6 @@ class QuadXAP : public MultirotorDynamics {
             return (o[0] + o[1]) - (o[2] + o[3]);
         }
 
-        // motor direction for animation
-        virtual int8_t motorDirection(uint8_t i) override
-        {
-            const int8_t dir[4] = {-1, -1, +1, +1};
-            return dir[i];
-        }
-
-
     public:
 
         QuadXAP(const params_t & params)
@@ -79,6 +71,8 @@ int main(int argc, char ** argv)
 {
     UdpServerSocket motorServer = UdpServerSocket(MOTOR_PORT);
     UdpClientSocket telemClient = UdpClientSocket(HOST, TELEM_PORT);
+
+    QuadXAP quad = QuadXAP(bigQuadParams);
 
     int count = 0;
 

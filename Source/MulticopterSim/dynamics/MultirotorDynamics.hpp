@@ -151,7 +151,7 @@ class MultirotorDynamics {
         virtual double u4(double * o) = 0;
 
         // motor direction for animation
-        virtual int8_t motorDirection(uint8_t i) = 0;
+        virtual int8_t motorDirection(uint8_t i) { (void)i; return 0; }
 
          /**
          *  Constructor
