@@ -78,12 +78,20 @@ int main(int argc, char ** argv)
 
     double time = 0;
 
+    MultirotorDynamics::pose_t pose = {0};
+
+    quad.init(pose);
+
     while (true) {
 
         double motorvals[4] = {0};
 
         motorServer.receiveData(motorvals, 32);
 
+        quad.setMotors(motorvals);
+
+        quad.update(DELTA_T);
+        
         // Time Gyro, Quat, Location, Rotation
         double telemetry[14];
 
