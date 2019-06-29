@@ -1,6 +1,9 @@
 Multicopter.class : Multicopter.java
 	javac Multicopter.java
 
+test: Multicopter.class
+	java Multicopter
+
 edit:
 	vim Multicopter.java
 

@@ -8,12 +8,13 @@
  MIT License
 */
 
+import java.lang.Thread;
 import java.io.*;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
-class Multicopter {
+class Multicopter extends Thread {
 
     public Multicopter(String host, int motorPort, int telemetryPort)
     {
@@ -33,8 +34,11 @@ class Multicopter {
         }
     }
 
-    public void start()
+    public void run()
     {
+        while (true) {
+        }
+
             //telemetryBytes = ByteConverter.toByteArray(zeros(1,1));
             //telemetryPacket = DatagramPacket(telemetryBytes, 8);
         /*
@@ -78,9 +82,10 @@ class Multicopter {
          */
     }
 
-    public void stop()
+    public void close()
     {
-        //motorSocket.close();
+        _motorSocket.close();
+        _telemSocket.close();
     }
 
 
@@ -118,5 +123,9 @@ class Multicopter {
     public static void main(String [] args)
     {
         Multicopter copter = new Multicopter("127.0.0.1", 5000, 5001);
+
+        copter.start();
+
+        System.out.println("okay");
     }
 }
