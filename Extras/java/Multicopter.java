@@ -32,15 +32,28 @@ class Multicopter extends Thread {
         catch (Exception e) {
             handleException(e);
         }
+
+        _running = false;
     }
 
     public void run()
     {
-        while (true) {
+        _running = true;
+
+        while (_running) {
+            try {
+                Thread.sleep(1);
+            }
+            catch (Exception e) {
+            }
+
         }
 
-            //telemetryBytes = ByteConverter.toByteArray(zeros(1,1));
-            //telemetryPacket = DatagramPacket(telemetryBytes, 8);
+        _motorSocket.close();
+        _telemSocket.close();
+
+        //telemetryBytes = ByteConverter.toByteArray(zeros(1,1));
+        //telemetryPacket = DatagramPacket(telemetryBytes, 8);
         /*
            while true
 
@@ -82,15 +95,16 @@ class Multicopter extends Thread {
          */
     }
 
-    public void close()
+    public void halt()
     {
-        _motorSocket.close();
-        _telemSocket.close();
+        _running = false;
     }
 
 
     private int _motorPort;
     private int _telemPort;
+
+    private boolean _running;
 
     InetAddress _addr;
 
@@ -126,6 +140,12 @@ class Multicopter extends Thread {
 
         copter.start();
 
-        System.out.println("okay");
+        try {
+            Thread.sleep(1000);
+        }
+        catch (Exception e) {
+        }
+
+        copter.halt();
     }
 }
