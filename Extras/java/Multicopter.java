@@ -16,24 +16,14 @@ import java.net.InetAddress;
 
 class Multicopter extends Thread {
 
+    public Multicopter(String host, int motorPort, int telemetryPort, int motorCount)
+    {
+        construct(host, motorPort, telemetryPort, motorCount);
+    }
+
     public Multicopter(String host, int motorPort, int telemetryPort)
     {
-        _motorPort = motorPort;
-        _telemPort = telemetryPort;
-
-        try {
-            _addr = InetAddress.getByName(host);
-            _motorSocket = new DatagramSocket();
-            _motorSocket.setReuseAddress(true);
-            _telemSocket = new DatagramSocket(telemetryPort);
-            _telemSocket.setReuseAddress(true);
-            _telemSocket.setSoTimeout(1000);
-        } 
-        catch (Exception e) {
-            handleException(e);
-        }
-
-        _running = false;
+        construct(host, motorPort, telemetryPort, 4);
     }
 
     public void run()
@@ -41,6 +31,10 @@ class Multicopter extends Thread {
         _running = true;
 
         while (_running) {
+
+            //_motorVals[0] = 0.6;
+           //byte [] motorBytes = ByteConverter.toByteArray(0.6*ones(1,4));
+           //motorPacket = DatagramPacket(motorBytes, length(motorBytes), addr, MOTOR_PORT);
 
             yield();
         }
@@ -52,9 +46,6 @@ class Multicopter extends Thread {
         //telemetryPacket = DatagramPacket(telemetryBytes, 8);
         /*
            while true
-
-           motorBytes = ByteConverter.toByteArray(0.6*ones(1,4));
-           motorPacket = DatagramPacket(motorBytes, length(motorBytes), addr, MOTOR_PORT);
 
            try
            motorSocket.send(motorPacket);
@@ -96,9 +87,33 @@ class Multicopter extends Thread {
         _running = false;
     }
 
+    private void construct(String host, int motorPort, int telemetryPort, int motorCount)
+    {
+        _motorPort = motorPort;
+        _telemPort = telemetryPort;
+
+        try {
+            _addr = InetAddress.getByName(host);
+            _motorSocket = new DatagramSocket();
+            _motorSocket.setReuseAddress(true);
+            _telemSocket = new DatagramSocket(telemetryPort);
+            _telemSocket.setReuseAddress(true);
+            _telemSocket.setSoTimeout(1000);
+        } 
+        catch (Exception e) {
+            handleException(e);
+        }
+
+        _motorVals = new double [motorCount];
+
+        _running = false;
+    }
+
 
     private int _motorPort;
     private int _telemPort;
+
+    private double [] _motorVals;
 
     private boolean _running;
 
