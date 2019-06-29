@@ -1,3 +1,11 @@
+/*
+   UDP proxy for testing MulticopterSim socket comms
+
+   Copyright(C) 2019 Simon D.Levy
+
+   MIT License
+ */
+
 #include <stdio.h>
 
 #include "sockets/UdpServerSocket.hpp"
