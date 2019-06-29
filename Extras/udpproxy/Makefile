@@ -18,7 +18,7 @@ udpproxy: udpproxy.o
 	g++ -o udpproxy udpproxy.o 
 
 udpproxy.o: udpproxy.cpp
-	g++ $(CFLAGS) -Isockets -c udpproxy.cpp
+	g++ $(CFLAGS) -Isockets -I../../Source/MulticopterSim/dynamics -c udpproxy.cpp
 
 test: udpproxy
 	./udpproxy
