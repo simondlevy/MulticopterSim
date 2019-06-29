@@ -91,6 +91,10 @@ int main(int argc, char ** argv)
         quad.setMotors(motorvals);
 
         quad.update(DELTA_T);
+
+        MultirotorDynamics::state_t state = {0};
+
+        quad.getState(state);
         
         // Time Gyro, Quat, Location, Rotation
         double telemetry[14];
