@@ -38,6 +38,13 @@ class Multicopter extends Thread {
 
             DatagramPacket motorPacket = new DatagramPacket(motorBytes, motorBytes.length, _addr, _motorPort);
 
+            try {
+                _motorSocket.send(motorPacket);
+            }
+            catch (Exception e) {
+                handleException(e);
+            }
+
             yield();
         }
 
