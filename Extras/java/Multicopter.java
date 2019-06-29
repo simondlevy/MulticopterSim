@@ -16,6 +16,8 @@ import java.net.InetAddress;
 
 class Multicopter extends Thread {
 
+    private final int TIMEOUT = 1000;
+
     public Multicopter(String host, int motorPort, int telemetryPort, int motorCount)
     {
         construct(host, motorPort, telemetryPort, motorCount);
@@ -29,6 +31,8 @@ class Multicopter extends Thread {
     public void run()
     {
         _running = true;
+
+        int count = 0;
 
         while (_running) {
 
@@ -44,6 +48,18 @@ class Multicopter extends Thread {
             catch (Exception e) {
                 handleException(e);
             }
+
+            byte [] telemetryBytes = new byte[8];
+            DatagramPacket telemetryPacket = new DatagramPacket(telemetryBytes, telemetryBytes.length, _addr, _telemPort);
+
+            try {
+                _telemSocket.receive(telemetryPacket);
+            }
+            catch (Exception e) {
+            }
+
+            System.out.printf("%05d\n", count);
+            count++;
 
             yield();
         }
@@ -76,7 +92,7 @@ class Multicopter extends Thread {
             _motorSocket.setReuseAddress(true);
             _telemSocket = new DatagramSocket(telemetryPort);
             _telemSocket.setReuseAddress(true);
-            _telemSocket.setSoTimeout(1000);
+            _telemSocket.setSoTimeout(TIMEOUT);
         } 
         catch (Exception e) {
             handleException(e);
@@ -130,7 +146,7 @@ class Multicopter extends Thread {
         copter.start();
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(10000);
         }
         catch (Exception e) {
         }
