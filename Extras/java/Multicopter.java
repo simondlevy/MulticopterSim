@@ -58,11 +58,10 @@ class Multicopter extends Thread {
             catch (Exception e) {
             }
 
-            System.out.printf("%d: ", count);
-            for (int i=0; i<8; ++i) {
-                System.out.printf("%X ", telemetryBytes[i]);
-            }
-            System.out.println();
+            double [] telemetry = bytesToDoubles(telemetryBytes);
+
+            System.out.printf("%d: %f\n", count, telemetry[0]);
+
             count++;
 
             yield();
@@ -125,15 +124,16 @@ class Multicopter extends Thread {
     }
 
     // Adapted from view-source:https://stackoverflow.com/questions/2905556/how-can-i-convert-a-byte-array-into-a-double-and-back
-    private static byte[] doublesToBytes(double [] vals)
+
+    public static byte[] doublesToBytes(double [] doubles)
     {
-        int n = vals.length;
+        int n = doubles.length;
 
         byte [] bytes = new byte[8*n];
 
         for (int i=0; i<n; ++i) {
 
-            long l = Double.doubleToRawLongBits(vals[i]);
+            long l = Double.doubleToRawLongBits(doubles[i]);
 
             for (int j=0; j<8; ++j) {
                 bytes[i*8+j] = (byte)((l >> (j*8)) & 0xff);
@@ -141,6 +141,26 @@ class Multicopter extends Thread {
         }
 
         return bytes;
+    }
+
+    public static double[] bytesToDoubles(byte [] bytes)
+    {
+        int n = bytes.length>>3;
+
+        double [] doubles = new double [n];
+
+        for (int i=0; i<n; ++i) {
+
+            long bits = 0;
+
+            for (int j=0; j<8; ++j) {
+                bits = (bits << 8) | (bytes[8-j-1] & 0xff);
+            }
+
+            doubles[i] = Double.longBitsToDouble(bits);
+        }
+
+        return doubles;
     }
 
     public static void main(String [] args)
