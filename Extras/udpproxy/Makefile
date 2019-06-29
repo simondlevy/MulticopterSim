@@ -20,5 +20,11 @@ udpproxy: udpproxy.o
 udpproxy.o: udpproxy.cpp
 	g++ $(CFLAGS) -Isockets -c udpproxy.cpp
 
+test: udpproxy
+	./udpproxy
+
+edit:
+	vim udpproxy.cpp
+
 clean:
 	rm -rf $(ALL) *.o *~
