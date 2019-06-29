@@ -41,12 +41,8 @@ class Multicopter extends Thread {
         _running = true;
 
         while (_running) {
-            try {
-                Thread.sleep(1);
-            }
-            catch (Exception e) {
-            }
 
+            yield();
         }
 
         _motorSocket.close();
