@@ -28,6 +28,11 @@ class Multicopter extends Thread {
         construct(host, motorPort, telemetryPort, 4);
     }
 
+    public Multicopter()
+    {
+        construct("127.0.0.1", 5000, 5001, 4);
+    }
+
     public void run()
     {
         _running = true;
