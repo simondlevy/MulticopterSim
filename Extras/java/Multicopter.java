@@ -60,7 +60,7 @@ class Multicopter extends Thread {
                 count++;
             }
             catch (Exception e) {
-                System.out.println("receive: " + e);
+                handleException(e);
             }
 
             yield();
