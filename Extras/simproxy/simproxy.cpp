@@ -97,7 +97,7 @@ int main(int argc, char ** argv)
         quad.getState(state);
         
         // Time Gyro, Quat, Location, Rotation
-        double telemetry[14];
+        double telemetry[1];
 
         telemetry[0] = time;
 

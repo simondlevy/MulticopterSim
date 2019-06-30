@@ -49,20 +49,17 @@ class Multicopter extends Thread {
                 handleException(e);
             }
 
-            byte [] telemetryBytes = new byte[8];
-            DatagramPacket telemetryPacket = new DatagramPacket(telemetryBytes, telemetryBytes.length, _addr, _telemPort);
-
             try {
+                byte [] telemetryBytes = new byte[8];
+                DatagramPacket telemetryPacket = new DatagramPacket(telemetryBytes, telemetryBytes.length, _addr, _telemPort);
                 _telemSocket.receive(telemetryPacket);
+                double [] telemetryData = bytesToDoubles(telemetryBytes);
+                System.out.printf("%f\n", telemetryData[0]);
+                count++;
             }
             catch (Exception e) {
+                System.out.println("receive: " + e);
             }
-
-            double [] telemetry = bytesToDoubles(telemetryBytes);
-
-            System.out.printf("%d: %f\n", count, telemetry[0]);
-
-            count++;
 
             yield();
         }
@@ -92,9 +89,7 @@ class Multicopter extends Thread {
         try {
             _addr = InetAddress.getByName(host);
             _motorSocket = new DatagramSocket();
-            _motorSocket.setReuseAddress(true);
             _telemSocket = new DatagramSocket(telemetryPort);
-            _telemSocket.setReuseAddress(true);
             _telemSocket.setSoTimeout(TIMEOUT);
         } 
         catch (Exception e) {
@@ -116,8 +111,8 @@ class Multicopter extends Thread {
 
     InetAddress _addr;
 
-    private DatagramSocket _motorSocket;
-    private DatagramSocket _telemSocket;
+    public DatagramSocket _motorSocket;
+    public DatagramSocket _telemSocket;
 
     private static void handleException(Exception e)
     {
