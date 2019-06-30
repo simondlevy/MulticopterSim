@@ -16,9 +16,6 @@ class FFlightManager : public FThreadedWorker {
 
     private:
 
-        // Compute in constructor based on update frequency
-        double _deltaT = 0;
-
         // Start-time offset so timing begins at zero
         double _startTime = 0;
 
@@ -28,7 +25,7 @@ class FFlightManager : public FThreadedWorker {
         // Current motor values from PID controller
         double * _motorvals = NULL; 
         
-        // For computing _deltaT
+        // For computing deltaT
         double   _previousTime = 0;
 
         // Did we hit the ground?  If we return to our starting altitude, yes.
@@ -81,7 +78,7 @@ class FFlightManager : public FThreadedWorker {
         MultirotorDynamics * _dynamics;
 
         // Constructor, called once on main thread
-        FFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation, uint16_t updateFrequency=1000) 
+        FFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation) 
             : FThreadedWorker()
         {
             // Allocate array for motor values
@@ -102,8 +99,7 @@ class FFlightManager : public FThreadedWorker {
             // Initialize dynamics with initial pose
             _dynamics->init(_pose);
 
-            // Constants
-            _deltaT = 1. / updateFrequency;
+            // Constant
             _motorCount = dynamics->motorCount();
 
             // For periodic update
@@ -126,39 +122,36 @@ class FFlightManager : public FThreadedWorker {
 
             double deltaT = currentTime - _previousTime;
 
-            if (deltaT >= _deltaT) {
+            // Send current motor values to dynamics
+            _dynamics->setMotors(_motorvals);
 
-                // Send current motor values to dynamics
-                _dynamics->setMotors(_motorvals);
+            // Update dynamics
+            _dynamics->update(deltaT);
 
-                // Update dynamics
-                _dynamics->update(deltaT);
+            // Get vehicle state from dynamics.  We keep pose (location, rotation) in memory for use  in
+            // getKinematics() method
+            MultirotorDynamics::state_t state;
+            _dynamics->getState(state);
 
-                // Get vehicle state from dynamics.  We keep pose (location, rotation) in memory for use  in
-                // getKinematics() method
-                MultirotorDynamics::state_t state;
-                _dynamics->getState(state);
+            // If we're airborne, we've crashed if we fall below ground level
+            if (state.airborne && (state.pose.location[2] > _zstart)) {
+                _crashed = true;
+            }
 
-                // If we're airborne, we've crashed if we fall below ground level
-                if (state.airborne && (state.pose.location[2] > _zstart)) {
-                    _crashed = true;
-                }
+            // PID controller: update the flight manager (e.g., HackflightManager) with
+            // the dynamics state
+            this->update(currentTime, state, _motorvals);
 
-                // PID controller: update the flight manager (e.g., HackflightManager) with
-                // the dynamics state
-                this->update(currentTime, state, _motorvals);
+            // Show status in OSD
+            showStatus(currentTime, state);
 
-                // Show status in OSD
-                showStatus(currentTime, state);
+            // Track previous time for deltaT
+            _previousTime = currentTime;
 
-                // Track previous time for deltaT
-                _previousTime = currentTime;
-
-                // Copy out kinematic part of state
-                for (uint8_t k=0; k<3; ++k) {
-                    _pose.location[k] = state.pose.location[k];
-                    _pose.rotation[k] = state.pose.rotation[k];
-                }
+            // Copy out kinematic part of state
+            for (uint8_t k=0; k<3; ++k) {
+                _pose.location[k] = state.pose.location[k];
+                _pose.rotation[k] = state.pose.rotation[k];
             }
         }
 
