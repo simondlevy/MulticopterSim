@@ -76,7 +76,7 @@ class Multicopter extends Thread {
     private void getMotors()
     {
         for (int i=0; i<_motorVals.length; ++i) {
-            _motorVals[i] = 0.6;
+            _motorVals[i] = 0.0;//0.6;
         }
     }
 
@@ -114,8 +114,8 @@ class Multicopter extends Thread {
 
     InetAddress _addr;
 
-    public DatagramSocket _motorSocket;
-    public DatagramSocket _telemSocket;
+    private DatagramSocket _motorSocket;
+    private DatagramSocket _telemSocket;
 
     private static void handleException(Exception e)
     {
@@ -162,6 +162,8 @@ class Multicopter extends Thread {
 
         return doubles;
     }
+
+    // Test code ========================================================
 
     public static void main(String [] args)
     {
