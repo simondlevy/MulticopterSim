@@ -36,8 +36,6 @@ class Multicopter extends Thread {
 
         while (_running) {
 
-            getMotors();
-
             byte [] motorBytes = doublesToBytes(_motorVals);
 
             DatagramPacket motorPacket = new DatagramPacket(motorBytes, motorBytes.length, _addr, _motorPort);
@@ -54,7 +52,7 @@ class Multicopter extends Thread {
                 DatagramPacket telemetryPacket = new DatagramPacket(telemetryBytes, telemetryBytes.length, _addr, _telemPort);
                 _telemSocket.receive(telemetryPacket);
                 double [] telemetryData = bytesToDoubles(telemetryBytes);
-                System.out.printf("t: %3.3f | g: %+3.3f %+3.3f %+3.3f | q: %+3.3f %+3.3f %+3.3f %+3.3f | p: %+3.3f %+3.3f %+3.3f\n", 
+                System.out.printf("t: %6.3f | g: %+3.3f %+3.3f %+3.3f | q: %+3.3f %+3.3f %+3.3f %+3.3f | p: %+3.3f %+3.3f %+3.3f\n", 
                         telemetryData[0],
                         telemetryData[1], telemetryData[2], telemetryData[3],
                         telemetryData[4], telemetryData[5], telemetryData[6], telemetryData[7],
@@ -73,16 +71,16 @@ class Multicopter extends Thread {
 
     } // run
 
-    private void getMotors()
-    {
-        for (int i=0; i<_motorVals.length; ++i) {
-            _motorVals[i] = 0.0;//0.6;
-        }
-    }
-
     public void halt()
     {
         _running = false;
+    }
+
+    public void setMotors(double [] motorVals)
+    {
+        for (int i=0; i<motorVals.length; ++i) {
+            _motorVals[i] = motorVals[i];
+        }
     }
 
     private void construct(String host, int motorPort, int telemetryPort, int motorCount)
@@ -171,8 +169,19 @@ class Multicopter extends Thread {
 
         copter.start();
 
+        double [] motorVals = new double[4];
+
         try {
-            Thread.sleep(10000);
+            for (int i=0; i<10; ++i) {
+
+                Thread.sleep(2000);
+
+                copter.setMotors(motorVals);
+
+                for (int j=0; j<motorVals.length; ++j) {
+                    motorVals[j] += 0.1;
+                }
+            }
         }
         catch (Exception e) {
         }
