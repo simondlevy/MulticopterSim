@@ -50,11 +50,15 @@ class Multicopter extends Thread {
             }
 
             try {
-                byte [] telemetryBytes = new byte[8];
+                byte [] telemetryBytes = new byte[88];
                 DatagramPacket telemetryPacket = new DatagramPacket(telemetryBytes, telemetryBytes.length, _addr, _telemPort);
                 _telemSocket.receive(telemetryPacket);
                 double [] telemetryData = bytesToDoubles(telemetryBytes);
-                System.out.printf("%f\n", telemetryData[0]);
+                System.out.printf("t: %3.3f | g: %+3.3f %+3.3f %+3.3f | q: %+3.3f %+3.3f %+3.3f %+3.3f | p: %+3.3f %+3.3f %+3.3f\n", 
+                        telemetryData[0],
+                        telemetryData[1], telemetryData[2], telemetryData[3],
+                        telemetryData[4], telemetryData[5], telemetryData[6], telemetryData[7],
+                        telemetryData[8], telemetryData[9], telemetryData[10]);
                 count++;
             }
             catch (Exception e) {
@@ -100,7 +104,6 @@ class Multicopter extends Thread {
 
         _running = false;
     }
-
 
     private int _motorPort;
     private int _telemPort;
@@ -148,8 +151,10 @@ class Multicopter extends Thread {
 
             long bits = 0;
 
+            int beg = 8 * i;
+
             for (int j=0; j<8; ++j) {
-                bits = (bits << 8) | (bytes[8-j-1] & 0xff);
+                bits = (bits << 8) | (bytes[beg+8-j-1] & 0xff);
             }
 
             doubles[i] = Double.longBitsToDouble(bits);

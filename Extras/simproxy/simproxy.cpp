@@ -96,10 +96,13 @@ int main(int argc, char ** argv)
 
         quad.getState(state);
         
-        // Time Gyro, Quat, Location, Rotation
-        double telemetry[1];
+        // Time Gyro, Quat, Location
+        double telemetry[11] = {0};
 
         telemetry[0] = time;
+        memcpy(&telemetry[1], &state.angularVel, 3*sizeof(double));
+        memcpy(&telemetry[4], &state.quaternion, 4*sizeof(double));
+        memcpy(&telemetry[8], &state.pose.location, 3*sizeof(double));
 
         telemClient.sendData(telemetry, sizeof(telemetry));
 
