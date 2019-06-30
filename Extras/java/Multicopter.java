@@ -37,8 +37,6 @@ class Multicopter extends Thread {
     {
         _running = true;
 
-        int count = 0;
-
         while (_running) {
 
             byte [] motorBytes = doublesToBytes(_motorVals);
@@ -62,7 +60,6 @@ class Multicopter extends Thread {
                         telemetryData[1], telemetryData[2], telemetryData[3],
                         telemetryData[4], telemetryData[5], telemetryData[6], telemetryData[7],
                         telemetryData[8], telemetryData[9], telemetryData[10]);
-                count++;
             }
             catch (Exception e) {
                 handleException(e);
