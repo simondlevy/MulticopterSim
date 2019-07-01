@@ -4,18 +4,21 @@
 #
 #   MIT License
 
-MulticopterTest.class: MulticopterTest.java multicopter.jar
-	javac MulticopterTest.java
+DIR = edu/wlu/cs/levy/multicopter
+SRC = $(DIR)/Multicopter.java
 
-multicopter.jar: Multicopter.java
-	javac Multicopter.java
-	jar cvf multicopter.jar *.class
+MulticopterTest.class: MulticopterTest.java multicopter.jar
+	javac -cp multicopter.jar MulticopterTest.java
+
+multicopter.jar: $(SRC)
+	javac $(SRC)
+	jar cvf multicopter.jar edu
 
 test: MulticopterTest.class multicopter.jar
-	java MulticopterTest
+	java -cp multicopter.jar:. MulticopterTest
 
 doc:
-	javadoc -d doc Multicopter.java
+	javadoc -d doc $(SRC)
 
 clean:
-	rm -f *.jar *.class edu/wlu/cs/levy/*.class *~
+	rm -f *.jar *.class $(DIR)/*.class *~

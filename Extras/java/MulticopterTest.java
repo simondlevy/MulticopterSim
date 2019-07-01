@@ -6,7 +6,7 @@
    MIT License
  */
 
-import multicopter.Multicopter;
+import edu.wlu.cs.levy.multicopter.Multicopter;
 
 public class MulticopterTest {
 
