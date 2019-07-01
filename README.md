@@ -130,12 +130,14 @@ OpenCV.  An abstract C++
 class supports modeling interaction with other moving objects having their own dynamics; for example,
 in a predator/prey scenario.
 
-# Support for Matlab
+# Support for other programming languages / packages
+
+## Matlab
 
 [This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/matlab) contains an example of how
 you can control MulticopterSim from a Matlab session running on your computer or another computer.
 
-# Support for OpenCV
+## OpenCV
 
 To enable projects using machine vision, MulticopterSim includes support for the popular OpenCV package.
 To get started using OpenCV with MulticopterSim, you should do the following:
@@ -143,9 +145,9 @@ To get started using OpenCV with MulticopterSim, you should do the following:
 1. Clone the [OpenCVModule](https://github.com/simondlevy/MulticopterSim/tree/OpenCVModule) branch
 of the repository.
 
-3. After building the game, copy the file <b>opencv_world340.dll</b> from the <b>ThirdParty/OpenCV/Libraries/Win64/</b> to <b>Binaries/Win64/</b>.
+2. After building the game, copy the file <b>opencv_world340.dll</b> from the <b>ThirdParty/OpenCV/Libraries/Win64/</b> to <b>Binaries/Win64/</b>.
 
-# Support for Python
+## Python
 
 The [PythonModule](https://github.com/simondlevy/MulticopterSim/tree/PythonModule) branch supports a FlightManager written entirely in Python.
 To try this out, clone this branch into <b>MulticopterSim/Source</b>, rename it <b>FlightModule</b>, and in the <b>FlightModule/python</b> folder run
@@ -154,7 +156,7 @@ Once you've got the basic demo working, you can modify the Python
 [FlightManager.py](https://github.com/simondlevy/MulticopterSim/blob/PythonModule/python/multicopter_sim/__init__.py#L8-L25)
 class to do what you like.
 
-# Support for Nengo
+## Nengo
 
 The [NengoModule](https://github.com/simondlevy/MulticopterSim/tree/NengoModule) branch supports flying with a combination
 of Hackflight for general flight control and an altitude-hold PID controller
