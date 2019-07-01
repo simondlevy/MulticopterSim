@@ -18,3 +18,8 @@ of the repository onto your desktop, rename it <b>FlightModule</b>, and drag the
 your own user name.
 
 4. Build MulticopterSim as described [here](https://github.com/simondlevy/MulticopterSim#Windows).
+
+5. Hit F5 to launch MulticopterSim, then hit the play button.
+
+6. Launch Matlab, change to the <b>MulticopterSim/Extras/matlab</b> folder, and run the <b>altitude_pid.m</b> 
+script.
