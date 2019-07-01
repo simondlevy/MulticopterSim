@@ -61,6 +61,19 @@ public class Multicopter {
         public void halt()
         {
             _running = false;
+
+            _motorVals[0] = -1;
+
+            byte [] motorBytes = doublesToBytes(_motorVals);
+
+            DatagramPacket motorPacket = new DatagramPacket(motorBytes, motorBytes.length, _addr, _motorPort);
+
+            try {
+                _motorSocket.send(motorPacket);
+            }
+                catch (Exception e) {
+                    handleException(e);
+                }
         }
 
         public double [] getTelemetry()

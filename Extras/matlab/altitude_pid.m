@@ -11,7 +11,13 @@
 import Multicopter
 
 copter = Multicopter;
-%copter.start;
-%copter.setMotors([.6,.6,.6,.6])
+
+copter.start
+copter.setMotors(zeros(1,4))
+pause(1)
+copter.setMotors(.6*ones(1,4))
+pause(3)
+copter.setMotors(zeros(1,4))
+copter.stop
 
 
