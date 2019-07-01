@@ -130,16 +130,10 @@ OpenCV.  An abstract C++
 class supports modeling interaction with other moving objects having their own dynamics; for example,
 in a predator/prey scenario.
 
-This simplicity of our flight-control scheme makes it easy to connect
-MulticopterSim to existing flight-control software like Hackflight, or even to 
-another programming languge like Python, as modules to the main MulticopterSim
-codebase.  Instead of using HackflightSim, you can use your own flight-control
-software with MultiCopterSim, by creating your own <b>FlightModule</b> folder in
-the <b>Source</b> folder.  The
-[NullModule](https://github.com/simondlevy/MulticopterSim/tree/NullModule)
-branch contains a stubbed implementation of the
-[FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp)
-class that should help you get started.
+# Support for Matlab
+
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/matlab) contains an example of how
+you can control MulticopterSim from a Matlab session running on your computer or another computer.
 
 # Support for OpenCV
 
