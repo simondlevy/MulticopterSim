@@ -8,8 +8,8 @@
 
 #include <stdio.h>
 
-#include "sockets/UdpServerSocket.hpp"
-#include "sockets/UdpClientSocket.hpp"
+#include "../sockets/UdpServerSocket.hpp"
+#include "../sockets/UdpClientSocket.hpp"
 
 #include "MultirotorDynamics.hpp"
 
