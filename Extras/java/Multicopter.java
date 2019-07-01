@@ -8,14 +8,15 @@
    MIT License
  */
 
-//package edu.wlu.cs.levy.multicopter;
-
 import java.lang.Thread;
 import java.io.*;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
+/**
+ * Represents a Multicopter object communicating with MulticopterSim via UDP socket calls.
+ */
 public class Multicopter {
 
     // Inner class 
@@ -162,74 +163,71 @@ public class Multicopter {
 
     private MulticopterThread _thread;
 
+    /**
+      * Createas a Multicopter object.
+      * @param host name of host running MulticopterSim
+      * @param motorPort port over which this object will send motor commands to host
+      * @param telemeteryPort port over which this object will receive telemetry  from
+      * @param motorCount number of motors in vehicle running in simulator on host
+      */
     public Multicopter(String host, int motorPort, int telemetryPort, int motorCount)
     {
         _thread = new MulticopterThread(host, motorPort, telemetryPort, motorCount);
     }
 
-    public Multicopter(String host, int motorPort, int telemetryPort)
+    /**
+      * Createas a Multicopter object using a default number of motors (4).
+      * @param host name of host running MulticopterSim
+      * @param motorPort port over which this object will send motor commands to host
+      * @param telemeteryPort port over which this object will receive telemetry  from
+      */
+     public Multicopter(String host, int motorPort, int telemetryPort)
     {
         _thread = new MulticopterThread(host, motorPort, telemetryPort, 4);
     }
 
-    public Multicopter()
+    /**
+      * Createas a Multicopter object using default parameters.
+      */
+     public Multicopter()
     {
         _thread = new MulticopterThread("127.0.0.1", 5000, 5001, 4);
     }
 
+    /**
+      * Begins communication with simulator running on host.
+      */
     public void start()
     {
         _thread.start();
     }
 
-    public void stop()
+    /**
+      * Ends communication with simulator running on host.
+      */
+     public void stop()
     {
         _thread.halt();
     }
 
+    /**
+      * Returns current vehicle state as an array of the form [time, gx, gy, gz, qw, qx, qy, qz, px, py, pz],
+      * where g=gyro; q=quaternion; p=position.
+      * @return vehicle state 
+      */
+     
     public double [] getState()
     {
         return _thread.getTelemetry();
 
     }
+
+    /**
+      * Sets motor values.
+      * @param motors array of values between 0 and 1
+      */
     public void setMotors(double [] motorVals)
     {
         _thread.setMotors(motorVals);
-    }
-
-    // Test code ========================================================
-
-    public static void main(String [] args)
-    {
-        Multicopter copter = new Multicopter("127.0.0.1", 5000, 5001);
-
-        copter.start();
-
-        double [] motorVals = new double[4];
-
-        try {
-            while (true) {
-
-                Thread.sleep(1000);
-
-                copter.setMotors(motorVals);
-
-                double [] state = copter.getState();
-
-                System.out.printf("t: %6.3f | g: %+3.3f %+3.3f %+3.3f | q: %+3.3f %+3.3f %+3.3f %+3.3f | p: %+3.3f %+3.3f %+3.3f\n", 
-                        state[0],
-                        state[1], state[2], state[3],
-                        state[4], state[5], state[6], state[7],
-                        state[8], state[9], state[10]);
-
-                for (int j=0; j<motorVals.length; ++j) {
-                    motorVals[j] += 0.1;
-                }
-            }
-        }
-        catch (Exception e) {
-        }
-
-        copter.stop();
     }
 }

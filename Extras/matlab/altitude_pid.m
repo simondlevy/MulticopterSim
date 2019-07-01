@@ -6,12 +6,12 @@
 %
 % MIT License
 
-javaaddpath('mulitcopter.jar')
+%javaaddpath('multicopter.jar')
 
 import Multicopter
 
 copter = Multicopter;
-copter.start;
-copter.setMotors([.6,.6,.6,.6])
+%copter.start;
+%copter.setMotors([.6,.6,.6,.6])
 
 
