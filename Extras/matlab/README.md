@@ -14,5 +14,5 @@ of the repository onto your desktop, rename it <b>FlightModule</b>, and drag the
 
 3. Find your [Matlab preferences directory](https://www.mathworks.com/matlabcentral/answers/309984-what-is-the-default-location-of-the-matlab-preferences-directory). 
 (For example, on my computer it is <b>C:\Users\simon\AppData\Roaming\MathWorks\MATLAB\R2018a</b>) Download
-[this](javaclasspath.txt) file into that preferences directory, and then modify to replace ```owner``` with
+[this](javaclasspath.txt) file into that preferences directory, and then modify the file to replace ```owner``` with
 your own user name.
