@@ -4,7 +4,12 @@
 %
 % MIT License
 
-HOST = '127.0.0.1';
-MOTOR_PORT = 5000;
-TELEM_PORT = 5001;
+javaaddpath('../java')
+
+import Multicopter
+
+copter = Multicopter;
+copter.start;
+copter.setMotors([.6,.6,.6,.6])
+
 

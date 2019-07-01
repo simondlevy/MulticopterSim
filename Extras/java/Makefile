@@ -1,3 +1,9 @@
+#   Makefile for Java Multicopter class
+#
+#   Copyright(C) 2019 Simon D.Levy
+#
+#   MIT License
+
 Multicopter.class : Multicopter.java
 	javac Multicopter.java
 
