@@ -14,7 +14,7 @@ import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
-class Multicopter {
+public class Multicopter {
 
     // Inner class 
     private class MulticopterThread extends Thread {

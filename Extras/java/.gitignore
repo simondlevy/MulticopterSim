@@ -1,2 +1,8 @@
 *.class
-*.asv
+*.html
+*.css
+*.js
+*.zip
+element-list
+jquery/
+resources/
