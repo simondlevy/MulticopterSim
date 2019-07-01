@@ -13,6 +13,10 @@ To run the example, you should:
 of the repository onto your desktop, rename it <b>FlightModule</b>, and drag the
 <b>FlightModule</b> folder into the <b>MulticopterSim/Source</b> folder.
 
-3. In your Matlab preferences directory, add to or modify a file <b>javaclasspath.txt</b> to contain the line:
+3. Find your [Matlab preferences directory](https://www.mathworks.com/matlabcentral/answers/309984-what-is-the-default-location-of-the-matlab-preferences-directory). 
+For example, on my computer it is <b>C:\Users\simon\AppData\Roaming\MathWorks\MATLAB\R2018a</b>
+In that preferences directory, add to or modify a file <b>javaclasspath.txt</b> to contain the line:
 
 ```C:\Users\<USERNAME>\Documents\Unreal Projects\MulticopterSim\Extras\matlab\multicopter.jar```
+
+where ```<USERNAME>``` is of course your user name (home folder).  
