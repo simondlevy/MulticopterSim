@@ -1,10 +1,12 @@
-% Multicopter test script
+% Quadcopter PID control demo
+%
+% Don't forget to start the simulator first!
 %
 % Copyright(C) 2019 Simon D.Levy
 %
 % MIT License
 
-javaaddpath('../java')
+javaaddpath('mulitcopter.jar')
 
 import Multicopter
 
