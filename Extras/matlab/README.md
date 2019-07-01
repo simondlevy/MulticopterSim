@@ -1,5 +1,4 @@
-# Controlling MulticopterSim from Matlab
-
+# Controlling MulticopterSim from Matlab 
 This folder contains a simple example showing how you can control MulticopterSim from a Matlab session running on
 your computer or another computer.  It uses UDP sockets for sending motor values from your Matlab program 
 to the simualtor and for retrieving the vehicle state (time, gyrometer, quaternion, position) from the simulator.
@@ -14,7 +13,6 @@ of the repository onto your desktop, rename it <b>FlightModule</b>, and drag the
 <b>FlightModule</b> folder into the <b>MulticopterSim/Source</b> folder.
 
 3. Find your [Matlab preferences directory](https://www.mathworks.com/matlabcentral/answers/309984-what-is-the-default-location-of-the-matlab-preferences-directory). 
-For example, on my computer it is <b>C:\Users\simon\AppData\Roaming\MathWorks\MATLAB\R2018a</b>
-In that preferences directory, add to or modify a file <b>javaclasspath.txt</b> to contain the line:
-```C:\Users\<USERNAME>\Documents\Unreal Projects\MulticopterSim\Extras\matlab\multicopter.jar```
-where ```<USERNAME>``` is of course your user name (home folder).  
+(For example, on my computer it is <b>C:\Users\simon\AppData\Roaming\MathWorks\MATLAB\R2018a</b>) Download
+[this](javaclasspath.txt) file into that preferences directory, and then modify to replace ```owner``` with
+your own user name.
