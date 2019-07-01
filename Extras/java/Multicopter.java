@@ -52,14 +52,8 @@ class Multicopter extends Thread {
 
             try {
                 byte [] telemetryBytes = new byte[88];
-                DatagramPacket telemetryPacket = new DatagramPacket(telemetryBytes, telemetryBytes.length, _addr, _telemPort);
+                DatagramPacket telemetryPacket = new DatagramPacket(_telemetryBytes, telemetryBytes.length, _addr, _telemPort);
                 _telemSocket.receive(telemetryPacket);
-                double [] telemetryData = bytesToDoubles(telemetryBytes);
-                System.out.printf("t: %6.3f | g: %+3.3f %+3.3f %+3.3f | q: %+3.3f %+3.3f %+3.3f %+3.3f | p: %+3.3f %+3.3f %+3.3f\n", 
-                        telemetryData[0],
-                        telemetryData[1], telemetryData[2], telemetryData[3],
-                        telemetryData[4], telemetryData[5], telemetryData[6], telemetryData[7],
-                        telemetryData[8], telemetryData[9], telemetryData[10]);
             }
             catch (Exception e) {
                 handleException(e);
@@ -77,6 +71,12 @@ class Multicopter extends Thread {
     {
         _running = false;
     }
+
+    public double [] getTelemetry()
+    {
+        return bytesToDoubles(_telemetryBytes);
+
+   }
 
     public void setMotors(double [] motorVals)
     {
@@ -103,12 +103,16 @@ class Multicopter extends Thread {
         _motorVals = new double [motorCount];
 
         _running = false;
+
+        _telemetryBytes = new byte[88];
     }
 
     private int _motorPort;
     private int _telemPort;
 
     private double [] _motorVals;
+
+    private byte [] _telemetryBytes;
 
     private boolean _running;
 
@@ -174,11 +178,19 @@ class Multicopter extends Thread {
         double [] motorVals = new double[4];
 
         try {
-            for (int i=0; i<10; ++i) {
+            while (true) {
 
-                Thread.sleep(2000);
+                Thread.sleep(1000);
 
                 copter.setMotors(motorVals);
+
+                double [] state = copter.getTelemetry();
+
+                System.out.printf("t: %6.3f | g: %+3.3f %+3.3f %+3.3f | q: %+3.3f %+3.3f %+3.3f %+3.3f | p: %+3.3f %+3.3f %+3.3f\n", 
+                        state[0],
+                        state[1], state[2], state[3],
+                        state[4], state[5], state[6], state[7],
+                        state[8], state[9], state[10]);
 
                 for (int j=0; j<motorVals.length; ++j) {
                     motorVals[j] += 0.1;
