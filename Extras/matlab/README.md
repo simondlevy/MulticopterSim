@@ -16,3 +16,5 @@ of the repository onto your desktop, rename it <b>FlightModule</b>, and drag the
 (For example, on my computer it is <b>C:\Users\simon\AppData\Roaming\MathWorks\MATLAB\R2018a</b>) Download
 [this](javaclasspath.txt) file into that preferences directory, and then modify the file to replace ```owner``` with
 your own user name.
+
+4. Build MulticopterSim as described [here](https://github.com/simondlevy/MulticopterSim#Windows).
