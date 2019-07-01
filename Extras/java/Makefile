@@ -4,8 +4,9 @@
 #
 #   MIT License
 
-Multicopter.class : Multicopter.java
-	javac Multicopter.java
+multicopter.jar: edu/wlu/cs/levy/Multicopter.java
+	javac edu/wlu/cs/levy/Multicopter.java
+	jar cvf multicopter.jar edu
 
 test: Multicopter.class
 	java Multicopter
@@ -13,11 +14,8 @@ test: Multicopter.class
 run: Multicopter.class
 	java Multicopter
 
-edit:
-	vim Multicopter.java
-
 doc:
 	javadoc -d doc Multicopter.java
 
 clean:
-	rm -f *.class *~
+	rm -f *.jar *.class edu/wlu/cs/levy/*.class *~
