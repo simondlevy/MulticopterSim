@@ -10,5 +10,8 @@ run: Multicopter.class
 edit:
 	vim Multicopter.java
 
+doc:
+	javadoc -d doc Multicopter.java
+
 clean:
 	rm -f *.class *~
