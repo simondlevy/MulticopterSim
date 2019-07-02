@@ -73,6 +73,12 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         TCircularBuffer<float> * _motorBuffer = NULL;
         uint32_t _bufferIndex = 0;
 
+        // Start-time offset so timing begins at zero
+        double _startTime = 0;
+
+        // A hack to avoid accessing kinematics before dynamics thread is ready
+        uint32_t _count = 0;
+
 #ifdef _USE_OPENCV
         // Threaded worker for managing video from camera
         class FVideoManager * _videoManager = NULL;
@@ -247,6 +253,11 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
             if (_mapSelected) {
 
+
+                // Reset FPS count
+                _startTime = FPlatformTime::Seconds();
+                _count = 0;
+
                 // Start the audio for the propellers Note that because the
                 // Cue Asset is set to loop the sound, once we start playing the sound, it
                 // will play continiously...
@@ -270,10 +281,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void Tick(void)
         {
-            // A hack to avoid accessing kinematics before dynamics thread is ready
-            static uint64_t count;
-
-            if (_mapSelected && count++>10) {
+            // Checking count is a hack to avoid accessing kinematics before dynamics thread is ready
+            if (_mapSelected && _count++>10) {
 
                 // Kinematics from dynamics
                 getKinematics();
@@ -287,8 +296,12 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 // Grab image
                 videoManagerGrabImage();
 
+                // Get a high-fidelity current time value from the OS
+                double currentTime = FPlatformTime::Seconds() - _startTime;
+
                 // OSD for debugging messages from threaded workers
-                debug("Flight: %s    Video: %s", _flightManager->getMessage(), _videoManager->getMessage());
+                debug("Main:  FPS=%d    Flight: %s    Video: %s", 
+                        (int)(++_count/currentTime), _flightManager->getMessage(), _videoManager->getMessage());
             }
         }
 

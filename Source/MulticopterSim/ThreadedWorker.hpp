@@ -104,7 +104,7 @@ class FThreadedWorker : public FRunnable {
                 performTask(currentTime);
 
                 // Wait a bit to allow other threads to run
-                FPlatformProcess::Sleep(.0005); 
+                FPlatformProcess::Sleep(.0001); 
 
                 // Report FPS
                 dbgprintf("FPS = %d", (int)(++_count/currentTime));
