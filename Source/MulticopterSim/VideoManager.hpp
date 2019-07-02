@@ -34,9 +34,6 @@ class FVideoManager : public FThreadedWorker {
         // RGB image sent to subclass for processing
         cv::Mat _image;
 
-        // Helps avoid grabbing image before one is available
-        bool _ready = false;
-
     protected:
 
         // Constructor, called once on main thread
@@ -55,20 +52,11 @@ class FVideoManager : public FThreadedWorker {
 
             // Get the render target resource for copying the image pixels
             _renderTargetResource = cameraRenderTarget->GameThread_GetRenderTargetResource();
-
-            // No image yet
-            _ready = false;
         }
 
         // Called repeatedly on worker thread to process current image
         void performTask(double currentTime)
         {
-            static uint64_t count;
-
-            if (_ready) {
-
-                //processImage(_image);
-            }
         }
 
         // Override this method for your video application
@@ -89,9 +77,8 @@ class FVideoManager : public FThreadedWorker {
             // Convert RGBA => RGB for public image
             cv::cvtColor(_rbga_image, _image, CV_RGBA2RGB);
 
+            // Implemented in subclass
             processImage(_image);
-
-            _ready = true;
         }
 
         ~FVideoManager()
