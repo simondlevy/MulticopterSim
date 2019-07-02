@@ -67,7 +67,7 @@ class FVideoManager : public FThreadedWorker {
 
             if (_ready) {
 
-                processImage(_image);
+                //processImage(_image);
             }
         }
 
@@ -88,6 +88,8 @@ class FVideoManager : public FThreadedWorker {
 
             // Convert RGBA => RGB for public image
             cv::cvtColor(_rbga_image, _image, CV_RGBA2RGB);
+
+            processImage(_image);
 
             _ready = true;
         }
