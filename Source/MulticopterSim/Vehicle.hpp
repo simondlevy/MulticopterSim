@@ -91,7 +91,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void videoManagerStop(void)
         {
-            _videoManager = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
+            //_videoManager = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
+            delete _videoManager;
+            _videoManager = NULL;
         }
 
         void videoManagerGrabImage(void)
@@ -300,8 +302,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 double currentTime = FPlatformTime::Seconds() - _startTime;
 
                 // OSD for debugging messages from threaded workers
-                debug("Main:  FPS=%d    Flight: %s    Video: %s", 
-                        (int)(++_count/currentTime), _flightManager->getMessage(), _videoManager->getMessage());
+                debug("Main:  FPS=%d    Flight: %s", (int)(++_count/currentTime), _flightManager->getMessage());
             }
         }
 

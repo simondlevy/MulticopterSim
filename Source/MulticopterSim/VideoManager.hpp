@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 
-class FVideoManager : public FThreadedWorker {
+class FVideoManager {
 
     private:
 
@@ -38,7 +38,6 @@ class FVideoManager : public FThreadedWorker {
 
         // Constructor, called once on main thread
         FVideoManager( UTextureRenderTarget2D * cameraRenderTarget) 
-            : FThreadedWorker()
         {
             // Get the size of the render target
             uint16_t rows = cameraRenderTarget->SizeY;
@@ -52,11 +51,6 @@ class FVideoManager : public FThreadedWorker {
 
             // Get the render target resource for copying the image pixels
             _renderTargetResource = cameraRenderTarget->GameThread_GetRenderTargetResource();
-        }
-
-        // Called repeatedly on worker thread to process current image
-        void performTask(double currentTime)
-        {
         }
 
         // Override this method for your video application
