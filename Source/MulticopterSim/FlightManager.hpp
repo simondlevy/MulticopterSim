@@ -16,9 +16,6 @@ class FFlightManager : public FThreadedWorker {
 
     private:
 
-        // Start-time offset so timing begins at zero
-        double _startTime = 0;
-
         // Kinematics
         MultirotorDynamics::pose_t _pose;
 
@@ -31,9 +28,6 @@ class FFlightManager : public FThreadedWorker {
         // Did we hit the ground?  If we return to our starting altitude, yes.
         bool _crashed = false;
         double _zstart = 0;
-
-        // For FPS reporting
-        uint32_t _count;
 
         /**
          * Flight-control method running repeatedly on its own thread.  
@@ -68,7 +62,6 @@ class FFlightManager : public FThreadedWorker {
                     loc[0], loc[1], loc[2]);
                     */
 
-            dbgprintf("FPS: %d", (int)(++_count/time));
         }
 
     protected:
@@ -103,23 +96,16 @@ class FFlightManager : public FThreadedWorker {
             _motorCount = dynamics->motorCount();
 
             // For periodic update
-            _startTime = FPlatformTime::Seconds();
             _previousTime = 0;
 
             // No crash yet; we'll use initial altitude to track it
             _zstart = _pose.location[2];
             _crashed = false;
-
-            // Start FPS timing
-            _count = 0;
         }
         
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
-        void performTask(void)
+        void performTask(double currentTime)
         {
-            // Get a high-fidelity current time value from the OS
-            double currentTime = FPlatformTime::Seconds() - _startTime;
-
             double deltaT = currentTime - _previousTime;
 
             // Send current motor values to dynamics

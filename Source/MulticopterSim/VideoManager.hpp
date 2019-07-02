@@ -61,7 +61,7 @@ class FVideoManager : public FThreadedWorker {
         }
 
         // Called repeatedly on worker thread to process current image
-        void performTask(void)
+        void performTask(double currentTime)
         {
             static uint64_t count;
 
@@ -81,13 +81,13 @@ class FVideoManager : public FThreadedWorker {
         {
             // Read the pixels from the RenderTarget
             TArray<FColor> renderTargetPixels;
-            _renderTargetResource->ReadPixels(renderTargetPixels);
+            //_renderTargetResource->ReadPixels(renderTargetPixels);
 
             // Copy the RBGA pixels to the private image
-            FMemory::Memcpy(_rbga_image.data, renderTargetPixels.GetData(), renderTargetPixels.Num() * 4);
+            //FMemory::Memcpy(_rbga_image.data, renderTargetPixels.GetData(), renderTargetPixels.Num() * 4);
 
             // Convert RGBA => RGB for public image
-            cv::cvtColor(_rbga_image, _image, CV_RGBA2RGB);
+            //cv::cvtColor(_rbga_image, _image, CV_RGBA2RGB);
 
             _ready = true;
         }

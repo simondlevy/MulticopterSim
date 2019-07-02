@@ -24,13 +24,19 @@ class FThreadedWorker : public FRunnable {
         // Supports debugging on main thread
         static const uint16_t MAXMSG = 1000;
 
+        // Start-time offset so timing begins at zero
+        double _startTime = 0;
+
+        // For FPS reporting
+        uint32_t _count;
+
     protected:
 
         // Supports debugging on main thread
         char _message[MAXMSG] = {0};
 
         // Implemented differently by each subclass
-        virtual void performTask(void) = 0;
+        virtual void performTask(double currentTime) = 0;
 
     public:
 
@@ -39,6 +45,10 @@ class FThreadedWorker : public FRunnable {
             _thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); 
 
             *_message = 0;
+
+            _startTime = FPlatformTime::Seconds();
+
+            _count = 0;
         }
 
 
@@ -86,8 +96,18 @@ class FThreadedWorker : public FRunnable {
             _running = true;
 
             while (_running) {
-                performTask();
-                FPlatformProcess::Sleep(.0005); // Wait a bit to allow other threads to run
+
+                // Get a high-fidelity current time value from the OS
+                double currentTime = FPlatformTime::Seconds() - _startTime;
+
+                // Pass current time to task implementation
+                performTask(currentTime);
+
+                // Wait a bit to allow other threads to run
+                FPlatformProcess::Sleep(.0005); 
+
+                // Report FPS
+                dbgprintf("FPS = %d", (int)(++_count/currentTime));
             }
 
             return 0;
