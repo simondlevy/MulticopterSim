@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "ThreadedWorker.hpp"
-
 #include "CoreMinimal.h"
 #include "Engine.h"
 #include "GameFramework/HUD.h"

@@ -91,7 +91,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void videoManagerStop(void)
         {
-            //_videoManager = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
             delete _videoManager;
             _videoManager = NULL;
         }
@@ -119,9 +118,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
             if (crashed) {
 
-                // Restart threaded workers
-                stopThreadedWorkers();
-                startThreadedWorkers();
+                // Restart flight manager and video
+                stopManagers();
             }
 
             _objects.pawn->SetActorLocation(location);
@@ -169,16 +167,16 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         FRotator _startRotation;
 
         // Flight management thread
-        void startThreadedWorkers(void)
+        void startFlightManagers(void)
         {
             extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
             _flightManager = createFlightManager(this, _startLocation, _startRotation);
             videoManagerStart();
         }        
 
-        void stopThreadedWorkers(void)
+        void stopManagers(void)
         {
-            _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
+            delete _flightManager;
             videoManagerStop();
         }
 
@@ -273,7 +271,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 _motorBuffer = new TCircularBuffer<float>(20);
 
                 // Initialize threaded workers
-                startThreadedWorkers();
+                startFlightManagers();
             }
 
             else {
@@ -320,7 +318,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         {
             if (_mapSelected) {
 
-                stopThreadedWorkers();
+                stopManagers();
             }
         }
 
