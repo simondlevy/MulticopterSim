@@ -62,7 +62,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
     private:
 
-		static constexpr float CAMERA_Z = 25;
+		static constexpr float CAMERA_Z = 35;
 
         static const uint8_t MAX_MOTORS = 100; // silly but simple
 
