@@ -74,8 +74,6 @@ int main(int argc, char ** argv)
 
     QuadXAP quad = QuadXAP(bigQuadParams);
 
-    int count = 0;
-
     double time = 0;
 
     MultirotorDynamics::pose_t pose = {0};
@@ -106,8 +104,8 @@ int main(int argc, char ** argv)
 
         telemClient.sendData(telemetry, sizeof(telemetry));
 
-        printf("%06d: %f %f %f %f\n", 
-                count++, motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
+        printf("%05f: %f %f %f %f\n", 
+                time, motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
 
         time += DELTA_T;
     }

@@ -177,7 +177,7 @@ public class Multicopter {
     private MulticopterThread _thread;
 
     /**
-      * Createas a Multicopter object.
+      * Creates a Multicopter object.
       * @param host name of host running MulticopterSim
       * @param motorPort port over which this object will send motor commands to host
       * @param telemeteryPort port over which this object will receive telemetry  from
@@ -189,7 +189,7 @@ public class Multicopter {
     }
 
     /**
-      * Createas a Multicopter object using a default number of motors (4).
+      * Creates a Multicopter object using a default number of motors (4).
       * @param host name of host running MulticopterSim
       * @param motorPort port over which this object will send motor commands to host
       * @param telemeteryPort port over which this object will receive telemetry  from
@@ -200,7 +200,7 @@ public class Multicopter {
     }
 
     /**
-      * Createas a Multicopter object using default parameters.
+      * Creates a Multicopter object using default parameters.
       */
      public Multicopter()
     {
@@ -228,7 +228,6 @@ public class Multicopter {
       * where g=gyro; q=quaternion; p=position.
       * @return vehicle state 
       */
-     
     public double [] getState()
     {
         return _thread.getTelemetry();
@@ -237,7 +236,7 @@ public class Multicopter {
 
     /**
       * Sets motor values.
-      * @param motors array of values between 0 and 1
+      * @param motorVals array of values between 0 and 1
       */
     public void setMotors(double [] motorVals)
     {
