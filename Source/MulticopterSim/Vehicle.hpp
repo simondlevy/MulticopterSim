@@ -94,9 +94,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void videoManagerStart(void)
         {
-            extern FVideoManager * createVideoManager(UTextureRenderTarget2D * cameraRenderTarget, short port);
-            _videoManager1 = createVideoManager(_objects.renderTarget1, 5000);
-            _videoManager2 = createVideoManager(_objects.renderTarget2, 5001);
+            extern FVideoManager * createVideoManager(UTextureRenderTarget2D * cameraRenderTarget, uint8_t id);
+            _videoManager1 = createVideoManager(_objects.renderTarget1, 0);
+            _videoManager2 = createVideoManager(_objects.renderTarget2, 1);
         }
 
         void videoManagersStop(void)
