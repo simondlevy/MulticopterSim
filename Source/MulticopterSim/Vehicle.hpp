@@ -440,11 +440,13 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         static void addMotor(objects_t & objects, uint8_t index, FVector mLocation, UStaticMesh * pMesh, FVector pLocation)
         {
-            UStaticMeshComponent * mMeshComponent = 
-                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Motor", index, "Mesh"));
-            mMeshComponent->SetStaticMesh(objects.motorMesh);
-            mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
-            mMeshComponent->AddRelativeLocation(mLocation*100); // m => cm
+            if (objects.motorMesh) {
+                UStaticMeshComponent * mMeshComponent = 
+                    objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Motor", index, "Mesh"));
+                mMeshComponent->SetStaticMesh(objects.motorMesh);
+                mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
+                mMeshComponent->AddRelativeLocation(mLocation*100); // m => cm
+            }
 
             UStaticMeshComponent * pMeshComponent = 
                 objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
