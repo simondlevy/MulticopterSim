@@ -1,5 +1,5 @@
 /*
- * Abstract, threaded video-management class for MulticopterSim
+ * Abstract, threaded video-management class for MulticopterSim using OpenCV
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -14,12 +14,14 @@
 #include "GameFramework/HUD.h"
 #include "Engine/TextureRenderTarget2D.h"
 
+#include "ThreadedWorker.hpp"
+
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <stdio.h>
 
-class FVideoManager {
+class FVideoManager : public FThreadedWorker {
 
     private:
 
@@ -32,10 +34,14 @@ class FVideoManager {
         // RGB image sent to subclass for processing
         cv::Mat _image;
 
+        // Helps avoid grabbing image before one is available
+        bool _ready = false;
+
     protected:
 
         // Constructor, called once on main thread
         FVideoManager( UTextureRenderTarget2D * cameraRenderTarget) 
+            : FThreadedWorker()
         {
             // Get the size of the render target
             uint16_t rows = cameraRenderTarget->SizeY;
@@ -49,6 +55,18 @@ class FVideoManager {
 
             // Get the render target resource for copying the image pixels
             _renderTargetResource = cameraRenderTarget->GameThread_GetRenderTargetResource();
+
+            // No image yet
+            _ready = false;
+        }
+
+        // Called repeatedly on worker thread to process current image
+        void performTask(double currentTime)
+        {
+            if (_ready) {
+
+                processImage(_image);
+            }
         }
 
         // Override this method for your video application
@@ -69,9 +87,7 @@ class FVideoManager {
             // Convert RGBA => RGB for public image
             cv::cvtColor(_rbga_image, _image, CV_RGBA2RGB);
 
-            // Implemented in subclass
-            processImage(_image);
-           
+            _ready = true;
         }
 
         ~FVideoManager()
