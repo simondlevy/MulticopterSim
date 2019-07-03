@@ -99,12 +99,10 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             _videoManager2 = createVideoManager(_objects.renderTarget2, 5001);
         }
 
-        void videoManagerStop(void)
+        void videoManagersStop(void)
         {
-            delete _videoManager;
-            _videoManager = NULL;
-            delete _videoManager2;
-            _videoManager2 = NULL;
+            _videoManager  = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
+            _videoManager2 = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager2);
         }
 
         void videoManagerGrabImage(void)
@@ -114,7 +112,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         }
 #else
         void videoManagerStart(void) { }
-        void videoManagerStop(void) { }
+        void videoManagersStop(void) { }
         void videoManagerGrabImage(void) { }
 #endif
 
@@ -188,8 +186,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void stopManagers(void)
         {
-            delete _flightManager;
-            videoManagerStop();
+            _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
+            videoManagersStop();
         }
 
         static const FName makeName(const char * prefix, const uint8_t index, const char * suffix)
