@@ -383,8 +383,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             objects.camera ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
 			objects.camera->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
             objects.camera->SetWorldScale3D(cameraScale);
-            objects.camera->SetFieldOfView(90);
-            objects.camera->SetAspectRatio(4./3);
+            objects.camera->SetFieldOfView(135);
+            objects.camera->SetAspectRatio(1280./720);
 
             // Create a scene-capture component and set its target to the render target
             objects.capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("Capture"));
@@ -392,7 +392,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             objects.capture->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
 			objects.capture->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
             objects.capture->TextureTarget = objects.renderTarget;
-            objects.capture->FOVAngle = 45;
+            objects.capture->FOVAngle = 90;
          }
 
         static void createCamera2(objects_t & objects)
@@ -411,8 +411,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             objects.camera2 ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
 			objects.camera2->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
             objects.camera2->SetWorldScale3D(cameraScale);
-            objects.camera2->SetFieldOfView(90);
-            objects.camera2->SetAspectRatio(4./3);
+            objects.camera2->SetFieldOfView(60);
+            objects.camera2->SetAspectRatio(1280./720);
 
             // Create a scene-capture component and set its target to the render target
             objects.capture2 = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("Capture2"));
@@ -420,7 +420,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             objects.capture2->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
 			objects.capture2->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
             objects.capture2->TextureTarget = objects.renderTarget2;
-            objects.capture2->FOVAngle = 45;
+            objects.capture2->FOVAngle = 15;
         }
 
     protected:
