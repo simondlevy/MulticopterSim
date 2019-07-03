@@ -234,6 +234,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             USceneCaptureComponent2D * capture2;
             UTextureRenderTarget2D   * renderTarget2;
 
+            UTextureRenderTarget2D   * renderTarget3;
+
         } objects_t;
 
         // Constructor
@@ -435,8 +437,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_1"));
             createCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 2, 90,
                 TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_2"));
-
-			//objects.renderTarget3 = NewObject<UTextureRenderTarget2D>(objects.pawn);
           }
 
         static void addMotor(objects_t & objects, uint8_t index, FVector mLocation, UStaticMesh * pMesh, FVector pLocation)
