@@ -371,7 +371,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             FVector cameraScale(0.1, 0.1, 0.1);
 
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
-                cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
+                cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_1"));
 
             // Get texture object from render target
             objects.renderTarget1 = cameraTextureObject.Object;
