@@ -373,13 +373,14 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 USceneCaptureComponent2D ** capture, 
                 UTextureRenderTarget2D ** renderTarget,  
                 uint8_t id, 
-                float fov,
-                wchar_t * renderTargetName)
+                float fov)
         {
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);
 
-            // Get texture object from render target in Contents
+			// Get render target from asset in Contents
+			wchar_t renderTargetName[100];
+			swprintf(renderTargetName, L"/Game/Flying/RenderTargets/cameraRenderTarget_%d", id);
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
             *renderTarget = cameraTextureObject.Object;
 
@@ -433,10 +434,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             objects.springArm->TargetArmLength = 0.f; 
 
             // Create cameras and support
-            createCamera(objects, &objects.camera1, &objects.capture1, &objects.renderTarget1, 1, 135,
-                TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_1"));
-            createCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 2, 90,
-                TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_2"));
+			createCamera(objects, &objects.camera1, &objects.capture1, &objects.renderTarget1, 1, 135); 
+            createCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 2, 90);
           }
 
         static void addMotor(objects_t & objects, uint8_t index, FVector mLocation, UStaticMesh * pMesh, FVector pLocation)
