@@ -1,11 +1,13 @@
 /*
  * Header-only support for vehicles in MulticopterSim
  *
- * This class peforms two functions:
+ * This class peforms the following functions:
  *
- * (1) Provides basic support for displaying vehicle kinematics
+ * (1) Statically builds meshes, cameras, and other UE4 objects
  *
- * (2) Sub-classes the MultirotorDynamics class so that a Vehicle
+ * (2) Provides basic support for displaying vehicle kinematics
+ *
+ * (3) Sub-classes the MultirotorDynamics class so that a Vehicle
  *     subclass can compute the U values for a particualr frame
  *     (e.g., QuadXAP)
  * 
@@ -225,6 +227,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             UAudioComponent          * audioComponent;
 
             USpringArmComponent      * springArm;
+
             UCameraComponent         * camera;
             USceneCaptureComponent2D * capture;
             UTextureRenderTarget2D   * renderTarget;
@@ -232,8 +235,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             UCameraComponent         * camera2;
             USceneCaptureComponent2D * capture2;
             UTextureRenderTarget2D   * renderTarget2;
-
-            UTextureRenderTarget2D   * renderTarget3;
 
         } objects_t;
 
@@ -251,6 +252,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             _objects.audioComponent     = objects.audioComponent;
 
             _objects.springArm          = objects.springArm;
+
             _objects.camera             = objects.camera;
             _objects.capture            = objects.capture;
             _objects.renderTarget       = objects.renderTarget;
@@ -258,8 +260,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             _objects.capture2           = objects.capture2;
             _objects.camera2            = objects.camera2;
             _objects.renderTarget2      = objects.renderTarget2;
-
-            _objects.renderTarget3      = objects.renderTarget3;
 
             for (uint8_t i=0; i<motorCount; ++i) {
                 _objects.propellerMeshComponents[i] = objects.propellerMeshComponents[i]; 
@@ -367,6 +367,62 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             _objects.capture2->FOVAngle = fov - 45;
         }
 
+        static void createCamera1(objects_t & objects)
+        {
+            // Make the camera appear small in the editor so it doesn't obscure the vehicle
+            FVector cameraScale(0.1, 0.1, 0.1);
+
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
+                cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
+
+            // Get texture object from render target
+            objects.renderTarget = cameraTextureObject.Object;
+
+            // Create a camera component 
+            objects.camera = objects.pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+            objects.camera ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
+			objects.camera->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            objects.camera->SetWorldScale3D(cameraScale);
+            objects.camera->SetFieldOfView(90);
+            objects.camera->SetAspectRatio(4./3);
+
+            // Create a scene-capture component and set its target to the render target
+            objects.capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("Capture"));
+            objects.capture->SetWorldScale3D(cameraScale);
+            objects.capture->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
+			objects.capture->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            objects.capture->TextureTarget = objects.renderTarget;
+            objects.capture->FOVAngle = 45;
+         }
+
+        static void createCamera2(objects_t & objects)
+        {
+            // Make the camera appear small in the editor so it doesn't obscure the vehicle
+            FVector cameraScale(0.1, 0.1, 0.1);
+
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
+                cameraTextureObject2(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_2"));
+
+            // Get texture object from render target
+            objects.renderTarget2 = cameraTextureObject2.Object;
+
+            // Create a camera component 
+            objects.camera2 = objects.pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("Camera2"));
+            objects.camera2 ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
+			objects.camera2->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            objects.camera2->SetWorldScale3D(cameraScale);
+            objects.camera2->SetFieldOfView(90);
+            objects.camera2->SetAspectRatio(4./3);
+
+            // Create a scene-capture component and set its target to the render target
+            objects.capture2 = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("Capture2"));
+            objects.capture2->SetWorldScale3D(cameraScale);
+            objects.capture2->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
+			objects.capture2->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            objects.capture2->TextureTarget = objects.renderTarget2;
+            objects.capture2->FOVAngle = 45;
+        }
+
     protected:
 
         static void build(objects_t & objects)
@@ -394,56 +450,13 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             // Attach the sound to the pawn's root, the sound follows the pawn around
             objects.audioComponent->SetupAttachment(objects.pawn->GetRootComponent());
 
-            // Get camera render target from Contents
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
-                cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
-
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
-                cameraTextureObject2(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_2"));
-
-            // Get texture object from each render target
-            objects.renderTarget = cameraTextureObject.Object;
-            objects.renderTarget2 = cameraTextureObject2.Object;
-
-            // Make the camera appear small in the editor so it doesn't obscure the vehicle
-            FVector cameraScale(0.1, 0.1, 0.1);
-
             // Create a spring-arm for the gimbal
             objects.springArm = objects.pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
             objects.springArm->SetupAttachment(objects.pawn->GetRootComponent());
             objects.springArm->TargetArmLength = 0.f; 
 
-            // Create a camera component 
-            objects.camera = objects.pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-            objects.camera ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-			objects.camera->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
-            objects.camera->SetWorldScale3D(cameraScale);
-            objects.camera->SetFieldOfView(90);
-            objects.camera->SetAspectRatio(4./3);
-
-            // Create a scene-capture component and set its target to the render target
-            objects.capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("Capture"));
-            objects.capture->SetWorldScale3D(cameraScale);
-            objects.capture->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
-			objects.capture->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
-            objects.capture->TextureTarget = objects.renderTarget;
-            objects.capture->FOVAngle = 45;
-            
-            // Create a camera component 
-            objects.camera2 = objects.pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("Camera2"));
-            objects.camera2 ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-			objects.camera2->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
-            objects.camera2->SetWorldScale3D(cameraScale);
-            objects.camera2->SetFieldOfView(90);
-            objects.camera2->SetAspectRatio(4./3);
-
-            // Create a scene-capture component and set its target to the render target
-            objects.capture2 = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("Capture2"));
-            objects.capture2->SetWorldScale3D(cameraScale);
-            objects.capture2->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
-			objects.capture2->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
-            objects.capture2->TextureTarget = objects.renderTarget;
-            objects.capture2->FOVAngle = 45;
+            createCamera1(objects);
+            createCamera2(objects);
 
 			//objects.renderTarget3 = NewObject<UTextureRenderTarget2D>(objects.pawn);
           }

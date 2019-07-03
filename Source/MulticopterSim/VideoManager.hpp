@@ -71,6 +71,7 @@ class FVideoManager {
 
             // Implemented in subclass
             processImage(_image);
+           
         }
 
         ~FVideoManager()
