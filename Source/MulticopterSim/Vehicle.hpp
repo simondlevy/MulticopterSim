@@ -89,25 +89,25 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
 #ifdef _USE_OPENCV
         // Threaded worker for managing video from camera
-        class FVideoManager * _videoManager = NULL;
+        class FVideoManager * _videoManager1 = NULL;
         class FVideoManager * _videoManager2 = NULL;
 
         void videoManagerStart(void)
         {
             extern FVideoManager * createVideoManager(UTextureRenderTarget2D * cameraRenderTarget, short port);
-            _videoManager = createVideoManager(_objects.renderTarget, 5000);
+            _videoManager1 = createVideoManager(_objects.renderTarget1, 5000);
             _videoManager2 = createVideoManager(_objects.renderTarget2, 5001);
         }
 
         void videoManagersStop(void)
         {
-            _videoManager  = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager);
+            _videoManager1 = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager1);
             _videoManager2 = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager2);
         }
 
         void videoManagerGrabImage(void)
         {
-            _videoManager->grabImage();
+            _videoManager1->grabImage();
             _videoManager2->grabImage();
         }
 #else
@@ -226,9 +226,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
             USpringArmComponent      * springArm;
 
-            UCameraComponent         * camera;
-            USceneCaptureComponent2D * capture;
-            UTextureRenderTarget2D   * renderTarget;
+            UCameraComponent         * camera1;
+            USceneCaptureComponent2D * capture1;
+            UTextureRenderTarget2D   * renderTarget1;
 
             UCameraComponent         * camera2;
             USceneCaptureComponent2D * capture2;
@@ -251,9 +251,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
             _objects.springArm          = objects.springArm;
 
-            _objects.camera             = objects.camera;
-            _objects.capture            = objects.capture;
-            _objects.renderTarget       = objects.renderTarget;
+            _objects.camera1            = objects.camera1;
+            _objects.capture1           = objects.capture1;
+            _objects.renderTarget1      = objects.renderTarget1;
 
             _objects.capture2           = objects.capture2;
             _objects.camera2            = objects.camera2;
@@ -358,8 +358,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
             _objects.springArm->SetWorldRotation(rotation);
 
-            _objects.camera->FieldOfView = fov;
-            _objects.capture->FOVAngle = fov - 45;
+            _objects.camera1->FieldOfView = fov;
+            _objects.capture1->FOVAngle = fov - 45;
 
             _objects.camera2->FieldOfView = fov;
             _objects.capture2->FOVAngle = fov - 45;
@@ -374,23 +374,23 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 cameraTextureObject(TEXT("/Game/Flying/RenderTargets/cameraRenderTarget"));
 
             // Get texture object from render target
-            objects.renderTarget = cameraTextureObject.Object;
+            objects.renderTarget1 = cameraTextureObject.Object;
 
             // Create a camera component 
-            objects.camera = objects.pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-            objects.camera ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-			objects.camera->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
-            objects.camera->SetWorldScale3D(cameraScale);
-            objects.camera->SetFieldOfView(135);
-            objects.camera->SetAspectRatio(1280./720);
+            objects.camera1 = objects.pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("Camera1"));
+            objects.camera1 ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
+			objects.camera1->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            objects.camera1->SetWorldScale3D(cameraScale);
+            objects.camera1->SetFieldOfView(135);
+            objects.camera1->SetAspectRatio(1280./720);
 
             // Create a scene-capture component and set its target to the render target
-            objects.capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("Capture"));
-            objects.capture->SetWorldScale3D(cameraScale);
-            objects.capture->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
-			objects.capture->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
-            objects.capture->TextureTarget = objects.renderTarget;
-            objects.capture->FOVAngle = 90;
+            objects.capture1 = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(TEXT("Capture1"));
+            objects.capture1->SetWorldScale3D(cameraScale);
+            objects.capture1->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
+			objects.capture1->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            objects.capture1->TextureTarget = objects.renderTarget1;
+            objects.capture1->FOVAngle = 90;
          }
 
         static void createCamera2(objects_t & objects)
