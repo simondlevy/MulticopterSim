@@ -117,10 +117,10 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 #endif
 
         // Retrieves kinematics from dynamics computed in another thread
-        void getKinematics(void)
+        bool getKinematics(void)
         {
 			// FlightManager will be null after crash
-			if (!_flightManager) return;
+			if (!_flightManager) return false;
 
             // Get current pose kinematics and motor values dynamics (from flight
             // manager). Motor values are used only for animation effects (prop
@@ -128,18 +128,21 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             FVector location;
             FRotator rotation;
 
-            bool crashed = _flightManager->getKinematics(location, rotation, _motorvals);
+            bool flying = _flightManager->getKinematics(location, rotation, _motorvals);
 
-            if (crashed) {
+            if (flying) {
+                _objects.pawn->SetActorLocation(location);
+                _objects.pawn->SetActorRotation(rotation);
 
-                debug("crashed");
-
-                // Restart flight manager and video
-                stopThreadedWorkers();
+                return true;
             }
 
-            _objects.pawn->SetActorLocation(location);
-            _objects.pawn->SetActorRotation(rotation);
+            debug("crashed");
+
+            // Restart flight manager and video
+            stopThreadedWorkers();
+
+            return false;
         }
 
         // Animation effects (sound, spinning props)
@@ -204,7 +207,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             return FName(name);
         }
 
-     public:
+    public:
 
         // Container for frame layout constants
         typedef struct {
@@ -388,24 +391,25 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             if (_mapSelected && _count++>10) {
 
                 // Kinematics from dynamics
-                getKinematics();
+                if (getKinematics()) {
 
-                // Keepin' it real(istic)!
-                addAnimationEffects();
+                    // Keepin' it real(istic)!
+                    addAnimationEffects();
 
-                // Move gimbal and get Field-Of-View
-                setGimbal();
+                    // Move gimbal and get Field-Of-View
+                    setGimbal();
 
-                // Grab image
-                videoManagerGrabImage();
+                    // Grab image
+                    videoManagerGrabImage();
 
-                // Get a high-fidelity current time value from the OS
-                double currentTime = FPlatformTime::Seconds() - _startTime;
+                    // Get a high-fidelity current time value from the OS
+                    double currentTime = FPlatformTime::Seconds() - _startTime;
 
-                // Report FPS
-                if (_flightManager) {
-                    debug("FPS:  Main=%d    Flight=%d", 
-                            (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
+                    // Report FPS
+                    if (_flightManager) {
+                        debug("FPS:  Main=%d    Flight=%d", 
+                                (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
+                    }
                 }
             }
         }
@@ -430,8 +434,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         void setGimbal(void)
         {
-			// FlightManager will be null after crash
-			if (!_flightManager) return;
+            // FlightManager will be null after crash
+            if (!_flightManager) return;
 
             // Get gimbal location from flight manager
             float roll = 0, pitch = 0, fov = 0;
@@ -462,16 +466,16 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);
 
-			// Get render target from asset in Contents
-			wchar_t renderTargetName[100];
-			swprintf(renderTargetName, L"/Game/Flying/RenderTargets/cameraRenderTarget_%d", id);
+            // Get render target from asset in Contents
+            wchar_t renderTargetName[100];
+            swprintf(renderTargetName, L"/Game/Flying/RenderTargets/cameraRenderTarget_%d", id);
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
             *renderTarget = cameraTextureObject.Object;
 
             // Create a camera component 
             *camera = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
             (*camera) ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-			(*camera)->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            (*camera)->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
             (*camera)->SetWorldScale3D(cameraScale);
             (*camera)->SetFieldOfView(fov);
             (*camera)->SetAspectRatio((float)(*renderTarget)->SizeX / (*renderTarget)->SizeY);
@@ -480,12 +484,12 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             *capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
             (*capture)->SetWorldScale3D(cameraScale);
             (*capture)->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
-			(*capture)->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            (*capture)->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
             (*capture)->TextureTarget = *renderTarget;
             (*capture)->FOVAngle = fov - 45;
-         }
+        }
 
-    protected:
+     protected:
 
     private:
 

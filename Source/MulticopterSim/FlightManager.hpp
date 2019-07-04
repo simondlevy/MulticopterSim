@@ -151,7 +151,8 @@ class FFlightManager : public FThreadedWorker {
         }
 
         // Called by VehiclePawn::Tick() method to get current display pose
-        // (location, rotation) and propeller animation/sound (motorvals)
+        // (location, rotation) and propeller animation/sound (motorvals).
+        // Returns true on success, false on crash
         bool getKinematics(FVector & location, FRotator & rotation, float * motorvals)
         {
             // Get motor values for propeller animation / motor sound
@@ -169,7 +170,7 @@ class FFlightManager : public FThreadedWorker {
             rotation.Pitch = FMath::RadiansToDegrees(_pose.rotation[1]);
             rotation.Yaw =   FMath::RadiansToDegrees(_pose.rotation[2]);
 
-            return _crashed;
+            return !_crashed;
         }
 
         // Implemented by subclass
