@@ -275,14 +275,15 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
           }
 
         static void addMesh(const objects_t & objects, UStaticMesh * mesh, const char * name, 
-                const FVector & location, const FVector & scale)
+                const FVector & location, const FRotator rotation, const FVector & scale)
         {
 
             UStaticMeshComponent * meshComponent = 
                 objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
             meshComponent->SetStaticMesh(mesh);
             meshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
-            meshComponent->AddRelativeLocation(location);
+            meshComponent->AddRelativeLocation(location*100); // m => cm
+            meshComponent->AddLocalRotation(rotation);
 			meshComponent->SetRelativeScale3D(scale);
         }
 

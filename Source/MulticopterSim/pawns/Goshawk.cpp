@@ -14,7 +14,7 @@
 //
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics,  "Goshawk/Frame.Frame", FrameStatics)
-DECLARE_STATIC_MESH(FPlateStatics, "Goshawk/Plate.Plate",   PlateStatics)
+DECLARE_STATIC_MESH(FLogoStatics, "Goshawk/Logo.Logo",   LogoStatics)
 
 DECLARE_STATIC_MESH(FProp1WStatics, "Goshawk/PropCW.PropCW",   Prop1Statics)
 DECLARE_STATIC_MESH(FProp2WStatics, "Goshawk/PropCW.PropCW",   Prop2Statics)
@@ -25,7 +25,6 @@ DECLARE_STATIC_MESH(FProp6WStatics, "Goshawk/PropCCW.PropCCW", Prop6Statics)
 DECLARE_STATIC_MESH(FProp7WStatics, "Goshawk/PropCW.PropCW",   Prop7Statics)
 DECLARE_STATIC_MESH(FProp8WStatics, "Goshawk/PropCW.PropCW",   Prop8Statics)
 
-// Constructor
 AGoshawkPawn::AGoshawkPawn()
 {
     Vehicle::objects_t objects = {0};
@@ -36,13 +35,14 @@ AGoshawkPawn::AGoshawkPawn()
 
     Vehicle::build(objects);
 
-	UStaticMesh * plateMesh = PlateStatics.mesh.Get();
-
+    // Add our logo
+	UStaticMesh * logoMesh = LogoStatics.mesh.Get();
 	static ConstructorHelpers::FObjectFinder<UMaterial> decalMaterial(TEXT("'/Game/Flying/Decals/RoboTiCan_Mat'"));
-
-	plateMesh->SetMaterial(0, decalMaterial.Object);
-
-	Vehicle::addMesh(objects, plateMesh, "PlateMesh", FVector(-40, 0.5, 30), FVector(0.05, 0.2, 0.1));
+	logoMesh->SetMaterial(0, decalMaterial.Object);
+	Vehicle::addMesh(objects, logoMesh, "LogoMesh", 
+            FVector(-0.22, 0.005, 0.10),  // location
+            FRotator(0,90,100),           // rotation
+            FVector(1,0.33,1)*.1875);      // scale
 
     Vehicle::addMotor(objects, 0, +1.60, +0.60, _layout, Prop1Statics.mesh.Get());
     Vehicle::addMotor(objects, 1, -1.60, -0.60, _layout, Prop2Statics.mesh.Get());
