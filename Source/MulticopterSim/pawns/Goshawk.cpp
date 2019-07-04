@@ -13,11 +13,15 @@
 
 //
 // Structures to hold static mesh initializations
-DECLARE_STATIC_MESH(FFrameStatics,  "Goshawk/Frame.Frame",  FrameStatics)
-DECLARE_STATIC_MESH(FProp1WStatics, "Goshawk/PropCCW.PropCCW", Prop1Statics)
-DECLARE_STATIC_MESH(FProp2WStatics, "Goshawk/PropCCW.PropCCW", Prop2Statics)
-DECLARE_STATIC_MESH(FProp3WStatics, "Goshawk/PropCW.PropCW",  Prop3Statics)
-DECLARE_STATIC_MESH(FProp4WStatics, "Goshawk/PropCW.PropCW",  Prop4Statics)
+DECLARE_STATIC_MESH(FFrameStatics,  "Goshawk/Frame.Frame", FrameStatics)
+DECLARE_STATIC_MESH(FProp1WStatics, "Goshawk/PropCW.PropCW",   Prop1Statics)
+DECLARE_STATIC_MESH(FProp2WStatics, "Goshawk/PropCW.PropCW",   Prop2Statics)
+DECLARE_STATIC_MESH(FProp3WStatics, "Goshawk/PropCCW.PropCCW", Prop3Statics)
+DECLARE_STATIC_MESH(FProp4WStatics, "Goshawk/PropCCW.PropCCW", Prop4Statics)
+DECLARE_STATIC_MESH(FProp5WStatics, "Goshawk/PropCCW.PropCCW", Prop5Statics)
+DECLARE_STATIC_MESH(FProp6WStatics, "Goshawk/PropCCW.PropCCW", Prop6Statics)
+DECLARE_STATIC_MESH(FProp7WStatics, "Goshawk/PropCW.PropCW",   Prop7Statics)
+DECLARE_STATIC_MESH(FProp8WStatics, "Goshawk/PropCW.PropCW",   Prop8Statics)
 
 // Constructor
 AGoshawkPawn::AGoshawkPawn()

@@ -11,8 +11,6 @@
           /   \
         2CCW  4CW
 
- For now we use quadX dynamics
-
  Copyright (C) 2019 Simon D. Levy, Daniel Katzav
 
  MIT License
@@ -31,6 +29,8 @@ class OctoXAP : public Vehicle {
     protected:
 
         // MultirotorDynamics method overrides
+        // XXX For now we use quadXAP dynamics
+
 
         // roll right
         virtual double u2(double * o) override
