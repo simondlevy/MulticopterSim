@@ -14,6 +14,8 @@
 //
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics,  "Goshawk/Frame.Frame", FrameStatics)
+DECLARE_STATIC_MESH(FPlateStatics, "Goshawk/Plate.Plate",   PlateStatics)
+
 DECLARE_STATIC_MESH(FProp1WStatics, "Goshawk/PropCW.PropCW",   Prop1Statics)
 DECLARE_STATIC_MESH(FProp2WStatics, "Goshawk/PropCW.PropCW",   Prop2Statics)
 DECLARE_STATIC_MESH(FProp3WStatics, "Goshawk/PropCCW.PropCCW", Prop3Statics)
@@ -33,6 +35,8 @@ AGoshawkPawn::AGoshawkPawn()
     objects.motorMesh = NULL;
 
     Vehicle::build(objects);
+
+	Vehicle::addMesh(objects, PlateStatics.mesh.Get(), "PlateMesh", FVector(-40, 0.5, 30), FVector(0.05, 0.2, 0.1));
 
     Vehicle::addMotor(objects, 0, +1.60, +0.60, _layout, Prop1Statics.mesh.Get());
     Vehicle::addMotor(objects, 1, -1.60, -0.60, _layout, Prop2Statics.mesh.Get());

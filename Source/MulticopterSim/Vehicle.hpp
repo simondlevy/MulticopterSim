@@ -274,6 +274,18 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             createCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 2, 90);
           }
 
+        static void addMesh(const objects_t & objects, UStaticMesh * mesh, const char * name, 
+                const FVector & location, const FVector & scale)
+        {
+
+            UStaticMeshComponent * meshComponent = 
+                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
+            meshComponent->SetStaticMesh(mesh);
+            meshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
+            meshComponent->AddRelativeLocation(location);
+			meshComponent->SetRelativeScale3D(scale);
+        }
+
         static void addMotor(objects_t & objects, uint8_t index, float dx, float dy, const layout_t & l, UStaticMesh * propMesh)
         {
             float cx = l.cx + dx * l.wd;
