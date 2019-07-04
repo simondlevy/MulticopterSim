@@ -32,7 +32,7 @@ class MULTICOPTERSIM_API A3DFlyPawn : public APawn {
             0.03,                   // Iz
             3.08E-04,               // Jr
             
-            15000                  // maxrpm
+            10000                   // maxrpm
         }; 
 
         QuadXAP::layout_t _layout = {

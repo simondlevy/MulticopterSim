@@ -45,11 +45,15 @@ void A3DFlyPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void A3DFlyPawn::BeginPlay()
 {
+    _vehicle->BeginPlay();
+
     Super::BeginPlay();
 }
 
 void A3DFlyPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+    _vehicle->EndPlay();
+
     Super::EndPlay(EndPlayReason);
 }
 
