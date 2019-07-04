@@ -61,7 +61,7 @@ class OctoXAP : public Vehicle {
     public:	
 
         OctoXAP(const objects_t & objects, const params_t & params)
-            : Vehicle(objects, params, 4) 
+            : Vehicle(objects, params, 8) 
         {
         }
 
@@ -75,6 +75,10 @@ class OctoXAP : public Vehicle {
             Vehicle::addMotor(objects, 1, -1, -1, layout, prop2Mesh);
             Vehicle::addMotor(objects, 2, +1, -1, layout, prop3Mesh);
             Vehicle::addMotor(objects, 3, -1, +1, layout, prop4Mesh);
+            Vehicle::addMotor(objects, 4, -1, +1, layout, prop5Mesh);
+            Vehicle::addMotor(objects, 5, -1, +1, layout, prop6Mesh);
+            Vehicle::addMotor(objects, 6, -1, +1, layout, prop7Mesh);
+            Vehicle::addMotor(objects, 7, -1, +1, layout, prop8Mesh);
         }
 
 }; // class OctoXAP
