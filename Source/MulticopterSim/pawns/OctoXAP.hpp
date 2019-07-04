@@ -53,7 +53,7 @@ class OctoXAP : public Vehicle {
         // motor direction for animation
         virtual int8_t motorDirection(uint8_t i) override
         {
-            const int8_t dir[4] = {-1, -1, +1, +1};
+            const int8_t dir[8] = {+1, +1, -1, -1, -1, -1, +1, +1};
             return dir[i];
         }
 
@@ -72,13 +72,13 @@ class OctoXAP : public Vehicle {
             Vehicle::build(objects);
 
             Vehicle::addMotor(objects, 0, +1, +1, layout, prop1Mesh);
-            Vehicle::addMotor(objects, 1, -1, -1, layout, prop2Mesh);
-            Vehicle::addMotor(objects, 2, +1, -1, layout, prop3Mesh);
-            Vehicle::addMotor(objects, 3, -1, +1, layout, prop4Mesh);
-            Vehicle::addMotor(objects, 4, -1, +1, layout, prop5Mesh);
-            Vehicle::addMotor(objects, 5, -1, +1, layout, prop6Mesh);
-            Vehicle::addMotor(objects, 6, -1, +1, layout, prop7Mesh);
-            Vehicle::addMotor(objects, 7, -1, +1, layout, prop8Mesh);
+            Vehicle::addMotor(objects, 1, -100, -100, layout, prop2Mesh);
+            Vehicle::addMotor(objects, 2, +100, -100, layout, prop3Mesh);
+            Vehicle::addMotor(objects, 3, -100, +100, layout, prop4Mesh);
+            Vehicle::addMotor(objects, 4, -100, +100, layout, prop5Mesh);
+            Vehicle::addMotor(objects, 5, -100, +100, layout, prop6Mesh);
+            Vehicle::addMotor(objects, 6, -100, +100, layout, prop7Mesh);
+            Vehicle::addMotor(objects, 7, -100, +100, layout, prop8Mesh);
         }
 
 }; // class OctoXAP
