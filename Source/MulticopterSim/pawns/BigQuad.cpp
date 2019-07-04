@@ -8,10 +8,6 @@
 
 #include "BigQuad.h"
 
-#include "UObject/ConstructorHelpers.h"
-#include "GameFramework/SpringArmComponent.h"
-
-//
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics,  "BigQuad/Frame.Frame",     FrameStatics)
 DECLARE_STATIC_MESH(FMotorStatics,  "BigQuad/Motor.Motor",     MotorStatics)
