@@ -197,7 +197,20 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             return FName(name);
         }
 
-    public:
+     public:
+
+        // Container for frame layout constants
+        typedef struct {
+
+            float cx;   // center X
+            float cy;   // center Y
+            float mo;   // motor offset
+            float wd;   // width
+            float ln;   // length
+            float mz;   // motor Z
+            float pz;   // propeller Z
+
+        } layout_t;
 
         // UE4 objects that must be built statically
         typedef struct {
@@ -223,6 +236,29 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             UTextureRenderTarget2D   * renderTarget3;
 
         } objects_t;
+
+        // Static helper
+        static void addMotor(objects_t & objects, uint8_t index, float dx, float dy, const layout_t & l, UStaticMesh * propMesh)
+        {
+            float cx = l.cx + dx * l.wd;
+            float cy = l.cy + dy * l.ln;
+
+            if (objects.motorMesh) {
+                UStaticMeshComponent * mMeshComponent = 
+                    objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Motor", index, "Mesh"));
+                mMeshComponent->SetStaticMesh(objects.motorMesh);
+                mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
+                mMeshComponent->AddRelativeLocation(FVector(cx, cy+l.mo, l.mz)*100); // m => cm
+            }
+
+            UStaticMeshComponent * pMeshComponent = 
+                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
+            pMeshComponent->SetStaticMesh(propMesh);
+            pMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName);
+            pMeshComponent->AddRelativeLocation(FVector(cx, cy, l.pz)*100); // m => cm
+
+            objects.propellerMeshComponents[index] = pMeshComponent;
+        }
 
         // Constructor
         Vehicle(const objects_t & objects, const params_t & params, uint8_t motorCount)
@@ -423,25 +459,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 			createCamera(objects, &objects.camera1, &objects.capture1, &objects.renderTarget1, 1, 135); 
             createCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 2, 90);
           }
-
-        static void addMotor(objects_t & objects, uint8_t index, FVector mLocation, UStaticMesh * pMesh, FVector pLocation)
-        {
-            if (objects.motorMesh) {
-                UStaticMeshComponent * mMeshComponent = 
-                    objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Motor", index, "Mesh"));
-                mMeshComponent->SetStaticMesh(objects.motorMesh);
-                mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
-                mMeshComponent->AddRelativeLocation(mLocation*100); // m => cm
-            }
-
-            UStaticMeshComponent * pMeshComponent = 
-                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
-            pMeshComponent->SetStaticMesh(pMesh);
-            pMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName);
-            pMeshComponent->AddRelativeLocation(pLocation*100); // m => cm
-
-            objects.propellerMeshComponents[index] = pMeshComponent;
-        }
 
     private:
 

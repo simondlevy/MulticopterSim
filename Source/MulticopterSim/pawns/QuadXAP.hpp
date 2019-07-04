@@ -54,29 +54,9 @@ class QuadXAP : public Vehicle {
 
     public:	
 
-        // Container for frame layout constants
-        typedef struct {
-
-            float cx;   // center X
-            float cy;   // center Y
-            float mo;   // motor offset
-            float wd;   // width
-            float ln;   // length
-            float mz;   // motor Z
-            float pz;   // propeller Z
-
-        } layout_t;
-
         QuadXAP(const objects_t & objects, const params_t & params)
             : Vehicle(objects, params, 4) 
         {
-        }
-
-        static void addMotor(objects_t & objects, uint8_t index, int8_t dx, int8_t dy, const layout_t & l, UStaticMesh * propMesh)
-        {
-            float cx = l.cx + dx * l.wd;
-            float cy = l.cy + dy * l.ln;
-            Vehicle::addMotor(objects, index, FVector(cx, cy+l.mo, l.mz), propMesh, FVector(cx, cy, l.pz)); 
         }
 
         static void build(objects_t & objects, const layout_t & layout,
@@ -84,10 +64,10 @@ class QuadXAP : public Vehicle {
         {
             Vehicle::build(objects);
 
-            QuadXAP::addMotor(objects, 0, +1, +1, layout, prop1Mesh);
-            QuadXAP::addMotor(objects, 1, -1, -1, layout, prop2Mesh);
-            QuadXAP::addMotor(objects, 2, +1, -1, layout, prop3Mesh);
-            QuadXAP::addMotor(objects, 3, -1, +1, layout, prop4Mesh);
+            Vehicle::addMotor(objects, 0, +1, +1, layout, prop1Mesh);
+            Vehicle::addMotor(objects, 1, -1, -1, layout, prop2Mesh);
+            Vehicle::addMotor(objects, 2, +1, -1, layout, prop3Mesh);
+            Vehicle::addMotor(objects, 3, -1, +1, layout, prop4Mesh);
         }
 
 }; // class QuadXAP
