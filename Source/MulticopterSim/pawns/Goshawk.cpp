@@ -45,9 +45,9 @@ AGoshawkPawn::AGoshawkPawn()
             FVector(1,0.33,1)*.1875);      // scale
 
     Vehicle::addMotor(objects, 0, +1.60, +0.60, _layout, Prop1Statics.mesh.Get());
-    Vehicle::addMotor(objects, 1, -1.60, -0.60, _layout, Prop2Statics.mesh.Get());
+    Vehicle::addMotor(objects, 1, -1.55, -0.60, _layout, Prop2Statics.mesh.Get());
     Vehicle::addMotor(objects, 2, +0.60, +1.50, _layout, Prop3Statics.mesh.Get());
-    Vehicle::addMotor(objects, 3, -1.60, +0.60, _layout, Prop4Statics.mesh.Get());
+    Vehicle::addMotor(objects, 3, -1.55, +0.60, _layout, Prop4Statics.mesh.Get());
     Vehicle::addMotor(objects, 4, +1.60, -0.60, _layout, Prop5Statics.mesh.Get());
     Vehicle::addMotor(objects, 5, -0.70, -1.50, _layout, Prop6Statics.mesh.Get());
     Vehicle::addMotor(objects, 6, +0.60, -1.50, _layout, Prop7Statics.mesh.Get());

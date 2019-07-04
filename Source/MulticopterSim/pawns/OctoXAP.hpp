@@ -2,13 +2,13 @@
  Vehicle class or octo-X frames using ArduPilot motor layout:
 
         5CCW  1CW
-          \   /
-      7CW       3CCW
-          \   /
+               
+    7CW          3CCW
+               
             ^     
-          /   \
-      6CW       8CCW
-          /   \
+               
+    6CW          8CCW
+               
         2CCW  4CW
 
  Copyright (C) 2019 Simon D. Levy, Daniel Katzav
