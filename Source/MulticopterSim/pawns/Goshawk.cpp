@@ -36,7 +36,13 @@ AGoshawkPawn::AGoshawkPawn()
 
     Vehicle::build(objects);
 
-	Vehicle::addMesh(objects, PlateStatics.mesh.Get(), "PlateMesh", FVector(-40, 0.5, 30), FVector(0.05, 0.2, 0.1));
+	UStaticMesh * plateMesh = PlateStatics.mesh.Get();
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> decalMaterial(TEXT("'/Game/Flying/Decals/RoboTiCan_Mat'"));
+
+	plateMesh->SetMaterial(0, decalMaterial.Object);
+
+	Vehicle::addMesh(objects, plateMesh, "PlateMesh", FVector(-40, 0.5, 30), FVector(0.05, 0.2, 0.1));
 
     Vehicle::addMotor(objects, 0, +1.60, +0.60, _layout, Prop1Statics.mesh.Get());
     Vehicle::addMotor(objects, 1, -1.60, -0.60, _layout, Prop2Statics.mesh.Get());
