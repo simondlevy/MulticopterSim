@@ -72,10 +72,18 @@ class FThreadedWorker : public FRunnable {
             return (const char *)_message;
         }
 
+        uint32_t getCount(void)
+        {
+            return _count;
+        }
+
         static FThreadedWorker * stopThreadedWorker(FThreadedWorker * worker)
         {
-            worker->Stop();
-            delete worker;
+            if (worker) {
+                worker->Stop();
+                delete worker;
+            }
+
             return (FThreadedWorker *)NULL;
         }
 
@@ -103,11 +111,11 @@ class FThreadedWorker : public FRunnable {
                 // Pass current time to task implementation
                 performTask(currentTime);
 
+                // Increment count for FPS reporting
+                _count++;
+
                 // Wait a bit to allow other threads to run
                 FPlatformProcess::Sleep(.0001); 
-
-                // Report FPS
-                dbgprintf("FPS = %d", (int)(++_count/currentTime));
             }
 
             return 0;

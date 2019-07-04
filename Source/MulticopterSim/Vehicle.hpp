@@ -119,6 +119,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         // Retrieves kinematics from dynamics computed in another thread
         void getKinematics(void)
         {
+			// FlightManager will be null after crash
+			if (!_flightManager) return;
+
             // Get current pose kinematics and motor values dynamics (from flight
             // manager). Motor values are used only for animation effects (prop
             // rotation, sound).
@@ -129,8 +132,10 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
             if (crashed) {
 
+                debug("crashed");
+
                 // Restart flight manager and video
-                stopManagers();
+                stopThreadedWorkers();
             }
 
             _objects.pawn->SetActorLocation(location);
@@ -177,15 +182,17 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         FRotator _startRotation;
 
         // Flight management thread
-        void startFlightManagers(void)
+        void startThreadedWorkers(void)
         {
+            debug("start");
             extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
             _flightManager = createFlightManager(this, _startLocation, _startRotation);
             videoManagerStart();
         }        
 
-        void stopManagers(void)
+        void stopThreadedWorkers(void)
         {
+            //debug("stop");
             _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
             videoManagersStop();
         }
@@ -367,7 +374,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 _motorBuffer = new TCircularBuffer<float>(20);
 
                 // Initialize threaded workers
-                startFlightManagers();
+                startThreadedWorkers();
             }
 
             else {
@@ -395,8 +402,11 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
                 // Get a high-fidelity current time value from the OS
                 double currentTime = FPlatformTime::Seconds() - _startTime;
 
-                // OSD for debugging messages from threaded workers
-                debug("Main:  FPS=%d    Flight: %s", (int)(++_count/currentTime), _flightManager->getMessage());
+                // Report FPS
+                if (_flightManager) {
+                    debug("FPS:  Main=%d    Flight=%d", 
+                            (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
+                }
             }
         }
 
@@ -414,12 +424,15 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         {
             if (_mapSelected) {
 
-                stopManagers();
+                stopThreadedWorkers();
             }
         }
 
         void setGimbal(void)
         {
+			// FlightManager will be null after crash
+			if (!_flightManager) return;
+
             // Get gimbal location from flight manager
             float roll = 0, pitch = 0, fov = 0;
             _flightManager->getGimbal(roll, pitch, fov);
