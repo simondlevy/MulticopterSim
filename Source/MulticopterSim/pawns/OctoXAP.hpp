@@ -24,7 +24,7 @@ class OctoXAP : public Vehicle {
 
     private:
 
-        const int8_t directions[4] = {+1, +1, +1, +1};
+        const int8_t directions[8] = {+1, +1, -1, -1, -1, -1, +1, +1};
 
     protected:
 
