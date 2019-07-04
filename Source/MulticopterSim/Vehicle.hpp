@@ -237,7 +237,43 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         } objects_t;
 
-        // Static helper
+        // Static helpers
+        
+        static void build(objects_t & objects)
+        {
+            objects.frameMeshComponent = objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
+            objects.frameMeshComponent->SetStaticMesh(objects.frameMesh);
+            objects.pawn->SetRootComponent(objects.frameMeshComponent);
+
+            // Turn off UE4 physics
+            objects.frameMeshComponent->SetSimulatePhysics(false);
+
+            // Get sound cue from Contents
+            static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("'/Game/Flying/Audio/MotorSoundCue'"));
+
+            // Store a reference to the Cue asset - we'll need it later.
+            objects.soundCue = soundCue.Object;
+
+            // Create an audio component, the audio component wraps the Cue, 
+            // and allows us to ineract with it, and its parameters from code.
+            objects.audioComponent = objects.pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
+
+            // Stop the sound from sound playing the moment it's created.
+            objects.audioComponent->bAutoActivate = false;
+
+            // Attach the sound to the pawn's root, the sound follows the pawn around
+            objects.audioComponent->SetupAttachment(objects.pawn->GetRootComponent());
+
+            // Create a spring-arm for the gimbal
+            objects.springArm = objects.pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+            objects.springArm->SetupAttachment(objects.pawn->GetRootComponent());
+            objects.springArm->TargetArmLength = 0.f; 
+
+            // Create cameras and support
+			createCamera(objects, &objects.camera1, &objects.capture1, &objects.renderTarget1, 1, 135); 
+            createCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 2, 90);
+          }
+
         static void addMotor(objects_t & objects, uint8_t index, float dx, float dy, const layout_t & l, UStaticMesh * propMesh)
         {
             float cx = l.cx + dx * l.wd;
@@ -424,41 +460,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
          }
 
     protected:
-
-        static void build(objects_t & objects)
-        {
-            objects.frameMeshComponent = objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
-            objects.frameMeshComponent->SetStaticMesh(objects.frameMesh);
-            objects.pawn->SetRootComponent(objects.frameMeshComponent);
-
-            // Turn off UE4 physics
-            objects.frameMeshComponent->SetSimulatePhysics(false);
-
-            // Get sound cue from Contents
-            static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("'/Game/Flying/Audio/MotorSoundCue'"));
-
-            // Store a reference to the Cue asset - we'll need it later.
-            objects.soundCue = soundCue.Object;
-
-            // Create an audio component, the audio component wraps the Cue, 
-            // and allows us to ineract with it, and its parameters from code.
-            objects.audioComponent = objects.pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
-
-            // Stop the sound from sound playing the moment it's created.
-            objects.audioComponent->bAutoActivate = false;
-
-            // Attach the sound to the pawn's root, the sound follows the pawn around
-            objects.audioComponent->SetupAttachment(objects.pawn->GetRootComponent());
-
-            // Create a spring-arm for the gimbal
-            objects.springArm = objects.pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-            objects.springArm->SetupAttachment(objects.pawn->GetRootComponent());
-            objects.springArm->TargetArmLength = 0.f; 
-
-            // Create cameras and support
-			createCamera(objects, &objects.camera1, &objects.capture1, &objects.renderTarget1, 1, 135); 
-            createCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 2, 90);
-          }
 
     private:
 

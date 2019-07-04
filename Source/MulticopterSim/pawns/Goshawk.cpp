@@ -32,9 +32,17 @@ AGoshawkPawn::AGoshawkPawn()
     objects.frameMesh = FrameStatics.mesh.Get();
     objects.motorMesh = NULL;
 
-    OctoXAP::build(objects, _layout,
-            Prop1Statics.mesh.Get(), Prop2Statics.mesh.Get(), Prop3Statics.mesh.Get(), Prop4Statics.mesh.Get(),
-            Prop5Statics.mesh.Get(), Prop6Statics.mesh.Get(), Prop7Statics.mesh.Get(), Prop8Statics.mesh.Get());
+    Vehicle::build(objects);
+
+    Vehicle::addMotor(objects, 0, +1, +1, _layout, Prop1Statics.mesh.Get());
+
+    Vehicle::addMotor(objects, 1, -100, -100, _layout, Prop2Statics.mesh.Get());
+    Vehicle::addMotor(objects, 2, +100, -100, _layout, Prop3Statics.mesh.Get());
+    Vehicle::addMotor(objects, 3, -100, +100, _layout, Prop4Statics.mesh.Get());
+    Vehicle::addMotor(objects, 4, -100, +100, _layout, Prop5Statics.mesh.Get());
+    Vehicle::addMotor(objects, 5, -100, +100, _layout, Prop6Statics.mesh.Get());
+    Vehicle::addMotor(objects, 6, -100, +100, _layout, Prop7Statics.mesh.Get());
+    Vehicle::addMotor(objects, 7, -100, +100, _layout, Prop8Statics.mesh.Get());
 
     _vehicle = new OctoXAP(objects, _params);
 }

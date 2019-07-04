@@ -65,20 +65,4 @@ class OctoXAP : public Vehicle {
         {
         }
 
-        static void build(objects_t & objects, const layout_t & layout,
-                UStaticMesh * prop1Mesh, UStaticMesh * prop2Mesh, UStaticMesh * prop3Mesh, UStaticMesh * prop4Mesh,
-                UStaticMesh * prop5Mesh, UStaticMesh * prop6Mesh, UStaticMesh * prop7Mesh, UStaticMesh * prop8Mesh)
-        {
-            Vehicle::build(objects);
-
-            Vehicle::addMotor(objects, 0, +1, +1, layout, prop1Mesh);
-            Vehicle::addMotor(objects, 1, -100, -100, layout, prop2Mesh);
-            Vehicle::addMotor(objects, 2, +100, -100, layout, prop3Mesh);
-            Vehicle::addMotor(objects, 3, -100, +100, layout, prop4Mesh);
-            Vehicle::addMotor(objects, 4, -100, +100, layout, prop5Mesh);
-            Vehicle::addMotor(objects, 5, -100, +100, layout, prop6Mesh);
-            Vehicle::addMotor(objects, 6, -100, +100, layout, prop7Mesh);
-            Vehicle::addMotor(objects, 7, -100, +100, layout, prop8Mesh);
-        }
-
 }; // class OctoXAP
