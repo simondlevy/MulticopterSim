@@ -41,12 +41,12 @@ class MULTICOPTERSIM_API AGoshawkPawn : public APawn {
         OctoXAP::layout_t _layout = {
 
              0.00, // cx
-            +0.13, // cy
+             0.00, // cy
              0.01, // mo
              0.35, // wd
              0.35, // ln
              0.45, // mz
-            -0.08  // pz
+            -0.04  // pz
         };
 
         // The Vehicle object will handle most of the work for our vehicle pawn

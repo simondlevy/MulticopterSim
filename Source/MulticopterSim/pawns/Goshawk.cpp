@@ -34,7 +34,7 @@ AGoshawkPawn::AGoshawkPawn()
 
     Vehicle::build(objects);
 
-    Vehicle::addMotor(objects, 0, +1, +1, _layout, Prop1Statics.mesh.Get());
+    Vehicle::addMotor(objects, 0, +0.625, +1.5, _layout, Prop1Statics.mesh.Get());
 
     Vehicle::addMotor(objects, 1, -100, -100, _layout, Prop2Statics.mesh.Get());
     Vehicle::addMotor(objects, 2, +100, -100, _layout, Prop3Statics.mesh.Get());
