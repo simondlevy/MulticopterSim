@@ -28,10 +28,10 @@ AGoshawkPawn::AGoshawkPawn()
     objects.frameMesh = FrameStatics.mesh.Get();
     objects.motorMesh = NULL;
 
-    QuadXAP::build(objects, _layout,
+    OctoXAP::build(objects, _layout,
             Prop1Statics.mesh.Get(), Prop2Statics.mesh.Get(), Prop3Statics.mesh.Get(), Prop4Statics.mesh.Get()); 
 
-    _vehicle = new QuadXAP(objects, _params);
+    _vehicle = new OctoXAP(objects, _params);
 }
 
 AGoshawkPawn::~AGoshawkPawn()

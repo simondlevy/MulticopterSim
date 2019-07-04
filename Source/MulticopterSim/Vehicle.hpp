@@ -199,20 +199,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
     public:
 
-        // Frame constants
-        typedef struct {
-
-            float cx;   // center X
-            float cy;   // center Y
-            float mo;   // motor offset
-            float wd;   // width
-            float ln;   // length
-            float mz;   // motor Z
-            float pz;   // propeller Z
-
-        } layout_t;
-
-
         // UE4 objects that must be built statically
         typedef struct {
 

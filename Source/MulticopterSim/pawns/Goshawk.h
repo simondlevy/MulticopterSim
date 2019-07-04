@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "pawns/QuadXAP.hpp"
+#include "pawns/OctoXAP.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -38,15 +38,15 @@ class MULTICOPTERSIM_API AGoshawkPawn : public APawn {
         }; 
 
         // Frame layout, for placing motor and propellers
-        Vehicle::layout_t _layout = {
+        OctoXAP::layout_t _layout = {
 
-            -0.59, // cx
+             0.00, // cx
             +0.13, // cy
              0.01, // mo
              0.35, // wd
              0.35, // ln
              0.45, // mz
-             0.45  // pz
+            -0.08  // pz
         };
 
         // The Vehicle object will handle most of the work for our vehicle pawn

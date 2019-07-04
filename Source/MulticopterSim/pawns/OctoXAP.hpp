@@ -1,22 +1,28 @@
 /*
-* Vehicle class or quad-X frames using ArduPilot motor layout:
-*
-*    3cw   1ccw
-*       \ /
-*        ^
-*       / \
-*    2ccw  4cw
-*
-* Copyright (C) 2019 Simon D. Levy, Daniel Katzav
-*
-* MIT License
+ Vehicle class or octo-X frames using ArduPilot motor layout:
+
+        5CCW  1CW
+          \   /
+      7CW       3CCW
+          \   /
+            ^     
+          /   \
+      6CW       8CCW
+          /   \
+        2CCW  4CW
+
+ For now we use quadX dynamics
+
+ Copyright (C) 2019 Simon D. Levy, Daniel Katzav
+
+ MIT License
 */
 
 #pragma once
 
 #include "Vehicle.hpp"
 
-class QuadXAP : public Vehicle {
+class OctoXAP : public Vehicle {
 
     private:
 
@@ -67,7 +73,7 @@ class QuadXAP : public Vehicle {
 
         } layout_t;
 
-        QuadXAP(const objects_t & objects, const params_t & params)
+        OctoXAP(const objects_t & objects, const params_t & params)
             : Vehicle(objects, params, 4) 
         {
         }
@@ -84,10 +90,10 @@ class QuadXAP : public Vehicle {
         {
             Vehicle::build(objects);
 
-            QuadXAP::addMotor(objects, 0, +1, +1, layout, prop1Mesh);
-            QuadXAP::addMotor(objects, 1, -1, -1, layout, prop2Mesh);
-            QuadXAP::addMotor(objects, 2, +1, -1, layout, prop3Mesh);
-            QuadXAP::addMotor(objects, 3, -1, +1, layout, prop4Mesh);
+            OctoXAP::addMotor(objects, 0, +1, +1, layout, prop1Mesh);
+            OctoXAP::addMotor(objects, 1, -1, -1, layout, prop2Mesh);
+            OctoXAP::addMotor(objects, 2, +1, -1, layout, prop3Mesh);
+            OctoXAP::addMotor(objects, 3, -1, +1, layout, prop4Mesh);
         }
 
-}; // class QuadXAP
+}; // class OctoXAP
