@@ -13,8 +13,8 @@
 
 //
 // Structures to hold static mesh initializations
-DECLARE_STATIC_MESH(FFrameStatics,  "Goshawk/Frame.Frame", FrameStatics)
-DECLARE_STATIC_MESH(FLogoStatics, "Goshawk/Logo.Logo",   LogoStatics)
+DECLARE_STATIC_MESH(FFrameStatics, "Goshawk/Frame.Frame", FrameStatics)
+DECLARE_STATIC_MESH(FLogoStatics,  "Goshawk/Logo.Logo",   LogoStatics)
 
 DECLARE_STATIC_MESH(FProp1WStatics, "Goshawk/PropCW.PropCW",   Prop1Statics)
 DECLARE_STATIC_MESH(FProp2WStatics, "Goshawk/PropCW.PropCW",   Prop2Statics)
@@ -44,16 +44,17 @@ AGoshawkPawn::AGoshawkPawn()
             FRotator(0,90,100),           // rotation
             FVector(1,0.33,1)*.1875);      // scale
 
-    static constexpr float PZ = -0.04;
+    static constexpr float LO = 0.22;
+    static constexpr float HI = 0.52;
 
-    addProp(objects, 0, +0.55, +0.25, Prop1Statics.mesh.Get());
-    addProp(objects, 1, -0.55, -0.25, Prop2Statics.mesh.Get());
-    addProp(objects, 2, +0.25, +0.55, Prop3Statics.mesh.Get());
-    addProp(objects, 3, -0.55, +0.25, Prop4Statics.mesh.Get());
-    addProp(objects, 4, +0.55, -0.25, Prop5Statics.mesh.Get());
-    addProp(objects, 5, -0.25, -0.55, Prop6Statics.mesh.Get());
-    addProp(objects, 6, +0.25, -0.55, Prop7Statics.mesh.Get());
-    addProp(objects, 7, -0.25, +0.55, Prop8Statics.mesh.Get());
+    addProp(objects, 0, +HI, +LO, Prop1Statics.mesh.Get());
+    addProp(objects, 1, -HI, -LO, Prop2Statics.mesh.Get());
+    addProp(objects, 2, +LO, +HI, Prop3Statics.mesh.Get());
+    addProp(objects, 3, -HI, +LO, Prop4Statics.mesh.Get());
+    addProp(objects, 4, +HI, -LO, Prop5Statics.mesh.Get());
+    addProp(objects, 5, -LO, -HI, Prop6Statics.mesh.Get());
+    addProp(objects, 6, +LO, -HI, Prop7Statics.mesh.Get());
+    addProp(objects, 7, -LO, +HI, Prop8Statics.mesh.Get());
 
     _vehicle = new Vehicle(objects, new QuadXAPDynamics(_params));
 }
