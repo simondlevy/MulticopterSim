@@ -15,12 +15,14 @@
 class SimBoard : public hf::Board {
 
     private:
+   
+        static const uint8_t MAXMOTORS = 10;
 
         float _currentTime = 0; // must be float for Hackflight
 
         double _quat[4] = {0};
         double _gyro[3] = {0};
-        double _motors[4] = {0};
+        double _motors[MAXMOTORS] = {0};
 
     protected:
 
