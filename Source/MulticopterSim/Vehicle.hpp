@@ -209,19 +209,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
     public:
 
-        // Container for frame layout constants
-        typedef struct {
-
-            float wd;   // width
-            float ln;   // length
-            float cx;   // center X
-            float cy;   // center Y
-            float pz;   // propeller Z
-            float mo;   // motor offset
-            float mz;   // motor Z
-
-        } layout_t;
-
         // UE4 objects that must be built statically
         typedef struct {
 
@@ -297,42 +284,26 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 			meshComponent->SetRelativeScale3D(scale);
         }
 
-        static void addProp(objects_t & objects, uint8_t index, float cx, float cy, const float pz, UStaticMesh * propMesh)
+        static void addProp(objects_t & objects, uint8_t index, float x, float y, const float z, UStaticMesh * propMesh)
         {
             UStaticMeshComponent * pMeshComponent = 
                 objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
             pMeshComponent->SetStaticMesh(propMesh);
             pMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName);
-            pMeshComponent->AddRelativeLocation(FVector(cx, cy, pz)*100); // m => cm
+            pMeshComponent->AddRelativeLocation(FVector(x, y, z)*100); // m => cm
 
             objects.propellerMeshComponents[index] = pMeshComponent;
         }
 
-        static void addMotorAndProp(objects_t & objects, uint8_t index, float cx, float cy, const float pz, const float mo, const float mz, UStaticMesh * propMesh)
+        static void addMotorAndProp(objects_t & objects, uint8_t index, float x, float y, const float pz, const float mo, const float mz, UStaticMesh * propMesh)
         {
             UStaticMeshComponent * mMeshComponent = 
                 objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Motor", index, "Mesh"));
             mMeshComponent->SetStaticMesh(objects.motorMesh);
             mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
-            mMeshComponent->AddRelativeLocation(FVector(cx, cy+mo, mz)*100); // m => cm
+            mMeshComponent->AddRelativeLocation(FVector(x, y+mo, mz)*100); // m => cm
 
-            addProp(objects, index, cx, cy, pz, propMesh);
-        }
-
-        static void addProp(objects_t & objects, uint8_t index, float dx, float dy, const layout_t & l, UStaticMesh * propMesh)
-        {
-            float cx = l.cx + dx * l.wd;
-            float cy = l.cy + dy * l.ln;
-
-            addProp(objects, index, cx, cy, l.pz, propMesh);
-        }
-
-        static void addMotorAndProp(objects_t & objects, uint8_t index, float dx, float dy, const layout_t & l, UStaticMesh * propMesh)
-        {
-            float cx = l.cx + dx * l.wd;
-            float cy = l.cy + dy * l.ln;
-
-            addMotorAndProp(objects, index, cx, cy, l.pz, l.mo, l.mz, propMesh);
+            addProp(objects, index, x, y, pz, propMesh);
         }
 
          // Constructor

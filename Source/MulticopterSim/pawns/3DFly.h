@@ -35,7 +35,7 @@ class MULTICOPTERSIM_API A3DFlyPawn : public APawn {
             10000                   // maxrpm
         }; 
 
-        Vehicle::layout_t _layout = {
+        QuadXAP::layout_t _layout = {
 
             0.0375,  // width
             0.0375,  // length

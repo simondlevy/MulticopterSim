@@ -37,18 +37,6 @@ class MULTICOPTERSIM_API AGoshawkPawn : public APawn {
             15000                  
         }; 
 
-        // Frame layout, for placing motor and propellers
-        Vehicle::layout_t _layout = {
-
-             0.35, // wd
-             0.35, // ln
-             0.00, // cx
-             0.00, // cy
-            -0.04, // pz
-             0.00, // mo
-             0.00  // mz
-        };
-
         // The Vehicle object will handle most of the work for our vehicle pawn
         Vehicle * _vehicle = NULL;
 

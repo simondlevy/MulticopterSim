@@ -38,7 +38,7 @@ class MULTICOPTERSIM_API ABigQuadPawn : public APawn {
         }; 
 
         // Frame layout, for placing motor and propellers
-        Vehicle::layout_t _layout = {
+        QuadXAP::layout_t _layout = {
 
              0.35, // wd
              0.35, // ln

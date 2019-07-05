@@ -22,10 +22,6 @@
 
 class OctoXAP : public Vehicle {
 
-    private:
-
-        const int8_t directions[8] = {+1, +1, -1, -1, -1, -1, +1, +1};
-
     protected:
 
         // MultirotorDynamics method overrides
@@ -56,7 +52,6 @@ class OctoXAP : public Vehicle {
             const int8_t dir[8] = {+1, +1, -1, -1, -1, -1, +1, +1};
             return dir[i];
         }
-
 
     public:	
 

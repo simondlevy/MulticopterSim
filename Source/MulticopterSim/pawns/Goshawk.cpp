@@ -44,14 +44,16 @@ AGoshawkPawn::AGoshawkPawn()
             FRotator(0,90,100),           // rotation
             FVector(1,0.33,1)*.1875);      // scale
 
-    Vehicle::addProp(objects, 0, +1.60, +0.60, _layout, Prop1Statics.mesh.Get());
-    Vehicle::addProp(objects, 1, -1.55, -0.60, _layout, Prop2Statics.mesh.Get());
-    Vehicle::addProp(objects, 2, +0.60, +1.50, _layout, Prop3Statics.mesh.Get());
-    Vehicle::addProp(objects, 3, -1.55, +0.60, _layout, Prop4Statics.mesh.Get());
-    Vehicle::addProp(objects, 4, +1.60, -0.60, _layout, Prop5Statics.mesh.Get());
-    Vehicle::addProp(objects, 5, -0.70, -1.50, _layout, Prop6Statics.mesh.Get());
-    Vehicle::addProp(objects, 6, +0.60, -1.50, _layout, Prop7Statics.mesh.Get());
-    Vehicle::addProp(objects, 7, -0.70, +1.50, _layout, Prop8Statics.mesh.Get());
+    static constexpr float PZ = -0.04;
+
+    Vehicle::addProp(objects, 0, +0.55, +0.25, PZ, Prop1Statics.mesh.Get());
+    Vehicle::addProp(objects, 1, -0.55, -0.25, PZ, Prop2Statics.mesh.Get());
+    Vehicle::addProp(objects, 2, +0.25, +0.55, PZ, Prop3Statics.mesh.Get());
+    Vehicle::addProp(objects, 3, -0.55, +0.25, PZ, Prop4Statics.mesh.Get());
+    Vehicle::addProp(objects, 4, +0.55, -0.25, PZ, Prop5Statics.mesh.Get());
+    Vehicle::addProp(objects, 5, -0.25, -0.55, PZ, Prop6Statics.mesh.Get());
+    Vehicle::addProp(objects, 6, +0.25, -0.55, PZ, Prop7Statics.mesh.Get());
+    Vehicle::addProp(objects, 7, -0.25, +0.55, PZ, Prop8Statics.mesh.Get());
 
     _vehicle = new OctoXAP(objects, _params);
 }
