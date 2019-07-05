@@ -297,18 +297,34 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 			meshComponent->SetRelativeScale3D(scale);
         }
 
+        static void addProp(objects_t & objects, uint8_t index, float cx, float cy, const float pz, UStaticMesh * propMesh)
+        {
+            UStaticMeshComponent * pMeshComponent = 
+                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
+            pMeshComponent->SetStaticMesh(propMesh);
+            pMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName);
+            pMeshComponent->AddRelativeLocation(FVector(cx, cy, pz)*100); // m => cm
+
+            objects.propellerMeshComponents[index] = pMeshComponent;
+        }
+
+        static void addMotorAndProp(objects_t & objects, uint8_t index, float cx, float cy, const float pz, const float mo, const float mz, UStaticMesh * propMesh)
+        {
+            UStaticMeshComponent * mMeshComponent = 
+                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Motor", index, "Mesh"));
+            mMeshComponent->SetStaticMesh(objects.motorMesh);
+            mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
+            mMeshComponent->AddRelativeLocation(FVector(cx, cy+mo, mz)*100); // m => cm
+
+            addProp(objects, index, cx, cy, pz, propMesh);
+        }
+
         static void addProp(objects_t & objects, uint8_t index, float dx, float dy, const layout_t & l, UStaticMesh * propMesh)
         {
             float cx = l.cx + dx * l.wd;
             float cy = l.cy + dy * l.ln;
 
-            UStaticMeshComponent * pMeshComponent = 
-                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
-            pMeshComponent->SetStaticMesh(propMesh);
-            pMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName);
-            pMeshComponent->AddRelativeLocation(FVector(cx, cy, l.pz)*100); // m => cm
-
-            objects.propellerMeshComponents[index] = pMeshComponent;
+            addProp(objects, index, cx, cy, l.pz, propMesh);
         }
 
         static void addMotorAndProp(objects_t & objects, uint8_t index, float dx, float dy, const layout_t & l, UStaticMesh * propMesh)
@@ -316,16 +332,10 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             float cx = l.cx + dx * l.wd;
             float cy = l.cy + dy * l.ln;
 
-            UStaticMeshComponent * mMeshComponent = 
-                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Motor", index, "Mesh"));
-            mMeshComponent->SetStaticMesh(objects.motorMesh);
-            mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
-            mMeshComponent->AddRelativeLocation(FVector(cx, cy+l.mo, l.mz)*100); // m => cm
-
-            addProp(objects, index, dx, dy, l, propMesh);
+            addMotorAndProp(objects, index, cx, cy, l.pz, l.mo, l.mz, propMesh);
         }
 
-        // Constructor
+         // Constructor
         Vehicle(const objects_t & objects, const params_t & params, uint8_t motorCount)
             : MultirotorDynamics(params, motorCount)
         {
