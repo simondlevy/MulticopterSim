@@ -19,14 +19,13 @@
 #pragma once
 
 #include "Vehicle.hpp"
-#include "dynamics/QuadXAP.hpp"
+#include "dynamics/OctoXAP.hpp"
 
 class OctoXAP : public Vehicle {
 
     public:	
 
-        // XXX Use QuadXAP dynamics for now
-        OctoXAP(const objects_t & objects, const MultirotorDynamics::params_t & params) : Vehicle(objects, new QuadXAPDynamics(params))
+        OctoXAP(const objects_t & objects, const MultirotorDynamics::params_t & params) : Vehicle(objects, new OctoXAPDynamics(params))
         {
         }
 
