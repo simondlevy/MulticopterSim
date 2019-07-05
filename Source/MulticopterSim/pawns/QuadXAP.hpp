@@ -35,7 +35,7 @@ class QuadXAP : public Vehicle {
         } layout_t;
 
         QuadXAP(const objects_t & objects, const params_t & params)
-            : Vehicle(objects, params, 4) 
+            : Vehicle(objects, new QuadXAPDynamics(params), params, 4) 
         {
         }
 

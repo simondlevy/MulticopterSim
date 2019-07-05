@@ -19,6 +19,7 @@
 #pragma once
 
 #include "Vehicle.hpp"
+#include "dynamics/QuadXAP.hpp"
 
 class OctoXAP : public Vehicle {
 
@@ -56,7 +57,7 @@ class OctoXAP : public Vehicle {
     public:	
 
         OctoXAP(const objects_t & objects, const params_t & params)
-            : Vehicle(objects, params, 8) 
+            : Vehicle(objects, new QuadXAPDynamics(params), params, 8)
         {
         }
 

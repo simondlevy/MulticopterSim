@@ -66,6 +66,8 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
 
         static const uint8_t MAX_MOTORS = 100; // silly but simple
 
+		MultirotorDynamics * _dynamics = NULL;
+
         uint8_t _motorCount = 0;
 
         // Threaded workers for running flight control, video
@@ -189,7 +191,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         {
             debug("start");
             extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
-            _flightManager = createFlightManager(this, _startLocation, _startRotation);
+            _flightManager = createFlightManager(_dynamics, _startLocation, _startRotation);
             videoManagerStart();
         }        
 
@@ -307,9 +309,12 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         }
 
          // Constructor
-        Vehicle(const objects_t & objects, const params_t & params, uint8_t motorCount)
+        Vehicle(const objects_t & objects, MultirotorDynamics * dynamics,
+			const params_t & params, uint8_t motorCount)
             : MultirotorDynamics(params, motorCount)
         {
+			_dynamics = dynamics;
+
             _motorCount = motorCount;
 
             _objects.pawn               = objects.pawn;
