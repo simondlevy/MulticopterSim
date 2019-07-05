@@ -7,10 +7,6 @@
  *
  * (2) Provides basic support for displaying vehicle kinematics
  *
- * (3) Sub-classes the MultirotorDynamics class so that a Vehicle
- *     subclass can compute the U values for a particualr frame
- *     (e.g., QuadXAP)
- * 
  * Copyright (C) 2019 Simon D. Levy, Daniel Katzav
  *
  * MIT License

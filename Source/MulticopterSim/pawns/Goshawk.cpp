@@ -55,7 +55,7 @@ AGoshawkPawn::AGoshawkPawn()
     addProp(objects, 6, +0.25, -0.55, Prop7Statics.mesh.Get());
     addProp(objects, 7, -0.25, +0.55, Prop8Statics.mesh.Get());
 
-    _vehicle = new OctoXAP(objects, _params);
+    _vehicle = new Vehicle(objects, new QuadXAPDynamics(_params));
 }
 
 AGoshawkPawn::~AGoshawkPawn()

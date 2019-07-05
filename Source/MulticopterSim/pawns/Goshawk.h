@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "pawns/OctoXAP.hpp"
-
+#include "Vehicle.hpp"
+#include "dynamics/QuadXAP.hpp" // For now, just use quadcopter dynamics
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Goshawk.generated.h"
@@ -62,7 +62,7 @@ class MULTICOPTERSIM_API AGoshawkPawn : public APawn {
 
     public:	
 
-        AGoshawkPawn();
+        AGoshawkPawn(); 
 
         ~AGoshawkPawn();
 
