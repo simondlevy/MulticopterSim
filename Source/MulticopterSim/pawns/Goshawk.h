@@ -38,7 +38,7 @@ class MULTICOPTERSIM_API AGoshawkPawn : public APawn {
         }; 
 
         // Frame layout, for placing motor and propellers
-        OctoXAP::layout_t _layout = {
+        Vehicle::layout_t _layout = {
 
              0.00, // cx
              0.00, // cy
