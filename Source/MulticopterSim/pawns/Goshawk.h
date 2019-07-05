@@ -40,6 +40,12 @@ class MULTICOPTERSIM_API AGoshawkPawn : public APawn {
         // The Vehicle object will handle most of the work for our vehicle pawn
         Vehicle * _vehicle = NULL;
 
+        // Helper for adding prop meshes
+        static void addProp(Vehicle::objects_t & objects, uint8_t index, float x, float y, UStaticMesh * mesh)
+        {
+            Vehicle::addProp(objects, index, x, y, -0.04, mesh);
+        }
+
     protected:
 
         // AActor overrides
