@@ -37,13 +37,13 @@ class MULTICOPTERSIM_API A3DFlyPawn : public APawn {
 
         Vehicle::layout_t _layout = {
 
-            0.0000,  // center X
-            0.0000,  // center Y
-           -0.0100,  // motor offset
             0.0375,  // width
             0.0375,  // length
-            0.0050,  // motor Z
-            0.0250   // propeller Z
+            0.0000,  // center X
+            0.0000,  // center Y
+            0.0250,  // propeller Z
+           -0.0100,  // motor offset
+            0.0050   // motor Z
         };
 
         QuadXAP * _vehicle;

@@ -212,13 +212,13 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         // Container for frame layout constants
         typedef struct {
 
-            float cx;   // center X
-            float cy;   // center Y
-            float mo;   // motor offset
             float wd;   // width
             float ln;   // length
-            float mz;   // motor Z
+            float cx;   // center X
+            float cy;   // center Y
             float pz;   // propeller Z
+            float mo;   // motor offset
+            float mz;   // motor Z
 
         } layout_t;
 
