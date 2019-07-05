@@ -15,6 +15,7 @@
 #pragma once
 
 #include "Vehicle.hpp"
+#include "dynamics/QuadXAP.hpp"
 
 class QuadXAP : public Vehicle {
 
