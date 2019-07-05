@@ -150,9 +150,6 @@ class MultirotorDynamics {
         // yaw cw
         virtual double u4(double * o) = 0;
 
-        // motor direction for animation
-        virtual int8_t motorDirection(uint8_t i) { (void)i; return 0; }
-
          /**
          *  Constructor
          */
@@ -355,6 +352,9 @@ class MultirotorDynamics {
             // This is useful to know
             state.airborne  = _airborne;
         }
+
+        // motor direction for animation
+        virtual int8_t motorDirection(uint8_t i) { (void)i; return 0; }
 
         /**
          *  Supports debugging

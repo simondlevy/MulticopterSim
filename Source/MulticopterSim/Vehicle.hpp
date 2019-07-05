@@ -58,7 +58,7 @@
     };                                                                     \
     static structname objname;
 
-class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
+class MULTICOPTERSIM_API Vehicle {
 
     private:
 
@@ -67,8 +67,6 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         static const uint8_t MAX_MOTORS = 100; // silly but simple
 
 		MultirotorDynamics * _dynamics = NULL;
-
-        uint8_t _motorCount = 0;
 
         // Threaded workers for running flight control, video
         class FFlightManager * _flightManager = NULL;
@@ -153,22 +151,22 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         {
             // Compute the sum of the motor values
             float motorsum = 0;
-            for (uint8_t j=0; j<_motorCount; ++j) {
+            for (uint8_t j=0; j<_dynamics->motorCount(); ++j) {
                 motorsum += _motorvals[j];
             }
 
             // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
             if (motorsum > 0) {
                 static float rotation;
-                for (uint8_t i=0; i<_motorCount; ++i) {
-                    _objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirection(i) * 100, 0));
+                for (uint8_t i=0; i<_dynamics->motorCount(); ++i) {
+                    _objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * _dynamics->motorDirection(i) * 100, 0));
                 }
                 rotation++;
             }
 
             // Add mean to circular buffer for moving average
             _bufferIndex = _motorBuffer->GetNextIndex(_bufferIndex);
-            (*_motorBuffer)[_bufferIndex] = motorsum / _motorCount;
+            (*_motorBuffer)[_bufferIndex] = motorsum / _dynamics->motorCount();
 
             // Compute the mean motor value over the buffer frames
             float smoothedMotorMean = 0;
@@ -309,13 +307,9 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
         }
 
          // Constructor
-        Vehicle(const objects_t & objects, MultirotorDynamics * dynamics,
-			const params_t & params, uint8_t motorCount)
-            : MultirotorDynamics(params, motorCount)
+        Vehicle(const objects_t & objects, MultirotorDynamics * dynamics)
         {
 			_dynamics = dynamics;
-
-            _motorCount = motorCount;
 
             _objects.pawn               = objects.pawn;
             _objects.frameMesh          = objects.frameMesh;
@@ -334,7 +328,7 @@ class MULTICOPTERSIM_API Vehicle : public MultirotorDynamics {
             _objects.camera2            = objects.camera2;
             _objects.renderTarget2      = objects.renderTarget2;
 
-            for (uint8_t i=0; i<motorCount; ++i) {
+            for (uint8_t i=0; i<dynamics->motorCount(); ++i) {
                 _objects.propellerMeshComponents[i] = objects.propellerMeshComponents[i]; 
             }
         }        

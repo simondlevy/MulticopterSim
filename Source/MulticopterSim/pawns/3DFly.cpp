@@ -24,8 +24,7 @@ A3DFlyPawn::A3DFlyPawn()
     objects.frameMesh = FrameStatics.mesh.Get();
     objects.motorMesh = MotorStatics.mesh.Get();
 
-    QuadXAP::build(objects, _layout,
-            Prop1Statics.mesh.Get(), Prop2Statics.mesh.Get(), Prop3Statics.mesh.Get(), Prop4Statics.mesh.Get()); 
+    QuadX::build(objects, _layout, Prop1Statics.mesh.Get(), Prop2Statics.mesh.Get(), Prop3Statics.mesh.Get(), Prop4Statics.mesh.Get()); 
 
     _vehicle = new QuadXAP(objects, _params);
 }
