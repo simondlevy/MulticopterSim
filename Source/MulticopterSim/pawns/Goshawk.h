@@ -42,10 +42,10 @@ class MULTICOPTERSIM_API AGoshawkPawn : public APawn {
 
              0.00, // cx
              0.00, // cy
-             0.01, // mo
+             0.00, // mo
              0.35, // wd
              0.35, // ln
-             0.45, // mz
+             0.00, // mz
             -0.04  // pz
         };
 

@@ -64,10 +64,10 @@ class QuadXAP : public Vehicle {
         {
             Vehicle::build(objects);
 
-            Vehicle::addMotor(objects, 0, +1, +1, layout, prop1Mesh);
-            Vehicle::addMotor(objects, 1, -1, -1, layout, prop2Mesh);
-            Vehicle::addMotor(objects, 2, +1, -1, layout, prop3Mesh);
-            Vehicle::addMotor(objects, 3, -1, +1, layout, prop4Mesh);
+            Vehicle::addMotorAndProp(objects, 0, +1, +1, layout, prop1Mesh);
+            Vehicle::addMotorAndProp(objects, 1, -1, -1, layout, prop2Mesh);
+            Vehicle::addMotorAndProp(objects, 2, +1, -1, layout, prop3Mesh);
+            Vehicle::addMotorAndProp(objects, 3, -1, +1, layout, prop4Mesh);
         }
 
 }; // class QuadXAP
