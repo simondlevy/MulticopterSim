@@ -104,14 +104,12 @@ built-in physics in UE4.  The dynamics we used are based directly on the model
 presented in this [paper](https://infoscience.epfl.ch/record/97532/files/325.pdf), 
 written as a standalone, header-only C++ 
 [class](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/dynamics/MultirotorDynamics.hpp)
-that can be easily adapted for other simulators and applications if
-desired. This class also supports different frame configurations (quadcopter,
+that can be easily adapted for other simulators and applications if desired.
+This class also supports different frame configurations (quadcopter,
 hexacopter) via virtual methods. By running the FlightManager on its own
 thread, we are able to achieve arbitrarily fast updates of the dynamics and
-flight-control.  We currently limit the update rate to 1kHz, based on the data
-output rate of current MEMS gyrometers.  It would also be possible to run the
-dynamics and control on separate threads, though we have not yet found it
-advantageous to do that.
+flight-control.  It would also be possible to run the dynamics and control on
+separate threads, though we have not yet found it advantageous to do that.
 
 The FlightManager API contains a single virtual 
 [update](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L41-L51)
