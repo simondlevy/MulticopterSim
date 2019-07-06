@@ -34,6 +34,6 @@ class UdpSocket : public Socket {
 
         bool receiveData(void * buf, size_t len)
         {
-            return recvfrom(_sock, (char *)buf, (int)len, 0, (struct sockaddr *) &_si_other, &_slen) == _slen;
+            return recvfrom(_sock, (char *)buf, (int)len, 0, (struct sockaddr *) &_si_other, &_slen) == (ssize_t)len;
         }
 };

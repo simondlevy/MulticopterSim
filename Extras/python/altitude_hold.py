@@ -34,13 +34,13 @@ class AltitudePidController(object):
 
         # Update error integral and error derivative
         self.integralError +=  velError * dt
-        self.integralError = AltitudePidController._constrainAbs(self.integralError + velError * dt, self.windupMax)
+        self.integralError = self._constrainAbs(self.integralError + velError * dt, self.windupMax)
         deltaError = (velError - self.lastError) / dt if abs(self.lastError) > 0 else 0
         self.lastError = velError
 
-        # Compute control u
-        return self.velP * velError + self.velD * deltaError + self.velI * self.integralError
+        # Compute control u, constrained between 0 and 1
+        return max(0, min(1, self.velP * velError + self.velD * deltaError + self.velI * self.integralError))
 
-    def _constrainAbs(x, lim):
+    def _constrainAbs(self, x, lim):
 
         return -lim if x < -lim else (+lim if x > +lim else x)

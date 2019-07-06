@@ -11,12 +11,13 @@
 #include "../sockets/UdpServerSocket.hpp"
 #include "../sockets/UdpClientSocket.hpp"
 
-#include "MultirotorDynamics.hpp"
+#include <dynamics/QuadXAP.hpp>
 
-static const char * HOST       = "127.0.0.1";
-static const short  MOTOR_PORT = 5000;
-static const short  TELEM_PORT = 5001;
-static const double DELTA_T    = 0.001;
+static const char * HOST           = "127.0.0.1";
+static const short  MOTOR_PORT     = 5000;
+static const short  TELEM_PORT     = 5001;
+static const double DELTA_T        = 0.001;
+static const uint32_t TIMEOUT_MSEC = 5000;
 
 static MultirotorDynamics::params_t bigQuadParams = {
 
@@ -34,84 +35,57 @@ static MultirotorDynamics::params_t bigQuadParams = {
     15000
 };
 
-class QuadXAP : public MultirotorDynamics {
-
-    protected:
-
-        // MultirotorDynamics method overrides
-
-        // roll right
-        virtual double u2(double * o) override
-        {
-            return (o[1] + o[2]) - (o[0] + o[3]);
-        }
-
-        // pitch forward
-        virtual double u3(double * o) override
-        {
-            return (o[1] + o[3]) - (o[0] + o[2]);
-        }
-
-        // yaw cw
-        virtual double u4(double * o) override
-        {
-            return (o[0] + o[1]) - (o[2] + o[3]);
-        }
-
-    public:
-
-        QuadXAP(const params_t & params)
-            : MultirotorDynamics(params, 4)
-        {
-        }
-
-}; // class QuadXAP
-
 int main(int argc, char ** argv)
 {
-    UdpServerSocket motorServer = UdpServerSocket(MOTOR_PORT);
-    UdpClientSocket telemClient = UdpClientSocket(HOST, TELEM_PORT);
-
-    QuadXAP quad = QuadXAP(bigQuadParams);
-
-    double time = 0;
-
-    MultirotorDynamics::pose_t pose = {0};
-
-    quad.init(pose);
-
     while (true) {
 
-        double motorvals[4] = {0};
+        UdpServerSocket motorServer = UdpServerSocket(MOTOR_PORT, TIMEOUT_MSEC);
+        UdpClientSocket telemClient = UdpClientSocket(HOST, TELEM_PORT);
 
-        motorServer.receiveData(motorvals, 32);
+        QuadXAPDynamics quad = QuadXAPDynamics(bigQuadParams);
 
-        quad.setMotors(motorvals);
+        double time = 0;
 
-        quad.update(DELTA_T);
+        MultirotorDynamics::pose_t pose = {0};
 
-        MultirotorDynamics::state_t state = {0};
+        quad.init(pose);
 
-        quad.getState(state);
-        
-        // Time Gyro, Quat, Location
-        double telemetry[11] = {0};
+        while (true) {
 
-        telemetry[0] = time;
-        memcpy(&telemetry[1], &state.angularVel, 3*sizeof(double));
-        memcpy(&telemetry[4], &state.quaternion, 4*sizeof(double));
-        memcpy(&telemetry[8], &state.pose.location, 3*sizeof(double));
+            double motorvals[4] = {0};
 
-        telemClient.sendData(telemetry, sizeof(telemetry));
+            if (!motorServer.receiveData(motorvals, 32)) {
+                printf("Timed out; restarting\n");
+                break;
+            }
 
-        printf("%05f: %f %f %f %f\n", 
-                time, motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
+            quad.setMotors(motorvals);
 
-        time += DELTA_T;
+            quad.update(DELTA_T);
+
+            MultirotorDynamics::state_t state = {0};
+
+            quad.getState(state);
+
+            // Time Gyro, Quat, Location
+            double telemetry[11] = {0};
+
+            telemetry[0] = time;
+            memcpy(&telemetry[1], &state.angularVel, 3*sizeof(double));
+            memcpy(&telemetry[4], &state.quaternion, 4*sizeof(double));
+            memcpy(&telemetry[8], &state.pose.location, 3*sizeof(double));
+
+            telemClient.sendData(telemetry, sizeof(telemetry));
+
+            printf("%05f: %f %f %f %f\n", 
+                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
+
+            time += DELTA_T;
+        }
+
+        motorServer.closeConnection();
+        telemClient.closeConnection();
     }
-
-    motorServer.closeConnection();
-    telemClient.closeConnection();
 
     return 0;
 }
