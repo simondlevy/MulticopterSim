@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-  Altitude-hold example using Multicopter class
+  Climb-and-hold-altitude example using Multicopter class
 
   Copyright(C) 2019 Simon D.Levy
 
