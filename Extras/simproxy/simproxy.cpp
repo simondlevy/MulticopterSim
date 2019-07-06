@@ -32,7 +32,7 @@ static MultirotorDynamics::params_t bigQuadParams = {
     3.08013E-04,            // Jr
 
     // maxrpm, estimated
-    15000
+    30000
 };
 
 int main(int argc, char ** argv)
