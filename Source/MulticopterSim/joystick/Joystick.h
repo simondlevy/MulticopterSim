@@ -38,7 +38,7 @@ private:
 
 	int _joystickId = 0;
 
-	bool _isRcTransmitter = false;
+	bool _isGameController = false;
 
 public:
 
@@ -108,8 +108,8 @@ public:
 
         error_t status = pollProduct(axes, buttons);
 
-        // Invert throttle, pitch axes except on R/C transmitters
-        if (!_isRcTransmitter) {
+        // Invert throttle, pitch axes on game controllers
+        if (_isGameController) {
             axes[AX_THR] *= -1;
             axes[AX_PIT] *= -1;
         }
@@ -126,10 +126,5 @@ public:
         }
 
         return status;
-    }
-
-    MULTICOPTERSIM_API bool isRcTransmitter(void)
-    {
-        return _isRcTransmitter;
     }
 };

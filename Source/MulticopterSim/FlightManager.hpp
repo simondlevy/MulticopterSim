@@ -111,10 +111,6 @@ class FFlightManager : public FThreadedWorker {
         {
             double deltaT = currentTime - _previousTime;
 
-            dbgprintf("m1=%2.2f m2=%2.2f m3=%2.2f m4=%2.2f m5=%2.2f m6=%2.2f m7=%2.2f m8=%2.2f (%d)", 
-                    _motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3], _motorvals[4], _motorvals[5], _motorvals[6], _motorvals[7],
-                    _dynamics->motorCount());
-
             // Send current motor values to dynamics
             _dynamics->setMotors(_motorvals);
 

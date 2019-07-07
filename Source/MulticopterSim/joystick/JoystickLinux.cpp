@@ -40,29 +40,32 @@ Joystick::Joystick(const char * devname)
 
     if (strstr(_productName, "Taranis") || strstr(_productName, "DeviationTx Deviation GamePad")) {
         _productId = PRODUCT_TARANIS;
-        _isRcTransmitter = true;
     }
     else if (strstr(_productName, "Horizon Hobby SPEKTRUM")) {
         _productId = PRODUCT_SPEKTRUM;
-        _isRcTransmitter = true;
     }
     else if (strstr(_productName, "GREAT PLANES InterLink Elite")) {
         _productId = PRODUCT_INTERLINK;
     }
     else if (strstr(_productName, "Extreme 3D")) {
         _productId = PRODUCT_EXTREMEPRO3D;
+        _isGameController = true;
     }
     else if (strstr(_productName, "Generic X-Box pad")) {
         _productId = PRODUCT_XBOX360_CLONE;
+        _isGameController = true;
     }
     else if (strstr(_productName, "Logitech Logitech Dual Action")) {
         _productId = PRODUCT_F310;
+        _isGameController = true;
     }
     else if (strstr(_productName, "Xbox 360 Wireless Receiver")) {
         _productId = PRODUCT_XBOX360;
+        _isGameController = true;
     }
     else if (strstr(_productName, "Microsoft X-Box 360 pad")) {
         _productId = PRODUCT_XBOX360;
+        _isGameController = true;
     }
 }
 
