@@ -37,8 +37,8 @@ AGoshawkPawn::AGoshawkPawn()
 
     // Add our logo
 	UStaticMesh * logoMesh = NameplateStatics.mesh.Get();
-	/*
 	static ConstructorHelpers::FObjectFinder<UMaterial> decalMaterial(TEXT("'/Game/Flying/Decals/RoboTiCan_Mat'"));
+	/*
 	logoMesh->SetMaterial(0, decalMaterial.Object);
 	Vehicle::addMesh(objects, logoMesh, "NameplateMesh", 
             FVector(-0.22, 0.005, 0.10),  // location
