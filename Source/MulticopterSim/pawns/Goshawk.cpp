@@ -7,7 +7,7 @@
 */
 
 #include "Goshawk.h"
-#include "dynamics/QuadXAP.hpp" 
+#include "dynamics/OctoXAP.hpp" 
 
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -55,7 +55,7 @@ AGoshawkPawn::AGoshawkPawn()
     addProp(objects, 6, +LO, -HI, Prop7Statics.mesh.Get());
     addProp(objects, 7, -LO, +HI, Prop8Statics.mesh.Get());
 
-    _vehicle = new Vehicle(objects, new QuadXAPDynamics(_params));
+    _vehicle = new Vehicle(objects, new OctoXAPDynamics(_params));
 }
 
 AGoshawkPawn::~AGoshawkPawn()

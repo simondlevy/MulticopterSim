@@ -183,7 +183,6 @@ class MULTICOPTERSIM_API Vehicle {
         // Flight management thread
         void startThreadedWorkers(void)
         {
-            debug("start");
             extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
             _flightManager = createFlightManager(_dynamics, _startLocation, _startRotation);
             videoManagerStart();
@@ -191,7 +190,6 @@ class MULTICOPTERSIM_API Vehicle {
 
         void stopThreadedWorkers(void)
         {
-            //debug("stop");
             _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
             videoManagersStop();
         }
