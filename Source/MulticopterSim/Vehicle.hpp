@@ -42,8 +42,10 @@
 // Windows/Linux compatibility 
 #ifdef _WIN32
 #define SPRINTF sprintf_s
+#define SWPRINTF swprintf_s
 #else
 #define SPRINTF sprintf
+#define SWPRINTF swprintf
 #endif
 
 // A macro for simplifying the declaration of static meshes
@@ -450,7 +452,7 @@ class MULTICOPTERSIM_API Vehicle {
 
             // Get render target from asset in Contents
             wchar_t renderTargetName[100];
-            swprintf(renderTargetName, L"/Game/Flying/RenderTargets/cameraRenderTarget_%d", id);
+            SWPRINTF(renderTargetName, L"/Game/Flying/RenderTargets/cameraRenderTarget_%d", id);
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
             *renderTarget = cameraTextureObject.Object;
 
