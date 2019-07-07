@@ -59,7 +59,9 @@ class MULTICOPTERSIM_API Vehicle {
 
     private:
 
-		static constexpr float CAMERA_Z = 35;
+		static constexpr float CAMERA_X = +20;
+		static constexpr float CAMERA_Y =   0;
+		static constexpr float CAMERA_Z = +30;
 
         static const uint8_t MAX_MOTORS = 100; // silly but simple
 
@@ -456,7 +458,7 @@ class MULTICOPTERSIM_API Vehicle {
             // Create a camera component 
             *camera = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
             (*camera) ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-            (*camera)->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            (*camera)->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             (*camera)->SetWorldScale3D(cameraScale);
             (*camera)->SetFieldOfView(fov);
             (*camera)->SetAspectRatio((float)(*renderTarget)->SizeX / (*renderTarget)->SizeY);
@@ -465,7 +467,7 @@ class MULTICOPTERSIM_API Vehicle {
             *capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
             (*capture)->SetWorldScale3D(cameraScale);
             (*capture)->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
-            (*capture)->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            (*capture)->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             (*capture)->TextureTarget = *renderTarget;
             (*capture)->FOVAngle = fov - 45;
         }
