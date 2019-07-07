@@ -62,12 +62,12 @@ class SimBoard : public hf::Board {
 
         virtual ~SimBoard() { }
 
-        void update(const double time, const double quat[4], const double gyro[3], double * motors)
+        void getMotors(const double time, const double quat[4], const double gyro[3], double * motors, uint8_t motorCount)
         {
             _currentTime = time;
 
             // Copy in quaternion
-            for (uint8_t j=0; j<4; ++j) {
+            for (uint8_t j=0; j<motorCount; ++j) {
                 _quat[j] = quat[j];
             }
 
