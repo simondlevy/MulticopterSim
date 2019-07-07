@@ -134,10 +134,9 @@ class MULTICOPTERSIM_API Vehicle {
                 return true;
             }
 
-            debug("crashed");
-
             // Restart flight manager and video
             stopThreadedWorkers();
+            startThreadedWorkers();
 
             return false;
         }
