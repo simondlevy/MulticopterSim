@@ -387,8 +387,9 @@ class MULTICOPTERSIM_API Vehicle {
 
                     // Report FPS
                     if (_flightManager) {
-                        debug("FPS:  Main=%d    Flight=%d", 
-                                (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
+                        debug("%s", _flightManager->getMessage());
+                        //debug("FPS:  Main=%d    Flight=%d", 
+                        //        (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
                     }
                 }
             }

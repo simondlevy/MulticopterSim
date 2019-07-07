@@ -36,14 +36,14 @@ class OctoXAPDynamics : public MultirotorDynamics {
         virtual double u2(double * o) override
         {
             //       [2      5      6      7]  -   [1      3      4      8]
-            return 0;//(o[1] + o[4] + o[5] + o[6]) - (o[0] + o[2] + o[3] + o[7]);
+            return (o[1] + o[4] + o[5] + o[6]) - (o[0] + o[2] + o[3] + o[7]);
         }
 
         // pitch forward
         virtual double u3(double * o) override
         {
             //       [2      4      6      8]  -   [1      3      5      7]
-            return 0;//(o[1] + o[3] + o[5] + o[7]) - (o[0] + o[2] + o[4] + o[6]);
+            return (o[1] + o[3] + o[5] + o[7]) - (o[0] + o[2] + o[4] + o[6]);
         }
 
         // yaw cw
