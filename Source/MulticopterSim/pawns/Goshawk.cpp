@@ -14,7 +14,7 @@
 //
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "Goshawk/Frame.Frame", FrameStatics)
-//DECLARE_STATIC_MESH(FNameplateStatics,  "Goshawk/Nameplate.Nameplate",   NameplateStatics)
+DECLARE_STATIC_MESH(FNameplateStatics,  "Goshawk/Nameplate.Nameplate",   NameplateStatics)
 
 DECLARE_STATIC_MESH(FProp1WStatics, "Goshawk/PropCW.PropCW",   Prop1Statics)
 DECLARE_STATIC_MESH(FProp2WStatics, "Goshawk/PropCW.PropCW",   Prop2Statics)
