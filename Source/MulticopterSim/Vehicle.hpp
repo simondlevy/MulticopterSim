@@ -136,6 +136,9 @@ class MULTICOPTERSIM_API Vehicle {
                 return true;
             }
 
+            static uint32_t count;
+            debug("restart: %d", ++count);
+
             // Restart flight manager and video
             stopThreadedWorkers();
             startThreadedWorkers();
