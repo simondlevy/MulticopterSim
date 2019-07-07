@@ -7,6 +7,7 @@
 */
 
 #include "Goshawk.h"
+#include "dynamics/QuadXAP.hpp" 
 
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
