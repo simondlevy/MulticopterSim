@@ -16,6 +16,7 @@
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "Goshawk/Frame.Frame", FrameStatics)
 DECLARE_STATIC_MESH(FNameplateStatics,  "Goshawk/Nameplate.Nameplate",   NameplateStatics)
+DECLARE_STATIC_MESH(FFaceplateStatics,  "Goshawk/Faceplate.Faceplate",   FaceplateStatics)
 
 DECLARE_STATIC_MESH(FProp1WStatics, "Goshawk/PropCW.PropCW",   Prop1Statics)
 DECLARE_STATIC_MESH(FProp2WStatics, "Goshawk/PropCW.PropCW",   Prop2Statics)
@@ -42,6 +43,13 @@ AGoshawkPawn::AGoshawkPawn()
             FVector(-0.22, 0.005, 0.10),  // location
             FRotator(0,90,100),           // rotation
             FVector(1,0.33,1)*.1875);      // scale
+
+    // Add a faceplate
+	UStaticMesh * faceplateMesh = FaceplateStatics.mesh.Get();
+	Vehicle::addMesh(objects, faceplateMesh, "FaceplateMesh", 
+            FVector(0, 0, 0.25),  // location
+            FRotator(0,0,0),           // rotation
+            FVector(0.5,0.5,0.5));     // scale
 
     static constexpr float LO = 0.22;
     static constexpr float HI = 0.52;
