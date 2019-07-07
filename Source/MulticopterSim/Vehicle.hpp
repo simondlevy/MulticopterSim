@@ -31,7 +31,6 @@
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Runtime/Engine/Classes/Kismet/KismetRenderingLibrary.h"
 
 #ifdef _USE_OPENCV
 #include "VideoManager.hpp"
