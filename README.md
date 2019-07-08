@@ -113,7 +113,7 @@ flight-control.  It would also be possible to run the dynamics and control on
 separate threads, though we have not yet found it advantageous to do that.
 
 The FlightManager API contains a single virtual 
-[update](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L41-L51)
+[getMotors](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L41-L51)
 method that accepts the current time and the state of the vehicle (as computed by the
 dynamics), and returns the current motor values.  The motor values are then
 passed to the dynamics object, which computes the new vehicle state.  On the

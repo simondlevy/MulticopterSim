@@ -31,7 +31,6 @@
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Runtime/Engine/Classes/Kismet/KismetRenderingLibrary.h"
 
 #ifdef _USE_OPENCV
 #include "VideoManager.hpp"
@@ -42,8 +41,10 @@
 // Windows/Linux compatibility 
 #ifdef _WIN32
 #define SPRINTF sprintf_s
+#define SWPRINTF swprintf_s
 #else
 #define SPRINTF sprintf
+#define SWPRINTF swprintf
 #endif
 
 // A macro for simplifying the declaration of static meshes
@@ -58,7 +59,9 @@ class MULTICOPTERSIM_API Vehicle {
 
     private:
 
-		static constexpr float CAMERA_Z = 35;
+		static constexpr float CAMERA_X = +20;
+		static constexpr float CAMERA_Y =   0;
+		static constexpr float CAMERA_Z = +30;
 
         static const uint8_t MAX_MOTORS = 100; // silly but simple
 
@@ -133,10 +136,12 @@ class MULTICOPTERSIM_API Vehicle {
                 return true;
             }
 
-            debug("crashed");
+            static uint32_t count;
+            debug("restart: %d", ++count);
 
             // Restart flight manager and video
             stopThreadedWorkers();
+            startThreadedWorkers();
 
             return false;
         }
@@ -183,7 +188,6 @@ class MULTICOPTERSIM_API Vehicle {
         // Flight management thread
         void startThreadedWorkers(void)
         {
-            debug("start");
             extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
             _flightManager = createFlightManager(_dynamics, _startLocation, _startRotation);
             videoManagerStart();
@@ -191,7 +195,6 @@ class MULTICOPTERSIM_API Vehicle {
 
         void stopThreadedWorkers(void)
         {
-            //debug("stop");
             _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
             videoManagersStop();
         }
@@ -389,8 +392,9 @@ class MULTICOPTERSIM_API Vehicle {
 
                     // Report FPS
                     if (_flightManager) {
-                        debug("FPS:  Main=%d    Flight=%d", 
-                                (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
+                        //debug("%s", _flightManager->getMessage());
+                        //debug("FPS:  Main=%d    Flight=%d", 
+                        //        (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
                     }
                 }
             }
@@ -450,14 +454,14 @@ class MULTICOPTERSIM_API Vehicle {
 
             // Get render target from asset in Contents
             wchar_t renderTargetName[100];
-            swprintf(renderTargetName, L"/Game/Flying/RenderTargets/cameraRenderTarget_%d", id);
+            SWPRINTF(renderTargetName, L"/Game/Flying/RenderTargets/cameraRenderTarget_%d", id);
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
             *renderTarget = cameraTextureObject.Object;
 
             // Create a camera component 
             *camera = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
             (*camera) ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-            (*camera)->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            (*camera)->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             (*camera)->SetWorldScale3D(cameraScale);
             (*camera)->SetFieldOfView(fov);
             (*camera)->SetAspectRatio((float)(*renderTarget)->SizeX / (*renderTarget)->SizeY);
@@ -466,7 +470,7 @@ class MULTICOPTERSIM_API Vehicle {
             *capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
             (*capture)->SetWorldScale3D(cameraScale);
             (*capture)->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
-            (*capture)->SetRelativeLocation(FVector(0, 0, CAMERA_Z));
+            (*capture)->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             (*capture)->TextureTarget = *renderTarget;
             (*capture)->FOVAngle = fov - 45;
         }

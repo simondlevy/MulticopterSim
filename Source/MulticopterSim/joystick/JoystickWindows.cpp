@@ -32,13 +32,23 @@ static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD 
     axes[4] = (float)axis4;
 }
 
+#include <stdio.h>
+// XXX Should use a separate calibration program
+static void adjustAxesInterlink(float * axes)
+{
+    axes[0] /= 0.575;
+    axes[1] /= 0.65;
+    axes[2] /= 0.58;
+    axes[3] /= 0.65;
+}
+
 Joystick::Joystick(const char * devname)
 {
     JOYCAPS joycaps = {0};
 
     _productId = 0;
 
-    _isRcTransmitter = false;
+    _isGameController = false;
 
     // Grab the first available joystick
     for (_joystickId=0; _joystickId<16; _joystickId++)
@@ -49,7 +59,7 @@ Joystick::Joystick(const char * devname)
 
         _productId = joycaps.wPid;
 
-        _isRcTransmitter = (_productId == PRODUCT_TARANIS || _productId == PRODUCT_SPEKTRUM);
+        _isGameController = !(_productId==PRODUCT_TARANIS || _productId==PRODUCT_SPEKTRUM);
     }
 }
 
@@ -125,9 +135,13 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
         axes[k] = axes[k] / 32767 - 1;
     }
 
+    if (_productId == PRODUCT_INTERLINK) {
+        adjustAxesInterlink(axes);
+    }
+
     buttons = joyState.dwButtons;
 
-    return Joystick::ERROR_NOERROR;
+	return Joystick::ERROR_NOERROR;
 }
 
 
