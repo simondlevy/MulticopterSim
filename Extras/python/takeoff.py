@@ -89,6 +89,8 @@ if __name__ == '__main__':
         # Get vehicle state from sim
         telem = copter.getState()
 
+        print(z, telem[10])
+
         # Convert motor value to vertical thrust
         thrust = B * (u * MAXRPM * np.pi / 30) ** 2 / M
 
@@ -112,4 +114,4 @@ if __name__ == '__main__':
 
     logfile.close()
 
-    plot(filename)
+    #plot(filename)
