@@ -42,10 +42,12 @@
 #ifdef _WIN32
 #define SPRINTF sprintf_s
 #define SWPRINTF swprintf_s
+#define WCHAR wchar_t
 #else
 #include <wchar.h>
 #define SPRINTF sprintf
 #define SWPRINTF swprintf
+#define WCHAR char16_t
 #endif
 
 // A macro for simplifying the declaration of static meshes
@@ -449,7 +451,7 @@ class MULTICOPTERSIM_API Vehicle {
                 UCameraComponent ** camera, 
                 USceneCaptureComponent2D ** capture, 
                 UTextureRenderTarget2D ** renderTarget, 
-                const char16_t * renderTargetName,
+                const WCHAR * renderTargetName,
                 uint8_t id, 
                 float fov)
         {
