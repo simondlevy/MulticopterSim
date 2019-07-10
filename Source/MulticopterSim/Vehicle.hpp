@@ -43,6 +43,7 @@
 #define SPRINTF sprintf_s
 #define SWPRINTF swprintf_s
 #else
+#include <wchar.h>
 #define SPRINTF sprintf
 #define SWPRINTF swprintf
 #endif
@@ -63,7 +64,7 @@ class MULTICOPTERSIM_API Vehicle {
 		static constexpr float CAMERA_Y =   0;
 		static constexpr float CAMERA_Z = +30;
 
-        static const uint8_t MAX_MOTORS = 100; // silly but simple
+        static const uint8_t MAX_MOTORS = 20; // silly but simple
 
 		MultirotorDynamics * _dynamics = NULL;
 
@@ -201,7 +202,7 @@ class MULTICOPTERSIM_API Vehicle {
 
         static const FName makeName(const char * prefix, const uint8_t index, const char * suffix="")
         {
-            char name[100];
+            char name[200];
             SPRINTF(name, "%s%d%s", prefix, index+1, suffix);
             return FName(name);
         }
@@ -245,7 +246,7 @@ class MULTICOPTERSIM_API Vehicle {
             objects.frameMeshComponent->SetSimulatePhysics(false);
 
             // Get sound cue from Contents
-            static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("'/Game/Flying/Audio/MotorSoundCue'"));
+            static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/Flying/Audio/MotorSoundCue"));
 
             // Store a reference to the Cue asset - we'll need it later.
             objects.soundCue = soundCue.Object;
@@ -266,8 +267,10 @@ class MULTICOPTERSIM_API Vehicle {
             objects.springArm->TargetArmLength = 0.f; 
 
             // Create cameras and support
-			createCamera(objects, &objects.camera1, &objects.capture1, &objects.renderTarget1, 1, 135); 
-            createCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 2, 90);
+			createCamera(objects, &objects.camera1, &objects.capture1, &objects.renderTarget1,
+                TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_1"), 1, 135);   
+            createCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 
+                TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_2"), 2, 90);
           }
 
         static void addMesh(const objects_t & objects, UStaticMesh * mesh, const char * name, 
@@ -445,16 +448,16 @@ class MULTICOPTERSIM_API Vehicle {
                 objects_t & objects,
                 UCameraComponent ** camera, 
                 USceneCaptureComponent2D ** capture, 
-                UTextureRenderTarget2D ** renderTarget,  
+                UTextureRenderTarget2D ** renderTarget, 
+                const char16_t * renderTargetName,
                 uint8_t id, 
                 float fov)
         {
+
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);
 
             // Get render target from asset in Contents
-            wchar_t renderTargetName[100];
-            SWPRINTF(renderTargetName, L"/Game/Flying/RenderTargets/cameraRenderTarget_%d", id);
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
             *renderTarget = cameraTextureObject.Object;
 
