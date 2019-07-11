@@ -29,7 +29,7 @@ for the minimum requirements recommended by Unreal Engine.
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
-through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/joystick/Joystick.h) class:
+through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/joystick/Joystick.h) class:
 
 * PS4 controller
 * XBox 360 controller
@@ -98,13 +98,13 @@ spacebar to switch between the ground camera and FPV camera.
 # Design principles
 
 The core of MulticopterSim is the abstract C++ 
-[FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp) 
+[FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/FlightManager.hpp) 
 class. This class provides support for running the vehicle dynamics and the PID control
 regime (e.g., Hackflight) on its own thread, after it first disables the
 built-in physics in UE4.  The dynamics we used are based directly on the model
 presented in this [paper](https://infoscience.epfl.ch/record/97532/files/325.pdf), 
 written as a standalone, header-only C++ 
-[class](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/dynamics/MultirotorDynamics.hpp)
+[class](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/dynamics/MultirotorDynamics.hpp)
 that can be easily adapted for other simulators and applications if desired.
 This class also supports different frame configurations (quadcopter,
 hexacopter) via virtual methods. By running the FlightManager on its own
@@ -113,7 +113,7 @@ flight-control.  It would also be possible to run the dynamics and control on
 separate threads, though we have not yet found it advantageous to do that.
 
 The FlightManager API contains a single virtual 
-[getMotors](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/FlightManager.hpp#L41-L51)
+[getMotors](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/FlightManager.hpp#L41-L51)
 method that accepts the current time and the state of the vehicle (as computed by the
 dynamics), and returns the current motor values.  The motor values are then
 passed to the dynamics object, which computes the new vehicle state.  On the
@@ -121,11 +121,11 @@ main thread, UE4's <b>Tick()</b> method queries the flight manager for the
 current vehicle pose (location, rotation) and displays the vehicle and its
 environment kinematically at the 60-120Hz frame rate of the game engine.  In a
 similar manner, the threaded 
-[VideoManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/VideoManager.hpp)
+[VideoManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/VideoManager.hpp)
 class can be used to process
 the images collected by a simulated gimbal-mounted camera on the vehicle, using
 OpenCV.  An abstract C++ 
-[TargetController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim/target/TargetController.hpp)
+[TargetController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/target/TargetController.hpp)
 class supports modeling interaction with other moving objects having their own dynamics; for example,
 in a predator/prey scenario.
 
