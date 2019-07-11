@@ -10,7 +10,7 @@
 
 #include <board.hpp>
 
-#include "../MulticopterSim/OSD.hpp"
+#include "../MainModule/OSD.hpp"
 
 class SimBoard : public hf::Board {
 

@@ -1,5 +1,5 @@
 /*
-   TargetController implementation
+   TargetManager implementation
 
    Follows a Lorenz attractor just for fun
 
@@ -8,9 +8,9 @@
    MIT License
 */
 
-#include "../MulticopterSim/target/TargetController.hpp"
+#include "../MainModule/target/TargetManager.hpp"
 
-class LorenzTargetController : public TargetController {
+class FLorenzTargetManager : public FTargetManager {
 
     private:
 
@@ -30,18 +30,24 @@ class LorenzTargetController : public TargetController {
         float _y = 0;
         float _z = 0;
 
+        double _previousTime = 0;
+
     public:
 
-        LorenzTargetController(void)
+        FLorenzTargetManager(void)
         {
             _x = 0;
             _y = 1;
             _z = 1.05;
+
+            _previousTime = 0;
         }
 
-        virtual void update(float dt) override
+        virtual void computeLocation(double currentTime) override
         {
-            dt /= SLOWDOWN;
+            double dt = (currentTime - _previousTime) / SLOWDOWN;
+
+            _previousTime = currentTime;
 
             float xdot = S * (_y - _x);
             float ydot = R*_x - _y - _x*_z;
@@ -57,8 +63,8 @@ class LorenzTargetController : public TargetController {
         }
 }; 
 
-// Factory method for TargetController class
-FLIGHTMODULE_API TargetController * createTargetController(void)
+// Factory method for TargetManager class
+FLIGHTMODULE_API FTargetManager * createTargetManager(void)
 {
-    return new LorenzTargetController();
+    return new FLorenzTargetManager();
 }

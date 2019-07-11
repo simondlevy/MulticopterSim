@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../MulticopterSim/dynamics/MultirotorDynamics.hpp"
+#include "../MainModule/dynamics/MultirotorDynamics.hpp"
 
 #include <sensor.hpp>
 #include <datatypes.hpp>

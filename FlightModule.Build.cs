@@ -33,7 +33,7 @@ public class FlightModule : ModuleRules
             PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("HOME") + "/Documents/Arduino/libraries/Hackflight/src");
         }
         else {
-            PublicDependencyModuleNames.Add("MulticopterSim");
+            PublicDependencyModuleNames.Add("MainModule");
             PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src");
         }
     }

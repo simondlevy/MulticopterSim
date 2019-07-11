@@ -8,7 +8,7 @@
    MIT License
 */
 
-#include "../MulticopterSim/FlightManager.hpp"
+#include "../MainModule/FlightManager.hpp"
 
 #include <hackflight.hpp>
 #include "SimReceiver.hpp"
