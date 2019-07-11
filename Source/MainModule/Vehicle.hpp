@@ -139,9 +139,6 @@ class MAINMODULE_API Vehicle {
                 return true;
             }
 
-            static uint32_t count;
-            debug("restart: %d", ++count);
-
             // Restart flight manager and video
             stopThreadedWorkers();
             startThreadedWorkers();
@@ -398,7 +395,7 @@ class MAINMODULE_API Vehicle {
                     // Report FPS
                     if (_flightManager) {
                         //debug("%s", _flightManager->getMessage());
-                        debug("FPS:  Main=%d    Flight=%d", (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
+                        //debug("FPS:  Main=%d    Flight=%d", (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
                     }
                 }
             }

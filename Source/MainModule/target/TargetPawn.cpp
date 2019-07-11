@@ -39,5 +39,6 @@ ATargetPawn::~ATargetPawn()
 
 void ATargetPawn::Tick(float DeltaSeconds) 
 {
+    debug("%s", _manager->getMessage());
     SetActorLocation(_manager->getLocation() * 100); // m => cm
 }
