@@ -9,7 +9,6 @@
 #include "TargetPawn.h"
 #include "UObject/ConstructorHelpers.h"
 
-//#include "TargetController.hpp"
 #include "Debug.hpp"
 
 ATargetPawn::ATargetPawn()
@@ -29,18 +28,16 @@ ATargetPawn::ATargetPawn()
 	_targetMesh->SetStaticMesh(ConstructorStatics._targetMesh.Get());	// Set static mesh
 	RootComponent = _targetMesh;
 
-    extern TargetController * createTargetController(void);
-    _controller = createTargetController();
+    extern FTargetManager * createTargetManager(void);
+    _manager = createTargetManager();
 }
 
 ATargetPawn::~ATargetPawn()
 {
-    delete _controller;
+    delete _manager;
 }
 
 void ATargetPawn::Tick(float DeltaSeconds) 
 {
-    _controller->update(DeltaSeconds);
-
-    SetActorLocation(_controller->getLocation() * 100); // m => cm
+    SetActorLocation(_manager->getLocation() * 100); // m => cm
 }

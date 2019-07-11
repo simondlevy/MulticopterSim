@@ -14,7 +14,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include "TargetController.hpp"
+#include "TargetManager.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -30,7 +30,7 @@ class ATargetPawn : public APawn
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
             class UStaticMeshComponent* _targetMesh;
 
-        TargetController * _controller;
+        FTargetManager * _manager;
 
     public:
 
