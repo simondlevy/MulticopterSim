@@ -23,8 +23,8 @@ class MAINMODULE_API AGoshawkPawn : public APawn {
         MultirotorDynamics::params_t _params = {
 
             // Dynamics: Amir's calculations
-            5.30216718361085E-05,   // b
-            2.23656692806239E-06,   // d
+            2.651083591805425e-05,  // b
+            1.118283464031195e-06,  // d
             16.47,                  // m
             0.6,                    // l
             2,                      // Ix
