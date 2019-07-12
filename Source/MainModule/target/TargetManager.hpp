@@ -1,47 +1,28 @@
-/*
- * Abstract class for moving around the target pawn in MulticopterSim
- *
- * Copyright (C) 2019 Simon D. Levy
- *
- * MIT License
- */
-
 #pragma once
 
-#include "Runtime/Core/Public/Math/Vector.h"
-#include "../ThreadedWorker.hpp"
+#include "ThreadedWorker.hpp"
+#include "../../Extras/sockets/UdpServerSocket.hpp"
 
-class  FTargetManager : public FThreadedWorker {
+class FTargetManager : public FThreadedWorker {
 
-    protected:
+public:
 
-        FVector _location;
+	FTargetManager() : FThreadedWorker()
+	{
 
-        // Constructor, called on main thread
-        FTargetManager(void) : FThreadedWorker()
-        {
-        }
+	}
 
-        // Called on separate thread
-        virtual void performTask(double currentTime)  override
-        {
-            computeLocation(currentTime);
-        }
+	virtual void performTask(double currentTime) override
+	{
+		double gimbalvals[3] = { 0 };
 
-        virtual void computeLocation(double currentTime) = 0;
+		if (gimbalServer.receiveData(gimbalvals, 3 * sizeof(double))) {
+			dbgprintf("%f %f %f", gimbalvals[0], gimbalvals[1], gimbalvals[2]);
+		}
+	}
 
-    public:
+private:
 
-        // Called on main thread
-        const FVector & getLocation(void)
-        {
-            return _location;
-        }
+	UdpServerSocket gimbalServer = UdpServerSocket(7000, 1000);
 
-        virtual ~FTargetManager(void)
-        {
-        }
-
-        // Factory method implemented by your subclass
-        static FTargetManager * create(void);
 };

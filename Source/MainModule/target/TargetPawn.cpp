@@ -10,6 +10,10 @@
 #include "UObject/ConstructorHelpers.h"
 
 #include "Debug.hpp"
+#include "target/TargetManager.hpp"
+
+
+static FTargetManager * _targetManager;
 
 ATargetPawn::ATargetPawn()
 {
@@ -28,17 +32,30 @@ ATargetPawn::ATargetPawn()
 	_targetMesh->SetStaticMesh(ConstructorStatics._targetMesh.Get());	// Set static mesh
 	RootComponent = _targetMesh;
 
-    extern FTargetManager * createTargetManager(void);
-    _manager = createTargetManager();
+    //extern TargetManager * createTargetManager(void);
+    //_manager = createTargetManager();
 }
 
 ATargetPawn::~ATargetPawn()
 {
-    delete _manager;
+    //delete _manager;
+}
+
+void ATargetPawn::BeginPlay()
+{
+	_targetManager = new FTargetManager();
+
+	Super::BeginPlay();
 }
 
 void ATargetPawn::Tick(float DeltaSeconds) 
 {
-    debug("%s", _manager->getMessage());
+	//static uint32_t _count;
+	//debug("%d", ++_count);
+
+    //debug("%s", _manager->getMessage());
     //SetActorLocation(_manager->getLocation() * 100); // m => cm
+    //_manager->getLocation();
+
+	debug(_targetManager->getMessage());
 }
