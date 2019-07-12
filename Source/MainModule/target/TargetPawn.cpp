@@ -10,10 +10,6 @@
 #include "UObject/ConstructorHelpers.h"
 
 #include "Debug.hpp"
-#include "target/TargetManager.hpp"
-
-
-static FTargetManager * _targetManager;
 
 ATargetPawn::ATargetPawn()
 {

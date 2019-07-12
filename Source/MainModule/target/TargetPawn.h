@@ -14,7 +14,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-//#include "TargetManager.hpp"
+#include "target/TargetManager.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -41,4 +41,8 @@ class ATargetPawn : public APawn
         ATargetPawn();
 
         ~ATargetPawn();
+
+private:
+
+	FTargetManager * _targetManager = NULL;
 };
