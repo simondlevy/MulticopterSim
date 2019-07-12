@@ -4,11 +4,23 @@
 
 class FTargetManager : public FThreadedWorker {
 
-public:
-
-	FTargetManager();
-
 protected:
 
-    virtual void performTask(double currentTime) override;
+	virtual void performTask(double currentTime) override
+	{
+		(void)currentTime;
+		getPosition();
+	}
+
+	FTargetManager() : FThreadedWorker()
+	{
+
+	}
+
+	virtual void getPosition(void) = 0;
+
+public:
+
+	// Factory method implemented by your subclass
+	static FTargetManager * create();
 };

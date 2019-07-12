@@ -39,7 +39,7 @@ ATargetPawn::~ATargetPawn()
 
 void ATargetPawn::BeginPlay()
 {
-	_targetManager = new FTargetManager();
+	_targetManager = FTargetManager::create();
 
 	Super::BeginPlay();
 }
