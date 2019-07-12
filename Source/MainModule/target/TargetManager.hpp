@@ -15,7 +15,7 @@ protected:
 
 	FTargetManager() : FThreadedWorker()
 	{
-
+		_location = FVector(0, 10, 0);
 	}
 
 	virtual void computeLocation(double currentTime) = 0;

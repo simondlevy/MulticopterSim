@@ -38,6 +38,8 @@ class ATargetPawn : public APawn
 
 		virtual void BeginPlay() override;
 
+		virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
         ATargetPawn();
 
         ~ATargetPawn();

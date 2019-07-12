@@ -42,7 +42,16 @@ void ATargetPawn::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ATargetPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	delete _targetManager;
+
+	Super::EndPlay(EndPlayReason);
+}
+
 void ATargetPawn::Tick(float DeltaSeconds) 
 {
     SetActorLocation(_targetManager->getLocation() * 100); // m => cm
+
+	debug("%s", _targetManager->getMessage());
 }
