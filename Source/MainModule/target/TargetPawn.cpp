@@ -44,12 +44,5 @@ void ATargetPawn::BeginPlay()
 
 void ATargetPawn::Tick(float DeltaSeconds) 
 {
-	//static uint32_t _count;
-	//debug("%d", ++_count);
-
-    //debug("%s", _manager->getMessage());
-    //SetActorLocation(_manager->getLocation() * 100); // m => cm
-    //_manager->getLocation();
-
-	debug(_targetManager->getMessage());
+    SetActorLocation(_targetManager->getLocation() * 100); // m => cm
 }

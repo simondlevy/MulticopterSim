@@ -6,10 +6,11 @@ class FTargetManager : public FThreadedWorker {
 
 protected:
 
+	FVector _location;
+
 	virtual void performTask(double currentTime) override
 	{
-		(void)currentTime;
-		getPosition();
+		computeLocation(currentTime);
 	}
 
 	FTargetManager() : FThreadedWorker()
@@ -17,8 +18,12 @@ protected:
 
 	}
 
-	virtual void getPosition(void) = 0;
-};
+	virtual void computeLocation(double currentTime) = 0;
 
-// Factory method implemented by your subclass
-//static FTargetManager * createTargetManager();
+public:
+
+	const FVector & getLocation(void)
+	{
+		return _location;
+	}
+};
