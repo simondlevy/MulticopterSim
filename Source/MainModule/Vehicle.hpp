@@ -425,13 +425,14 @@ class MAINMODULE_API Vehicle {
             if (!_flightManager) return;
 
             // Get gimbal location from flight manager
-            float roll = 0, pitch = 0, fov = 0;
-            _flightManager->getGimbal(roll, pitch, fov);
+            float roll = 0, pitch = 0, yaw = 0, fov = 0;
+            _flightManager->getGimbal(roll, pitch, yaw, fov);
 
             FRotator rotation = _objects.springArm->GetComponentRotation();
 
             rotation.Roll  += roll;
             rotation.Pitch -= pitch;
+            rotation.Yaw   += yaw;
 
             _objects.springArm->SetWorldRotation(rotation);
 

@@ -174,6 +174,12 @@ class FFlightManager : public FThreadedWorker {
         }
 
         // Implemented by subclass
-        virtual void getGimbal(float & roll, float &pitch, float & fov) { roll = 0; pitch = 0; fov = 90; }
-       
+        virtual void getGimbal(float & roll, float &pitch, float & yaw, float & fov) 
+        { 
+            roll = 0; 
+            pitch = 0; 
+            yaw = 0; 
+            fov = 90; 
+        }
+
 }; // class FFlightManager
