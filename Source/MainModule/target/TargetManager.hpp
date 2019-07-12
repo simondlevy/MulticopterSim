@@ -18,9 +18,7 @@ protected:
 	}
 
 	virtual void getPosition(void) = 0;
-
-public:
-
-	// Factory method implemented by your subclass
-	static FTargetManager * create();
 };
+
+// Factory method implemented by your subclass
+//static FTargetManager * createTargetManager();

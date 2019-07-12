@@ -27,9 +27,6 @@ ATargetPawn::ATargetPawn()
 	_targetMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TargetMesh0"));
 	_targetMesh->SetStaticMesh(ConstructorStatics._targetMesh.Get());	// Set static mesh
 	RootComponent = _targetMesh;
-
-    //extern TargetManager * createTargetManager(void);
-    //_manager = createTargetManager();
 }
 
 ATargetPawn::~ATargetPawn()
@@ -39,7 +36,8 @@ ATargetPawn::~ATargetPawn()
 
 void ATargetPawn::BeginPlay()
 {
-	_targetManager = FTargetManager::create();
+	extern FTargetManager * createTargetManager(void);
+	_targetManager = createTargetManager();
 
 	Super::BeginPlay();
 }

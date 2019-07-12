@@ -175,8 +175,5 @@ class FFlightManager : public FThreadedWorker {
 
         // Implemented by subclass
         virtual void getGimbal(float & roll, float &pitch, float & fov) { roll = 0; pitch = 0; fov = 90; }
-
-        // Factory method implemented by your subclass
-        static FFlightManager * create(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
        
 }; // class FFlightManager
