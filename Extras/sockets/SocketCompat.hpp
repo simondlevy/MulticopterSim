@@ -12,6 +12,7 @@
 #ifdef _WIN32
 #pragma comment(lib,"ws2_32.lib")
 #define WIN32_LEAN_AND_MEAN
+#define RECVSIZE size_t
 #undef TEXT
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -19,6 +20,7 @@
 // Linux
 #else
 #define sprintf_s sprintf
+#define RECVSIZE ssize_t
 typedef int SOCKET;
 #include <sys/types.h>
 #include <sys/socket.h>
