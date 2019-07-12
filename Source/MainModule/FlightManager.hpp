@@ -77,6 +77,8 @@ class FFlightManager : public FThreadedWorker {
         FFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation) :
             FThreadedWorker()
         {
+            debug("construct");
+
              // Allocate array for motor values
             _motorvals = new double[dynamics->motorCount()];
 
@@ -109,6 +111,8 @@ class FFlightManager : public FThreadedWorker {
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
         void performTask(double currentTime)
         {
+            //dbgprintf("%f", currentTime);
+
             double deltaT = currentTime - _previousTime;
 
             // Send current motor values to dynamics
@@ -148,6 +152,7 @@ class FFlightManager : public FThreadedWorker {
 
         ~FFlightManager(void)
         {
+            debug("destruct");
         }
 
         // Called by VehiclePawn::Tick() method to get current display pose

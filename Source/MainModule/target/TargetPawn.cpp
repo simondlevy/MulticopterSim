@@ -52,6 +52,4 @@ void ATargetPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void ATargetPawn::Tick(float DeltaSeconds) 
 {
     SetActorLocation(_targetManager->getLocation() * 100); // m => cm
-
-	debug("%s", _targetManager->getMessage());
 }
