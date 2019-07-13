@@ -15,7 +15,7 @@ from multicopter import Multicopter
 # Target params
 ALTITUDE_START  = 0
 ALTITUDE_TARGET = 10
-ALTITUDE_TOLERANCE = .01 # level-off velocity
+VARIO_TOLERANCE = .01 # level-off velocity
 
 # PID params
 ALT_P = 1.25
@@ -44,6 +44,7 @@ if __name__ == '__main__':
     zprev = 0
     tprev = 0
     dzdt = 0
+    u = 0
 
     # make CSV file name from these params
     filename = '%04.f-%04.f_%3.3f-%3.3f-%3.3f-%3.3f.csv' % (ALTITUDE_START, ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
@@ -73,8 +74,8 @@ if __name__ == '__main__':
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
 
+            # Use temporal first difference to compute vertical velocity
             dt = t - tprev
-
             dzdt = (z-zprev) / dt
 
             # Get correction from PID controller
@@ -83,16 +84,15 @@ if __name__ == '__main__':
             # Constrain correction to [0,1] to represent motor value
             u = max(0, min(1, u))
      
-            # Set motor values in sim
-            copter.setMotors(u*np.ones(4))
+        # Set motor values in sim
+        copter.setMotors(u*np.ones(4))
 
-            print('%e' % dzdt)
-
+        # Update for first difference
         zprev = z
         tprev = t
 
         # If altitude has leveled off, halt
-        if abs(z) != 0 and abs(dzdt) < ALTITUDE_TOLERANCE:
+        if abs(z) != 0 and abs(dzdt) < VARIO_TOLERANCE:
             break
 
         # Write to log file
