@@ -4,11 +4,14 @@
 #
 #   MIT License
 
-Takeoff.class: Takeoff.java Multicopter.class
+Takeoff.class: Takeoff.java Multicopter.class AltitudePidController.class
 	javac Takeoff.java
 
 Multicopter.class: Multicopter.class
 	javac Multicopter.java
+
+AltitudePidController.class: AltitudePidController.class
+	javac AltitudePidController.java
 
 test: Takeoff.class 
 	java Takeoff
