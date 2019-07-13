@@ -15,7 +15,7 @@ from multicopter import Multicopter
 # Target params
 ALTITUDE_START  = 0
 ALTITUDE_TARGET = 10
-ALTITUDE_TOLERANCE = .0001 # level-off velocity
+ALTITUDE_TOLERANCE = .01 # level-off velocity
 
 # PID params
 ALT_P = 1.25
@@ -29,7 +29,7 @@ def plot(logfilename):
     data = np.genfromtxt(logfilename, delimiter=',', skip_header=1)
 
     t = data[:,0]
-    z = data[:,3]
+    z = data[:,1]
 
     plt.plot(t, z)
     plt.xlabel('time (sec)')
@@ -46,9 +46,9 @@ if __name__ == '__main__':
     dzdt = 0
 
     # make CSV file name from these params
-    #filename = '%04.f-%04.f_%3.3f-%3.3f-%3.3f-%3.3f.csv' % (ALTITUDE_START, ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
-    #logfile = open(filename, 'w')
-    #logfile.write('t,dzdt2,dzdtz,zs,u\n')
+    filename = '%04.f-%04.f_%3.3f-%3.3f-%3.3f-%3.3f.csv' % (ALTITUDE_START, ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
+    logfile = open(filename, 'w')
+    logfile.write('t,z\n')
 
     # Create PID controller
     pid  = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
@@ -86,7 +86,7 @@ if __name__ == '__main__':
             # Set motor values in sim
             copter.setMotors(u*np.ones(4))
 
-            print(z, dzdt, u)
+            print('%e' % dzdt)
 
         zprev = z
         tprev = t
@@ -96,11 +96,11 @@ if __name__ == '__main__':
             break
 
         # Write to log file
-        #logfile.write('%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f\n' % (t, dzdt2, dzdt, z, telem[10], u))
+        logfile.write('%3.3f,%3.3f\n' % (t,z))
 
     # Stop the simulation
     copter.stop()
 
-    #logfile.close()
+    logfile.close()
 
-    #plot(filename)
+    plot(filename)
