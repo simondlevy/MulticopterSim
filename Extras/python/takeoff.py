@@ -23,11 +23,6 @@ VEL_P = 1.5
 VEL_I = 1.0
 VEL_D = 0.05
 
-# Vehicle params
-MAXRPM = 30000
-B      = 5.30216718361085E-05 # Thrust coefficient
-M      = 16.47                # Mass (kg)
-
 # Plots results from CSV log file
 def plot(logfilename):
 
@@ -97,8 +92,8 @@ if __name__ == '__main__':
         tprev = t
 
         # If altitude has leveled off, halt
-        #if abs(z) != 0 and abs(dzdt) < ALTITUDE_TOLERANCE:
-        #    break
+        if abs(z) != 0 and abs(dzdt) < ALTITUDE_TOLERANCE:
+            break
 
         # Write to log file
         #logfile.write('%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f\n' % (t, dzdt2, dzdt, z, telem[10], u))
