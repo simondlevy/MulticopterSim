@@ -66,8 +66,8 @@ class Multicopter(object):
 
     def getState(self):
         '''
-        Returns current vehicle state as an array of the form [time, gx, gy, gz, qw, qx, qy, qz, px, py, pz],
-        where g=gyro; q=quaternion; p=position.
+        Returns current vehicle state as an array of the form [time, gx, gy, gz, ax, ay, az, px, py, pz],
+        where g=gyro; a=accelerometer; p=position.
         '''
  
         return self.state
@@ -85,5 +85,5 @@ class Multicopter(object):
 
             self.motorSocket.sendto(np.ndarray.tobytes(self.motorVals), (self.host, self.motorPort))
 
-            data, _ = self.telemSocket.recvfrom(88)
+            data, _ = self.telemSocket.recvfrom(80)
             self.state = np.frombuffer(data)

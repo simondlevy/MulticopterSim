@@ -51,15 +51,14 @@ def plot(logfilename):
 if __name__ == '__main__':
 
     # initial conditions
-    t     = 0
-    z     = ALTITUDE_START
-    dzdt  = 0
-    u     = 0
+    z = 0
+    zprev = 0
+    dzdt = 0
 
     # make CSV file name from these params
-    filename = '%04.f-%04.f_%3.3f-%3.3f-%3.3f-%3.3f.csv' % (ALTITUDE_START, ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
-    logfile = open(filename, 'w')
-    logfile.write('t,dzdt2,dzdtz,zs,u\n')
+    #filename = '%04.f-%04.f_%3.3f-%3.3f-%3.3f-%3.3f.csv' % (ALTITUDE_START, ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
+    #logfile = open(filename, 'w')
+    #logfile.write('t,dzdt2,dzdtz,zs,u\n')
 
     # Create PID controller
     pid  = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
@@ -73,10 +72,6 @@ if __name__ == '__main__':
     # Loop until level-off
     while True:
 
-        # If altitude has leveled off, halt
-        if abs(z) != 0 and abs(dzdt) < ALTITUDE_TOLERANCE:
-            break
-
         # Get correction from PID controller
         u = pid.u(z, dzdt, DT)
 
@@ -89,22 +84,22 @@ if __name__ == '__main__':
         # Get vehicle state from sim
         telem = copter.getState()
 
-        print(z, telem[10])
+        # Extract time, altitude from state
+        t = telem[0]
+        z = telem[9]
 
-        # Convert motor value to vertical thrust
-        thrust = B * (u * MAXRPM * np.pi / 30) ** 2 / M
+        print(z, zprev, t)
 
-        # Subtract G from thrust to get net vertical acceleration
-        dzdt2 = thrust - G
+        # Compute vertical climb rate as first difference of altitude over time
+        dzdt = (z-zprev) / t
+        zprev = z
 
-        # Integrate net vertical acceleration to get vertical velocity
-        dzdt += dzdt2 * DT
-
-        # Integrate vertical velocity to get altitude
-        z += dzdt*DT
+        # If altitude has leveled off, halt
+        #if abs(z) != 0 and abs(dzdt) < ALTITUDE_TOLERANCE:
+        #    break
 
         # Write to log file
-        logfile.write('%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f\n' % (t, dzdt2, dzdt, z, telem[10], u))
+        #logfile.write('%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f\n' % (t, dzdt2, dzdt, z, telem[10], u))
 
         # Accumulate time for logging
         t += DT
@@ -112,6 +107,6 @@ if __name__ == '__main__':
     # Stop the simulation
     copter.stop()
 
-    logfile.close()
+    #logfile.close()
 
     #plot(filename)
