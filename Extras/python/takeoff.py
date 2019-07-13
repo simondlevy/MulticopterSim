@@ -12,12 +12,6 @@ import matplotlib.pyplot as plt
 from pidcontroller import AltitudePidController
 from multicopter import Multicopter
 
-# Can't touch this!
-G = 9.80665
-
-# Reasonable time constant
-DT = 0.001
-
 # Target params
 ALTITUDE_START  = 0
 ALTITUDE_TARGET = 10
@@ -73,15 +67,6 @@ if __name__ == '__main__':
     # Loop until level-off
     while True:
 
-        # Get correction from PID controller
-        u = pid.u(z, dzdt, DT)
-
-        # Constrain correction to [0,1] to represent motor value
-        u = max(0, min(1, u))
- 
-        # Set motor values in sim
-        copter.setMotors(u*np.ones(4))
-
         # Get vehicle state from sim
         telem = copter.getState()
 
@@ -89,11 +74,24 @@ if __name__ == '__main__':
         t = telem[0]
         z = telem[9]
 
-        print(z, dzdt)
-
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
-            dzdt = (z-zprev) / (t-tprev)
+
+            dt = t - tprev
+
+            dzdt = (z-zprev) / dt
+
+            # Get correction from PID controller
+            u = pid.u(-z, -dzdt, dt)
+
+            # Constrain correction to [0,1] to represent motor value
+            u = max(0, min(1, u))
+     
+            # Set motor values in sim
+            copter.setMotors(u*np.ones(4))
+
+            print(z, dzdt, u)
+
         zprev = z
         tprev = t
 
@@ -103,9 +101,6 @@ if __name__ == '__main__':
 
         # Write to log file
         #logfile.write('%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f\n' % (t, dzdt2, dzdt, z, telem[10], u))
-
-        # Accumulate time for logging
-        t += DT
 
     # Stop the simulation
     copter.stop()

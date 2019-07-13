@@ -86,6 +86,7 @@ int main(int argc, char ** argv)
 
         motorServer.closeConnection();
         telemClient.closeConnection();
+
     }
 
     return 0;
