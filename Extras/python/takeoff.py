@@ -53,6 +53,7 @@ if __name__ == '__main__':
     # initial conditions
     z = 0
     zprev = 0
+    tprev = 0
     dzdt = 0
 
     # make CSV file name from these params
@@ -88,11 +89,13 @@ if __name__ == '__main__':
         t = telem[0]
         z = telem[9]
 
-        print(z, zprev, t)
+        print(z, dzdt)
 
         # Compute vertical climb rate as first difference of altitude over time
-        dzdt = (z-zprev) / t
+        if t > tprev:
+            dzdt = (z-zprev) / (t-tprev)
         zprev = z
+        tprev = t
 
         # If altitude has leveled off, halt
         #if abs(z) != 0 and abs(dzdt) < ALTITUDE_TOLERANCE:
