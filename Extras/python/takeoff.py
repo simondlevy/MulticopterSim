@@ -70,9 +70,10 @@ if __name__ == '__main__':
         # Get vehicle state from sim
         telem = copter.getState()
 
-        # Extract time, altitude from state
-        t = telem[0]
-        z = telem[9]
+        # Extract time, altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
+        # to PID controller.
+        t =  telem[0]
+        z = -telem[9]
 
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
@@ -82,7 +83,7 @@ if __name__ == '__main__':
             dzdt = (z-zprev) / dt
 
             # Get correction from PID controller
-            u = pid.u(-z, -dzdt, dt)
+            u = pid.u(z, dzdt, dt)
 
             # Constrain correction to [0,1] to represent motor value
             u = max(0, min(1, u))
