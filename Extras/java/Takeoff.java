@@ -6,7 +6,7 @@
    MIT License
  */
 
-public class TestMulticopter {
+public class Takeoff {
 
     public static void main(String [] args)
     {

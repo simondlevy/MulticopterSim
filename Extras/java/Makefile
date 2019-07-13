@@ -4,14 +4,14 @@
 #
 #   MIT License
 
-TestMulticopter.class: TestMulticopter.java Multicopter.class
-	javac TestMulticopter.java
+Takeoff.class: Takeoff.java Multicopter.class
+	javac Takeoff.java
 
 Multicopter.class: Multicopter.class
 	javac Multicopter.java
 
-test: TestMulticopter.class 
-	java TestMulticopter
+test: Takeoff.class 
+	java Takeoff
 
 jar: Multicopter.java
 	javac Multicopter.java
