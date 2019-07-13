@@ -24,11 +24,10 @@ class AltitudePidController(object):
         self.posTarget      = 0
         self.lastError      = 0
         self.integralError  = 0
-        self.altitudeTarget = 0
 
     def u(self, alt, vel, dt):
 
-        # compute dzdt setpoint and error
+        # Compute dzdt setpoint and error
         velTarget = (self.target - alt) * self.posP
         velError = velTarget - vel
 
