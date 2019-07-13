@@ -7,10 +7,10 @@
 Takeoff.class: Takeoff.java Multicopter.class AltitudePidController.class
 	javac Takeoff.java
 
-Multicopter.class: Multicopter.class
+Multicopter.class: Multicopter.java
 	javac Multicopter.java
 
-AltitudePidController.class: AltitudePidController.class
+AltitudePidController.class: AltitudePidController.java
 	javac AltitudePidController.java
 
 test: Takeoff.class 
