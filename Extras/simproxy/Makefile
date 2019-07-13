@@ -18,7 +18,7 @@ simproxy: simproxy.o
 	g++ -o simproxy simproxy.o 
 
 simproxy.o: simproxy.cpp
-	g++ $(CFLAGS) -Isockets -I../../Source/MulticopterSim -c simproxy.cpp
+	g++ $(CFLAGS) -Isockets -I../../Source/MainModule -c simproxy.cpp
 
 test: simproxy
 	./simproxy
