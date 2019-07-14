@@ -178,7 +178,7 @@ class FFlightManager : public FThreadedWorker {
             return !_crashed;
         }
 
-        // Implemented by subclass
+        // Can be overridden by subclass
         virtual void getGimbal(float & roll, float &pitch, float & yaw, float & fov) 
         { 
             roll = 0; 

@@ -41,4 +41,9 @@ class UdpServerSocket : public UdpSocket {
             // Check for / set up optional timeout for receiveData
             UdpSocket::setUdpTimeout(timeoutMsec);
         }
-};
+
+        static UdpServerSocket * free(UdpServerSocket * socket)
+        {
+            return (UdpServerSocket *)UdpSocket::free(socket);
+        }
+ };

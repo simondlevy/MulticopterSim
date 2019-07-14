@@ -133,6 +133,7 @@ class MAINMODULE_API Vehicle {
             bool flying = _flightManager->getKinematics(location, rotation, _motorvals);
 
             if (flying) {
+                //location.Z = 500; // XXX stay up in the air for now, to test gimbal
                 _objects.pawn->SetActorLocation(location);
                 _objects.pawn->SetActorRotation(rotation);
 

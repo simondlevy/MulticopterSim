@@ -36,4 +36,11 @@ class UdpSocket : public Socket {
         {
             return recvfrom(_sock, (char *)buf, (int)len, 0, (struct sockaddr *) &_si_other, &_slen) == (RECVSIZE)len;
         }
+
+        static UdpSocket * free(UdpSocket * socket)
+        {
+            socket->closeConnection();
+            delete socket;
+            return NULL;
+        }
 };
