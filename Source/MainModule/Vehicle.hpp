@@ -25,6 +25,7 @@
 #include "dynamics/MultirotorDynamics.hpp"
 
 #include "FlightManager.hpp"
+#include "GimbalManager.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -70,8 +71,11 @@ class MAINMODULE_API Vehicle {
 
 		MultirotorDynamics * _dynamics = NULL;
 
-        // Threaded workers for running flight control, video
+        // Threaded worker for running flight control
         class FFlightManager * _flightManager = NULL;
+
+        // Threaded worker for running gimbal
+        class FGimbalManager * _gimbalManager = NULL;
 
         // Bozo filter for failure to select a map
         bool _mapSelected = false;
@@ -191,12 +195,18 @@ class MAINMODULE_API Vehicle {
         {
             extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
             _flightManager = createFlightManager(_dynamics, _startLocation, _startRotation);
+
+            extern FGimbalManager * createGimbalManager(void);
+            _gimbalManager = createGimbalManager();
+
             videoManagerStart();
         }        
 
         void stopThreadedWorkers(void)
         {
             _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
+            _gimbalManager = (FGimbalManager *)FThreadedWorker::stopThreadedWorker(_gimbalManager);
+
             videoManagersStop();
         }
 
@@ -395,8 +405,10 @@ class MAINMODULE_API Vehicle {
 
                     // Report FPS
                     if (_flightManager) {
-                        debug("%s", _flightManager->getMessage());
-                        //debug("FPS:  Main=%d    Flight=%d", (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
+                        debug("FPS:  Main=%d    Flight=%d    Gimbal=%d", 
+                                (int)(++_count/currentTime), 
+                                (int)(_flightManager->getCount()/currentTime),
+                                (int)(_gimbalManager->getCount()/currentTime));
                     }
                 }
             }
@@ -425,9 +437,9 @@ class MAINMODULE_API Vehicle {
             // FlightManager will be null after crash
             if (!_flightManager) return;
 
-            // Get gimbal location from flight manager
+            // Get gimbal info from manager
             float roll = 0, pitch = 0, yaw = 0, fov = 0;
-            _flightManager->getGimbal(roll, pitch, yaw, fov);
+            _gimbalManager->get(roll, pitch, yaw, fov);
 
             FRotator rotation = _objects.springArm->GetComponentRotation();
 
