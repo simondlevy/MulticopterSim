@@ -19,6 +19,9 @@ run: Takeoff.class
 test: Takeoff.class 
 	java Takeoff
 
+plot: Takeoff.class
+	java Takeoff | ../python/plotalt.py
+
 jar: Multicopter.java
 	javac Multicopter.java
 	jar cvf multicopter.jar Multicopter*.class

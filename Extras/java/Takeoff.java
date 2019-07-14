@@ -11,7 +11,7 @@ public class Takeoff {
     // Target params
     static final double ALTITUDE_START  = 0;
     static final double ALTITUDE_TARGET = 10;
-    static final double VARIO_TOLERANCE = 1.e-5; //g level-off velocity
+    static final double VARIO_TOLERANCE = 2.e-5; //g level-off velocity
 
     // PID params
     static final double ALT_P = 1.25;

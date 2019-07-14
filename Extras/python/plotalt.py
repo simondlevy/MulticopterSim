@@ -16,7 +16,9 @@ infile = open(argv[1], 'r') if len(argv) > 1 else stdin
 data = np.genfromtxt(infile, delimiter=',')
 
 t = data[:,0]
-z = data[:,1]
+u = data[:,1]
+z = data[:,2]
+dzdt = data[:,3]
 
 plt.plot(t, z)
 plt.xlabel('time (sec)')

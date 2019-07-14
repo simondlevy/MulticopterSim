@@ -52,7 +52,7 @@ if __name__ == '__main__':
         t =  telem[0]
         z = -telem[9]
 
-        print('%+5.5f,%+3.3f' % (t, z))
+        print('%+5.5f,%+3.3f,%+3.3f,%+3.3f' % (t, u, z, dzdt))
 
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
