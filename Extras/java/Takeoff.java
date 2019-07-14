@@ -48,7 +48,7 @@ public class Takeoff {
             double t =  telem[0];
             z = -telem[9];
 
-            System.out.printf("u=%3.3f z=%3.3f dzdt=%e\n", u, z, dzdt);
+            System.out.printf("%3.3f,%+3.3f\n", t, z);
 
             // Compute vertical climb rate as first difference of altitude over time
             if (t > tprev) {
