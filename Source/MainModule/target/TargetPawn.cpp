@@ -31,7 +31,7 @@ ATargetPawn::ATargetPawn()
 
 ATargetPawn::~ATargetPawn()
 {
-    //delete _manager;
+    _targetManager = (FTargetManager *)FThreadedWorker::stopThreadedWorker(_targetManager);
 }
 
 void ATargetPawn::BeginPlay()
@@ -44,7 +44,7 @@ void ATargetPawn::BeginPlay()
 
 void ATargetPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	delete _targetManager;
+	//delete _targetManager;
 
 	Super::EndPlay(EndPlayReason);
 }

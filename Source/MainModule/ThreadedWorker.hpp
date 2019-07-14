@@ -93,7 +93,7 @@ class FThreadedWorker : public FRunnable {
         {
             _running = false;
 
-            return true;
+			return FRunnable::Init();
         }
 
         virtual uint32_t Run() override
@@ -118,7 +118,7 @@ class FThreadedWorker : public FRunnable {
                 FPlatformProcess::Sleep(.0001); 
             }
 
-            return 0;
+			return 0;
         }
 
         virtual void Stop() override
@@ -127,6 +127,8 @@ class FThreadedWorker : public FRunnable {
 
             // Final wait after stopping
             FPlatformProcess::Sleep(0.03);
+
+			FRunnable::Stop();
         }
 
 }; // class FThreadedWorker
