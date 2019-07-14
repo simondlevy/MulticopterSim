@@ -12,6 +12,8 @@
 
 #include <receiver.hpp>
 
+#include "Debug.hpp"
+
 #include "../MainModule/joystick/Joystick.h"
 
 class SimReceiver : public hf::Receiver {
@@ -28,6 +30,7 @@ class SimReceiver : public hf::Receiver {
 
     float _gimbalRoll;
     float _gimbalPitch;
+    float _gimbalYaw;
     float _gimbalFOV;
 
     protected:
@@ -86,11 +89,13 @@ class SimReceiver : public hf::Receiver {
             _gimbalFOV   = 90 - rawvals[0] * 45 + .5; // .5 = saftey margin
             _gimbalRoll  = rawvals[1];
             _gimbalPitch = rawvals[2];
+            _gimbalYaw   = rawvals[3];
 
-            // Clamp throttle, roll, and yaw to neutral values
+            // Clamp sticks to neutral values
             rawvals[0] = 0;
             rawvals[1] = 0;
             rawvals[2] = 0;
+            rawvals[3] = 0;
         }
 
         return pollResult;
@@ -101,10 +106,11 @@ class SimReceiver : public hf::Receiver {
         return rawvals[5] > AUX_THRESHOLD;
     }
 
-    void getGimbal(float & roll, float & pitch, float & fov)
+    void getGimbal(float & roll, float & pitch, float & yaw, float & fov)
     {
         roll  = _gimbalRoll;
         pitch = _gimbalPitch;
+        yaw   = _gimbalYaw;
         fov   = _gimbalFOV;
     }
 

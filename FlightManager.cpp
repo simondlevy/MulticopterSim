@@ -22,7 +22,7 @@
 #include <pidcontrollers/flowhold.hpp>
 
 // Mixer
-#include <mixers/quadxap.hpp>
+#include <mixers/octoxap.hpp>
 
 class FHackflightFlightManager : public FFlightManager {
 
@@ -62,7 +62,7 @@ class FHackflightFlightManager : public FFlightManager {
         SimReceiver _receiver;
 
         // Mixer
-        hf::MixerQuadXAP _mixer;
+        hf::MixerOctoXAP _mixer;
 
         // "Sensors" (get values from dynamics)
         SimSensors * _sensors = NULL;
@@ -70,6 +70,7 @@ class FHackflightFlightManager : public FFlightManager {
         // Gimbal axes
         float _gimbalRoll = 0;
         float _gimbalPitch = 0;
+        float _gimbalYaw = 0;
         float _gimbalFOV = 0;
 
     public:
@@ -119,7 +120,7 @@ class FHackflightFlightManager : public FFlightManager {
                 default:
 
                     if (_receiver.inGimbalMode()) {
-                        _receiver.getGimbal(_gimbalRoll, _gimbalPitch, _gimbalFOV);
+                        _receiver.getGimbal(_gimbalRoll, _gimbalPitch, _gimbalYaw, _gimbalFOV);
                     }
 
                     _hackflight.update();
@@ -129,18 +130,26 @@ class FHackflightFlightManager : public FFlightManager {
             }
          }
 
-        virtual void getGimbal(float & roll, float &pitch, float & fov) override
+        void getGimbal(float & roll, float &pitch, float & yaw, float & fov)
         {
             roll  = _gimbalRoll;
             pitch = _gimbalPitch;
+            yaw   = _gimbalYaw;
             fov   = _gimbalFOV;
         }
 
 }; // HackflightFlightManager
 
+static FHackflightFlightManager * _flightManager;
 
 // Factory method for FlightManager class
 FLIGHTMODULE_API FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation)
 {
-    return new FHackflightFlightManager(dynamics, initialLocation, initialRotation);
+    _flightManager = new FHackflightFlightManager(dynamics, initialLocation, initialRotation);
+    return _flightManager;
+}
+
+void getGimbalFromFlightManager(float & roll, float & pitch, float & yaw, float & fov) 
+{
+    _flightManager->getGimbal(roll, pitch, yaw, fov);
 }
