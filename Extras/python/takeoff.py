@@ -23,20 +23,6 @@ VEL_P = 1.5
 VEL_I = 1.0
 VEL_D = 0.05
 
-# Plots results from CSV log file
-def plot(logfilename):
-
-    data = np.genfromtxt(logfilename, delimiter=',', skip_header=1)
-
-    t = data[:,0]
-    z = data[:,1]
-
-    plt.plot(t, z)
-    plt.xlabel('time (sec)')
-    plt.ylabel('altitude (m)')
-    plt.ylim([min(z)-1, max(z)+1])
-    plt.show()
-
 if __name__ == '__main__':
 
     # initial conditions
@@ -45,11 +31,6 @@ if __name__ == '__main__':
     tprev = 0
     dzdt = 0
     u = 0
-
-    # make CSV file name from these params
-    filename = '%04.f-%04.f_%3.3f-%3.3f-%3.3f-%3.3f.csv' % (ALTITUDE_START, ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
-    logfile = open(filename, 'w')
-    logfile.write('t,z\n')
 
     # Create PID controller
     pid  = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
@@ -70,6 +51,8 @@ if __name__ == '__main__':
         # to PID controller.
         t =  telem[0]
         z = -telem[9]
+
+        print('%+5.5f,%+3.3f' % (t, z))
 
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
@@ -95,12 +78,5 @@ if __name__ == '__main__':
         if abs(z) != 0 and abs(dzdt) < VARIO_TOLERANCE:
             break
 
-        # Write to log file
-        logfile.write('%3.3f,%3.3f\n' % (t,z))
-
     # Stop the simulation
     copter.stop()
-
-    logfile.close()
-
-    plot(filename)
