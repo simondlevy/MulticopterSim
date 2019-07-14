@@ -34,9 +34,6 @@ public class Takeoff {
         // Create a multicopter simulation
         Multicopter copter = new Multicopter("127.0.0.1", 5000, 5001);
 
-        // Create an array to hold motor values
-        double [] motorvals = new double [4];
-
         // Start the simulation
         copter.start();
 
@@ -50,6 +47,8 @@ public class Takeoff {
             // to PID controller.
             double t =  telem[0];
             z = -telem[9];
+
+            System.out.printf("u=%3.3f z=%3.3f dzdt=%e\n", u, z, dzdt);
 
             // Compute vertical climb rate as first difference of altitude over time
             if (t > tprev) {
