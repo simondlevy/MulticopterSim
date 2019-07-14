@@ -34,15 +34,61 @@ public class Takeoff {
         // Create a multicopter simulation
         Multicopter copter = new Multicopter("127.0.0.1", 5000, 5001);
 
+        // Create an array to hold motor values
+        double [] motorvals = new double [4];
+
         // Start the simulation
         copter.start();
 
-        double [] motorVals = new double[4];
-
+        // Loop till level-off
         while (true) {
-            break;
+
+            // Get vehicle state from sim
+            double [] telem = copter.getState();
+
+            // Extract time, altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
+            // to PID controller.
+            double t =  telem[0];
+            z = -telem[9];
+
+            // Compute vertical climb rate as first difference of altitude over time
+            if (t > tprev) {
+
+                // Use temporal first difference to compute vertical velocity
+                double dt = t - tprev;
+                dzdt = (z-zprev) / dt;
+
+                // Get correction from PID controller
+                u = pid.u(z, dzdt, dt);
+
+                // Constrain correction to [0,1] to represent motor value
+                u = Math.max(0., Math.min(1., u));
+            }
+
+            // Set motor values in sim
+            copter.setMotors(ones(u, 4));
+
+            // Update for first difference
+            zprev = z;
+            tprev = t;
+
+            // If altitude has leveled off, halt
+            if (Math.abs(z) != 0 && Math.abs(dzdt) < VARIO_TOLERANCE) {
+                break;
+            }
         }
 
+        // Stop simulation
         copter.stop();
+    }
+
+    // Helper function like Matlab/Numpy ones()
+    static double [] ones(double x, int n)
+    {
+        double []  v = new double [n];
+        for (int i=0; i<n; ++i) {
+            v[i] = x;
+        }
+        return v;
     }
 }

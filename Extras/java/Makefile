@@ -13,6 +13,9 @@ Multicopter.class: Multicopter.java
 AltitudePidController.class: AltitudePidController.java
 	javac AltitudePidController.java
 
+run: Takeoff.class 
+	java Takeoff
+
 test: Takeoff.class 
 	java Takeoff
 
