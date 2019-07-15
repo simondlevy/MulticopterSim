@@ -23,7 +23,7 @@
     <ClCompile Include="..\joytest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Source\MulticopterSim\joystick\JoystickWindows.cpp">
+    <ClCompile Include="..\..\..\Source\MainModule\joystick\JoystickWindows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

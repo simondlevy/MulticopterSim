@@ -405,10 +405,12 @@ class MAINMODULE_API Vehicle {
 
                     // Report FPS
                     if (_flightManager) {
+                        /*
+                        debug("Gimbal: %s", _gimbalManager->getMessage());
                         debug("FPS:  Main=%d    Flight=%d    Gimbal=%d", 
                                 (int)(++_count/currentTime), 
                                 (int)(_flightManager->getCount()/currentTime),
-                                (int)(_gimbalManager->getCount()/currentTime));
+                                (int)(_gimbalManager->getCount()/currentTime));*/
                     }
                 }
             }

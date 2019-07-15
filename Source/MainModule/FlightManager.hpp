@@ -77,8 +77,6 @@ class FFlightManager : public FThreadedWorker {
         FFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation) :
             FThreadedWorker()
         {
-            debug("construct");
-
              // Allocate array for motor values
             _motorvals = new double[dynamics->motorCount()];
 
@@ -152,7 +150,6 @@ class FFlightManager : public FThreadedWorker {
 
         ~FFlightManager(void)
         {
-            debug("destruct");
         }
 
         // Called by VehiclePawn::Tick() method to get current display pose

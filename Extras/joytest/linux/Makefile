@@ -8,7 +8,7 @@
 
 ALL = joytest 
 
-JOYDIR = ../../../Source/MulticopterSim/joystick
+JOYDIR = ../../../Source/MainModule/joystick
 
 all: $(ALL)
 
