@@ -15,6 +15,13 @@ DECLARE_STATIC_MESH(FProp2Statics, "Phantom/Prop.Prop", Prop2Statics)
 DECLARE_STATIC_MESH(FProp3Statics, "Phantom/Prop.Prop", Prop3Statics)
 DECLARE_STATIC_MESH(FProp4Statics, "Phantom/Prop.Prop", Prop4Statics)
 
+static void addProp(Vehicle::objects_t & objects, uint8_t index, int8_t x, int8_t y, UStaticMesh * propMesh)
+{
+    float d = 0.12;
+
+    Vehicle::addProp(objects, index, x*d, y*d, +.15, propMesh);
+}
+
 APhantomPawn::APhantomPawn()
 {
     Vehicle::objects_t objects = {0};
@@ -25,12 +32,12 @@ APhantomPawn::APhantomPawn()
 
     Vehicle::build(objects);
 
-    Vehicle::addProp(objects, 0, +0.12, +0.12, +0.15, Prop1Statics.mesh.Get());
-    Vehicle::addProp(objects, 1, -0.12, -0.12, +0.15, Prop2Statics.mesh.Get());
-    Vehicle::addProp(objects, 2, +0.12, -0.12, +0.15, Prop3Statics.mesh.Get());
-    Vehicle::addProp(objects, 3, -0.12, +0.12, +0.15, Prop4Statics.mesh.Get());
+    addProp(objects, 0, +1, +1, Prop1Statics.mesh.Get());
+    addProp(objects, 1, -1, -1, Prop2Statics.mesh.Get());
+    addProp(objects, 2, +1, -1, Prop3Statics.mesh.Get());
+    addProp(objects, 3, -1, +1, Prop4Statics.mesh.Get());
 
-    _vehicle = new QuadXAP(objects, _params);
+    _vehicle = new Vehicle(objects, new QuadXAPDynamics(_params));
 }
 
 APhantomPawn::~APhantomPawn()

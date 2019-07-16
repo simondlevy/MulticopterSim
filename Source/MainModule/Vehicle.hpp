@@ -210,13 +210,6 @@ class MAINMODULE_API Vehicle {
             videoManagersStop();
         }
 
-        static const FName makeName(const char * prefix, const uint8_t index, const char * suffix="")
-        {
-            char name[200];
-            SPRINTF(name, "%s%d%s", prefix, index+1, suffix);
-            return FName(name);
-        }
-
     public:
 
         // UE4 objects that must be built statically
@@ -307,18 +300,14 @@ class MAINMODULE_API Vehicle {
             objects.propellerMeshComponents[index] = pMeshComponent;
         }
 
-        static void addMotorAndProp(objects_t & objects, uint8_t index, float x, float y, const float pz, const float mo, const float mz, UStaticMesh * propMesh)
+        static const FName makeName(const char * prefix, const uint8_t index, const char * suffix="")
         {
-            UStaticMeshComponent * mMeshComponent = 
-                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Motor", index, "Mesh"));
-            mMeshComponent->SetStaticMesh(objects.motorMesh);
-            mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
-            mMeshComponent->AddRelativeLocation(FVector(x, y+mo, mz)*100); // m => cm
-
-            addProp(objects, index, x, y, pz, propMesh);
+            char name[200];
+            SPRINTF(name, "%s%d%s", prefix, index+1, suffix);
+            return FName(name);
         }
 
-         // Constructor
+        // Constructor
         Vehicle(const objects_t & objects, MultirotorDynamics * dynamics)
         {
 			_dynamics = dynamics;
@@ -491,8 +480,6 @@ class MAINMODULE_API Vehicle {
             (*capture)->TextureTarget = *renderTarget;
             (*capture)->FOVAngle = fov - 45;
         }
-
-    protected:
 
     private:
 

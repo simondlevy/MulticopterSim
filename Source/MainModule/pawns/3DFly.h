@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "pawns/QuadXAP.hpp"
+#include "dynamics/QuadXAP.hpp"
+#include "Vehicle.hpp"
 #include "GameFramework/Pawn.h"
 #include "3DFly.generated.h"
 
@@ -35,18 +36,20 @@ class MAINMODULE_API A3DFlyPawn : public APawn {
             10000                   // maxrpm
         }; 
 
-        QuadXAP::layout_t _layout = {
+        // Container for frame layout constants
+        typedef struct {
 
-            0.0375,  // width
-            0.0375,  // length
-            0.0000,  // center X
-            0.0000,  // center Y
-            0.0250,  // propeller Z
-           -0.0100,  // motor offset
-            0.0050   // motor Z
-        };
+            float wd;   // width
+            float ln;   // length
+            float cx;   // center X
+            float cy;   // center Y
+            float pz;   // propeller Z
+            float mo;   // motor offset
+            float mz;   // motor Z
 
-        QuadXAP * _vehicle;
+        } layout_t;
+
+        Vehicle * _vehicle;
         
     protected:
 

@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "pawns/QuadXAP.hpp"
+#include "dynamics/QuadXAP.hpp"
+#include "Vehicle.hpp"
 #include "GameFramework/Pawn.h"
 #include "Phantom.generated.h"
 
@@ -35,18 +36,7 @@ class MAINMODULE_API APhantomPawn : public APawn {
             15000                  
         }; 
 
-        QuadXAP::layout_t _layout = {
-
-            0.12,  // width
-            0.12,  // length
-            0.00,  // center X
-            0.00,  // center Y
-            0.15,  // propeller Z
-            0.00,  // motor offset
-            0.00   // motor Z
-        };
-
-        QuadXAP * _vehicle;
+        Vehicle * _vehicle;
         
     protected:
 

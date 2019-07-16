@@ -16,6 +16,18 @@ DECLARE_STATIC_MESH(FProp2Statics, "3DFly/Prop2.Prop2", Prop2Statics)
 DECLARE_STATIC_MESH(FProp3Statics, "3DFly/Prop3.Prop3", Prop3Statics)
 DECLARE_STATIC_MESH(FProp4Statics, "3DFly/Prop4.Prop4", Prop4Statics)
 
+static void addMotorAndProp(Vehicle::objects_t & objects, uint8_t index, int8_t x, int8_t y, UStaticMesh * propMesh)
+{
+    float d = 0.0375;
+
+    UStaticMeshComponent * mMeshComponent = objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(Vehicle::makeName("Motor", index, "Mesh"));
+    mMeshComponent->SetStaticMesh(objects.motorMesh);
+    mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
+    mMeshComponent->AddRelativeLocation(FVector(x*d, y*d-0.01, 0.005)*100); // m => cm
+
+    Vehicle::addProp(objects, index, x*d, y*d, +.025, propMesh);
+}
+
 A3DFlyPawn::A3DFlyPawn()
 {
     Vehicle::objects_t objects = {0};
@@ -24,9 +36,14 @@ A3DFlyPawn::A3DFlyPawn()
     objects.frameMesh = FrameStatics.mesh.Get();
     objects.motorMesh = MotorStatics.mesh.Get();
 
-    QuadX::build(objects, _layout, Prop1Statics.mesh.Get(), Prop2Statics.mesh.Get(), Prop3Statics.mesh.Get(), Prop4Statics.mesh.Get()); 
+    Vehicle::build(objects);
 
-    _vehicle = new QuadXAP(objects, _params);
+    addMotorAndProp(objects, 0, +1, +1, Prop1Statics.mesh.Get());
+    addMotorAndProp(objects, 1, -1, -1, Prop2Statics.mesh.Get());
+    addMotorAndProp(objects, 2, +1, -1, Prop3Statics.mesh.Get());
+    addMotorAndProp(objects, 3, -1, +1, Prop4Statics.mesh.Get());
+
+   _vehicle = new Vehicle(objects, new QuadXAPDynamics(_params));
 }
 
 A3DFlyPawn::~A3DFlyPawn()
