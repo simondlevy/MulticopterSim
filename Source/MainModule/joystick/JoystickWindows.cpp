@@ -17,7 +17,7 @@
 #include <shlwapi.h>
 #include "joystickapi.h"
 
-static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3)
+static void getAxes4(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3)
 {
 	axes[0] = (float)axis0;
 	axes[1] = (float)axis1;
@@ -25,10 +25,10 @@ static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD 
 	axes[3] = (float)axis3;
 }
 
-static void getAxes(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4)
+static void getAxes5(float axes[6], uint8_t & naxes, DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4)
 {
-	getAxes(axes, axis0, axis1, axis2, axis3);
-
+    naxes = 5;
+	getAxes4(axes, axis0, axis1, axis2, axis3);
     axes[4] = (float)axis4;
 }
 
@@ -91,37 +91,40 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 
     // axes: 0=Thr 1=Ael 2=Ele 3=Rud 4=Aux
 
+    uint8_t naxes = 4;
+
     switch (_productId) {
 
         case PRODUCT_SPEKTRUM:
-            getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwXpos, joyState.dwUpos);
+            getAxes5(axes, naxes, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwXpos, joyState.dwUpos);
+            axes[5] = joyState.dwButtons == 6 ? +1 : -1;
             break;
 
         case PRODUCT_TARANIS:
-            getAxes(axes, joyState.dwXpos, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwRpos);
+            getAxes5(axes, naxes, joyState.dwXpos, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwRpos);
             break;
 
         case PRODUCT_PS3_CLONE:      
         case PRODUCT_PS4:
-            getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos);
+            getAxes4(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos);
             break;
 
         case PRODUCT_F310:
-            getAxes(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos);
+            getAxes4(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos);
             break;
 
         case PRODUCT_XBOX360:  
         case PRODUCT_XBOX360_CLONE:
         case PRODUCT_XBOX360_CLONE2:
-            getAxes(axes, joyState.dwYpos, joyState.dwUpos, joyState.dwRpos, joyState.dwXpos);
+            getAxes4(axes, joyState.dwYpos, joyState.dwUpos, joyState.dwRpos, joyState.dwXpos);
             break;
 
         case PRODUCT_EXTREMEPRO3D:  
-            getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos);
+            getAxes4(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos);
             break;
 
         case PRODUCT_INTERLINK:
-            getAxes(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos);
+            getAxes4(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos);
 			getAuxInterlink(axes, joyState.dwButtons, AX_AU1, AX_AU2, AUX1_MID);
             break;
 
@@ -131,7 +134,7 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
     }
 
     // Normalize the axes to demands to [-1,+1]
-    for (uint8_t k=0; k<4; ++k) {
+    for (uint8_t k=0; k<naxes; ++k) {
         axes[k] = axes[k] / 32767 - 1;
     }
 
