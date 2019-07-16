@@ -75,6 +75,8 @@ class SimReceiver : public hf::Receiver {
 
     void readRawvals(void)
     {
+        // Invert yaw demand (because it will be inverted again in Hackflight)
+        rawvals[3] *= -1;
     }
 
     Joystick::error_t update(void)
