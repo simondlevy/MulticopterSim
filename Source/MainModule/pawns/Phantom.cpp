@@ -20,9 +20,15 @@ APhantomPawn::APhantomPawn()
     Vehicle::objects_t objects = {0};
 
     objects.pawn = this;
+
     objects.frameMesh = FrameStatics.mesh.Get();
 
-    QuadX::build(objects, _layout, Prop1Statics.mesh.Get(), Prop2Statics.mesh.Get(), Prop3Statics.mesh.Get(), Prop4Statics.mesh.Get()); 
+    Vehicle::build(objects);
+
+    Vehicle::addProp(objects, 0, +0.12, +0.12, +0.15, Prop1Statics.mesh.Get());
+    Vehicle::addProp(objects, 1, -0.12, -0.12, +0.15, Prop2Statics.mesh.Get());
+    Vehicle::addProp(objects, 2, +0.12, -0.12, +0.15, Prop3Statics.mesh.Get());
+    Vehicle::addProp(objects, 3, -0.12, +0.12, +0.15, Prop4Statics.mesh.Get());
 
     _vehicle = new QuadXAP(objects, _params);
 }
