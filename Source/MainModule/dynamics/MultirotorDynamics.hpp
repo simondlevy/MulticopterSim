@@ -279,11 +279,11 @@ class MultirotorDynamics {
                     /* z'      */ _x[STATE_Z_DOT],
                     /* z''     */ netz,
                     /* phi'    */ phidot,
-                    /* phi''   */ psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _p.l/_p.Ix*_U2,
+                    /* phi''   */ psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _U2/_p.Ix,
                     /* theta'  */ thedot,
-                    /* theta'' */ -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _p.l/_p.Iy*_U3), 
+                    /* theta'' */ -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _U3/_p.Iy),
                     /* psi'    */ psidot,
-                    /* psi''   */ thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _p.l/_p.Iz*_U4,
+                    /* psi''   */ thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _U4/_p.Iz,
                 };
 
                 // Compute state as first temporal integral of first temporal derivative
@@ -321,8 +321,8 @@ class MultirotorDynamics {
             }
 
             // Use the squared Omegas to implement the rest of Eqn. 6
-            _U2 = _p.b * u2(_omegas);
-            _U3 = _p.b * u3(_omegas);
+            _U2 = _p.l*_p.b * u2(_omegas);
+            _U3 = _p.l*_p.b * u3(_omegas);
             _U4 = _p.d * u4(_omegas);
         }
 

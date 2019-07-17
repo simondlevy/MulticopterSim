@@ -31,20 +31,22 @@ class OctoXAPDynamics : public MultirotorDynamics {
     protected:
 
         // MultirotorDynamics method overrides
+		
+		// roll right
+		virtual double u2(double * o) override
+		{
+			//       [2         5         6         7]     - [  1         3         4         8]
+			return (C1*o[1] + C1*o[4] + C2*o[5] + C2*o[6]) - (C1*o[0] + C2*o[2] + C1*o[3] + C2*o[7]);
+		}
 
-        // roll right
-        virtual double u2(double * o) override
-        {
-            //       [2      5      6      7]  -   [1      3      4      8]
-            return (o[1] + o[4] + o[5] + o[6]) - (o[0] + o[2] + o[3] + o[7]);
-        }
+		// pitch forward
+		virtual double u3(double * o) override
+		{
+			//       [ 2        4         6         8]   -   [  1         3         5         7]
+			return (C2*o[1] + C2*o[3] + C1*o[5] + C1*o[7]) - (C2*o[0] + C1*o[2] + C2*o[4] + C1*o[6]);
+		}
 
-        // pitch forward
-        virtual double u3(double * o) override
-        {
-            //       [2      4      6      8]  -   [1      3      5      7]
-            return (o[1] + o[3] + o[5] + o[7]) - (o[0] + o[2] + o[4] + o[6]);
-        }
+
 
         // yaw clockwise
         virtual double u4(double * o) override
@@ -60,5 +62,10 @@ class OctoXAPDynamics : public MultirotorDynamics {
             const int8_t dir[8] = {+1, +1, -1, -1, -1, -1, +1, +1};
             return dir[i];
         }
+
+    private:
+
+        static constexpr double C1 = 0.382680;
+        static constexpr double C2 = 0.923879;
 
 }; // class OctoXAP
