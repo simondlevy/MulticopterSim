@@ -19,10 +19,10 @@ class TwoWayUdp {
         
     public:
 
-        TwoWayUdp(const char * host, const short port_in, const short port_out) 
+        TwoWayUdp(const char * host, const short client_port, const short server_port) 
         {
-            _client = new UdpClientSocket(host, port_in);
-            _server = new UdpServerSocket(port_out);
+            _client = new UdpClientSocket(host, client_port);
+            _server = new UdpServerSocket(server_port);
         }
 
         ~TwoWayUdp()
