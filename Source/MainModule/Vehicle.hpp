@@ -93,6 +93,8 @@ class MAINMODULE_API Vehicle {
         // A hack to avoid accessing kinematics before dynamics thread is ready
         uint32_t _count = 0;
 
+        uint32_t _restarts = 0;
+
 #ifdef _USE_OPENCV
         // Threaded worker for managing video from camera
         class FVideoManager * _videoManager1 = NULL;
@@ -137,7 +139,7 @@ class MAINMODULE_API Vehicle {
             bool flying = _flightManager->getKinematics(location, rotation, _motorvals);
 
             if (flying) {
-                //location.Z = 500; // XXX stay up in the air for now, to test gimbal
+        
                 _objects.pawn->SetActorLocation(location);
                 _objects.pawn->SetActorRotation(rotation);
 
@@ -193,6 +195,8 @@ class MAINMODULE_API Vehicle {
         // Flight management thread
         void startThreadedWorkers(void)
         {
+            debug("start: %d", _restarts++);
+
             extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
             _flightManager = createFlightManager(_dynamics, _startLocation, _startRotation);
 
@@ -351,6 +355,8 @@ class MAINMODULE_API Vehicle {
                 _startTime = FPlatformTime::Seconds();
                 _count = 0;
 
+                _restarts = 0;
+
                 // Start the audio for the propellers Note that because the
                 // Cue Asset is set to loop the sound, once we start playing the sound, it
                 // will play continiously...
@@ -394,6 +400,7 @@ class MAINMODULE_API Vehicle {
 
                     // Report FPS
                     if (_flightManager) {
+                        debug("%s", _flightManager->getMessage());
                         /*
                         debug("Gimbal: %s", _gimbalManager->getMessage());
                         debug("FPS:  Main=%d    Flight=%d    Gimbal=%d", 

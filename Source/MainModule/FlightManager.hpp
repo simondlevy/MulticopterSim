@@ -124,8 +124,10 @@ class FFlightManager : public FThreadedWorker {
             MultirotorDynamics::state_t state;
             _dynamics->getState(state);
 
-            // If we're airborne, we've crashed if we fall below ground level
-            if (state.airborne && (state.pose.location[2] > _zstart)) {
+            //dbgprintf("%+3.3f", state.inertialVel[2]);
+
+            // If we're airborne, we've crashed if we fall rapidly below ground level
+            if (state.airborne && (state.pose.location[2] > _zstart && state.inertialVel[2] > 0.1)) {
                 _crashed = true;
             }
 
