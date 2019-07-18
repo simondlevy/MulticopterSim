@@ -93,7 +93,7 @@ class MAINMODULE_API Vehicle {
         // A hack to avoid accessing kinematics before dynamics thread is ready
         uint32_t _count = 0;
 
-        uint32_t _restarts = 0;
+        uint32_t _starts = 0;
 
 #ifdef _USE_OPENCV
         // Threaded worker for managing video from camera
@@ -195,7 +195,7 @@ class MAINMODULE_API Vehicle {
         // Flight management thread
         void startThreadedWorkers(void)
         {
-            debug("start: %d", _restarts++);
+            _starts++;
 
             extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
             _flightManager = createFlightManager(_dynamics, _startLocation, _startRotation);
@@ -348,14 +348,13 @@ class MAINMODULE_API Vehicle {
             FString mapName = _objects.pawn->GetWorld()->GetMapName();
             _mapSelected = !mapName.Contains("Untitled");
 
-            if (_mapSelected) {
+            _starts = 0;
 
+            if (_mapSelected) {
 
                 // Reset FPS count
                 _startTime = FPlatformTime::Seconds();
                 _count = 0;
-
-                _restarts = 0;
 
                 // Start the audio for the propellers Note that because the
                 // Cue Asset is set to loop the sound, once we start playing the sound, it
@@ -398,10 +397,12 @@ class MAINMODULE_API Vehicle {
                     // Get a high-fidelity current time value from the OS
                     double currentTime = FPlatformTime::Seconds() - _startTime;
 
+                    debug("starts: %d", _starts);
+
                     // Report FPS
                     if (_flightManager) {
-                        debug("%s", _flightManager->getMessage());
                         /*
+                        debug("%s", _flightManager->getMessage());
                         debug("Gimbal: %s", _gimbalManager->getMessage());
                         debug("FPS:  Main=%d    Flight=%d    Gimbal=%d", 
                                 (int)(++_count/currentTime), 

@@ -59,7 +59,10 @@ class MultirotorDynamics {
         static constexpr double g  = 9.80665; // might want to allow this to vary!
         static constexpr double pi = 3.14159;
 
-        // State vector (see Eqn. 11)
+        // Maximum vertical descent rate (m/s) not considered a crash
+        static constexpr double MAX_DROP_RATE = 0.5;
+
+         // State vector (see Eqn. 11)
         double _x[12] = {0};
 
         // State vector position map
@@ -98,8 +101,8 @@ class MultirotorDynamics {
         // Flag for whether we're airborne
         bool _airborne = false;
 
-        // Takeoff altitude, for detecting a crash
-        double _zstart;
+        // Starting altitude for crash detection
+        double _zstart = 0;
 
         // Support for debugging
         char _message[200];
@@ -197,8 +200,6 @@ class MultirotorDynamics {
             double quaternion[4]; 
 
             pose_t pose;
-
-            bool airborne;
 
         } state_t;
 
@@ -330,8 +331,9 @@ class MultirotorDynamics {
          *  Gets current state
          *
          *  @param state data structure that will contain state
+         *  @return false if crashed, true otherwise
          */
-        void getState(state_t & state)
+        bool getState(state_t & state)
         {
 
             // Get most values directly from state vector
@@ -349,8 +351,26 @@ class MultirotorDynamics {
             // Convert Euler angles to quaternion
             eulerToQuaternion(state.pose.rotation, state.quaternion);
 
-            // This is useful to know
-            state.airborne  = _airborne;
+            // If airborne, check crash / land status
+            if (_airborne) {
+
+                // We've returned to the ground
+                if (state.pose.location[2] > _zstart) {
+
+                    _airborne = false;
+
+                    // Descending too fast: crashed!
+                    if (state.inertialVel[2] > MAX_DROP_RATE) {
+                        return false;
+                    }
+
+                    // A soft landing: set vertical velocity to zero
+                    state.inertialVel[2] = 0;
+                }
+            }
+
+            // No crash
+            return true;
         }
 
         // motor direction for animation

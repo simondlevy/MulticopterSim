@@ -19,7 +19,7 @@ class FFlightManager : public FThreadedWorker {
 
     private:
 
-        // Kinematics
+       // Kinematics
         MultirotorDynamics::pose_t _pose;
 
         // Current motor values from PID controller
@@ -28,9 +28,8 @@ class FFlightManager : public FThreadedWorker {
         // For computing deltaT
         double   _previousTime = 0;
 
-        // Did we hit the ground?  If we return to our starting altitude, yes.
+        // Flag for whether we've crashed and need to reset
         bool _crashed = false;
-        double _zstart = 0;
 
         /**
          * Flight-control method running repeatedly on its own thread.  
@@ -101,16 +100,13 @@ class FFlightManager : public FThreadedWorker {
             // For periodic update
             _previousTime = 0;
 
-            // No crash yet; we'll use initial altitude to track it
-            _zstart = _pose.location[2];
+            // No crash yet
             _crashed = false;
         }
         
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
         void performTask(double currentTime)
         {
-            //dbgprintf("%f", currentTime);
-
             double deltaT = currentTime - _previousTime;
 
             // Send current motor values to dynamics
@@ -120,16 +116,9 @@ class FFlightManager : public FThreadedWorker {
             _dynamics->update(deltaT);
 
             // Get vehicle state from dynamics.  We keep pose (location, rotation) in memory for use  in
-            // getKinematics() method
+            // getKinematics() method.   MultirotorDynamics::getState() returns false if the vehicle crashed.
             MultirotorDynamics::state_t state;
-            _dynamics->getState(state);
-
-            //dbgprintf("%+3.3f", state.inertialVel[2]);
-
-            // If we're airborne, we've crashed if we fall rapidly below ground level
-            if (state.airborne && (state.pose.location[2] > _zstart && state.inertialVel[2] > 0.1)) {
-                _crashed = true;
-            }
+            _crashed = !_dynamics->getState(state);
 
             // PID controller: update the flight manager (e.g., HackflightManager) with
             // the dynamics state, getting back the motor values
