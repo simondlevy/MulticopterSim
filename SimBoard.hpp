@@ -67,7 +67,7 @@ class SimBoard : public hf::Board {
             _currentTime = time;
 
             // Copy in quaternion
-            for (uint8_t j=0; j<motorCount; ++j) {
+            for (uint8_t j=0; j<4; ++j) {
                 _quat[j] = quat[j];
             }
 
@@ -77,7 +77,7 @@ class SimBoard : public hf::Board {
             }
 
             // Copy out motors
-            for (uint8_t j=0; j<4; ++j) {
+            for (uint8_t j=0; j<motorCount; ++j) {
                 motors[j] = _motors[j];
             }
         }
