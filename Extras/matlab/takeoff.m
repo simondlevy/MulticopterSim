@@ -6,10 +6,6 @@
 %
 % MIT License
 
-%javaaddpath('multicopter.jar')
-
-import Multicopter
-
 copter = Multicopter;
 
 copter.start
