@@ -21,5 +21,5 @@ your own user name.
 
 5. Hit F5 to launch MulticopterSim, then hit the play button.
 
-6. Launch Matlab, change your working directory to <b>MulticopterSim/Extras/matlab</b>, and run the <b>altitude_pid.m</b> 
+6. Launch Matlab, change your working directory to <b>MulticopterSim/Extras/matlab</b>, and run the <b>takeoff.m</b> 
 script.
