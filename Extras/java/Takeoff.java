@@ -35,18 +35,22 @@ public class Takeoff {
         // Start the simulation
         copter.start();
 
-        // Loop till level-off
+        // Loop until user hits the stop button
         while (true) {
 
             // Get vehicle state from sim
             double [] telem = copter.getState();
 
-            // Extract time, altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
-            // to PID controller.
+            // Extract time from state.  
             double t =  telem[0];
-            z = -telem[9];
 
-            System.out.printf("%3.3f,%+3.3f\n", t, z);
+            // Negative time means quit
+            if (t < 0) break;
+
+            //System.out.println(t);
+
+            //Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input to PID controller.
+            z = -telem[9];
 
             // Compute vertical climb rate as first difference of altitude over time
             if (t > tprev) {
@@ -68,6 +72,13 @@ public class Takeoff {
             // Update for first difference
             zprev = z;
             tprev = t;
+
+            try {
+                Thread.sleep(1);
+            }
+            catch (Exception e) {
+            }
+
         }
     }
 

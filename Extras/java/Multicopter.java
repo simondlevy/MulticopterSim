@@ -28,7 +28,7 @@ public class Multicopter {
         {
             _running = true;
 
-            while (_running) {
+            while (true) {
 
                 byte [] motorBytes = doublesToBytes(_motorVals);
 
@@ -41,13 +41,21 @@ public class Multicopter {
                     handleException(e);
                 }
 
+                byte [] telemetryBytes = new byte [8*_telemetry.length];
+
                 try {
-                    byte [] telemetryBytes = new byte[88];
-                    DatagramPacket telemetryPacket = new DatagramPacket(_telemetryBytes, telemetryBytes.length, _addr, _telemPort);
+                    DatagramPacket telemetryPacket = new DatagramPacket(telemetryBytes, telemetryBytes.length, _addr, _telemPort);
                     _telemSocket.receive(telemetryPacket);
                 }
                 catch (Exception e) {
                     handleException(e);
+                }
+
+                _telemetry = bytesToDoubles(telemetryBytes);
+
+                if (_telemetry[0] < 0) {
+                    _running = false;
+                    break;
                 }
 
                 yield();
@@ -58,27 +66,14 @@ public class Multicopter {
 
         } // run
 
-        public void halt()
+        public boolean isRunning()
         {
-            _running = false;
-
-            _motorVals[0] = -1;
-
-            byte [] motorBytes = doublesToBytes(_motorVals);
-
-            DatagramPacket motorPacket = new DatagramPacket(motorBytes, motorBytes.length, _addr, _motorPort);
-
-            try {
-                _motorSocket.send(motorPacket);
-            }
-                catch (Exception e) {
-                    handleException(e);
-                }
+            return _running;
         }
 
         public double [] getTelemetry()
         {
-            return bytesToDoubles(_telemetryBytes);
+            return  _telemetry;
         }
 
         // Adapted from view-source:https://stackoverflow.com/questions/2905556/how-can-i-convert-a-byte-array-into-a-double-and-back
@@ -142,7 +137,7 @@ public class Multicopter {
 
             _running = false;
 
-            _telemetryBytes = new byte[88];
+            _telemetry = new double [10];
         }
 
         private int _motorPort;
@@ -150,7 +145,7 @@ public class Multicopter {
 
         private double [] _motorVals;
 
-        private byte [] _telemetryBytes;
+        private double [] _telemetry;
 
         private boolean _running;
 
@@ -218,9 +213,9 @@ public class Multicopter {
     /**
       * Ends communication with simulator running on host.
       */
-     public void stop()
+    public boolean isRunning()
     {
-        _thread.halt();
+        return _thread.isRunning();
     }
 
     /**
