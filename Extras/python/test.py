@@ -2,6 +2,7 @@
 
 import socket
 import numpy as np
+from pidcontroller import AltitudePidController
 
 # Comms
 HOST = '127.0.0.1'
@@ -36,6 +37,8 @@ if __name__ == '__main__':
     telemSocket.bind((HOST, TELEM_PORT))
 
     lastError = 0
+    integralError  = 0
+    windupMax = 10
 
     while True:
 
@@ -56,14 +59,14 @@ if __name__ == '__main__':
             # Compute dzdt setpoint and error
             velTarget = (ALTITUDE_TARGET- z) * ALT_P
             velError = velTarget - dzdt
+            integralError = AltitudePidController._constrainAbs(integralError + velError * dt, windupMax)
 
             # Update error integral and error derivative
             deltaError = (velError - lastError) / dt if abs(lastError) > 0 else 0
-
             lastError = velError
 
             # Compute control u
-            u = VEL_P * velError + VEL_D * deltaError
+            u = VEL_P * velError + VEL_D * deltaError + VEL_I * integralError
 
             print('%+3.3f' % u)
 
