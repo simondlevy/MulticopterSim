@@ -22,18 +22,16 @@ class MAINMODULE_API APhantomPawn : public APawn {
 
         MultirotorDynamics::params_t _params = {
 
-            // Dynamics: Amir's calculations
-            5.30216718361085E-05,   // b
+            // Mostly estimated
+            5.30216718361085E-06,   // b
             2.23656692806239E-06,   // d
-            16.47,                  // m
-            0.6,                    // l
+            1.380,                  // m  // https://www.dji.com/phantom-4/info
+            0.175,                  // l  // ditto
             2,                      // Ix
             2,                      // Iy
             3,                      // Iz
             3.08013E-04,            // Jr
-
-            // maxrpm, estimated
-            15000
+            15000                   // maxrpm
         };
 
         Vehicle * _vehicle;
