@@ -2,18 +2,21 @@
 
 import socket
 import numpy as np
-from pidcontroller import AltitudePidController
+
+# Comms
+HOST = '127.0.0.1'
+MOTOR_PORT = 5000
+TELEM_PORT = 5001
 
 # Target params
-ALTITUDE_START  = 0
 ALTITUDE_TARGET = 10
-VARIO_TOLERANCE = .01 # level-off velocity
+VARIO_TOLERANCE = .05
 
 # PID params
-ALT_P = 1.25
-VEL_P = 1.5
-VEL_I = 1.0
-VEL_D = 0.05
+ALT_P = 1.0
+VEL_P = 1.0
+VEL_I = 0
+VEL_D = 0
 
 def makesock():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -23,22 +26,16 @@ def makesock():
 if __name__ == '__main__':
 
     # initial conditions
-    z = 0
     zprev = 0
     tprev = 0
-    dzdt = 0
-    u = 0
-
-    # Create PID controller
-    pid  = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
 
     motorSocket = makesock()
 
     telemSocket = makesock()
 
-    telemSocket.bind(('127.0.0.1', 5001))
+    telemSocket.bind((HOST, TELEM_PORT))
 
-    u = 0
+    lastError = 0
 
     while True:
 
@@ -49,8 +46,6 @@ if __name__ == '__main__':
         t =  telem[0]
         z = -telem[9]
 
-        print('%+5.5f,%+3.3f,%+3.3f,%+3.3f' % (t, u, z, dzdt))
-
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
 
@@ -58,11 +53,26 @@ if __name__ == '__main__':
             dt = t - tprev
             dzdt = (z-zprev) / dt
 
-            # Get correction from PID controller
-            u = pid.u(z, dzdt, dt)
+            # Compute dzdt setpoint and error
+            velTarget = (ALTITUDE_TARGET- z) * ALT_P
+            velError = velTarget - dzdt
+
+            # Update error integral and error derivative
+            deltaError = (velError - lastError) / dt if abs(lastError) > 0 else 0
+
+            lastError = velError
+
+            # Compute control u
+            u = VEL_P * velError + VEL_D * deltaError
+
+            print('%+3.3f' % u)
 
             # Constrain correction to [0,1] to represent motor value
             u = max(0, min(1, u))
-     
-        motorSocket.sendto(np.ndarray.tobytes(u*np.ones(4)), ('127.0.0.1', 5000))
 
+            #print('%5.5f,%5.5f,%+3.3f,%+3.3f,%+3.3f' % (t, dt, u, z, dzdt))
+
+        tprev = t
+        zprev = z
+     
+        motorSocket.sendto(np.ndarray.tobytes(u*np.ones(4)), (HOST, MOTOR_PORT))
