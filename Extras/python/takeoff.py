@@ -11,16 +11,14 @@ import numpy as np
 from pidcontroller import AltitudePidController
 from multicopter import Multicopter
 
-# Target params
-ALTITUDE_START  = 0
+# Target 
 ALTITUDE_TARGET = 10
-VARIO_TOLERANCE = .01 # level-off velocity
 
 # PID params
-ALT_P = 1.25
-VEL_P = 1.5
-VEL_I = 1.0
-VEL_D = 0.05
+ALT_P = 1.0
+VEL_P = 1.0
+VEL_I = 0
+VEL_D = 0
 
 if __name__ == '__main__':
 
@@ -72,10 +70,6 @@ if __name__ == '__main__':
         # Update for first difference
         zprev = z
         tprev = t
-
-        # If altitude has leveled off, halt
-        if abs(z) != 0 and abs(dzdt) < VARIO_TOLERANCE:
-            break
 
     # Stop the simulation
     copter.stop()
