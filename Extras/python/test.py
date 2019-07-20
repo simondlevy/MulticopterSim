@@ -36,9 +36,8 @@ if __name__ == '__main__':
 
     telemSocket.bind((HOST, TELEM_PORT))
 
-    lastError = 0
-    integralError  = 0
-    windupMax = 10
+    # Create a PID controller for altitude hold
+    pid = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
 
     while True:
 
@@ -56,25 +55,13 @@ if __name__ == '__main__':
             dt = t - tprev
             dzdt = (z-zprev) / dt
 
-            # Compute dzdt setpoint and error
-            velTarget = (ALTITUDE_TARGET- z) * ALT_P
-            velError = velTarget - dzdt
-            integralError = AltitudePidController._constrainAbs(integralError + velError * dt, windupMax)
-
-            # Update error integral and error derivative
-            deltaError = (velError - lastError) / dt if abs(lastError) > 0 else 0
-            lastError = velError
-
             # Compute control u
-            u = VEL_P * velError + VEL_D * deltaError + VEL_I * integralError
-
-            print('%+3.3f' % u)
+            u = pid.u(z, dzdt, dt)
 
             # Constrain correction to [0,1] to represent motor value
             u = max(0, min(1, u))
 
-            #print('%5.5f,%5.5f,%+3.3f,%+3.3f,%+3.3f' % (t, dt, u, z, dzdt))
-
+        # Update previous time, altitude for PID controller
         tprev = t
         zprev = z
      
