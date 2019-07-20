@@ -7,11 +7,7 @@
  */
 
 #include <stdio.h>
-
-#include "../sockets/UdpServerSocket.hpp"
-#include "../sockets/UdpClientSocket.hpp"
 #include "../sockets/TwoWayUdp.hpp"
-
 #include <dynamics/QuadXAP.hpp>
 
 static const char * HOST           = "127.0.0.1";
@@ -54,8 +50,8 @@ int main(int argc, char ** argv)
 
             double motorvals[4] = {0};
 
-            if (!twoWayUdp.receive(motorvals, 32)) {
-                printf("Timed out; restarting\n");
+            if (!twoWayUdp.receive(motorvals, sizeof(motorvals))) {
+                fprintf(stderr, "Timed out; restarting\n");
                 break;
             }
 
@@ -80,7 +76,7 @@ int main(int argc, char ** argv)
             memcpy(&telemetry[7], &state.pose.location, 3*sizeof(double));
 
             twoWayUdp.send(telemetry, sizeof(telemetry));
-
+            
             time += DELTA_T;
         }
     }
