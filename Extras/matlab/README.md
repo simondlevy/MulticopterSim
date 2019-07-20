@@ -1,7 +1,7 @@
 # Controlling MulticopterSim from Matlab 
 This folder contains a simple example showing how you can control MulticopterSim from a Matlab session running on
 your computer or another computer.  It uses UDP sockets for sending motor values from your Matlab program 
-to the simualtor and for retrieving the vehicle state (time, gyrometer, quaternion, position) from the simulator.
+to the simualtor and for retrieving the vehicle state (time, gyrometer, accelerometer, position) from the simulator.
 
 To run the example, you should:
 
