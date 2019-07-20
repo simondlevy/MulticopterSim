@@ -9,15 +9,13 @@
 public class Takeoff {
 
     // Target params
-    static final double ALTITUDE_START  = 0;
     static final double ALTITUDE_TARGET = 10;
-    static final double VARIO_TOLERANCE = 2.e-5; //g level-off velocity
 
     // PID params
-    static final double ALT_P = 1.25;
-    static final double VEL_P = 1.5;
-    static final double VEL_I = 1.0;
-    static final double VEL_D = 0.05;
+    static final double ALT_P = 1.0;
+    static final double VEL_P = 1.0;
+    static final double VEL_I = 0;
+    static final double VEL_D = 0;
 
     public static void main(String [] args)
     {
@@ -32,7 +30,7 @@ public class Takeoff {
         AltitudePidController pid  = new AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D);
 
         // Create a multicopter simulation
-        Multicopter copter = new Multicopter("127.0.0.1", 5000, 5001);
+        Multicopter copter = new Multicopter();
 
         // Start the simulation
         copter.start();
@@ -70,15 +68,7 @@ public class Takeoff {
             // Update for first difference
             zprev = z;
             tprev = t;
-
-            // If altitude has leveled off, halt
-            if (Math.abs(z) != 0 && Math.abs(dzdt) < VARIO_TOLERANCE) {
-                break;
-            }
         }
-
-        // Stop simulation
-        copter.stop();
     }
 
     // Helper function like Matlab/Numpy ones()
