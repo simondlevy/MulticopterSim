@@ -7,6 +7,7 @@ Copyright (C) 2019 Simon D. Levy
 MIT License
 '''
 
+from time import sleep
 import numpy as np
 from pidcontroller import AltitudePidController
 from multicopter import Multicopter
@@ -38,18 +39,21 @@ if __name__ == '__main__':
     # Start the simulation
     copter.start()
 
-    # Loop forever
-    while copter.isRunning():
+    # Loop until user hits the stop button
+    while True:
 
         # Get vehicle state from sim
         telem = copter.getState()
 
-        # Extract time, altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
-        # to PID controller.
+        # Extract time from state
         t =  telem[0]
-        z = -telem[9]
 
-        print('%+5.5f,%+3.3f,%+3.3f,%+3.3f' % (t, u, z, dzdt))
+        # Negative time means user hit stop button
+        if t < 0: break
+
+        # Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
+        # to PID controller.
+        z = -telem[9]
 
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
@@ -70,3 +74,6 @@ if __name__ == '__main__':
         # Update for first difference
         zprev = z
         tprev = t
+
+        # Yield to Multicopter thread
+        sleep(.001)
