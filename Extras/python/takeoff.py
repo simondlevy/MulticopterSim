@@ -8,7 +8,6 @@ MIT License
 '''
 
 import numpy as np
-import matplotlib.pyplot as plt
 from pidcontroller import AltitudePidController
 from multicopter import Multicopter
 
