@@ -31,6 +31,7 @@ class Multicopter(object):
 
         self.telemSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.telemSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
+
         self.telemSocket.bind((host, telemetryPort))
 
         self.host = host
@@ -54,15 +55,13 @@ class Multicopter(object):
 
         self.thread.start()
 
-    def stop(self):
+    def isRunning(self):
         '''
-        Ends communication with simulator running on host.
+        Returns True if running, False otherwise
         '''
 
-        self.running = False
+        return self.running
 
-        self.motorSocket.close()
-        self.telemSocket.close()
 
     def getState(self):
         '''
@@ -81,9 +80,15 @@ class Multicopter(object):
 
     def _run(self):
 
-        while self.running:
+        while True:
 
             self.motorSocket.sendto(np.ndarray.tobytes(self.motorVals), (self.host, self.motorPort))
 
             data, _ = self.telemSocket.recvfrom(80)
             self.state = np.frombuffer(data)
+
+            if self.state[0] < 0:
+                self.motorSocket.close()
+                self.telemSocket.close()
+                self.running = False
+                break

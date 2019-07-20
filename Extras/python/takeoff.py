@@ -38,8 +38,8 @@ if __name__ == '__main__':
     # Start the simulation
     copter.start()
 
-    # Loop until level-off
-    while True:
+    # Loop forever
+    while copter.isRunning():
 
         # Get vehicle state from sim
         telem = copter.getState()
@@ -70,6 +70,3 @@ if __name__ == '__main__':
         # Update for first difference
         zprev = z
         tprev = t
-
-    # Stop the simulation
-    copter.stop()
