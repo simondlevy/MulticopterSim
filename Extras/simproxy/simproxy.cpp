@@ -10,6 +10,7 @@
 
 #include "../sockets/UdpServerSocket.hpp"
 #include "../sockets/UdpClientSocket.hpp"
+#include "../sockets/TwoWayUdp.hpp"
 
 #include <dynamics/QuadXAP.hpp>
 
@@ -17,7 +18,7 @@ static const char * HOST           = "127.0.0.1";
 static const short  MOTOR_PORT     = 5000;
 static const short  TELEM_PORT     = 5001;
 static const double DELTA_T        = 0.001;
-static const uint32_t TIMEOUT_MSEC = 5000;
+static const uint32_t TIMEOUT_MSEC = 1000;
 
 static MultirotorDynamics::params_t bigQuadParams = {
 
@@ -39,8 +40,7 @@ int main(int argc, char ** argv)
 {
     while (true) {
 
-        UdpServerSocket motorServer = UdpServerSocket(MOTOR_PORT, TIMEOUT_MSEC);
-        UdpClientSocket telemClient = UdpClientSocket(HOST, TELEM_PORT);
+        TwoWayUdp twoWayUdp = TwoWayUdp(HOST, TELEM_PORT, MOTOR_PORT, TIMEOUT_MSEC);
 
         QuadXAPDynamics quad = QuadXAPDynamics(bigQuadParams);
 
@@ -54,10 +54,13 @@ int main(int argc, char ** argv)
 
             double motorvals[4] = {0};
 
-            if (!motorServer.receiveData(motorvals, 32)) {
+            if (!twoWayUdp.receive(motorvals, 32)) {
                 printf("Timed out; restarting\n");
                 break;
             }
+
+            printf("%05f: %f %f %f %f\n", 
+                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
 
             quad.setMotors(motorvals);
 
@@ -76,17 +79,10 @@ int main(int argc, char ** argv)
             memcpy(&telemetry[4], &state.bodyAccel, 3*sizeof(double));
             memcpy(&telemetry[7], &state.pose.location, 3*sizeof(double));
 
-            telemClient.sendData(telemetry, sizeof(telemetry));
-
-            printf("%05f: %f %f %f %f\n", 
-                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
+            twoWayUdp.send(telemetry, sizeof(telemetry));
 
             time += DELTA_T;
         }
-
-        motorServer.closeConnection();
-        telemClient.closeConnection();
-
     }
 
     return 0;

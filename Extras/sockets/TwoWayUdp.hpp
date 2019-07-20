@@ -19,10 +19,10 @@ class TwoWayUdp {
         
     public:
 
-        TwoWayUdp(const char * host, const short client_port, const short server_port) 
+        TwoWayUdp(const char * host, const short client_port, const short server_port, uint32_t timeout_msec=0) 
         {
             _client = new UdpClientSocket(host, client_port);
-            _server = new UdpServerSocket(server_port);
+            _server = new UdpServerSocket(server_port, timeout_msec);
         }
 
         ~TwoWayUdp()
@@ -36,8 +36,8 @@ class TwoWayUdp {
             if (_client) _client->sendData(data, size);
         }
 
-        void receive(void * data, size_t size)
+        bool receive(void * data, size_t size)
         {
-            if (_server) _server->receiveData(data, size);
+            return _server ?  _server->receiveData(data, size) : false;
         }
 }; 
