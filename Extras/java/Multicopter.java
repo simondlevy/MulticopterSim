@@ -26,8 +26,6 @@ public class Multicopter {
 
         public void run()
         {
-            _running = true;
-
             while (true) {
 
                 byte [] motorBytes = doublesToBytes(_motorVals);
@@ -54,7 +52,6 @@ public class Multicopter {
                 _telemetry = bytesToDoubles(telemetryBytes);
 
                 if (_telemetry[0] < 0) {
-                    _running = false;
                     break;
                 }
 
@@ -65,11 +62,6 @@ public class Multicopter {
             _telemSocket.close();
 
         } // run
-
-        public boolean isRunning()
-        {
-            return _running;
-        }
 
         public double [] getTelemetry()
         {
@@ -135,8 +127,6 @@ public class Multicopter {
 
             _motorVals = new double [motorCount];
 
-            _running = false;
-
             _telemetry = new double [10];
         }
 
@@ -146,8 +136,6 @@ public class Multicopter {
         private double [] _motorVals;
 
         private double [] _telemetry;
-
-        private boolean _running;
 
         InetAddress _addr;
 
@@ -208,14 +196,6 @@ public class Multicopter {
     public void start()
     {
         _thread.start();
-    }
-
-    /**
-      * Ends communication with simulator running on host.
-      */
-    public boolean isRunning()
-    {
-        return _thread.isRunning();
     }
 
     /**

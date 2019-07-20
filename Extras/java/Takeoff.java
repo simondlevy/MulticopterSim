@@ -73,6 +73,7 @@ public class Takeoff {
             zprev = z;
             tprev = t;
 
+            // Yield to Multicopter thread
             try {
                 Thread.sleep(1);
             }
