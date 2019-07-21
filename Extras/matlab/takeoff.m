@@ -33,7 +33,6 @@ zprev = 0;
 tprev = 0;
 dzdt = 0;
 u = 0;
-lastError = 0;
     
 % Loop until user hits stop button
 while true
@@ -63,11 +62,7 @@ while true
         % Run the PID controller
         velTarget = (ALTITUDE_TARGET - z) * ALT_P;
         velError  = velTarget - dzdt;
-        deltaError = 0;
-        if abs(lastError) > 0
-            deltaError = (velError - lastError) / dt;
-        end
-        u = VEL_P * velError + VEL_D * deltaError;
+        u = VEL_P * velError;
         
         % Constrain correction to [0,1] to represent motor value
         u = max(0, min(1, u));    
