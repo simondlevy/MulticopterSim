@@ -14,13 +14,6 @@ ALTITUDE_TARGET = 10;
 ALT_P = 1.0; % Altitude set-point
 VEL_P = 1.0; % Climb rate
 
-% initial conditions
-z = 0;
-zprev = 0;
-tprev = 0;
-dzdt = 0;
-u = 0;
-
 % Create a multicopter simulation
 copter = Multicopter;
 
