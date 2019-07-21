@@ -19,10 +19,8 @@ your own user name.
 
 4. Build MulticopterSim as described [here](https://github.com/simondlevy/MulticopterSim#Windows).
 
-5. Edit the <b>classpath.txt</b> file, replacing <tt>owner</tt> with your username.
-
-6. Launch Matlab, change your working directory to <b>MulticopterSim/Extras/matlab</b>, and run the <b>takeoff.m</b> 
+5. Launch Matlab, change your working directory to <b>MulticopterSim/Extras/matlab</b>, and run the <b>takeoff.m</b> 
 script.
 
-7. Hit F5 to launch MulticopterSim, then hit the play button.
+6. Hit F5 to launch MulticopterSim, then hit the play button.
 
