@@ -97,7 +97,7 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 
         case PRODUCT_SPEKTRUM:
             getAxes5(axes, naxes, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwXpos, joyState.dwUpos);
-            axes[5] = joyState.dwButtons == 6 ? +1 : -1;
+            axes[5] = joyState.dwButtons & 0x01 ? -1 : +1;
             break;
 
         case PRODUCT_TARANIS:
@@ -146,6 +146,5 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 
 	return Joystick::ERROR_NOERROR;
 }
-
 
 #endif
