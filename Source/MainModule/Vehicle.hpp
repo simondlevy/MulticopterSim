@@ -33,10 +33,6 @@
 #include "Components/AudioComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
-#ifdef _USE_OPENCV
-#include "VideoManager.hpp"
-#endif
-
 #include <stdio.h>
 
 // Windows/Linux compatibility 
@@ -58,6 +54,11 @@
         structname() : mesh(TEXT("/Game/Flying/Meshes/" assetstr)) { } \
     };                                                                     \
     static structname objname;
+
+// Video manager support
+extern void videoManagersStart(UTextureRenderTarget2D * cameraRenderTarget1, UTextureRenderTarget2D * cameraRenderTarget2);
+extern void videoManagersStop(void);
+extern void videoManagersGrabImages(void);
 
 class MAINMODULE_API Vehicle {
 
@@ -94,35 +95,6 @@ class MAINMODULE_API Vehicle {
         uint32_t _count = 0;
 
         uint32_t _starts = 0;
-
-#ifdef _USE_OPENCV
-        // Threaded worker for managing video from camera
-        class FVideoManager * _videoManager1 = NULL;
-        class FVideoManager * _videoManager2 = NULL;
-
-        void videoManagerStart(void)
-        {
-            extern FVideoManager * createVideoManager(UTextureRenderTarget2D * cameraRenderTarget, uint8_t id);
-            _videoManager1 = createVideoManager(_objects.renderTarget1, 0);
-            _videoManager2 = createVideoManager(_objects.renderTarget2, 1);
-        }
-
-        void videoManagersStop(void)
-        {
-            _videoManager1 = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager1);
-            _videoManager2 = (FVideoManager *)FThreadedWorker::stopThreadedWorker(_videoManager2);
-        }
-
-        void videoManagerGrabImage(void)
-        {
-            _videoManager1->grabImage();
-            _videoManager2->grabImage();
-        }
-#else
-        void videoManagerStart(void) { }
-        void videoManagersStop(void) { }
-        void videoManagerGrabImage(void) { }
-#endif
 
         // Retrieves kinematics from dynamics computed in another thread
         bool getKinematics(void)
@@ -203,7 +175,7 @@ class MAINMODULE_API Vehicle {
             extern FGimbalManager * createGimbalManager(void);
             _gimbalManager = createGimbalManager();
 
-            videoManagerStart();
+            videoManagersStart(_objects.renderTarget1, _objects.renderTarget2);
         }        
 
         void stopThreadedWorkers(void)
@@ -391,8 +363,8 @@ class MAINMODULE_API Vehicle {
                     // Move gimbal and get Field-Of-View
                     setGimbal();
 
-                    // Grab image
-                    videoManagerGrabImage();
+                    // Grab image(s)
+                    videoManagersGrabImages();
 
                     // Get a high-fidelity current time value from the OS
                     double currentTime = FPlatformTime::Seconds() - _startTime;
