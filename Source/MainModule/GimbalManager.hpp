@@ -14,6 +14,8 @@ class FGimbalManager : public FThreadedWorker {
 
     private:
 
+        static constexpr float FOV_INIT = 70;
+
         float _roll  = 0;
         float _pitch = 0;
         float _yaw   = 0;
@@ -24,6 +26,10 @@ class FGimbalManager : public FThreadedWorker {
         // Constructor, called once on main thread
         FGimbalManager() : FThreadedWorker()
         {
+            _roll  = 0;
+            _pitch = 0;
+            _yaw   = 0;
+            _fov   = FOV_INIT;
         }
 
         // Called repeatedly on worker thread to process current image
