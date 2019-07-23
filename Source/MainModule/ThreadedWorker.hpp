@@ -113,9 +113,6 @@ class FThreadedWorker : public FRunnable {
 
                 // Increment count for FPS reporting
                 _count++;
-
-                // Wait a bit to allow other threads to run
-                FPlatformProcess::Sleep(.0001); 
             }
 
 			return 0;
