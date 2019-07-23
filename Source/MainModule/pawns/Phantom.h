@@ -22,7 +22,7 @@ class MAINMODULE_API APhantomPawn : public APawn {
 
         MultirotorDynamics::params_t _params = {
 
-            // Dynamics: Amir's calculations
+            // XXX These parameters are for a much larger vehicle
             5.30216718361085E-05,   // b
             2.23656692806239E-06,   // d
             16.47,                  // m
