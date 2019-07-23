@@ -110,7 +110,7 @@ class FFlightManager : public FThreadedWorker {
             double deltaT = currentTime - _previousTime;
 
             // Send current motor values to dynamics
-            _dynamics->setMotors(_motorvals);
+            _dynamics->setMotors(_motorvals, deltaT);
 
             // Update dynamics
             _dynamics->update(deltaT);

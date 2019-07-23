@@ -33,6 +33,8 @@
 #include <string.h>
 #include <math.h>
 
+//#include <MainModule\Debug.hpp>
+
 class MultirotorDynamics {
 
     public:
@@ -51,6 +53,7 @@ class MultirotorDynamics {
 
             uint16_t maxrpm;
 
+			double motors_acceleration;
         } params_t;
 
     private:
@@ -94,6 +97,7 @@ class MultirotorDynamics {
 
         // Radians per second for each motor
         double * _omegas = NULL;
+        double * _omegas2 = NULL;
 
         // Inertial-frame acceleration
         double _inertialAccel[3] = {0};
@@ -161,6 +165,7 @@ class MultirotorDynamics {
             _motorCount = motorCount;
 
             _omegas = new double[motorCount];
+            _omegas2 = new double[motorCount];
 
             _p.b = params.b;
             _p.d = params.d;
@@ -172,6 +177,8 @@ class MultirotorDynamics {
             _p.Jr = params.Jr;
 
             _p.maxrpm = params.maxrpm;
+
+			_p.motors_acceleration = params.motors_acceleration;
 
             for (uint8_t i=0; i<12; ++i) {
                 _x[i] = 0;
@@ -209,6 +216,7 @@ class MultirotorDynamics {
         virtual ~MultirotorDynamics(void)
         {
             delete _omegas;
+            delete _omegas2;
         }
 
         /** 
@@ -304,11 +312,29 @@ class MultirotorDynamics {
          *
          * @param motorvals in interval [0,1]
          */
-        void setMotors(double * motorvals) 
+        void setMotors(double * motorvals, double deltaT)
         {
+			//sprintf(_message, "dt: %f", deltaT);
+			//debug("dt: %f", deltaT);
             // Convert the  motor values to radians per second
-            for (unsigned int i=0; i<_motorCount; ++i) {
-                _omegas[i] = motorvals[i] * _p.maxrpm * pi / 30;
+           for (unsigned int i=0; i<_motorCount; ++i) {
+			   /*
+                double cmd = motorvals[i] * _p.maxrpm * pi / 30; //rad/s
+				
+				double acc_d = (cmd - _omegas[i]) / deltaT;
+
+				if (acc_d > _p.motors_acceleration) {
+					_omegas[i] += _p.motors_acceleration * deltaT;
+				}
+				else if (acc_d < -_p.motors_acceleration) {
+					_omegas[i] -= _p.motors_acceleration * deltaT;
+				}
+				else {
+					_omegas[i] = cmd;
+				}
+				*/
+
+				_omegas[i] = motorvals[i] * _p.maxrpm * pi / 30; //rad/s
             }
 
             // Compute overall torque from omegas before squaring
@@ -317,14 +343,14 @@ class MultirotorDynamics {
             // Overall thrust is sum of squared omegas
             _U1 = 0;
             for (unsigned int i=0; i<_motorCount; ++i) {
-                _omegas[i] *= _omegas[i];
-                _U1 +=  _p.b * _omegas[i];
+                _omegas2[i] = _omegas[i]* _omegas[i];
+                _U1 +=  _p.b * _omegas2[i];
             }
 
             // Use the squared Omegas to implement the rest of Eqn. 6
-            _U2 = _p.l*_p.b * u2(_omegas);
-            _U3 = _p.l*_p.b * u3(_omegas);
-            _U4 = _p.d * u4(_omegas);
+            _U2 = _p.l*_p.b * u2(_omegas2);
+            _U3 = _p.l*_p.b * u3(_omegas2);
+            _U4 = _p.d * u4(_omegas2);
         }
 
         /*
