@@ -33,8 +33,10 @@ class MAINMODULE_API A3DFlyPawn : public APawn {
             0.03,                   // Iz
             3.08E-04,               // Jr
             
-            10000                   // maxrpm
-        }; 
+            10000,                  // maxrpm
+
+            0                       // XXX motor acceleration }; 
+         };
 
         // Container for frame layout constants
         typedef struct {

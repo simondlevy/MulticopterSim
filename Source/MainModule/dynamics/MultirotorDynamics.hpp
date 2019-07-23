@@ -54,6 +54,7 @@ class MultirotorDynamics {
             uint16_t maxrpm;
 
 			double motors_acceleration;
+
         } params_t;
 
     private:
@@ -318,6 +319,7 @@ class MultirotorDynamics {
 			//debug("dt: %f", deltaT);
             // Convert the  motor values to radians per second
            for (unsigned int i=0; i<_motorCount; ++i) {
+
 			   /*
                 double cmd = motorvals[i] * _p.maxrpm * pi / 30; //rad/s
 				
@@ -343,7 +345,7 @@ class MultirotorDynamics {
             // Overall thrust is sum of squared omegas
             _U1 = 0;
             for (unsigned int i=0; i<_motorCount; ++i) {
-                _omegas2[i] = _omegas[i]* _omegas[i];
+                _omegas2[i] = _omegas[i] * _omegas[i];
                 _U1 +=  _p.b * _omegas2[i];
             }
 
