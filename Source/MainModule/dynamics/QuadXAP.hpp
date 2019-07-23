@@ -43,7 +43,7 @@ class QuadXAPDynamics : public MultirotorDynamics {
         // yaw cw
         virtual double u4(double * o) override
         {
-            return (o[2] + o[3]) - (o[0] + o[1]);
+            return (o[0] + o[1]) - (o[2] + o[3]);
         }
 
         // motor direction for animation
