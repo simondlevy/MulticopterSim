@@ -186,6 +186,22 @@ class MAINMODULE_API Vehicle {
             videoManagersStop();
         }
 
+        void reportStatus(void)
+        {
+            // Get a high-fidelity current time value from the OS
+            double currentTime = FPlatformTime::Seconds() - _startTime;
+
+            // Un-comment this to track the number of (re)starts
+            //debug("starts: %d", _starts);
+
+            // Report FPS
+            if (_flightManager) {
+
+                debug("FPS:  Main=%d    Flight=%d", (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
+                //debug("%s", _flightManager->getMessage());
+            }
+        }
+
     public:
 
         // UE4 objects that must be built statically
@@ -363,21 +379,12 @@ class MAINMODULE_API Vehicle {
                     // Move gimbal and get Field-Of-View
                     setGimbal();
 
-                    // Grab image(s)
+                    // Grab camera image(s)
                     videoManagersGrabImages();
 
-                    // Get a high-fidelity current time value from the OS
-                    double currentTime = FPlatformTime::Seconds() - _startTime;
+                    // Report status (optional)
+                    //reportStatus();
 
-					// Un-comment this to track the number of (re)starts
-                    //debug("starts: %d", _starts);
-
-                    // Report FPS
-                    if (_flightManager) {
-
-                        debug("FPS:  Main=%d    Flight=%d", (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
-						//debug("%s", _flightManager->getMessage());
-                    }
                 }
             }
         }
