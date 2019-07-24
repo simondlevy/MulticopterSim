@@ -353,8 +353,9 @@ class MAINMODULE_API Vehicle {
                 // Start video manager(s)
                 extern VideoManager * createVideoManager(UTextureRenderTarget2D * renderTarget, uint8_t id);
                 for (uint8_t i=0; i<_objects.cameraCount; ++i) {
-                    _objects.cameras[i].videoManager = createVideoManager(_objects.cameras[i].renderTarget, i);
-                    _objects.cameras[i].captureComponent->TextureTarget = _objects.cameras[i].renderTarget;
+                    camera_t * cam = &_objects.cameras[i];
+                    cam->videoManager = createVideoManager(cam->renderTarget, i);
+                    cam->captureComponent->TextureTarget = cam->renderTarget;
                 }
 
                 // Initialize threaded workers
