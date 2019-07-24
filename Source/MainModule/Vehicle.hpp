@@ -56,9 +56,9 @@
     static structname objname;
 
 // Video manager support
-extern void videoManagersStart(UTextureRenderTarget2D * cameraRenderTarget1, UTextureRenderTarget2D * cameraRenderTarget2);
-extern void videoManagersStop(void);
-extern void videoManagersGrabImages(void);
+extern void videoStart(UTextureRenderTarget2D * cameraRenderTarget1, UTextureRenderTarget2D * cameraRenderTarget2);
+extern void videoStop(void);
+extern void videoGrab(void);
 
 class MAINMODULE_API Vehicle {
 
@@ -174,16 +174,12 @@ class MAINMODULE_API Vehicle {
 
             extern FGimbalManager * createGimbalManager(void);
             _gimbalManager = createGimbalManager();
-
-            videoManagersStart(_objects.renderTarget1, _objects.renderTarget2);
         }        
 
         void stopThreadedWorkers(void)
         {
             _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
             _gimbalManager = (FGimbalManager *)FThreadedWorker::stopThreadedWorker(_gimbalManager);
-
-            videoManagersStop();
         }
 
         void reportStatus(void)
@@ -197,7 +193,7 @@ class MAINMODULE_API Vehicle {
             // Report FPS
             if (_flightManager) {
 
-                debug("FPS:  Main=%d    Flight=%d", (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
+                //debug("FPS:  Main=%d    Flight=%d", (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
                 //debug("%s", _flightManager->getMessage());
             }
         }
@@ -358,6 +354,8 @@ class MAINMODULE_API Vehicle {
 
                 // Initialize threaded workers
                 startThreadedWorkers();
+
+                videoStart(_objects.renderTarget1, _objects.renderTarget2);
             }
 
             else {
@@ -380,7 +378,7 @@ class MAINMODULE_API Vehicle {
                     setGimbal();
 
                     // Grab camera image(s)
-                    videoManagersGrabImages();
+                    videoGrab();
 
                     // Report status (optional)
                     //reportStatus();
@@ -404,6 +402,7 @@ class MAINMODULE_API Vehicle {
             if (_mapSelected) {
 
                 stopThreadedWorkers();
+                videoStop();
             }
         }
 

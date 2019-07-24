@@ -259,8 +259,6 @@ class MultirotorDynamics {
          */
         void update(double dt)
         {
-            debug("%e", dt);
-
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
