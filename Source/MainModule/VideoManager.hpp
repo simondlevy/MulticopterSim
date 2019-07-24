@@ -13,6 +13,7 @@
 #include "GameFramework/HUD.h"
 #include "GameFramework/HUD.h"
 #include "Engine/TextureRenderTarget2D.h"
+#include "Debug.hpp"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -32,6 +33,8 @@ class VideoManager {
         // RGB image sent to subclass for processing
         cv::Mat _image;
 
+        TArray<FColor> _renderTargetPixels;
+
     protected:
 
         // Constructor, called once on main thread
@@ -49,6 +52,8 @@ class VideoManager {
 
             // Get the render target resource for copying the image pixels
             _renderTargetResource = cameraRenderTarget->GameThread_GetRenderTargetResource();
+            
+            _renderTargetPixels.Init(FColor(0,0,0,255), rows*cols);
         }
 
         // Override this method for your video application
@@ -60,11 +65,10 @@ class VideoManager {
         void grabImage(void)
         {
             // Read the pixels from the RenderTarget
-            TArray<FColor> renderTargetPixels;
-            _renderTargetResource->ReadPixels(renderTargetPixels);
+            _renderTargetResource->ReadPixels(_renderTargetPixels);
 
             // Copy the RBGA pixels to the private image
-            FMemory::Memcpy(_rbga_image.data, renderTargetPixels.GetData(), renderTargetPixels.Num() * 4);
+            FMemory::Memcpy(_rbga_image.data, _renderTargetPixels.GetData(), _renderTargetPixels.Num() * 4);
 
             // Convert RGBA => RGB for public image
             cv::cvtColor(_rbga_image, _image, CV_RGBA2RGB);

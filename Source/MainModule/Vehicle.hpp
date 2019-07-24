@@ -198,9 +198,11 @@ class MAINMODULE_API Vehicle {
 
             UCameraComponent         * cameraComponent;
             USceneCaptureComponent2D * captureComponent;
-            UTextureRenderTarget2D   * renderTarget;
-            UTextureRenderTarget2D   * renderTargetNew;
+            UTextureRenderTarget2D   * renderTargetStatic;
+            UTextureRenderTarget2D   * renderTargetDynamic;
             VideoManager             * videoManager;
+            uint16_t                   rows;
+            uint16_t                   cols;
 
         } camera_t;
 
@@ -308,7 +310,9 @@ class MAINMODULE_API Vehicle {
             for (uint8_t i=0; i<objects.cameraCount; ++i) {
                 _objects.cameras[i].cameraComponent = objects.cameras[i].cameraComponent;
                 _objects.cameras[i].captureComponent = objects.cameras[i].captureComponent;
-                _objects.cameras[i].renderTarget = objects.cameras[i].renderTarget;
+                _objects.cameras[i].renderTargetStatic = objects.cameras[i].renderTargetStatic;
+                _objects.cameras[i].rows = objects.cameras[i].rows;
+                _objects.cameras[i].cols = objects.cameras[i].cols;
                 _objects.cameras[i].videoManager = NULL;
             }
 
@@ -350,12 +354,20 @@ class MAINMODULE_API Vehicle {
                 // Create circular queue for moving-average of motor values
                 _motorBuffer = new TCircularBuffer<float>(20);
 
-                // Start video manager(s)
+                // Create video manager(s)
                 extern VideoManager * createVideoManager(UTextureRenderTarget2D * renderTarget, uint8_t id);
                 for (uint8_t i=0; i<_objects.cameraCount; ++i) {
+
                     camera_t * cam = &_objects.cameras[i];
-                    cam->videoManager = createVideoManager(cam->renderTarget, i);
-                    cam->captureComponent->TextureTarget = cam->renderTarget;
+
+                    cam->renderTargetDynamic = UCanvasRenderTarget2D::CreateCanvasRenderTarget2D(GEngine->GetWorld(), UCanvasRenderTarget2D::StaticClass(), cam->cols, cam->rows);
+                    cam->renderTargetDynamic->ClearColor = FLinearColor::Black;
+                    cam->renderTargetDynamic->UpdateResource();
+
+                    UTextureRenderTarget2D * renderTarget = /*cam->renderTargetDynamic*/ cam->renderTargetStatic;
+
+                    cam->videoManager = createVideoManager(renderTarget, i);
+                    cam->captureComponent->TextureTarget = renderTarget;
                 }
 
                 // Initialize threaded workers
@@ -440,12 +452,13 @@ class MAINMODULE_API Vehicle {
             }
         }
 
-        static void addCamera(objects_t & objects, uint16_t cols, uint16_t rows, const WCHAR * renderTargetName, uint8_t id, float fov)
+        static void addCamera(objects_t & objects, uint16_t cols, uint16_t rows, float fov, const WCHAR * renderTargetName)
         {
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);
 
             camera_t * cam = &objects.cameras[objects.cameraCount];
+            uint8_t id = objects.cameraCount + 1;
 
             // Create a camera component 
             cam->cameraComponent = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
@@ -462,9 +475,16 @@ class MAINMODULE_API Vehicle {
             cam->captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             cam->captureComponent->FOVAngle = fov - 45;
 
-            // Get render target from asset in Contents
+            // Create a static render target
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
-            cam->renderTarget = cameraTextureObject.Object;
+            cam->renderTargetStatic = cameraTextureObject.Object;
+
+            // Another render target will be created dynamically, in BeginPlay()
+            cam->renderTargetDynamic = NULL;
+
+            // Store columns and rows for building render target dynamically
+            cam->cols = cols;
+            cam->rows = rows;
 
             objects.cameraCount++;
         }
