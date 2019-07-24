@@ -25,6 +25,7 @@
 #include "dynamics/MultirotorDynamics.hpp"
 
 #include "FlightManager.hpp"
+#include "VideoManager.hpp"
 #include "GimbalManager.hpp"
 
 #include "CoreMinimal.h"
@@ -54,11 +55,6 @@
         structname() : mesh(TEXT("/Game/Flying/Meshes/" assetstr)) { } \
     };                                                                     \
     static structname objname;
-
-// Video manager support
-extern void videoStart(UTextureRenderTarget2D * cameraRenderTarget1, UTextureRenderTarget2D * cameraRenderTarget2);
-extern void videoStop(void);
-extern void videoGrab(void);
 
 class MAINMODULE_API Vehicle {
 
@@ -200,9 +196,10 @@ class MAINMODULE_API Vehicle {
 
         typedef struct {
 
-            UCameraComponent         * camera;
-            USceneCaptureComponent2D * capture;
+            UCameraComponent         * cameraComponent;
+            USceneCaptureComponent2D * captureComponent;
             UTextureRenderTarget2D   * renderTarget;
+            VideoManager             * videoManager;
 
         } camera_t;
 
@@ -223,13 +220,7 @@ class MAINMODULE_API Vehicle {
 
             USpringArmComponent      * springArm;
 
-            UCameraComponent         * camera1;
-            USceneCaptureComponent2D * capture1;
-            UTextureRenderTarget2D   * renderTarget1;
-
-            UCameraComponent         * camera2;
-            USceneCaptureComponent2D * capture2;
-            UTextureRenderTarget2D   * renderTarget2;
+            camera_t                   cameras[MAX_CAMERAS];
 
             uint8_t                    cameraCount;
 
@@ -266,12 +257,6 @@ class MAINMODULE_API Vehicle {
             objects.springArm = objects.pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
             objects.springArm->SetupAttachment(objects.pawn->GetRootComponent());
             objects.springArm->TargetArmLength = 0.f; 
-
-            // Create cameras and support
-			addCamera(objects, &objects.camera1, &objects.capture1, &objects.renderTarget1, 640, 480,
-                TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_1"), 1, 135);   
-            addCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 640, 480,
-                TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_2"), 2, 90);
           }
 
         static void addMesh(const objects_t & objects, UStaticMesh * mesh, const char * name, 
@@ -319,13 +304,15 @@ class MAINMODULE_API Vehicle {
 
             _objects.springArm          = objects.springArm;
 
-            _objects.camera1            = objects.camera1;
-            _objects.capture1           = objects.capture1;
-            _objects.renderTarget1      = objects.renderTarget1;
+            for (uint8_t i=0; i<objects.cameraCount; ++i) {
+                _objects.cameras[i].cameraComponent = objects.cameras[i].cameraComponent;
+                _objects.cameras[i].captureComponent = objects.cameras[i].captureComponent;
+                _objects.cameras[i].renderTarget = objects.cameras[i].renderTarget;
+                _objects.cameras[i].videoManager = NULL;
+            }
 
-            _objects.capture2           = objects.capture2;
-            _objects.camera2            = objects.camera2;
-            _objects.renderTarget2      = objects.renderTarget2;
+            _objects.cameraCount = objects.cameraCount;
+
 
             for (uint8_t i=0; i<dynamics->motorCount(); ++i) {
                 _objects.propellerMeshComponents[i] = objects.propellerMeshComponents[i]; 
@@ -362,10 +349,14 @@ class MAINMODULE_API Vehicle {
                 // Create circular queue for moving-average of motor values
                 _motorBuffer = new TCircularBuffer<float>(20);
 
+                // Start video manager(s)
+                extern VideoManager * createVideoManager(UTextureRenderTarget2D * renderTarget, uint8_t id);
+                for (uint8_t i=0; i<_objects.cameraCount; ++i) {
+                    _objects.cameras[i].videoManager = createVideoManager(_objects.cameras[i].renderTarget, i);
+                }
+
                 // Initialize threaded workers
                 startThreadedWorkers();
-
-                videoStart(_objects.renderTarget1, _objects.renderTarget2);
             }
 
             else {
@@ -387,12 +378,13 @@ class MAINMODULE_API Vehicle {
                     // Move gimbal and get Field-Of-View
                     setGimbal();
 
-                    // Grab camera image(s)
-                    videoGrab();
+                    // Grab images
+                    for (uint8_t i=0; i<_objects.cameraCount; ++i) {
+                        _objects.cameras[i].videoManager->grabImage();
+                    }
 
                     // Report status (optional)
                     //reportStatus();
-
                 }
             }
         }
@@ -412,7 +404,12 @@ class MAINMODULE_API Vehicle {
             if (_mapSelected) {
 
                 stopThreadedWorkers();
-                videoStop();
+
+                // Free video managers
+                for (uint8_t i=0; i<_objects.cameraCount; ++i) {
+                    delete _objects.cameras[i].videoManager;
+                }
+
             }
         }
 
@@ -433,46 +430,42 @@ class MAINMODULE_API Vehicle {
 
             _objects.springArm->SetWorldRotation(rotation);
 
-            _objects.camera1->FieldOfView = fov;
-            _objects.capture1->FOVAngle = fov - 45;
-
-            _objects.camera2->FieldOfView = fov;
-            _objects.capture2->FOVAngle = fov - 45;
+            // XXX should we enable setting each camera's FOV independently?
+            for (uint8_t i=0; i<_objects.cameraCount; ++i) {
+                _objects.cameras[i].cameraComponent->FieldOfView = fov;
+                _objects.cameras[i].captureComponent->FOVAngle = fov - 45;
+            }
         }
 
-        static void addCamera(
-                objects_t & objects,
-                UCameraComponent ** camera, 
-                USceneCaptureComponent2D ** capture, 
-                UTextureRenderTarget2D ** renderTarget, 
-                uint16_t cols, 
-                uint16_t rows,
-                const WCHAR * renderTargetName,
-                uint8_t id, 
-                float fov)
+        static void addCamera(objects_t & objects, uint16_t cols, uint16_t rows, const WCHAR * renderTargetName, uint8_t id, float fov)
         {
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);
 
-            // Get render target from asset in Contents
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
-            *renderTarget = cameraTextureObject.Object;
+            camera_t * cam = &objects.cameras[objects.cameraCount];
 
             // Create a camera component 
-            *camera = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
-            (*camera) ->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-            (*camera)->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            (*camera)->SetWorldScale3D(cameraScale);
-            (*camera)->SetFieldOfView(fov);
-            (*camera)->SetAspectRatio((float)cols/rows);
+            cam->cameraComponent = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
+            cam->cameraComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
+            cam->cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            cam->cameraComponent->SetWorldScale3D(cameraScale);
+            cam->cameraComponent->SetFieldOfView(fov);
+            cam->cameraComponent->SetAspectRatio((float)cols/rows);
 
             // Create a scene-capture component and set its target to the render target
-            *capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
-            (*capture)->SetWorldScale3D(cameraScale);
-            (*capture)->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
-            (*capture)->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            (*capture)->TextureTarget = *renderTarget;
-            (*capture)->FOVAngle = fov - 45;
+            cam->captureComponent = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
+            cam->captureComponent->SetWorldScale3D(cameraScale);
+            cam->captureComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
+            cam->captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            cam->captureComponent->FOVAngle = fov - 45;
+
+            // Get render target from asset in Contents
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
+            cam->renderTarget = cameraTextureObject.Object;
+
+            cam->captureComponent->TextureTarget = cam->renderTarget;
+
+            objects.cameraCount++;
         }
 
     private:
