@@ -33,7 +33,7 @@
 #include <string.h>
 #include <math.h>
 
-//#include <MainModule\Debug.hpp>
+#include "../Debug.hpp"
 
 class MultirotorDynamics {
 
@@ -259,6 +259,8 @@ class MultirotorDynamics {
          */
         void update(double dt)
         {
+            debug("%e", dt);
+
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
@@ -320,39 +322,34 @@ class MultirotorDynamics {
             // Convert the  motor values to radians per second
            for (unsigned int i=0; i<_motorCount; ++i) {
 
-			   /*
                 double cmd = motorvals[i] * _p.maxrpm * pi / 30; //rad/s
-				
-				double acc_d = (cmd - _omegas[i]) / deltaT;
 
-				if (acc_d > _p.motors_acceleration) {
-					_omegas[i] += _p.motors_acceleration * deltaT;
-				}
-				else if (acc_d < -_p.motors_acceleration) {
-					_omegas[i] -= _p.motors_acceleration * deltaT;
-				}
-				else {
-					_omegas[i] = cmd;
-				}
-				*/
+                _omegas[i] = cmd;
 
-				_omegas[i] = motorvals[i] * _p.maxrpm * pi / 30; //rad/s
-            }
+                double acc_d = (cmd - _omegas[i]) / deltaT;
 
-            // Compute overall torque from omegas before squaring
-            _Omega = u4(_omegas);
+                if (acc_d > _p.motors_acceleration) {
+                    //_omegas[i] += _p.motors_acceleration * deltaT;
+                }
+                else if (acc_d < -_p.motors_acceleration) {
+                    //_omegas[i] -= _p.motors_acceleration * deltaT;
+                }
+           }
 
-            // Overall thrust is sum of squared omegas
-            _U1 = 0;
-            for (unsigned int i=0; i<_motorCount; ++i) {
-                _omegas2[i] = _omegas[i] * _omegas[i];
-                _U1 +=  _p.b * _omegas2[i];
-            }
+           // Compute overall torque from omegas before squaring
+           _Omega = u4(_omegas);
 
-            // Use the squared Omegas to implement the rest of Eqn. 6
-            _U2 = _p.l*_p.b * u2(_omegas2);
-            _U3 = _p.l*_p.b * u3(_omegas2);
-            _U4 = _p.d * u4(_omegas2);
+           // Overall thrust is sum of squared omegas
+           _U1 = 0;
+           for (unsigned int i=0; i<_motorCount; ++i) {
+               _omegas2[i] = _omegas[i] * _omegas[i];
+               _U1 +=  _p.b * _omegas2[i];
+           }
+
+           // Use the squared Omegas to implement the rest of Eqn. 6
+           _U2 = _p.l*_p.b * u2(_omegas2);
+           _U3 = _p.l*_p.b * u3(_omegas2);
+           _U4 = _p.d * u4(_omegas2);
         }
 
         /*

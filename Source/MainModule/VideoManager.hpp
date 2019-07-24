@@ -1,5 +1,5 @@
 /*
- * Abstract, threaded video-management class for MulticopterSim using OpenCV
+ * Abstract video-management class for MulticopterSim using OpenCV
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -14,14 +14,12 @@
 #include "GameFramework/HUD.h"
 #include "Engine/TextureRenderTarget2D.h"
 
-#include "ThreadedWorker.hpp"
-
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <stdio.h>
 
-class FVideoManager : public FThreadedWorker {
+class VideoManager {
 
     private:
 
@@ -34,14 +32,10 @@ class FVideoManager : public FThreadedWorker {
         // RGB image sent to subclass for processing
         cv::Mat _image;
 
-        // Helps avoid grabbing image before one is available
-        bool _ready = false;
-
     protected:
 
         // Constructor, called once on main thread
-        FVideoManager( UTextureRenderTarget2D * cameraRenderTarget) 
-            : FThreadedWorker()
+        VideoManager( UTextureRenderTarget2D * cameraRenderTarget) 
         {
             // Get the size of the render target
             uint16_t rows = cameraRenderTarget->SizeY;
@@ -55,18 +49,6 @@ class FVideoManager : public FThreadedWorker {
 
             // Get the render target resource for copying the image pixels
             _renderTargetResource = cameraRenderTarget->GameThread_GetRenderTargetResource();
-
-            // No image yet
-            _ready = false;
-        }
-
-        // Called repeatedly on worker thread to process current image
-        void performTask(double currentTime)
-        {
-            if (_ready) {
-
-                processImage(_image);
-            }
         }
 
         // Override this method for your video application
@@ -87,11 +69,12 @@ class FVideoManager : public FThreadedWorker {
             // Convert RGBA => RGB for public image
             cv::cvtColor(_rbga_image, _image, CV_RGBA2RGB);
 
-            _ready = true;
+            // Virtual method implemented in subclass
+            processImage(_image);
         }
 
-        ~FVideoManager()
+        ~VideoManager()
         {
         }
 
-}; // Class FVideoManager
+}; // Class VideoManager
