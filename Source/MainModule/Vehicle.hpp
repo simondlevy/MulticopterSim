@@ -198,6 +198,16 @@ class MAINMODULE_API Vehicle {
             }
         }
 
+        typedef struct {
+
+            UCameraComponent         * camera;
+            USceneCaptureComponent2D * capture;
+            UTextureRenderTarget2D   * renderTarget;
+
+        } camera_t;
+
+        static const uint8_t MAX_CAMERAS = 10; // arbitrary
+
     public:
 
         // UE4 objects that must be built statically
@@ -221,7 +231,7 @@ class MAINMODULE_API Vehicle {
             USceneCaptureComponent2D * capture2;
             UTextureRenderTarget2D   * renderTarget2;
 
-            UTextureRenderTarget2D   * renderTarget3;
+            uint8_t                    cameraCount;
 
         } objects_t;
 
@@ -258,9 +268,9 @@ class MAINMODULE_API Vehicle {
             objects.springArm->TargetArmLength = 0.f; 
 
             // Create cameras and support
-			createCamera(objects, &objects.camera1, &objects.capture1, &objects.renderTarget1,
+			addCamera(objects, &objects.camera1, &objects.capture1, &objects.renderTarget1, 640, 480,
                 TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_1"), 1, 135);   
-            createCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 
+            addCamera(objects, &objects.camera2, &objects.capture2, &objects.renderTarget2, 640, 480,
                 TEXT("/Game/Flying/RenderTargets/cameraRenderTarget_2"), 2, 90);
           }
 
@@ -430,16 +440,17 @@ class MAINMODULE_API Vehicle {
             _objects.capture2->FOVAngle = fov - 45;
         }
 
-        static void createCamera(
+        static void addCamera(
                 objects_t & objects,
                 UCameraComponent ** camera, 
                 USceneCaptureComponent2D ** capture, 
                 UTextureRenderTarget2D ** renderTarget, 
+                uint16_t cols, 
+                uint16_t rows,
                 const WCHAR * renderTargetName,
                 uint8_t id, 
                 float fov)
         {
-
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);
 
@@ -453,7 +464,7 @@ class MAINMODULE_API Vehicle {
             (*camera)->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             (*camera)->SetWorldScale3D(cameraScale);
             (*camera)->SetFieldOfView(fov);
-            (*camera)->SetAspectRatio((float)(*renderTarget)->SizeX / (*renderTarget)->SizeY);
+            (*camera)->SetAspectRatio((float)cols/rows);
 
             // Create a scene-capture component and set its target to the render target
             *capture = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
