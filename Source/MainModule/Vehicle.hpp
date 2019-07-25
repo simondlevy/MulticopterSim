@@ -198,11 +198,8 @@ class MAINMODULE_API Vehicle {
 
             UCameraComponent         * cameraComponent;
             USceneCaptureComponent2D * captureComponent;
-            UTextureRenderTarget2D   * renderTargetStatic;
-            UTextureRenderTarget2D   * renderTargetDynamic;
+            UTextureRenderTarget2D   * renderTarget;
             VideoManager             * videoManager;
-            uint16_t                   rows;
-            uint16_t                   cols;
 
         } camera_t;
 
@@ -310,9 +307,7 @@ class MAINMODULE_API Vehicle {
             for (uint8_t i=0; i<objects.cameraCount; ++i) {
                 _objects.cameras[i].cameraComponent = objects.cameras[i].cameraComponent;
                 _objects.cameras[i].captureComponent = objects.cameras[i].captureComponent;
-                _objects.cameras[i].renderTargetStatic = objects.cameras[i].renderTargetStatic;
-                _objects.cameras[i].rows = objects.cameras[i].rows;
-                _objects.cameras[i].cols = objects.cameras[i].cols;
+                _objects.cameras[i].renderTarget = objects.cameras[i].renderTarget;
                 _objects.cameras[i].videoManager = NULL;
             }
 
@@ -359,15 +354,8 @@ class MAINMODULE_API Vehicle {
                 for (uint8_t i=0; i<_objects.cameraCount; ++i) {
 
                     camera_t * cam = &_objects.cameras[i];
-
-                    cam->renderTargetDynamic = UCanvasRenderTarget2D::CreateCanvasRenderTarget2D(GEngine->GetWorld(), UCanvasRenderTarget2D::StaticClass(), cam->cols, cam->rows);
-                    cam->renderTargetDynamic->ClearColor = FLinearColor::Black;
-                    cam->renderTargetDynamic->UpdateResource();
-
-                    UTextureRenderTarget2D * renderTarget = /*cam->renderTargetDynamic*/ cam->renderTargetStatic;
-
+                    UTextureRenderTarget2D * renderTarget = cam->renderTarget;
                     cam->videoManager = createVideoManager(renderTarget, i);
-                    cam->captureComponent->TextureTarget = renderTarget;
                 }
 
                 // Initialize threaded workers
@@ -452,13 +440,19 @@ class MAINMODULE_API Vehicle {
             }
         }
 
-        static void addCamera(objects_t & objects, uint16_t cols, uint16_t rows, float fov, const WCHAR * renderTargetName)
+        static void addCamera(objects_t & objects, float fov, const WCHAR * renderTargetName)
         {
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);
 
+            // Grab the current camera structure
             camera_t * cam = &objects.cameras[objects.cameraCount];
             uint8_t id = objects.cameraCount + 1;
+
+            // Create a static render target.  This provides less flexibility than creating it dynamically,
+            // but acquiring the pixels seems to run twice as fast.
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
+            cam->renderTarget = cameraTextureObject.Object;
 
             // Create a camera component 
             cam->cameraComponent = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
@@ -466,7 +460,7 @@ class MAINMODULE_API Vehicle {
             cam->cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             cam->cameraComponent->SetWorldScale3D(cameraScale);
             cam->cameraComponent->SetFieldOfView(fov);
-            cam->cameraComponent->SetAspectRatio((float)cols/rows);
+            cam->cameraComponent->SetAspectRatio((float)cam->renderTarget->SizeX / cam->renderTarget->SizeY);
 
             // Create a scene-capture component and set its target to the render target
             cam->captureComponent = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
@@ -474,18 +468,9 @@ class MAINMODULE_API Vehicle {
             cam->captureComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
             cam->captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             cam->captureComponent->FOVAngle = fov - 45;
+            cam->captureComponent->TextureTarget = cam->renderTarget;
 
-            // Create a static render target
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
-            cam->renderTargetStatic = cameraTextureObject.Object;
-
-            // Another render target will be created dynamically, in BeginPlay()
-            cam->renderTargetDynamic = NULL;
-
-            // Store columns and rows for building render target dynamically
-            cam->cols = cols;
-            cam->rows = rows;
-
+            // Increment the camera count for next time
             objects.cameraCount++;
         }
 
