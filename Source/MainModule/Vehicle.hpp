@@ -102,6 +102,8 @@ class MAINMODULE_API Vehicle {
 
 		MultirotorDynamics * _dynamics = NULL;
 
+        int8_t _motorDirections[MAX_MOTORS];
+
         // Threaded worker for running flight control
         class FFlightManager * _flightManager = NULL;
 
@@ -167,11 +169,7 @@ class MAINMODULE_API Vehicle {
 
             // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
             if (motorsum > 0) {
-                static float rotation;
-                for (uint8_t i=0; i<_dynamics->motorCount(); ++i) {
-                    _objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * _dynamics->motorDirection(i) * 100, 0));
-                }
-                rotation++;
+                rotateProps(_objects, _motorDirections, _dynamics->motorCount());
             }
 
             // Add mean to circular buffer for moving average
@@ -327,6 +325,15 @@ class MAINMODULE_API Vehicle {
             objects.propellerMeshComponents[index] = pMeshComponent;
         }
 
+        static void rotateProps(objects_t & objects, int8_t * motorDirections, uint8_t motorCount)
+        {
+            static float rotation;
+            for (uint8_t i=0; i<motorCount; ++i) {
+                objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirections[i] * 100, 0));
+            }
+            rotation++;
+        }
+
         static const FName makeName(const char * prefix, const uint8_t index, const char * suffix="")
         {
             char name[200];
@@ -337,7 +344,7 @@ class MAINMODULE_API Vehicle {
         // Constructor
         Vehicle(const objects_t & objects, MultirotorDynamics * dynamics)
         {
-			_dynamics = dynamics;
+            _dynamics = dynamics;
 
             _objects.pawn               = objects.pawn;
             _objects.frameMesh          = objects.frameMesh;
@@ -360,6 +367,7 @@ class MAINMODULE_API Vehicle {
 
             for (uint8_t i=0; i<dynamics->motorCount(); ++i) {
                 _objects.propellerMeshComponents[i] = objects.propellerMeshComponents[i]; 
+                _motorDirections[i] = dynamics->motorDirection(i);
             }
         }        
 

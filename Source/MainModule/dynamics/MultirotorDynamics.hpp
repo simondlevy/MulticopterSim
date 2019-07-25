@@ -396,7 +396,7 @@ class MultirotorDynamics {
             return true;
         }
 
-        // motor direction for animation
+        // Motor direction for animation
         virtual int8_t motorDirection(uint8_t i) { (void)i; return 0; }
 
         /**
