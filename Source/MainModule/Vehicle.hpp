@@ -58,13 +58,47 @@
 
 class MAINMODULE_API Vehicle {
 
+    private: 
+        
+        // Arbitrary array limits supporting statically declared assets
+        static const uint8_t MAX_MOTORS = 20; 
+        static const uint8_t MAX_CAMERAS = 10; 
+
+        typedef struct {
+
+            UCameraComponent         * cameraComponent;
+            USceneCaptureComponent2D * captureComponent;
+            UTextureRenderTarget2D   * renderTarget;
+            VideoManager             * videoManager;
+
+        } camera_t;
+
+    public: 
+        
+        // UE4 objects that must be built statically
+        typedef struct {
+
+            APawn                    * pawn;
+            UStaticMesh              * frameMesh;
+            UStaticMesh              * motorMesh;
+            UStaticMeshComponent     * frameMeshComponent;
+            UStaticMeshComponent     * propellerMeshComponents[MAX_MOTORS];
+            USoundCue                * soundCue;
+            UAudioComponent          * audioComponent;
+
+            USpringArmComponent      * springArm;
+
+            camera_t                   cameras[MAX_CAMERAS];
+
+            uint8_t                    cameraCount;
+
+        } objects_t;
+
     private:
 
 		static constexpr float CAMERA_X = +20;
 		static constexpr float CAMERA_Y =   0;
 		static constexpr float CAMERA_Z = +30;
-
-        static const uint8_t MAX_MOTORS = 20; // silly but simple
 
 		MultirotorDynamics * _dynamics = NULL;
 
@@ -194,39 +228,49 @@ class MAINMODULE_API Vehicle {
             }
         }
 
-        typedef struct {
+        static void addCamera(objects_t & objects, float fov, const wchar_t * res)
+        {
+            // Use one-based indexing for asset names
+            uint8_t id = objects.cameraCount + 1;
 
-            UCameraComponent         * cameraComponent;
-            USceneCaptureComponent2D * captureComponent;
-            UTextureRenderTarget2D   * renderTarget;
-            VideoManager             * videoManager;
+            // Create name of render target asset
+            wchar_t renderTargetName[200];
+            swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), L"/Game/Flying/RenderTargets/renderTarget_%s_%d", res, id);  
 
-        } camera_t;
+            // Make the camera appear small in the editor so it doesn't obscure the vehicle
+            FVector cameraScale(0.1, 0.1, 0.1);
 
-        static const uint8_t MAX_CAMERAS = 10; // arbitrary
+            // Grab the current camera structure
+            camera_t * cam = &objects.cameras[objects.cameraCount];
 
-    public:
+            // Create a static render target.  This provides less flexibility than creating it dynamically,
+            // but acquiring the pixels seems to run twice as fast.
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
+            cam->renderTarget = cameraTextureObject.Object;
 
-        // UE4 objects that must be built statically
-        typedef struct {
+            // Create a camera component 
+            cam->cameraComponent = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
+            cam->cameraComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
+            cam->cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            cam->cameraComponent->SetWorldScale3D(cameraScale);
+            cam->cameraComponent->SetFieldOfView(fov);
+            cam->cameraComponent->SetAspectRatio((float)cam->renderTarget->SizeX / cam->renderTarget->SizeY);
 
-            APawn                    * pawn;
-            UStaticMesh              * frameMesh;
-            UStaticMesh              * motorMesh;
-            UStaticMeshComponent     * frameMeshComponent;
-            UStaticMeshComponent     * propellerMeshComponents[MAX_MOTORS];
-            USoundCue                * soundCue;
-            UAudioComponent          * audioComponent;
+            // Create a scene-capture component and set its target to the render target
+            cam->captureComponent = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
+            cam->captureComponent->SetWorldScale3D(cameraScale);
+            cam->captureComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
+            cam->captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            cam->captureComponent->FOVAngle = fov - 45;
+            cam->captureComponent->TextureTarget = cam->renderTarget;
 
-            USpringArmComponent      * springArm;
-
-            camera_t                   cameras[MAX_CAMERAS];
-
-            uint8_t                    cameraCount;
-
-        } objects_t;
+            // Increment the camera count for next time
+            objects.cameraCount++;
+        }
 
         // Static helpers
+
+    public:
         
         static void build(objects_t & objects)
         {
@@ -442,42 +486,17 @@ class MAINMODULE_API Vehicle {
 
         static void addCamera640x480(objects_t & objects, float fov)
         {
-            // Use one-based indexing for asset names
-            uint8_t id = objects.cameraCount + 1;
+            addCamera(objects, fov, L"640x480");
+        }
 
-            // Create name of render target asset
-            wchar_t renderTargetName[200];
-            swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), L"/Game/Flying/RenderTargets/renderTarget_640x480_%d", id);  
+        static void addCamera1280x720(objects_t & objects, float fov)
+        {
+            addCamera(objects, fov, L"1280x720");
+        }
 
-            // Make the camera appear small in the editor so it doesn't obscure the vehicle
-            FVector cameraScale(0.1, 0.1, 0.1);
-
-            // Grab the current camera structure
-            camera_t * cam = &objects.cameras[objects.cameraCount];
-
-            // Create a static render target.  This provides less flexibility than creating it dynamically,
-            // but acquiring the pixels seems to run twice as fast.
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
-            cam->renderTarget = cameraTextureObject.Object;
-
-            // Create a camera component 
-            cam->cameraComponent = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
-            cam->cameraComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-            cam->cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            cam->cameraComponent->SetWorldScale3D(cameraScale);
-            cam->cameraComponent->SetFieldOfView(fov);
-            cam->cameraComponent->SetAspectRatio((float)cam->renderTarget->SizeX / cam->renderTarget->SizeY);
-
-            // Create a scene-capture component and set its target to the render target
-            cam->captureComponent = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
-            cam->captureComponent->SetWorldScale3D(cameraScale);
-            cam->captureComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
-            cam->captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            cam->captureComponent->FOVAngle = fov - 45;
-            cam->captureComponent->TextureTarget = cam->renderTarget;
-
-            // Increment the camera count for next time
-            objects.cameraCount++;
+        static void addCamera1920x1080(objects_t & objects, float fov)
+        {
+            addCamera(objects, fov, L"1920x1080");
         }
 
     private:
