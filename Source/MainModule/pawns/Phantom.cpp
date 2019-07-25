@@ -1,5 +1,5 @@
 /*
-* Class implementation for pawn class in MulticopterSim
+* Class implementation for Phantom pawn in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
@@ -31,6 +31,9 @@ APhantomPawn::APhantomPawn()
     objects.frameMesh = FrameStatics.mesh.Get();
 
     Vehicle::build(objects);
+
+    // Add a camera
+	Vehicle::addCamera640x480(objects, 135);
 
     addProp(objects, 0, +1, +1, Prop1Statics.mesh.Get());
     addProp(objects, 1, -1, -1, Prop2Statics.mesh.Get());
