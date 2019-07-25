@@ -440,14 +440,20 @@ class MAINMODULE_API Vehicle {
             }
         }
 
-        static void addCamera(objects_t & objects, float fov, const WCHAR * renderTargetName)
+        static void addCamera640x480(objects_t & objects, float fov)
         {
+            // Use one-based indexing for asset names
+            uint8_t id = objects.cameraCount + 1;
+
+            // Create name of render target asset
+            wchar_t renderTargetName[200];
+            swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), L"/Game/Flying/RenderTargets/renderTarget_640x480_%d", id);  
+
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);
 
             // Grab the current camera structure
             camera_t * cam = &objects.cameras[objects.cameraCount];
-            uint8_t id = objects.cameraCount + 1;
 
             // Create a static render target.  This provides less flexibility than creating it dynamically,
             // but acquiring the pixels seems to run twice as fast.
