@@ -1,5 +1,5 @@
 /*
- * Abstract video-management class for MulticopterSim using OpenCV
+ * Abstract video-management class for MulticopterSim
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -15,10 +15,6 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "Debug.hpp"
 
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-
-#include <stdio.h>
 
 class VideoManager {
 
@@ -27,37 +23,31 @@ class VideoManager {
         // Access to camera's render target resource
         FRenderTarget * _renderTargetResource = NULL;
 
-        // RBGA image created from render target on main thread
-        cv::Mat _rbga_image;
-
-        // RGB image sent to subclass for processing
-        cv::Mat _image;
-
-        TArray<FColor> _renderTargetPixels;
+        // Byte array for RGBA image
+        uint8_t * _imageBytes = NULL;
 
     protected:
+
+        // Image size
+        uint16_t _rows = 0;
+        uint16_t _cols = 0;
 
         // Constructor, called once on main thread
         VideoManager( UTextureRenderTarget2D * cameraRenderTarget) 
         {
-            // Get the size of the render target
-            uint16_t rows = cameraRenderTarget->SizeY;
-            uint16_t cols = cameraRenderTarget->SizeX;
+            // compute the size of the image
+            _rows = cameraRenderTarget->SizeY;
+            _cols = cameraRenderTarget->SizeX;
 
-            // Create a private RBGA image for acquiring render target on main thread
-            _rbga_image = cv::Mat::zeros(rows, cols, CV_8UC4);
-
-            // Create a public OpenCV BGR image for uses by other classes
-            _image = cv::Mat::zeros(rows, cols, CV_8UC3);
+            // Create a byte array sufficient to hold the RGBA image
+            _imageBytes = new uint8_t [_rows*_cols*4];
 
             // Get the render target resource for copying the image pixels
             _renderTargetResource = cameraRenderTarget->GameThread_GetRenderTargetResource();
-            
-            _renderTargetPixels.Init(FColor(0,0,0,255), rows*cols);
         }
 
         // Override this method for your video application
-        virtual void processImage(cv::Mat image) = 0;
+        virtual void processImageBytes(uint8_t * bytes) { (void)bytes; }
 
     public:
 
@@ -65,20 +55,19 @@ class VideoManager {
         void grabImage(void)
         {
             // Read the pixels from the RenderTarget
-            _renderTargetResource->ReadPixels(_renderTargetPixels);
+            TArray<FColor> renderTargetPixels;
+            _renderTargetResource->ReadPixels(renderTargetPixels);
 
             // Copy the RBGA pixels to the private image
-            FMemory::Memcpy(_rbga_image.data, _renderTargetPixels.GetData(), _renderTargetPixels.Num() * 4);
-
-            // Convert RGBA => RGB for public image
-            cv::cvtColor(_rbga_image, _image, CV_RGBA2RGB);
+            FMemory::Memcpy(_imageBytes, renderTargetPixels.GetData(), _rows*_cols*4);
 
             // Virtual method implemented in subclass
-            processImage(_image);
+            processImageBytes(_imageBytes);
         }
 
         ~VideoManager()
         {
+            delete _imageBytes;
         }
 
 }; // Class VideoManager
