@@ -65,7 +65,7 @@ class VideoManager {
             processImageBytes(_imageBytes);
         }
 
-        ~VideoManager()
+        virtual ~VideoManager()
         {
             delete _imageBytes;
         }
