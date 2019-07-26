@@ -43,7 +43,7 @@ A3DFlyPawn::A3DFlyPawn()
     addMotorAndProp(objects, 2, +1, -1, Prop3Statics.mesh.Get());
     addMotorAndProp(objects, 3, -1, +1, Prop4Statics.mesh.Get());
 
-   _vehicle = new Vehicle(objects, new QuadXAPDynamics(_params), NULL);
+   _vehicle = new Vehicle(objects, new QuadXAPDynamics(_params));
 }
 
 A3DFlyPawn::~A3DFlyPawn()
@@ -61,7 +61,7 @@ void A3DFlyPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void A3DFlyPawn::BeginPlay()
 {
-    _vehicle->BeginPlay();
+    _vehicle->BeginPlay(NULL);
 
     Super::BeginPlay();
 }

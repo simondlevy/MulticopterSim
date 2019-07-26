@@ -149,20 +149,12 @@ class Vehicle {
             rotation.Pitch = FMath::RadiansToDegrees(pose.rotation[1]);
             rotation.Yaw =   FMath::RadiansToDegrees(pose.rotation[2]);
 
-            // If we crashed, restart flight manager
-            if (_dynamics->crashed()) {
-
-                stopFlightManager();
-                startFlightManager();
-
-                return false;
-            }
+            if (_dynamics->crashed()) return false;
 
             _objects.pawn->SetActorLocation(location);
             _objects.pawn->SetActorRotation(rotation);
 
             return true;
-
         }
 
         // Animation effects (sound, spinning props)
@@ -197,23 +189,6 @@ class Vehicle {
             // Use the mean motor value to modulate the pitch and voume of the propeller sound
             _objects.audioComponent->SetFloatParameter(FName("pitch"), smoothedMotorMean);
             _objects.audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
-        }
-
-
-        // Flight management thread
-        void startFlightManager(void)
-        {
-            _starts++;
-
-            extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics);
-
-            _flightManager = createFlightManager(_dynamics);
-
-        }        
-
-        void stopFlightManager(void)
-        {
-            _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
         }
 
         void reportStatus(void)
@@ -355,7 +330,7 @@ class Vehicle {
         }
 
         // Constructor
-        Vehicle(const objects_t & objects, MultirotorDynamics * dynamics, FFlightManager * flightManager)
+        Vehicle(const objects_t & objects, MultirotorDynamics * dynamics)
         {
             _dynamics = dynamics;
 
@@ -382,14 +357,18 @@ class Vehicle {
                 _objects.propellerMeshComponents[i] = objects.propellerMeshComponents[i]; 
                 _motorDirections[i] = dynamics->motorDirection(i);
             }
+
+            _flightManager = NULL;
         }        
 
         ~Vehicle(void) 
         {
         }
 
-        void BeginPlay()
+        void BeginPlay(FFlightManager * flightManager)
         {
+            _flightManager = flightManager;
+
             // Make sure a map has been selected
             FString mapName = _objects.pawn->GetWorld()->GetMapName();
             _mapSelected = !mapName.Contains("Untitled");
@@ -418,9 +397,6 @@ class Vehicle {
                     UTextureRenderTarget2D * renderTarget = cam->renderTarget;
                     cam->videoManager = createVideoManager(renderTarget, i);
                 }
-
-                // Initialize threaded workers
-                startFlightManager();
 
                 // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
                 FVector  startLocation = _objects.pawn->GetActorLocation();
@@ -479,8 +455,6 @@ class Vehicle {
         void EndPlay(void)
         {
             if (_mapSelected) {
-
-                stopFlightManager();
 
                 // Free video managers
                 for (uint8_t i=0; i<_objects.cameraCount; ++i) {
