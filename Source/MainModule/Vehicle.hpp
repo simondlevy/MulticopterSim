@@ -135,27 +135,44 @@ class Vehicle {
             FVector location;
             FRotator rotation;
 
-            bool flying = _flightManager->getKinematics(location, rotation, _motorvals);
+            // Get vehicle pose from dynamics
+            MultirotorDynamics::state_t state = {0};
+            _dynamics->getState(state);
+            MultirotorDynamics::pose_t pose = state.pose;
 
-            if (flying) {
-        
-                _objects.pawn->SetActorLocation(location);
-                _objects.pawn->SetActorRotation(rotation);
+            // Convert NED meters => ENU centimeters
+            location.X =  pose.location[0] * 100; 
+            location.Y =  pose.location[1] * 100; 
+            location.Z = -pose.location[2] * 100; 
 
-                return true;
+            // Convert radians to degrees
+            rotation.Roll =  FMath::RadiansToDegrees(pose.rotation[0]);
+            rotation.Pitch = FMath::RadiansToDegrees(pose.rotation[1]);
+            rotation.Yaw =   FMath::RadiansToDegrees(pose.rotation[2]);
+
+            // If we crashed, restart flight manager
+            if (_dynamics->crashed()) {
+
+                stopFlightManager();
+                startFlightManager();
+
+                return false;
             }
 
-            // Restart flight manager and video
-            stopThreadedWorkers();
-            startThreadedWorkers();
+            _objects.pawn->SetActorLocation(location);
+            _objects.pawn->SetActorRotation(rotation);
 
-            return false;
+            return true;
+
         }
 
         // Animation effects (sound, spinning props)
 
         void addAnimationEffects(void)
         {
+            // Get motor values from dynamics
+            _flightManager->getMotorValues(_motorvals);
+
             // Compute the sum of the motor values
             float motorsum = 0;
             for (uint8_t j=0; j<_dynamics->motorCount(); ++j) {
@@ -183,21 +200,19 @@ class Vehicle {
             _objects.audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
         }
 
-        // Starting pose for reset on crash
-        FVector _startLocation;
-        FRotator _startRotation;
 
         // Flight management thread
-        void startThreadedWorkers(void)
+        void startFlightManager(void)
         {
             _starts++;
 
-            extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
-            _flightManager = createFlightManager(_dynamics, _startLocation, _startRotation);
+            extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics);
+
+            _flightManager = createFlightManager(_dynamics);
 
         }        
 
-        void stopThreadedWorkers(void)
+        void stopFlightManager(void)
         {
             _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
         }
@@ -393,10 +408,6 @@ class Vehicle {
                 // will play continiously...
                 _objects.audioComponent->Play();
 
-                // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
-                _startLocation = _objects.pawn->GetActorLocation();
-                _startRotation = _objects.pawn->GetActorRotation(); 
-
                 // Create circular queue for moving-average of motor values
                 _motorBuffer = new TCircularBuffer<float>(20);
 
@@ -410,7 +421,25 @@ class Vehicle {
                 }
 
                 // Initialize threaded workers
-                startThreadedWorkers();
+                startFlightManager();
+
+                // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
+                FVector  startLocation = _objects.pawn->GetActorLocation();
+                FRotator startRotation = _objects.pawn->GetActorRotation(); 
+                MultirotorDynamics::pose_t pose = {0};
+
+                // Convert ENU centimeters => NED meters
+                pose.location[0] =  startLocation.X / 100;
+                pose.location[1] =  startLocation.Y / 100;
+                pose.location[2] = -startLocation.Z / 100;
+
+                // Convert degrees => radians
+                pose.rotation[0] = FMath::DegreesToRadians(startRotation.Roll);
+                pose.rotation[1] = FMath::DegreesToRadians(startRotation.Pitch);
+                pose.rotation[2] = FMath::DegreesToRadians(startRotation.Yaw);
+
+                // Initialize dynamics with initial pose
+                _dynamics->init(pose);
             }
 
             else {
@@ -452,7 +481,7 @@ class Vehicle {
         {
             if (_mapSelected) {
 
-                stopThreadedWorkers();
+                stopFlightManager();
 
                 // Free video managers
                 for (uint8_t i=0; i<_objects.cameraCount; ++i) {

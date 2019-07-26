@@ -19,9 +19,6 @@ class FFlightManager : public FThreadedWorker {
 
     private:
 
-       // Kinematics
-        MultirotorDynamics::pose_t _pose;
-
         // Current motor values from PID controller
         double * _motorvals = NULL; 
         
@@ -73,26 +70,14 @@ class FFlightManager : public FThreadedWorker {
         MultirotorDynamics * _dynamics;
 
         // Constructor, called main thread
-        FFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation) :
-            FThreadedWorker()
+        FFlightManager(MultirotorDynamics * dynamics) 
+            : FThreadedWorker()
         {
-             // Allocate array for motor values
+            // Allocate array for motor values
             _motorvals = new double[dynamics->motorCount()];
 
+            // Store dynamics for performTask()
             _dynamics = dynamics;
-
-            // Convert ENU centimeters => NED meters
-            _pose.location[0] =  initialLocation.X / 100;
-            _pose.location[1] =  initialLocation.Y / 100;
-            _pose.location[2] = -initialLocation.Z / 100;
-
-            // Convert degrees => radians
-            _pose.rotation[0] = FMath::DegreesToRadians(initialRotation.Roll);
-            _pose.rotation[1] = FMath::DegreesToRadians(initialRotation.Pitch);
-            _pose.rotation[2] = FMath::DegreesToRadians(initialRotation.Yaw);
-
-            // Initialize dynamics with initial pose
-            _dynamics->init(_pose);
 
             // Constant
             _motorCount = dynamics->motorCount();
@@ -103,10 +88,11 @@ class FFlightManager : public FThreadedWorker {
             // No crash yet
             _crashed = false;
         }
-        
+
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
         void performTask(double currentTime)
         {
+            // Compute DeltaT
             double deltaT = currentTime - _previousTime;
 
             // Send current motor values to dynamics
@@ -115,10 +101,9 @@ class FFlightManager : public FThreadedWorker {
             // Update dynamics
             _dynamics->update(deltaT);
 
-            // Get vehicle state from dynamics.  We keep pose (location, rotation) in memory for use  in
-            // getKinematics() method.   MultirotorDynamics::getState() returns false if the vehicle crashed.
-            MultirotorDynamics::state_t state;
-            _crashed = !_dynamics->getState(state);
+            // Get vehicle state from dynamics
+            MultirotorDynamics::state_t state = {0};
+            _dynamics->getState(state);
 
             // PID controller: update the flight manager (e.g., HackflightManager) with
             // the dynamics state, getting back the motor values
@@ -129,12 +114,6 @@ class FFlightManager : public FThreadedWorker {
 
             // Track previous time for deltaT
             _previousTime = currentTime;
-
-            // Copy out kinematic part of state
-            for (uint8_t k=0; k<3; ++k) {
-                _pose.location[k] = state.pose.location[k];
-                _pose.rotation[k] = state.pose.rotation[k];
-            }
         }
 
     public:
@@ -143,26 +122,13 @@ class FFlightManager : public FThreadedWorker {
         {
         }
 
-        // Called by VehiclePawn::Tick() method to get current display pose
-        // (location, rotation) and propeller animation/sound (motorvals).
-        // Returns true on success, false on crash
-        bool getKinematics(FVector & location, FRotator & rotation, float * motorvals)
+        // Called by VehiclePawn::Tick() method to propeller animation/sound (motorvals)
+        void getMotorValues(float * motorvals)
         {
             // Get motor values for propeller animation / motor sound
             for (uint8_t j=0; j<_motorCount; ++j) {
                 motorvals[j] = _motorvals[j];
             }
-
-            // Convert NED meters => ENU centimeters
-            location.X =  _pose.location[0] * 100; 
-            location.Y =  _pose.location[1] * 100; 
-            location.Z = -_pose.location[2] * 100; 
-
-            // Convert radians to degrees
-            rotation.Roll =  FMath::RadiansToDegrees(_pose.rotation[0]);
-            rotation.Pitch = FMath::RadiansToDegrees(_pose.rotation[1]);
-            rotation.Yaw =   FMath::RadiansToDegrees(_pose.rotation[2]);
-
-            return !_crashed;
         }
+
 }; // class FFlightManager

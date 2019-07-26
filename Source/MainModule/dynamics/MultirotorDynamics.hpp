@@ -103,8 +103,9 @@ class MultirotorDynamics {
         // Inertial-frame acceleration
         double _inertialAccel[3] = {0};
 
-        // Flag for whether we're airborne
+        // Status flags
         bool _airborne = false;
+        bool _crashed = false;
 
         // Starting altitude for crash detection
         double _zstart = 0;
@@ -248,6 +249,9 @@ class MultirotorDynamics {
             // We can start on the ground (default) or in the air
             _airborne = airborne;
 
+            // No crash yet
+            _crashed = false;
+
             // Remember our altitude at takeoff
             _zstart = pose.location[2];
         }
@@ -354,9 +358,8 @@ class MultirotorDynamics {
          *  Gets current state
          *
          *  @param state data structure that will contain state
-         *  @return false if crashed, true otherwise
          */
-        bool getState(state_t & state)
+        void getState(state_t & state)
         {
 
             // Get most values directly from state vector
@@ -384,16 +387,18 @@ class MultirotorDynamics {
 
                     // Descending too fast: crashed!
                     if (state.inertialVel[2] > MAX_DROP_RATE) {
-                        return false;
+                        _crashed = true;
                     }
 
                     // A soft landing: set vertical velocity to zero
                     state.inertialVel[2] = 0;
                 }
             }
+        }
 
-            // No crash
-            return true;
+        bool crashed(void)
+        {
+            return _crashed;
         }
 
         // Motor direction for animation
