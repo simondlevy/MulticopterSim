@@ -193,17 +193,15 @@ class Vehicle {
 
         void reportStatus(void)
         {
-            // Get a high-fidelity current time value from the OS
-            double currentTime = FPlatformTime::Seconds() - _startTime;
-
             // Un-comment this to track the number of (re)starts
-            debug("starts: %d", _starts);
+            //debug("starts: %d", _starts);
 
             // Report FPS
             if (_flightManager) {
 
+                // Get a high-fidelity current time value from the OS
+                double currentTime = FPlatformTime::Seconds() - _startTime;
                 //debug("FPS:  Main=%d    Flight=%d", (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
-                //debug("%s", _flightManager->getMessage());
             }
         }
 
@@ -214,7 +212,7 @@ class Vehicle {
             }
         }
 
-        static void addCamera(objects_t & objects, float fov, const wchar_t * res)
+        static void addCamera(objects_t & objects, VideoManager * videoManager, float fov, const wchar_t * res)
         {
             // Use one-based indexing for asset names
             uint8_t id = objects.cameraCount + 1;
@@ -249,6 +247,12 @@ class Vehicle {
             cam->captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             cam->captureComponent->FOVAngle = fov - 45;
             cam->captureComponent->TextureTarget = cam->renderTarget;
+
+            // Associate the camera with the video manager
+            cam->videoManager = videoManager;
+
+            // Associate the video manager's render target with the specified render target
+            videoManager->setRenderTarget(cam->renderTarget);
 
             // Increment the camera count for next time
             objects.cameraCount++;
@@ -292,7 +296,6 @@ class Vehicle {
         static void addMesh(const objects_t & objects, UStaticMesh * mesh, const char * name, 
                 const FVector & location, const FRotator rotation, const FVector & scale)
         {
-
             UStaticMeshComponent * meshComponent = 
                 objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
             meshComponent->SetStaticMesh(mesh);
@@ -347,7 +350,7 @@ class Vehicle {
                 _objects.cameras[i].cameraComponent = objects.cameras[i].cameraComponent;
                 _objects.cameras[i].captureComponent = objects.cameras[i].captureComponent;
                 _objects.cameras[i].renderTarget = objects.cameras[i].renderTarget;
-                _objects.cameras[i].videoManager = NULL;
+                _objects.cameras[i].videoManager = objects.cameras[i].videoManager;
             }
 
             _objects.cameraCount = objects.cameraCount;
@@ -388,15 +391,6 @@ class Vehicle {
 
                 // Create circular queue for moving-average of motor values
                 _motorBuffer = new TCircularBuffer<float>(20);
-
-                // Create video manager(s)
-                extern VideoManager * createVideoManager(UTextureRenderTarget2D * renderTarget, uint8_t id);
-                for (uint8_t i=0; i<_objects.cameraCount; ++i) {
-
-                    camera_t * cam = &_objects.cameras[i];
-                    UTextureRenderTarget2D * renderTarget = cam->renderTarget;
-                    cam->videoManager = createVideoManager(renderTarget, i);
-                }
 
                 // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
                 FVector  startLocation = _objects.pawn->GetActorLocation();
@@ -489,19 +483,19 @@ class Vehicle {
             }
         }
 
-        static void addCamera640x480(objects_t & objects, float fov)
+        static void addCamera640x480(objects_t & objects, VideoManager * videoManager, float fov)
         {
-            addCamera(objects, fov, L"640x480");
+            addCamera(objects, videoManager, fov, L"640x480");
         }
 
-        static void addCamera1280x720(objects_t & objects, float fov)
+        static void addCamera1280x720(objects_t & objects, VideoManager * videoManager, float fov)
         {
-            addCamera(objects, fov, L"1280x720");
+            addCamera(objects, videoManager, fov, L"1280x720");
         }
 
-        static void addCamera1920x1080(objects_t & objects, float fov)
+        static void addCamera1920x1080(objects_t & objects, VideoManager * videoManager, float fov)
         {
-            addCamera(objects, fov, L"1920x1080");
+            addCamera(objects, videoManager, fov, L"1920x1080");
         }
 
     private:

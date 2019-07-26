@@ -32,9 +32,6 @@ APhantomPawn::APhantomPawn()
 
     Vehicle::build(objects);
 
-    // Add a camera
-	Vehicle::addCamera640x480(objects, 135);
-
     // Add propellers
     addProp(objects, 0, +1, +1, Prop1Statics.mesh.Get());
     addProp(objects, 1, -1, -1, Prop2Statics.mesh.Get());
