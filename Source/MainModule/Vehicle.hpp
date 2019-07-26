@@ -40,12 +40,10 @@
 #ifdef _WIN32
 #define SPRINTF sprintf_s
 #define SWPRINTF swprintf_s
-#define WCHAR wchar_t
 #else
 #include <wchar.h>
 #define SPRINTF sprintf
 #define SWPRINTF swprintf
-#define WCHAR char16_t
 #endif
 
 // A macro for simplifying the declaration of static meshes
@@ -106,9 +104,6 @@ class MAINMODULE_API Vehicle {
 
         // Threaded worker for running flight control
         class FFlightManager * _flightManager = NULL;
-
-        // Threaded worker for running gimbal
-        class FGimbalManager * _gimbalManager = NULL;
 
         // Bozo filter for failure to select a map
         bool _mapSelected = false;
@@ -200,14 +195,11 @@ class MAINMODULE_API Vehicle {
             extern FFlightManager * createFlightManager(MultirotorDynamics * dynamics, FVector initialLocation, FRotator initialRotation);
             _flightManager = createFlightManager(_dynamics, _startLocation, _startRotation);
 
-            extern FGimbalManager * createGimbalManager(void);
-            _gimbalManager = createGimbalManager();
         }        
 
         void stopThreadedWorkers(void)
         {
             _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
-            _gimbalManager = (FGimbalManager *)FThreadedWorker::stopThreadedWorker(_gimbalManager);
         }
 
         void reportStatus(void)
@@ -223,6 +215,13 @@ class MAINMODULE_API Vehicle {
 
                 //debug("FPS:  Main=%d    Flight=%d", (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
                 //debug("%s", _flightManager->getMessage());
+            }
+        }
+
+        void grabImages(void)
+        {
+            for (uint8_t i=0; i<_objects.cameraCount; ++i) {
+                _objects.cameras[i].videoManager->grabImage();
             }
         }
 
@@ -266,10 +265,10 @@ class MAINMODULE_API Vehicle {
             objects.cameraCount++;
         }
 
-        // Static helpers
-
     public:
         
+        // Static helpers
+
         static void build(objects_t & objects)
         {
             objects.frameMeshComponent = objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
@@ -430,13 +429,8 @@ class MAINMODULE_API Vehicle {
                     // Keepin' it real(istic)!
                     addAnimationEffects();
 
-                    // Move gimbal and get Field-Of-View
-                    setGimbal();
-
                     // Grab images
-                    for (uint8_t i=0; i<_objects.cameraCount; ++i) {
-                        _objects.cameras[i].videoManager->grabImage();
-                    }
+                    grabImages();
 
                     // Report status (optional)
                     //reportStatus();
@@ -468,14 +462,15 @@ class MAINMODULE_API Vehicle {
             }
         }
 
-        void setGimbal(void)
+        // Called on main thread
+        void setGimbal(FGimbalManager * gimbalManager)
         {
             // FlightManager will be null after crash
             if (!_flightManager) return;
 
             // Get gimbal info from manager
             float roll = 0, pitch = 0, yaw = 0, fov = 0;
-            _gimbalManager->get(roll, pitch, yaw, fov);
+            gimbalManager->get(roll, pitch, yaw, fov);
 
             FRotator rotation = _objects.springArm->GetComponentRotation();
 
