@@ -136,9 +136,8 @@ class Vehicle {
             FRotator rotation;
 
             // Get vehicle pose from dynamics
-            MultirotorDynamics::state_t state = {0};
-            _dynamics->getState(state);
-            MultirotorDynamics::pose_t pose = state.pose;
+            MultirotorDynamics::pose_t pose = {0};
+            _dynamics->getPose(pose);
 
             // Convert NED meters => ENU centimeters
             location.X =  pose.location[0] * 100; 

@@ -355,6 +355,20 @@ class MultirotorDynamics {
         }
 
         /*
+         *  Gets current pose
+         *
+         *  @param pose data structure that will contain pose
+         */
+        void getPose(pose_t & pose)
+        {
+            for (uint8_t i=0; i<3; ++i) {
+                uint8_t ii = 2 * i;
+                pose.rotation[i] = _x[STATE_PHI+ii];
+                pose.location[i] = _x[STATE_X+ii];
+            }
+        }
+
+         /*
          *  Gets current state
          *
          *  @param state data structure that will contain state
