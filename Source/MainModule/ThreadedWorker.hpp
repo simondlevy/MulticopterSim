@@ -21,9 +21,6 @@ class FThreadedWorker : public FRunnable {
 
         bool _running = false;
 
-        // Supports debugging on main thread
-        static const uint16_t MAXMSG = 1000;
-
         // Start-time offset so timing begins at zero
         double _startTime = 0;
 
@@ -31,9 +28,6 @@ class FThreadedWorker : public FRunnable {
         uint32_t _count;
 
     protected:
-
-        // Supports debugging on main thread
-        char _message[MAXMSG] = {0};
 
         // Implemented differently by each subclass
         virtual void performTask(double currentTime) = 0;
@@ -44,8 +38,6 @@ class FThreadedWorker : public FRunnable {
         {
             _thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); 
 
-            *_message = 0;
-
             _startTime = FPlatformTime::Seconds();
 
             _count = 0;
@@ -55,21 +47,6 @@ class FThreadedWorker : public FRunnable {
         ~FThreadedWorker()
         {
             delete _thread;
-        }
-
-
-        // Supports debugging on main thread
-        void dbgprintf(const char * fmt, ...)
-        {
-            va_list ap;
-            va_start(ap, fmt);
-            vsnprintf(_message, MAXMSG, fmt, ap);
-            va_end(ap);
-        }
-
-        const char * getMessage(void)
-        {
-            return (const char *)_message;
         }
 
         uint32_t getCount(void)

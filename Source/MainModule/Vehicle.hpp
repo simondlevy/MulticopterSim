@@ -216,7 +216,7 @@ class MAINMODULE_API Vehicle {
             double currentTime = FPlatformTime::Seconds() - _startTime;
 
             // Un-comment this to track the number of (re)starts
-            //debug("starts: %d", _starts);
+            debug("starts: %d", _starts);
 
             // Report FPS
             if (_flightManager) {

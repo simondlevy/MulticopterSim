@@ -51,7 +51,7 @@ class FFlightManager : public FThreadedWorker {
             const double * quat  = state.quaternion;
             const double * loc   = state.pose.location;
 
-            dbgprintf(
+            debug(
                     "t: %4.1f"
                     " | a: %+6.6f %+6.6f %+6.6f"
                     " | g: %+6.6f %+6.6f %+6.6f"
