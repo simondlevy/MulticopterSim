@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "dynamics/MultirotorDynamics.hpp"
+#include "MultirotorDynamics.hpp"
 
 class OctoXAPDynamics : public MultirotorDynamics {
 

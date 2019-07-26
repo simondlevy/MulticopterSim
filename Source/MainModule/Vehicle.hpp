@@ -54,7 +54,7 @@
     };                                                                     \
     static structname objname;
 
-class MAINMODULE_API Vehicle {
+class Vehicle {
 
     private: 
         
@@ -341,7 +341,7 @@ class MAINMODULE_API Vehicle {
         }
 
         // Constructor
-        Vehicle(const objects_t & objects, MultirotorDynamics * dynamics)
+        Vehicle(const objects_t & objects, MultirotorDynamics * dynamics, FFlightManager * flightManager)
         {
             _dynamics = dynamics;
 

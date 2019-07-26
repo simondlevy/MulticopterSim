@@ -6,6 +6,8 @@
    MIT License
 */
 
+#pragma once
+
 #include "../../Extras/sockets/UdpServerSocket.hpp"
 #include "../../Extras/sockets/UdpClientSocket.hpp"
 

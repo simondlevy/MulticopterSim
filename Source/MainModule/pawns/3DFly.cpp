@@ -43,7 +43,7 @@ A3DFlyPawn::A3DFlyPawn()
     addMotorAndProp(objects, 2, +1, -1, Prop3Statics.mesh.Get());
     addMotorAndProp(objects, 3, -1, +1, Prop4Statics.mesh.Get());
 
-   _vehicle = new Vehicle(objects, new QuadXAPDynamics(_params));
+   _vehicle = new Vehicle(objects, new QuadXAPDynamics(_params), NULL);
 }
 
 A3DFlyPawn::~A3DFlyPawn()
