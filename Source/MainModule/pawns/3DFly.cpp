@@ -68,8 +68,6 @@ void A3DFlyPawn::BeginPlay()
 
 void A3DFlyPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    _vehicle->EndPlay();
-
     Super::EndPlay(EndPlayReason);
 }
 

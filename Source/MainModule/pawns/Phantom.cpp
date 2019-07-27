@@ -63,8 +63,6 @@ void APhantomPawn::BeginPlay()
 
 void APhantomPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    _vehicle->EndPlay();
-
     Super::EndPlay(EndPlayReason);
 }
 

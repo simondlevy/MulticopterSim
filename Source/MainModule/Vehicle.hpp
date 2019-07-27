@@ -57,17 +57,8 @@ class Vehicle {
     private: 
         
         // Arbitrary array limits supporting statically declared assets
-        static const uint8_t MAX_MOTORS = 20; 
+        static const uint8_t MAX_MOTORS  = 20; 
         static const uint8_t MAX_CAMERAS = 10; 
-
-        typedef struct {
-
-            UCameraComponent         * cameraComponent;
-            USceneCaptureComponent2D * captureComponent;
-            UTextureRenderTarget2D   * renderTarget;
-            Camera             * camera;
-
-        } camera_t;
 
     public: 
         
@@ -84,8 +75,7 @@ class Vehicle {
 
             USpringArmComponent      * springArm;
 
-            camera_t                   cameras[MAX_CAMERAS];
-
+            Camera                   * cameras[MAX_CAMERAS];
             uint8_t                    cameraCount;
 
         } objects_t;
@@ -206,7 +196,7 @@ class Vehicle {
         void grabImages(void)
         {
             for (uint8_t i=0; i<_objects.cameraCount; ++i) {
-                _objects.cameras[i].camera->grabImage();
+                _objects.cameras[i]->grabImage();
             }
         }
 
@@ -292,38 +282,39 @@ class Vehicle {
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);
 
-            // Grab the current camera structure
-            camera_t * cam = &objects.cameras[objects.cameraCount];
-
             // Create a static render target.  This provides less flexibility than creating it dynamically,
             // but acquiring the pixels seems to run twice as fast.
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
-            cam->renderTarget = cameraTextureObject.Object;
+            UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObject.Object;
 
             // Create a camera component 
-            cam->cameraComponent = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
-            cam->cameraComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-            cam->cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            cam->cameraComponent->SetWorldScale3D(cameraScale);
-            cam->cameraComponent->SetFieldOfView(camera->_fov);
-            cam->cameraComponent->SetAspectRatio((float)cam->renderTarget->SizeX / cam->renderTarget->SizeY);
+            camera->_cameraComponent = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
+            camera->_cameraComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
+            camera->_cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            camera->_cameraComponent->SetWorldScale3D(cameraScale);
+            camera->_cameraComponent->SetFieldOfView(camera->_fov);
+            camera->_cameraComponent->SetAspectRatio((float)textureRenderTarget2D->SizeX / textureRenderTarget2D->SizeY);
 
             // Create a scene-capture component and set its target to the render target
-            cam->captureComponent = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
-            cam->captureComponent->SetWorldScale3D(cameraScale);
-            cam->captureComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
-            cam->captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            cam->captureComponent->FOVAngle = camera->_fov - 45;
-            cam->captureComponent->TextureTarget = cam->renderTarget;
+            camera->_captureComponent = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
+            camera->_captureComponent->SetWorldScale3D(cameraScale);
+            camera->_captureComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
+            camera->_captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            camera->_captureComponent->FOVAngle = camera->_fov - 45;
+            camera->_captureComponent->TextureTarget = textureRenderTarget2D;
 
-            // Associate the camera with the video manager
-            cam->camera = camera;
+            // compute the size of the image
+            camera->_rows = textureRenderTarget2D->SizeY;
+            camera->_cols = textureRenderTarget2D->SizeX;
 
-            // Associate the video manager's render target with the specified render target
-            camera->setRenderTarget(cam->renderTarget);
+            // Create a byte array sufficient to hold the RGBA image
+            camera->_imageBytes = new uint8_t [camera->_rows*camera->_cols*4];
+
+            // Get the render target resource for copying the image pixels
+            camera->_renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();
 
             // Increment the camera count for next time
-            objects.cameraCount++;
+            objects.cameras[objects.cameraCount++] = camera;
         }
 
 
@@ -349,12 +340,8 @@ class Vehicle {
             _objects.springArm          = objects.springArm;
 
             for (uint8_t i=0; i<objects.cameraCount; ++i) {
-                _objects.cameras[i].cameraComponent = objects.cameras[i].cameraComponent;
-                _objects.cameras[i].captureComponent = objects.cameras[i].captureComponent;
-                _objects.cameras[i].renderTarget = objects.cameras[i].renderTarget;
-                _objects.cameras[i].camera = objects.cameras[i].camera;
+                _objects.cameras[i] = objects.cameras[i];
             }
-
             _objects.cameraCount = objects.cameraCount;
 
 
@@ -448,18 +435,6 @@ class Vehicle {
             }
         }
 
-        void EndPlay(void)
-        {
-            if (_mapSelected) {
-
-                // Free video managers
-                for (uint8_t i=0; i<_objects.cameraCount; ++i) {
-                    delete _objects.cameras[i].camera;
-                }
-
-            }
-        }
-
         // Called on main thread
         void setGimbal(FGimbalManager * gimbalManager)
         {
@@ -480,8 +455,8 @@ class Vehicle {
 
             // XXX should we enable setting each camera's FOV independently?
             for (uint8_t i=0; i<_objects.cameraCount; ++i) {
-                _objects.cameras[i].cameraComponent->FieldOfView = fov;
-                _objects.cameras[i].captureComponent->FOVAngle = fov - 45;
+                _objects.cameras[i]->_cameraComponent->FieldOfView = fov;
+                _objects.cameras[i]->_captureComponent->FOVAngle = fov - 45;
             }
         }
 
