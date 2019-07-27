@@ -26,6 +26,11 @@ class OpenCVCamera : public Camera {
 
     protected:
 
+        OpenCVCamera(float fov, Resolution_t res)
+            : Camera(fov, res)
+        {
+        }
+
         virtual void processImageBytes(uint8_t * bytes) override
         { 
             // Copy the RBGA pixels to the private image

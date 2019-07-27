@@ -18,6 +18,8 @@
 
 class Camera {
 
+    friend class Vehicle;
+
     public:
 
         typedef enum {
@@ -41,6 +43,17 @@ class Camera {
         // Image size
         uint16_t _rows = 0;
         uint16_t _cols = 0;
+        
+        // Field of view
+        float _fov = 0;
+
+        Resolution_t _resolution;
+
+        Camera(float fov, Resolution_t resolution) 
+        {
+            _fov = fov;
+            _resolution = resolution;
+        }
 
         // Override this method for your video application
         virtual void processImageBytes(uint8_t * bytes) { (void)bytes; }

@@ -277,7 +277,7 @@ class Vehicle {
             rotation++;
         }
 
-        static void addCamera(objects_t & objects, Camera * camera, float fov, Camera::Resolution_t resolution)
+        static void addCamera(objects_t & objects, Camera * camera)
         {
             const wchar_t * resolutions[3] = { L"640x480", L"1280x720", L"1920x1080" };
 
@@ -287,7 +287,7 @@ class Vehicle {
             // Create name of render target asset
             wchar_t renderTargetName[200];
             swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), 
-                    L"/Game/Flying/RenderTargets/renderTarget_%s_%d", resolutions[resolution], id);  
+                    L"/Game/Flying/RenderTargets/renderTarget_%s_%d", resolutions[camera->_resolution], id);  
 
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);
@@ -305,7 +305,7 @@ class Vehicle {
             cam->cameraComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
             cam->cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             cam->cameraComponent->SetWorldScale3D(cameraScale);
-            cam->cameraComponent->SetFieldOfView(fov);
+            cam->cameraComponent->SetFieldOfView(camera->_fov);
             cam->cameraComponent->SetAspectRatio((float)cam->renderTarget->SizeX / cam->renderTarget->SizeY);
 
             // Create a scene-capture component and set its target to the render target
@@ -313,7 +313,7 @@ class Vehicle {
             cam->captureComponent->SetWorldScale3D(cameraScale);
             cam->captureComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
             cam->captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            cam->captureComponent->FOVAngle = fov - 45;
+            cam->captureComponent->FOVAngle = camera->_fov - 45;
             cam->captureComponent->TextureTarget = cam->renderTarget;
 
             // Associate the camera with the video manager
