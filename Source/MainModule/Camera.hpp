@@ -51,6 +51,12 @@ class Camera {
  
         Camera(float fov, Resolution_t resolution) 
         {
+            uint16_t rowss[3] = {480, 720, 1080};
+            uint16_t colss[3] = {640, 1280, 1920};
+
+            _rows = rowss[resolution];
+            _cols = colss[resolution];
+
             _fov = fov;
             _resolution = resolution;
 

@@ -29,12 +29,6 @@ class OpenCVCamera : public Camera {
         OpenCVCamera(float fov, Resolution_t res)
             : Camera(fov, res)
         {
-            uint16_t rowss[3] = {480, 720, 1080};
-            uint16_t colss[3] = {640, 1280, 1920};
-
-            _rows = rowss[res];
-            _cols = colss[res];
-
             // Create a private RBGA image for acquiring render target on main thread
             _rbga_image = cv::Mat::zeros(_rows, _cols, CV_8UC4);
 

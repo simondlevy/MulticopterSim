@@ -293,7 +293,7 @@ class Vehicle {
             camera->_cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             camera->_cameraComponent->SetWorldScale3D(cameraScale);
             camera->_cameraComponent->SetFieldOfView(camera->_fov);
-            camera->_cameraComponent->SetAspectRatio((float)textureRenderTarget2D->SizeX / textureRenderTarget2D->SizeY);
+            camera->_cameraComponent->SetAspectRatio((float)camera->_cols / camera->_rows);
 
             // Create a scene-capture component and set its target to the render target
             camera->_captureComponent = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
@@ -302,10 +302,6 @@ class Vehicle {
             camera->_captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             camera->_captureComponent->FOVAngle = camera->_fov - 45;
             camera->_captureComponent->TextureTarget = textureRenderTarget2D;
-
-            // compute the size of the image
-            camera->_rows = textureRenderTarget2D->SizeY;
-            camera->_cols = textureRenderTarget2D->SizeX;
 
             // Create a byte array sufficient to hold the RGBA image
             camera->_imageBytes = new uint8_t [camera->_rows*camera->_cols*4];
