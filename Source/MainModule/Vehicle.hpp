@@ -21,12 +21,11 @@
 #include <math.h>
 
 #include "Debug.hpp"
-
 #include "dynamics/MultirotorDynamics.hpp"
-
 #include "FlightManager.hpp"
 #include "VideoManager.hpp"
 #include "GimbalManager.hpp"
+#include "Camera.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -212,52 +211,6 @@ class Vehicle {
             }
         }
 
-        static void addCamera(objects_t & objects, VideoManager * videoManager, float fov, const wchar_t * res)
-        {
-            // Use one-based indexing for asset names
-            uint8_t id = objects.cameraCount + 1;
-
-            // Create name of render target asset
-            wchar_t renderTargetName[200];
-            swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), L"/Game/Flying/RenderTargets/renderTarget_%s_%d", res, id);  
-
-            // Make the camera appear small in the editor so it doesn't obscure the vehicle
-            FVector cameraScale(0.1, 0.1, 0.1);
-
-            // Grab the current camera structure
-            camera_t * cam = &objects.cameras[objects.cameraCount];
-
-            // Create a static render target.  This provides less flexibility than creating it dynamically,
-            // but acquiring the pixels seems to run twice as fast.
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
-            cam->renderTarget = cameraTextureObject.Object;
-
-            // Create a camera component 
-            cam->cameraComponent = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
-            cam->cameraComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
-            cam->cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            cam->cameraComponent->SetWorldScale3D(cameraScale);
-            cam->cameraComponent->SetFieldOfView(fov);
-            cam->cameraComponent->SetAspectRatio((float)cam->renderTarget->SizeX / cam->renderTarget->SizeY);
-
-            // Create a scene-capture component and set its target to the render target
-            cam->captureComponent = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
-            cam->captureComponent->SetWorldScale3D(cameraScale);
-            cam->captureComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
-            cam->captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            cam->captureComponent->FOVAngle = fov - 45;
-            cam->captureComponent->TextureTarget = cam->renderTarget;
-
-            // Associate the camera with the video manager
-            cam->videoManager = videoManager;
-
-            // Associate the video manager's render target with the specified render target
-            videoManager->setRenderTarget(cam->renderTarget);
-
-            // Increment the camera count for next time
-            objects.cameraCount++;
-        }
-
     public:
         
         // Static helpers
@@ -324,6 +277,56 @@ class Vehicle {
             }
             rotation++;
         }
+
+        static void addCamera(objects_t & objects, VideoManager * videoManager, float fov, Camera::Resolution_t resolution)
+        {
+            const wchar_t * resolutions[3] = { L"640x480", L"1280x720", L"1920x1080" };
+
+            // Use one-based indexing for asset names
+            uint8_t id = objects.cameraCount + 1;
+
+            // Create name of render target asset
+            wchar_t renderTargetName[200];
+            swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), 
+                    L"/Game/Flying/RenderTargets/renderTarget_%s_%d", resolutions[resolution], id);  
+
+            // Make the camera appear small in the editor so it doesn't obscure the vehicle
+            FVector cameraScale(0.1, 0.1, 0.1);
+
+            // Grab the current camera structure
+            camera_t * cam = &objects.cameras[objects.cameraCount];
+
+            // Create a static render target.  This provides less flexibility than creating it dynamically,
+            // but acquiring the pixels seems to run twice as fast.
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
+            cam->renderTarget = cameraTextureObject.Object;
+
+            // Create a camera component 
+            cam->cameraComponent = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
+            cam->cameraComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
+            cam->cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            cam->cameraComponent->SetWorldScale3D(cameraScale);
+            cam->cameraComponent->SetFieldOfView(fov);
+            cam->cameraComponent->SetAspectRatio((float)cam->renderTarget->SizeX / cam->renderTarget->SizeY);
+
+            // Create a scene-capture component and set its target to the render target
+            cam->captureComponent = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
+            cam->captureComponent->SetWorldScale3D(cameraScale);
+            cam->captureComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
+            cam->captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            cam->captureComponent->FOVAngle = fov - 45;
+            cam->captureComponent->TextureTarget = cam->renderTarget;
+
+            // Associate the camera with the video manager
+            cam->videoManager = videoManager;
+
+            // Associate the video manager's render target with the specified render target
+            videoManager->setRenderTarget(cam->renderTarget);
+
+            // Increment the camera count for next time
+            objects.cameraCount++;
+        }
+
 
         static const FName makeName(const char * prefix, const uint8_t index, const char * suffix="")
         {
@@ -481,21 +484,6 @@ class Vehicle {
                 _objects.cameras[i].cameraComponent->FieldOfView = fov;
                 _objects.cameras[i].captureComponent->FOVAngle = fov - 45;
             }
-        }
-
-        static void addCamera640x480(objects_t & objects, VideoManager * videoManager, float fov)
-        {
-            addCamera(objects, videoManager, fov, L"640x480");
-        }
-
-        static void addCamera1280x720(objects_t & objects, VideoManager * videoManager, float fov)
-        {
-            addCamera(objects, videoManager, fov, L"1280x720");
-        }
-
-        static void addCamera1920x1080(objects_t & objects, VideoManager * videoManager, float fov)
-        {
-            addCamera(objects, videoManager, fov, L"1920x1080");
         }
 
     private:
