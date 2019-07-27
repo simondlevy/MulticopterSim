@@ -1,5 +1,5 @@
 /*
- * Abstract video-management class for MulticopterSim using OpenCV
+ * Abstract camera class for MulticopterSim using OpenCV
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include "VideoManager.hpp"
+#include "Camera.hpp"
 #include "Debug.hpp"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-class OpenCVManager : public VideoManager {
+class OpenCVCamera : public Camera {
 
     private:
 
@@ -46,7 +46,7 @@ class OpenCVManager : public VideoManager {
         // Associates this video manager with a render target
         virtual void setRenderTarget(UTextureRenderTarget2D * renderTarget) override
         {
-            VideoManager::setRenderTarget(renderTarget);
+            Camera::setRenderTarget(renderTarget);
 
             // Create a private RBGA image for acquiring render target on main thread
             _rbga_image = cv::Mat::zeros(_rows, _cols, CV_8UC4);
@@ -56,4 +56,4 @@ class OpenCVManager : public VideoManager {
 
         }
 
-}; // Class OpenCVManager
+}; // Class OpenCVCamera

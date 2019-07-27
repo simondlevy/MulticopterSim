@@ -23,9 +23,8 @@
 #include "Debug.hpp"
 #include "dynamics/MultirotorDynamics.hpp"
 #include "FlightManager.hpp"
-#include "VideoManager.hpp"
-#include "GimbalManager.hpp"
 #include "Camera.hpp"
+#include "GimbalManager.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -66,7 +65,7 @@ class Vehicle {
             UCameraComponent         * cameraComponent;
             USceneCaptureComponent2D * captureComponent;
             UTextureRenderTarget2D   * renderTarget;
-            VideoManager             * videoManager;
+            Camera             * camera;
 
         } camera_t;
 
@@ -207,7 +206,7 @@ class Vehicle {
         void grabImages(void)
         {
             for (uint8_t i=0; i<_objects.cameraCount; ++i) {
-                _objects.cameras[i].videoManager->grabImage();
+                _objects.cameras[i].camera->grabImage();
             }
         }
 
@@ -278,7 +277,7 @@ class Vehicle {
             rotation++;
         }
 
-        static void addCamera(objects_t & objects, VideoManager * videoManager, float fov, Camera::Resolution_t resolution)
+        static void addCamera(objects_t & objects, Camera * camera, float fov, Camera::Resolution_t resolution)
         {
             const wchar_t * resolutions[3] = { L"640x480", L"1280x720", L"1920x1080" };
 
@@ -318,10 +317,10 @@ class Vehicle {
             cam->captureComponent->TextureTarget = cam->renderTarget;
 
             // Associate the camera with the video manager
-            cam->videoManager = videoManager;
+            cam->camera = camera;
 
             // Associate the video manager's render target with the specified render target
-            videoManager->setRenderTarget(cam->renderTarget);
+            camera->setRenderTarget(cam->renderTarget);
 
             // Increment the camera count for next time
             objects.cameraCount++;
@@ -353,7 +352,7 @@ class Vehicle {
                 _objects.cameras[i].cameraComponent = objects.cameras[i].cameraComponent;
                 _objects.cameras[i].captureComponent = objects.cameras[i].captureComponent;
                 _objects.cameras[i].renderTarget = objects.cameras[i].renderTarget;
-                _objects.cameras[i].videoManager = objects.cameras[i].videoManager;
+                _objects.cameras[i].camera = objects.cameras[i].camera;
             }
 
             _objects.cameraCount = objects.cameraCount;
@@ -455,7 +454,7 @@ class Vehicle {
 
                 // Free video managers
                 for (uint8_t i=0; i<_objects.cameraCount; ++i) {
-                    delete _objects.cameras[i].videoManager;
+                    delete _objects.cameras[i].camera;
                 }
 
             }
