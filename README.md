@@ -121,7 +121,7 @@ main thread, UE4's <b>Tick()</b> method queries the flight manager for the
 current vehicle pose (location, rotation) and displays the vehicle and its
 environment kinematically at the 60-120Hz frame rate of the game engine.  In a
 similar manner, the threaded 
-[VideoManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/VideoManager.hpp)
+[Camera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/Camera.hpp)
 class can be used to process
 the images collected by a simulated gimbal-mounted camera on the vehicle, using
 OpenCV.  An abstract C++ 
