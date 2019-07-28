@@ -303,9 +303,6 @@ class Vehicle {
             camera->_captureComponent->FOVAngle = camera->_fov - 45;
             camera->_captureComponent->TextureTarget = textureRenderTarget2D;
 
-            // Create a byte array sufficient to hold the RGBA image
-            camera->_imageBytes = new uint8_t [camera->_rows*camera->_cols*4];
-
             // Get the render target resource for copying the image pixels
             camera->_renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();
 

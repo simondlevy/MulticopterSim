@@ -30,10 +30,12 @@ class Camera {
 
         } Resolution_t;
 
-    protected:
+    private:
 
         // Byte array for RGBA image
         uint8_t * _imageBytes = NULL;
+
+    protected:
 
         // Image size
         uint16_t _rows = 0;
@@ -56,6 +58,9 @@ class Camera {
 
             _rows = rowss[resolution];
             _cols = colss[resolution];
+
+            // Create a byte array sufficient to hold the RGBA image
+            _imageBytes = new uint8_t [_rows*_cols*4];
 
             _fov = fov;
             _resolution = resolution;
