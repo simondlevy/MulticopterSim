@@ -23,7 +23,7 @@ DECLARE_STATIC_MESH(FProp4Statics, "Phantom/Prop.Prop", Prop4Statics)
 
 class Phantom {
 
-    private:
+    public:
 
         MultirotorDynamics::params_t _params = {
 
@@ -43,6 +43,8 @@ class Phantom {
             0                       // XXX motor acceleration 
         };
 
+        QuadXAPDynamics dynamics = QuadXAPDynamics(_params);
+
         Vehicle _vehicle = Vehicle(&dynamics);
 
         // Threaded worker for flight control
@@ -55,13 +57,9 @@ class Phantom {
             _vehicle.addProp(index-1, x*d, y*d, +.15, mesh);
         }
 
-    public:
-
-        QuadXAPDynamics dynamics = QuadXAPDynamics(_params);
-
         void build(APawn * pawn)
         {
-            _vehicle.build(pawn, FrameStatics.mesh.Get());
+            _vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
 
             // Add propellers
             addProp(1, +1, +1, Prop1Statics.mesh.Get());

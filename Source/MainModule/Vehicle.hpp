@@ -84,7 +84,7 @@ class Vehicle {
 
 		MultirotorDynamics * _dynamics = NULL;
 
-        int8_t _motorDirections[MAX_MOTORS];
+        int8_t _motorDirections[MAX_MOTORS] = {};
 
         // Threaded worker for running flight control
         class FFlightManager * _flightManager = NULL;
@@ -156,6 +156,7 @@ class Vehicle {
 
             // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
             if (motorsum > 0) {
+                debug("%d %d %d %d", _motorDirections[0], _motorDirections[1], _motorDirections[2], _motorDirections[3]);
                 rotateProps(_motorDirections, _dynamics->motorCount());
             }
 
@@ -316,15 +317,13 @@ class Vehicle {
             return FName(name);
         }
 
-        // Constructors
-        
         Vehicle(void)
         {
             _dynamics = NULL;
             _flightManager = NULL;
-         }
+        }
 
-        Vehicle(MultirotorDynamics * dynamics)
+         Vehicle(MultirotorDynamics * dynamics)
         {
             _dynamics = dynamics;
 
@@ -335,33 +334,6 @@ class Vehicle {
             _flightManager = NULL;
          }
         
-        Vehicle(const objects_t & objects, MultirotorDynamics * dynamics)
-        {
-            _dynamics = dynamics;
-
-            _objects.pawn               = objects.pawn;
-            _objects.frameMesh          = objects.frameMesh;
-            _objects.motorMesh          = objects.motorMesh;
-            _objects.frameMeshComponent = objects.frameMeshComponent;
-            _objects.soundCue           = objects.soundCue;
-            _objects.audioComponent     = objects.audioComponent;
-
-            _objects.springArm          = objects.springArm;
-
-            for (uint8_t i=0; i<objects.cameraCount; ++i) {
-                _objects.cameras[i] = objects.cameras[i];
-            }
-            _objects.cameraCount = objects.cameraCount;
-
-
-            for (uint8_t i=0; i<dynamics->motorCount(); ++i) {
-                _objects.propellerMeshComponents[i] = objects.propellerMeshComponents[i]; 
-                _motorDirections[i] = dynamics->motorDirection(i);
-            }
-
-            _flightManager = NULL;
-        }        
-
         ~Vehicle(void) 
         {
         }
