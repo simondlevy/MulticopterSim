@@ -37,11 +37,9 @@
 // Windows/Linux compatibility 
 #ifdef _WIN32
 #define SPRINTF sprintf_s
-#define SWPRINTF swprintf_s
 #else
 #include <wchar.h>
 #define SPRINTF sprintf
-#define SWPRINTF swprintf
 #endif
 
 // A macro for simplifying the declaration of static meshes
@@ -271,7 +269,7 @@ class Vehicle {
             uint8_t id = _objects.cameraCount + 1;
 
             // Create name of render target asset
-            TCHAR renderTargetName[200];
+            wchar_t renderTargetName[200];
             swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), 
                     L"/Game/Flying/RenderTargets/renderTarget_%dx%d_%d", camera->_cols, camera->_rows, id);  
 
@@ -280,7 +278,7 @@ class Vehicle {
 
             // Create a static render target.  This provides less flexibility than creating it dynamically,
             // but acquiring the pixels seems to run twice as fast.
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject((TCHAR *)renderTargetName);
             UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObject.Object;
 
             // Create a camera component 
