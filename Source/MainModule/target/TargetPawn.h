@@ -30,8 +30,6 @@ class ATargetPawn : public APawn
         UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
             class UStaticMeshComponent* _targetMesh;
 
-        //TargetManager * _manager;
-
     public:
 
         virtual void Tick(float DeltaSeconds) override;
