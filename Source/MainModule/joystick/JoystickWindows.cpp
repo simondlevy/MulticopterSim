@@ -44,7 +44,7 @@ static void adjustAxesInterlink(float * axes)
 
 Joystick::Joystick(const char * devname)
 {
-    JOYCAPS joycaps = {0};
+    JOYCAPS joycaps = {};
 
     _productId = 0;
 

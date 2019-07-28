@@ -67,9 +67,9 @@ class FFlightManager : public FThreadedWorker {
 
         uint8_t _motorCount = 0;
 
-        MultirotorDynamics * _dynamics;
+        MultirotorDynamics * _dynamics = NULL;
 
-        MultirotorDynamics::state_t _state = {0};
+        MultirotorDynamics::state_t _state = {};
 
         // Constructor, called main thread
         FFlightManager(MultirotorDynamics * dynamics) 

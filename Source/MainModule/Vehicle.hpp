@@ -95,7 +95,7 @@ class Vehicle {
         bool _mapSelected = false;
 
         // Motor values for animation/sound
-        float  _motorvals[MAX_MOTORS] = {0};
+        float  _motorvals[MAX_MOTORS] = {};
 
         // Circular buffer for moving average of motor values
         TCircularBuffer<float> * _motorBuffer = NULL;
@@ -122,7 +122,7 @@ class Vehicle {
             FRotator rotation;
 
             // Get vehicle pose from dynamics
-            MultirotorDynamics::pose_t pose = {0};
+            MultirotorDynamics::pose_t pose = {};
             _dynamics->getPose(pose);
 
             // Convert NED meters => ENU centimeters
@@ -280,7 +280,7 @@ class Vehicle {
 
             // Create a static render target.  This provides less flexibility than creating it dynamically,
             // but acquiring the pixels seems to run twice as fast.
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject((char16_t *)renderTargetName);
             UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObject.Object;
 
             // Create a camera component 
@@ -391,7 +391,7 @@ class Vehicle {
                 // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
                 FVector  startLocation = _objects.pawn->GetActorLocation();
                 FRotator startRotation = _objects.pawn->GetActorRotation(); 
-                MultirotorDynamics::pose_t pose = {0};
+                MultirotorDynamics::pose_t pose = {};
 
                 // Convert ENU centimeters => NED meters
                 pose.location[0] =  startLocation.X / 100;

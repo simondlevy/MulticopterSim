@@ -90,7 +90,7 @@ class MultirotorDynamics {
         static constexpr double MAX_DROP_RATE = 0.5;
 
          // State vector (see Eqn. 11)
-        double _x[12] = {0};
+        double _x[12] = {};
 
         // State vector position map
         enum {
@@ -127,7 +127,7 @@ class MultirotorDynamics {
         double * _omegas2 = NULL;
 
         // Inertial-frame acceleration
-        double _inertialAccel[3] = {0};
+        double _inertialAccel[3] = {};
 
         // Status flags
         bool _airborne = false;
@@ -266,7 +266,7 @@ class MultirotorDynamics {
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
-            double ned[3] = {0};
+            double ned[3] = {};
             bodyZToInertial(-_U1/_p.m, euler, ned);
 
             // We're airborne once net downward acceleration goes below zero
