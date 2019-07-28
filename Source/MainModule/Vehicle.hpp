@@ -271,7 +271,7 @@ class Vehicle {
             uint8_t id = _objects.cameraCount + 1;
 
             // Create name of render target asset
-            wchar_t renderTargetName[200];
+            TCHAR renderTargetName[200];
             swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), 
                     L"/Game/Flying/RenderTargets/renderTarget_%dx%d_%d", camera->_cols, camera->_rows, id);  
 
@@ -280,7 +280,7 @@ class Vehicle {
 
             // Create a static render target.  This provides less flexibility than creating it dynamically,
             // but acquiring the pixels seems to run twice as fast.
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject((char16_t *)renderTargetName);
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(renderTargetName);
             UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObject.Object;
 
             // Create a camera component 
