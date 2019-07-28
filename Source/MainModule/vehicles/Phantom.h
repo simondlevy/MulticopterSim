@@ -47,6 +47,8 @@ class Phantom {
 
         QuadXAPDynamics dynamics = QuadXAPDynamics(_params);
 
+    private:
+
         Vehicle _vehicle = Vehicle(&dynamics);
 
         // Threaded worker for flight control
@@ -58,6 +60,8 @@ class Phantom {
 
             _vehicle.addProp(index-1, x*d, y*d, +.15, mesh);
         }
+
+    public:
 
         void build(APawn * pawn)
         {
@@ -79,6 +83,8 @@ class Phantom {
 
         void BeginPlay(FFlightManager * flightManager)
         {
+            _flightManager = flightManager;
+
             _vehicle.BeginPlay(flightManager);
         }
 
