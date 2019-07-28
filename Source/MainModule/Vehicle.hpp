@@ -380,8 +380,7 @@ class Vehicle {
                 // Start the audio for the propellers Note that because the
                 // Cue Asset is set to loop the sound, once we start playing the sound, it
                 // will play continiously...
-                //_objects.audioComponent->Play();
-                debug("%p", _objects.audioComponent);
+                _objects.audioComponent->Play();
 
                 // Create circular queue for moving-average of motor values
                 _motorBuffer = new TCircularBuffer<float>(20);
