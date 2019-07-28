@@ -209,6 +209,11 @@ class Vehicle {
 
             // Turn off UE4 physics
             _objects.frameMeshComponent->SetSimulatePhysics(false);
+          }
+
+        void buildWithAudio(APawn * pawn, UStaticMesh * frameMesh)
+        {
+            build(pawn, frameMesh);
 
             // Get sound cue from Contents
             static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/Flying/Audio/MotorSoundCue"));
