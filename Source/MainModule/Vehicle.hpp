@@ -156,7 +156,6 @@ class Vehicle {
 
             // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
             if (motorsum > 0) {
-                debug("%d %d %d %d", _motorDirections[0], _motorDirections[1], _motorDirections[2], _motorDirections[3]);
                 rotateProps(_motorDirections, _dynamics->motorCount());
             }
 
