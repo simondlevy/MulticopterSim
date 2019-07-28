@@ -269,15 +269,13 @@ class Vehicle {
 
         static void addCamera(objects_t & objects, Camera * camera)
         {
-            const wchar_t * resolutions[3] = { L"640x480", L"1280x720", L"1920x1080" };
-
             // Use one-based indexing for asset names
             uint8_t id = objects.cameraCount + 1;
 
             // Create name of render target asset
             wchar_t renderTargetName[200];
             swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), 
-                    L"/Game/Flying/RenderTargets/renderTarget_%s_%d", resolutions[camera->_resolution], id);  
+                    L"/Game/Flying/RenderTargets/renderTarget_%dx%d_%d", camera->_cols, camera->_rows, id);  
 
             // Make the camera appear small in the editor so it doesn't obscure the vehicle
             FVector cameraScale(0.1, 0.1, 0.1);

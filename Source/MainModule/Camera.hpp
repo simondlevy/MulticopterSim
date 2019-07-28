@@ -22,6 +22,7 @@ class Camera {
 
     public:
 
+        // Supported resolutions
         typedef enum {
 
             RES_640x480,
@@ -37,16 +38,12 @@ class Camera {
 
     protected:
 
-        // Image size
+        // Image size and field of view, set in constructor
         uint16_t _rows = 0;
         uint16_t _cols = 0;
-        
-        // Field of view
-        float _fov = 0;
+        float    _fov  = 0;
 
-        Resolution_t _resolution;
-
-        // UE4 resources
+        // UE4 resources, set in Vehicle::addCamera()
         UCameraComponent         * _cameraComponent = NULL;
         USceneCaptureComponent2D * _captureComponent = NULL;
         FRenderTarget            * _renderTarget = NULL;
@@ -58,12 +55,10 @@ class Camera {
 
             _rows = rowss[resolution];
             _cols = colss[resolution];
+            _fov = fov;
 
             // Create a byte array sufficient to hold the RGBA image
             _imageBytes = new uint8_t [_rows*_cols*4];
-
-            _fov = fov;
-            _resolution = resolution;
 
             // These will be set in Vehicle::addCamera()
             _cameraComponent = NULL;
