@@ -23,7 +23,7 @@ DECLARE_STATIC_MESH(FProp4Statics, "Phantom/Prop.Prop", Prop4Statics)
 
 class Phantom {
 
-    public:
+    private:
 
         MultirotorDynamics::params_t _params = {
 
@@ -42,6 +42,8 @@ class Phantom {
 
             0                       // XXX motor acceleration 
         };
+
+    public:
 
         QuadXAPDynamics dynamics = QuadXAPDynamics(_params);
 
