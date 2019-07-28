@@ -60,8 +60,6 @@ class Vehicle {
         static const uint8_t MAX_MOTORS  = 20; 
         static const uint8_t MAX_CAMERAS = 10; 
 
-    public: 
-        
         // UE4 objects that must be built statically
         typedef struct {
 
@@ -384,7 +382,8 @@ class Vehicle {
                 // Start the audio for the propellers Note that because the
                 // Cue Asset is set to loop the sound, once we start playing the sound, it
                 // will play continiously...
-                _objects.audioComponent->Play();
+                //_objects.audioComponent->Play();
+                debug("%p", _objects.audioComponent);
 
                 // Create circular queue for moving-average of motor values
                 _motorBuffer = new TCircularBuffer<float>(20);
