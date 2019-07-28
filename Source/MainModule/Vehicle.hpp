@@ -160,7 +160,7 @@ class Vehicle {
 
             // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
             if (motorsum > 0) {
-                rotateProps(_objects, _motorDirections, _dynamics->motorCount());
+                rotateProps(_motorDirections, _dynamics->motorCount());
             }
 
             // Add mean to circular buffer for moving average
@@ -201,76 +201,76 @@ class Vehicle {
         }
 
     public:
-        
-        // Static helpers
 
-        static void build(objects_t & objects)
+        void build(APawn * pawn, UStaticMesh * frameMesh)
         {
-            objects.frameMeshComponent = objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
-            objects.frameMeshComponent->SetStaticMesh(objects.frameMesh);
-            objects.pawn->SetRootComponent(objects.frameMeshComponent);
+            _objects.pawn = pawn;
+            _objects.frameMesh = frameMesh;
+
+            _objects.frameMeshComponent = _objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
+            _objects.frameMeshComponent->SetStaticMesh(_objects.frameMesh);
+            _objects.pawn->SetRootComponent(_objects.frameMeshComponent);
 
             // Turn off UE4 physics
-            objects.frameMeshComponent->SetSimulatePhysics(false);
+            _objects.frameMeshComponent->SetSimulatePhysics(false);
 
             // Get sound cue from Contents
             static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/Flying/Audio/MotorSoundCue"));
 
             // Store a reference to the Cue asset - we'll need it later.
-            objects.soundCue = soundCue.Object;
+            _objects.soundCue = soundCue.Object;
 
             // Create an audio component, the audio component wraps the Cue, 
             // and allows us to ineract with it, and its parameters from code.
-            objects.audioComponent = objects.pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
+            _objects.audioComponent = _objects.pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
 
             // Stop the sound from sound playing the moment it's created.
-            objects.audioComponent->bAutoActivate = false;
+            _objects.audioComponent->bAutoActivate = false;
 
             // Attach the sound to the pawn's root, the sound follows the pawn around
-            objects.audioComponent->SetupAttachment(objects.pawn->GetRootComponent());
+            _objects.audioComponent->SetupAttachment(_objects.pawn->GetRootComponent());
 
             // Create a spring-arm for the gimbal
-            objects.springArm = objects.pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-            objects.springArm->SetupAttachment(objects.pawn->GetRootComponent());
-            objects.springArm->TargetArmLength = 0.f; 
+            _objects.springArm = _objects.pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+            _objects.springArm->SetupAttachment(_objects.pawn->GetRootComponent());
+            _objects.springArm->TargetArmLength = 0.f; 
           }
 
-        static void addMesh(const objects_t & objects, UStaticMesh * mesh, const char * name, 
-                const FVector & location, const FRotator rotation, const FVector & scale)
+        void addMesh(UStaticMesh * mesh, const char * name, const FVector & location, const FRotator rotation, const FVector & scale)
         {
             UStaticMeshComponent * meshComponent = 
-                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
+                _objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
             meshComponent->SetStaticMesh(mesh);
-            meshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
+            meshComponent->SetupAttachment(_objects.frameMeshComponent, USpringArmComponent::SocketName); 	
             meshComponent->AddRelativeLocation(location*100); // m => cm
             meshComponent->AddLocalRotation(rotation);
 			meshComponent->SetRelativeScale3D(scale);
         }
 
-        static void addProp(objects_t & objects, uint8_t index, float x, float y, const float z, UStaticMesh * propMesh)
+        void addProp(uint8_t index, float x, float y, const float z, UStaticMesh * propMesh)
         {
             UStaticMeshComponent * pMeshComponent = 
-                objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
+                _objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
             pMeshComponent->SetStaticMesh(propMesh);
-            pMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName);
+            pMeshComponent->SetupAttachment(_objects.frameMeshComponent, USpringArmComponent::SocketName);
             pMeshComponent->AddRelativeLocation(FVector(x, y, z)*100); // m => cm
 
-            objects.propellerMeshComponents[index] = pMeshComponent;
+            _objects.propellerMeshComponents[index] = pMeshComponent;
         }
 
-        static void rotateProps(objects_t & objects, int8_t * motorDirections, uint8_t motorCount)
+        void rotateProps(int8_t * motorDirections, uint8_t motorCount)
         {
             static float rotation;
             for (uint8_t i=0; i<motorCount; ++i) {
-                objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirections[i] * 100, 0));
+                _objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirections[i] * 100, 0));
             }
             rotation++;
         }
 
-        static void addCamera(objects_t & objects, Camera * camera)
+        void addCamera(Camera * camera)
         {
             // Use one-based indexing for asset names
-            uint8_t id = objects.cameraCount + 1;
+            uint8_t id = _objects.cameraCount + 1;
 
             // Create name of render target asset
             wchar_t renderTargetName[200];
@@ -286,17 +286,17 @@ class Vehicle {
             UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObject.Object;
 
             // Create a camera component 
-            camera->_cameraComponent = objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
-            camera->_cameraComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName); 	
+            camera->_cameraComponent = _objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
+            camera->_cameraComponent->SetupAttachment(_objects.springArm, USpringArmComponent::SocketName); 	
             camera->_cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             camera->_cameraComponent->SetWorldScale3D(cameraScale);
             camera->_cameraComponent->SetFieldOfView(camera->_fov);
             camera->_cameraComponent->SetAspectRatio((float)camera->_cols / camera->_rows);
 
             // Create a scene-capture component and set its target to the render target
-            camera->_captureComponent = objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
+            camera->_captureComponent = _objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
             camera->_captureComponent->SetWorldScale3D(cameraScale);
-            camera->_captureComponent->SetupAttachment(objects.springArm, USpringArmComponent::SocketName);
+            camera->_captureComponent->SetupAttachment(_objects.springArm, USpringArmComponent::SocketName);
             camera->_captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             camera->_captureComponent->FOVAngle = camera->_fov - 45;
             camera->_captureComponent->TextureTarget = textureRenderTarget2D;
@@ -305,9 +305,8 @@ class Vehicle {
             camera->_renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();
 
             // Increment the camera count for next time
-            objects.cameras[objects.cameraCount++] = camera;
+            _objects.cameras[_objects.cameraCount++] = camera;
         }
-
 
         static const FName makeName(const char * prefix, const uint8_t index, const char * suffix="")
         {
@@ -316,7 +315,25 @@ class Vehicle {
             return FName(name);
         }
 
-        // Constructor
+        // Constructors
+        
+        Vehicle(void)
+        {
+            _dynamics = NULL;
+            _flightManager = NULL;
+         }
+
+        Vehicle(MultirotorDynamics * dynamics)
+        {
+            _dynamics = dynamics;
+
+            for (uint8_t i=0; i<dynamics->motorCount(); ++i) {
+                _motorDirections[i] = dynamics->motorDirection(i);
+            }
+
+            _flightManager = NULL;
+         }
+        
         Vehicle(const objects_t & objects, MultirotorDynamics * dynamics)
         {
             _dynamics = dynamics;

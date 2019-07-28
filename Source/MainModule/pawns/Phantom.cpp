@@ -19,7 +19,7 @@ static void addProp(Vehicle::objects_t & objects, uint8_t index, int8_t x, int8_
 {
     float d = 0.12;
 
-    Vehicle::addProp(objects, index, x*d, y*d, +.15, propMesh);
+    //Vehicle::addProp(objects, index, x*d, y*d, +.15, propMesh);
 }
 
 APhantomPawn::APhantomPawn()
@@ -30,7 +30,7 @@ APhantomPawn::APhantomPawn()
 
     objects.frameMesh = FrameStatics.mesh.Get();
 
-    Vehicle::build(objects);
+    //Vehicle::build(objects);
 
     // Add propellers
     addProp(objects, 0, +1, +1, Prop1Statics.mesh.Get());

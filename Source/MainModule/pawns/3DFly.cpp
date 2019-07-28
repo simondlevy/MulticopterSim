@@ -25,7 +25,7 @@ static void addMotorAndProp(Vehicle::objects_t & objects, uint8_t index, int8_t 
     mMeshComponent->SetupAttachment(objects.frameMeshComponent, USpringArmComponent::SocketName); 	
     mMeshComponent->AddRelativeLocation(FVector(x*d, y*d-0.01, 0.005)*100); // m => cm
 
-    Vehicle::addProp(objects, index, x*d, y*d, +.025, propMesh);
+    //Vehicle::addProp(objects, index, x*d, y*d, +.025, propMesh);
 }
 
 A3DFlyPawn::A3DFlyPawn()
@@ -36,7 +36,7 @@ A3DFlyPawn::A3DFlyPawn()
     objects.frameMesh = FrameStatics.mesh.Get();
     objects.motorMesh = MotorStatics.mesh.Get();
 
-    Vehicle::build(objects);
+    //Vehicle::build(objects);
 
     addMotorAndProp(objects, 0, +1, +1, Prop1Statics.mesh.Get());
     addMotorAndProp(objects, 1, -1, -1, Prop2Statics.mesh.Get());
