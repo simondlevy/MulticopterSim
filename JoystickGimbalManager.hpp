@@ -1,5 +1,5 @@
 /*
-   MulticopterSim GimbalManager class implementation using a stub
+   MulticopterSim GimbalManager class implementation using joystick or game controller
 
    Just spins propellers
 
@@ -8,19 +8,18 @@
    MIT License
 */
 
-#include "../MainModule/FlightManager.hpp"
 #include "../MainModule/GimbalManager.hpp"
 
-class FStickGimbalManager : public FGimbalManager {
+class FJoystickGimbalManager : public FGimbalManager {
 
     public:
 
         // Constructor
-        FStickGimbalManager() : FGimbalManager() 
+        FJoystickGimbalManager() : FGimbalManager() 
         {
         }
 
-        virtual ~FStickGimbalManager(void)
+        virtual ~FJoystickGimbalManager(void)
         {
         }
 
@@ -33,10 +32,3 @@ class FStickGimbalManager : public FGimbalManager {
         }
 
 }; // StickGimbalManager
-
-
-// Factory method for GimbalManager class
-FLIGHTMODULE_API FGimbalManager * createGimbalManager(void)
-{
-    return new FStickGimbalManager();
-}
