@@ -260,8 +260,9 @@ class MultirotorDynamics {
          * Updates state.
          *
          * @param dt time in seconds since previous update
+         * @param state state structure returned
          */
-        void update(double dt)
+        void getState(double dt, state_t & state)
         {
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
@@ -310,7 +311,42 @@ class MultirotorDynamics {
                 _inertialAccel[1] = ned[1];
                 _inertialAccel[2] = ned[2];
             }
-        }
+
+            // Get most values directly from state vector
+            for (uint8_t i=0; i<3; ++i) {
+                uint8_t ii = 2 * i;
+                state.angularVel[i]    = _x[STATE_PHI_DOT+ii];
+                state.inertialVel[i]   = _x[STATE_X_DOT+ii];
+                state.pose.rotation[i] = _x[STATE_PHI+ii];
+                state.pose.location[i] = _x[STATE_X+ii];
+            }
+
+            // Convert inertial acceleration and velocity to body frame
+            inertialToBody(_inertialAccel, state.pose.rotation, state.bodyAccel);
+
+            // Convert Euler angles to quaternion
+            eulerToQuaternion(state.pose.rotation, state.quaternion);
+
+            // If airborne, check crash / land status
+            if (_airborne) {
+
+                // We've returned to the ground
+                if (state.pose.location[2] > _zstart) {
+
+                    _airborne = false;
+
+                    // Descending too fast: crashed!
+                    if (state.inertialVel[2] > MAX_DROP_RATE) {
+                        _crashed = true;
+                    }
+
+                    // A soft landing: set vertical velocity to zero
+                    state.inertialVel[2] = 0;
+                }
+            }
+
+        } // update
+
 
         /**
          * Uses motor values to implement Equation 6.
@@ -365,48 +401,6 @@ class MultirotorDynamics {
                 uint8_t ii = 2 * i;
                 pose.rotation[i] = _x[STATE_PHI+ii];
                 pose.location[i] = _x[STATE_X+ii];
-            }
-        }
-
-         /*
-         *  Gets current state
-         *
-         *  @param state data structure that will contain state
-         */
-        void getState(state_t & state)
-        {
-
-            // Get most values directly from state vector
-            for (uint8_t i=0; i<3; ++i) {
-                uint8_t ii = 2 * i;
-                state.angularVel[i]    = _x[STATE_PHI_DOT+ii];
-                state.inertialVel[i]   = _x[STATE_X_DOT+ii];
-                state.pose.rotation[i] = _x[STATE_PHI+ii];
-                state.pose.location[i] = _x[STATE_X+ii];
-            }
-
-            // Convert inertial acceleration and velocity to body frame
-            inertialToBody(_inertialAccel, state.pose.rotation, state.bodyAccel);
-
-            // Convert Euler angles to quaternion
-            eulerToQuaternion(state.pose.rotation, state.quaternion);
-
-            // If airborne, check crash / land status
-            if (_airborne) {
-
-                // We've returned to the ground
-                if (state.pose.location[2] > _zstart) {
-
-                    _airborne = false;
-
-                    // Descending too fast: crashed!
-                    if (state.inertialVel[2] > MAX_DROP_RATE) {
-                        _crashed = true;
-                    }
-
-                    // A soft landing: set vertical velocity to zero
-                    state.inertialVel[2] = 0;
-                }
             }
         }
 
