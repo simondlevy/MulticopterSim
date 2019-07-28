@@ -69,6 +69,8 @@ class FFlightManager : public FThreadedWorker {
 
         MultirotorDynamics * _dynamics;
 
+        MultirotorDynamics::state_t _state = {0};
+
         // Constructor, called main thread
         FFlightManager(MultirotorDynamics * dynamics) 
             : FThreadedWorker()
@@ -98,16 +100,18 @@ class FFlightManager : public FThreadedWorker {
             // Send current motor values to dynamics
             _dynamics->setMotors(_motorvals, deltaT);
 
-            // Update dynamics, retrieving state
-            MultirotorDynamics::state_t state = {0};
-            _dynamics->getState(deltaT, state);
+            // Update dynamics
+            _dynamics->update(deltaT);
+
+            // Get new vehicle state
+            _state = _dynamics->getState();
 
             // PID controller: update the flight manager (e.g., HackflightManager) with
             // the dynamics state, getting back the motor values
-            this->getMotors(currentTime, state, _motorvals);
+            this->getMotors(currentTime, _state, _motorvals);
 
             // Show status in OSD
-            showStatus(currentTime, state);
+            showStatus(currentTime, _state);
 
             // Track previous time for deltaT
             _previousTime = currentTime;

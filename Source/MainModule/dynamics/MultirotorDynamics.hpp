@@ -57,6 +57,29 @@ class MultirotorDynamics {
 
         } params_t;
 
+        /**
+         * Exported state representations
+         */
+
+        // Kinematics
+        typedef struct {
+
+            double location[3];
+            double rotation[3]; 
+
+        } pose_t;
+
+        typedef struct {
+
+            double angularVel[3]; 
+            double bodyAccel[3]; 
+            double inertialVel[3]; 
+            double quaternion[4]; 
+
+            pose_t pose;
+
+        } state_t;
+
     private:
 
         // Universal constants
@@ -85,6 +108,9 @@ class MultirotorDynamics {
             STATE_PSI_DOT
         };
 
+        // Data structure for returning state
+        state_t _state;
+
         params_t _p;
 
         uint8_t _motorCount = 0;
@@ -109,9 +135,6 @@ class MultirotorDynamics {
 
         // Starting altitude for crash detection
         double _zstart = 0;
-
-        // Support for debugging
-        char _message[200];
 
         // y = Ax + b helper for frame-of-reference conversion methods
         static void dot(double A[3][3], double x[3], double y[3])
@@ -190,29 +213,6 @@ class MultirotorDynamics {
     public:
 
         /**
-         * Exported state representations
-         */
-
-        // Kinematics
-        typedef struct {
-
-            double location[3];
-            double rotation[3]; 
-
-        } pose_t;
-
-        typedef struct {
-
-            double angularVel[3]; 
-            double bodyAccel[3]; 
-            double inertialVel[3]; 
-            double quaternion[4]; 
-
-            pose_t pose;
-
-        } state_t;
-
-        /**
          *  Destructor
          */
         virtual ~MultirotorDynamics(void)
@@ -260,9 +260,8 @@ class MultirotorDynamics {
          * Updates state.
          *
          * @param dt time in seconds since previous update
-         * @param state state structure returned
          */
-        void getState(double dt, state_t & state)
+        void update(double dt)
         {
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
@@ -315,38 +314,42 @@ class MultirotorDynamics {
             // Get most values directly from state vector
             for (uint8_t i=0; i<3; ++i) {
                 uint8_t ii = 2 * i;
-                state.angularVel[i]    = _x[STATE_PHI_DOT+ii];
-                state.inertialVel[i]   = _x[STATE_X_DOT+ii];
-                state.pose.rotation[i] = _x[STATE_PHI+ii];
-                state.pose.location[i] = _x[STATE_X+ii];
+                _state.angularVel[i]    = _x[STATE_PHI_DOT+ii];
+                _state.inertialVel[i]   = _x[STATE_X_DOT+ii];
+                _state.pose.rotation[i] = _x[STATE_PHI+ii];
+                _state.pose.location[i] = _x[STATE_X+ii];
             }
 
             // Convert inertial acceleration and velocity to body frame
-            inertialToBody(_inertialAccel, state.pose.rotation, state.bodyAccel);
+            inertialToBody(_inertialAccel, _state.pose.rotation, _state.bodyAccel);
 
             // Convert Euler angles to quaternion
-            eulerToQuaternion(state.pose.rotation, state.quaternion);
+            eulerToQuaternion(_state.pose.rotation, _state.quaternion);
 
             // If airborne, check crash / land status
             if (_airborne) {
 
                 // We've returned to the ground
-                if (state.pose.location[2] > _zstart) {
+                if (_state.pose.location[2] > _zstart) {
 
                     _airborne = false;
 
                     // Descending too fast: crashed!
-                    if (state.inertialVel[2] > MAX_DROP_RATE) {
+                    if (_state.inertialVel[2] > MAX_DROP_RATE) {
                         _crashed = true;
                     }
 
                     // A soft landing: set vertical velocity to zero
-                    state.inertialVel[2] = 0;
+                    _state.inertialVel[2] = 0;
                 }
             }
 
         } // update
 
+        state_t getState(void)
+        {
+            return _state;
+        }
 
         /**
          * Uses motor values to implement Equation 6.
@@ -355,8 +358,6 @@ class MultirotorDynamics {
          */
         void setMotors(double * motorvals, double deltaT)
         {
-			//sprintf(_message, "dt: %f", deltaT);
-			//debug("dt: %f", deltaT);
             // Convert the  motor values to radians per second
            for (unsigned int i=0; i<_motorCount; ++i) {
 
@@ -411,16 +412,6 @@ class MultirotorDynamics {
 
         // Motor direction for animation
         virtual int8_t motorDirection(uint8_t i) { (void)i; return 0; }
-
-        /**
-         *  Supports debugging
-         *
-         * @return message string that can be displayed by calling program (e.g., FlightManager)
-         */
-        char * getMessage(void)
-        {
-            return _message;
-        }
 
         /**
          *  Frame-of-reference conversion routines.
