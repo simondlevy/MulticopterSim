@@ -84,7 +84,9 @@ class SimBoard : public hf::Board {
 
 }; // class Simboard
 
+/*
 void hf::Board::outbuf(char * buf)
 {
     osd(buf, false);
 }
+*/

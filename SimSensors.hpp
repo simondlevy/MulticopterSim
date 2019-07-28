@@ -45,8 +45,7 @@ class SimSensors : public hf::Sensor {
             (void)time;
 
             // Get vehicle state from dynamics
-            MultirotorDynamics::state_t dynamicsState;
-            _dynamics->getState(dynamicsState);
+            MultirotorDynamics::state_t dynamicsState = _dynamics->getState();
 
             // Use vehicle state to modify Hackflight state values
             vehicleState.location[2]    = -dynamicsState.pose.location[2]; // Negate for NED => ENU conversion
