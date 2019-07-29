@@ -46,7 +46,7 @@ class MultirotorDynamics {
 
             friend class MultirotorDynamics;
 
-            protected:
+            public:
 
                 double b;
                 double d;
@@ -58,8 +58,6 @@ class MultirotorDynamics {
                 double Jr;
 
                 uint16_t maxrpm;
-
-             public:
 
                 Parameters(const Parameters & params)
                 {
@@ -123,40 +121,10 @@ class MultirotorDynamics {
         // Maximum vertical descent rate (m/s) not considered a crash
         static constexpr double MAX_DROP_RATE = 0.5;
 
-        // State vector (see Eqn. 11) and its first temporal derivative
-        double _x[12]    = {};
-        double _dxdt[12] = {};
-
-        // State vector position map
-        enum {
-            STATE_X, 
-            STATE_X_DOT, 
-            STATE_Y,
-            STATE_Y_DOT,
-            STATE_Z,
-            STATE_Z_DOT,
-            STATE_PHI,
-            STATE_PHI_DOT,
-            STATE_THETA,
-            STATE_THETA_DOT,
-            STATE_PSI,
-            STATE_PSI_DOT
-        };
-
         // Data structure for returning state
         state_t _state;
 
-        // Parameter block
-        Parameters _p;
-
         uint8_t _motorCount = 0;
-
-        // Values computed in Equation 6
-        double _U1 = 0;     // total thrust
-        double _U2 = 0;     // roll thrust right
-        double _U3 = 0;     // pitch thrust forward
-        double _U4 = 0;     // yaw thrust clockwise
-        double _Omega = 0;  // torque clockwise
 
         // Radians per second for each motor
         double * _omegas = NULL;
@@ -208,6 +176,36 @@ class MultirotorDynamics {
         }
 
     protected:
+
+        // State vector position map
+        enum {
+            STATE_X, 
+            STATE_X_DOT, 
+            STATE_Y,
+            STATE_Y_DOT,
+            STATE_Z,
+            STATE_Z_DOT,
+            STATE_PHI,
+            STATE_PHI_DOT,
+            STATE_THETA,
+            STATE_THETA_DOT,
+            STATE_PSI,
+            STATE_PSI_DOT
+        };
+
+        // State vector (see Eqn. 11) and its first temporal derivative
+        double _x[12]    = {};
+        double _dxdt[12] = {};
+
+        // Values computed in Equation 6
+        double _U1 = 0;     // total thrust
+        double _U2 = 0;     // roll thrust right
+        double _U3 = 0;     // pitch thrust forward
+        double _U4 = 0;     // yaw thrust clockwise
+        double _Omega = 0;  // torque clockwise
+
+        // Parameter block
+        Parameters _p;
 
         // roll right
         virtual double u2(double * o) = 0;
