@@ -89,8 +89,9 @@ class MultirotorDynamics {
         // Maximum vertical descent rate (m/s) not considered a crash
         static constexpr double MAX_DROP_RATE = 0.5;
 
-         // State vector (see Eqn. 11)
-        double _x[12] = {};
+         // State vector (see Eqn. 11) and its first temporal derivative
+        double _x[12]    = {};
+        double _dxdt[12] = {};
 
         // State vector position map
         enum {
@@ -278,33 +279,12 @@ class MultirotorDynamics {
             // Once airborne, we can update dynamics
             if (_airborne) {
 
-                // Make some useful abbreviations
-                double phidot = _x[STATE_PHI_DOT];
-                double thedot = _x[STATE_THETA_DOT];
-                double psidot = _x[STATE_PSI_DOT];
+                // Compute the state derivatives using Equation 12
+                computeStateDerivative(ned, netz, _x[STATE_PHI_DOT], _x[STATE_THETA_DOT], _x[STATE_PSI_DOT]);
 
-                // XXX FACTOR THIS ===============================================================
-                double dxdt[12] = {
-
-                    // Equation 12: compute temporal first derivative of state.
-                    /* x'      */ _x[STATE_X_DOT],
-                    /* x''     */ ned[0],
-                    /* y'      */ _x[STATE_Y_DOT],
-                    /* y''     */ ned[1],
-                    /* z'      */ _x[STATE_Z_DOT],
-                    /* z''     */ netz,
-                    /* phi'    */ phidot,
-                    /* phi''   */ psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _U2/_p.Ix,
-                    /* theta'  */ thedot,
-                    /* theta'' */ -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _U3/_p.Iy),
-                    /* psi'    */ psidot,
-                    /* psi''   */ thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _U4/_p.Iz,
-                };
-                // ===============================================================
-                
                 // Compute state as first temporal integral of first temporal derivative
                 for (uint8_t i=0; i<12; ++i) {
-                    _x[i] += dt * dxdt[i];
+                    _x[i] += dt * _dxdt[i];
                 }
 
                 // Once airborne, inertial-frame acceleration is same as NED acceleration
@@ -363,18 +343,7 @@ class MultirotorDynamics {
             // Convert the  motor values to radians per second
            for (unsigned int i=0; i<_motorCount; ++i) {
 
-                double cmd = motorvals[i] * _p.maxrpm * pi / 30; //rad/s
-
-                _omegas[i] = cmd;
-
-                double acc_d = (cmd - _omegas[i]) / deltaT;
-
-                if (acc_d > _p.motors_acceleration) {
-                    //_omegas[i] += _p.motors_acceleration * deltaT;
-                }
-                else if (acc_d < -_p.motors_acceleration) {
-                    //_omegas[i] -= _p.motors_acceleration * deltaT;
-                }
+                _omegas[i] = motorvals[i] * _p.maxrpm * pi / 30; //rad/s
            }
 
            // Compute overall torque from omegas before squaring
@@ -504,4 +473,21 @@ class MultirotorDynamics {
          */
         static MultirotorDynamics * create(void);
 
+        // Equation 12: compute temporal first derivative of state.
+        virtual void computeStateDerivative(double ned[3], double netz, double phidot, double thedot, double psidot)
+        {
+            _dxdt[0]  =  _x[STATE_X_DOT];                                                              // x'
+            _dxdt[1]  =  ned[0];                                                                       // x''
+            _dxdt[2]  =  _x[STATE_Y_DOT];                                                              // y'
+            _dxdt[3]  =  ned[1];                                                                       // y''
+            _dxdt[4]  =  _x[STATE_Z_DOT];                                                              // z'
+            _dxdt[5]  =  netz;                                                                         // z''
+            _dxdt[6]  =  phidot;                                                                       // phi'
+            _dxdt[7]  =  psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _U2/_p.Ix;    // phi''
+            _dxdt[8]  =  thedot;                                                                       // theta'
+            _dxdt[9]  =  -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _U3/_p.Iy); // theta''
+            _dxdt[10] = psidot;                                                                        // psi'
+            _dxdt[11] = thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _U4/_p.Iz;                               // psi''
+        }
+ 
 }; // class MultirotorDynamics
