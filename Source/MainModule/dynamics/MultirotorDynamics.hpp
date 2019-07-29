@@ -39,11 +39,15 @@ class MultirotorDynamics {
 
     public:
 
+        /**
+          * Class for parameters from the table below Equation 3
+          */
         class Parameters {
+
+            friend class MultirotorDynamics;
 
             protected:
 
-                // From the table below Equation 3
                 double b;
                 double d;
                 double m;
@@ -55,7 +59,21 @@ class MultirotorDynamics {
 
                 uint16_t maxrpm;
 
-            public:
+             public:
+
+                Parameters(const Parameters & params)
+                {
+                    this->b  = params.b;
+                    this->d  = params.d;
+                    this->m  = params.m;
+                    this->l  = params.l;
+                    this->Ix = params.Ix;
+                    this->Iy = params.Iy;
+                    this->Iz = params.Iz;
+                    this->Jr = params.Jr;
+
+                    this->maxrpm = params.maxrpm;
+                }
 
                 Parameters(double b, double d, double m, double l, double Ix, double Iy, double Iz, double Jr, uint16_t maxrpm)
                 {
@@ -71,24 +89,6 @@ class MultirotorDynamics {
                     this->maxrpm = maxrpm;
                 }
         };
-
-        // Parameters from the table below Equation 3
-        typedef struct {
-
-            double b;
-            double d;
-            double m;
-            double l;
-            double Ix;
-            double Iy;
-            double Iz;
-            double Jr;
-
-            uint16_t maxrpm;
-
-            double motors_acceleration;
-
-        } params_t;
 
         /**
          * Exported state representations
@@ -146,7 +146,8 @@ class MultirotorDynamics {
         // Data structure for returning state
         state_t _state;
 
-        params_t _p;
+        // Parameter block
+        Parameters _p;
 
         uint8_t _motorCount = 0;
 
@@ -220,25 +221,12 @@ class MultirotorDynamics {
          /**
          *  Constructor
          */
-        MultirotorDynamics(const params_t & params, const uint8_t motorCount)
+        MultirotorDynamics(const Parameters & params, const uint8_t motorCount) : _p(params)
         {
             _motorCount = motorCount;
 
             _omegas = new double[motorCount];
             _omegas2 = new double[motorCount];
-
-            _p.b = params.b;
-            _p.d = params.d;
-            _p.m = params.m;
-            _p.l = params.l;
-            _p.Ix = params.Ix;
-            _p.Iy = params.Iy;
-            _p.Iz = params.Iz;
-            _p.Jr = params.Jr;
-
-            _p.maxrpm = params.maxrpm;
-
-			_p.motors_acceleration = params.motors_acceleration;
 
             for (uint8_t i=0; i<12; ++i) {
                 _x[i] = 0;
