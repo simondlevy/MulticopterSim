@@ -35,9 +35,10 @@ class FFlightManager : public FThreadedWorker {
          * @param time current time in seconds (input)
          * @param state vehicle state (input)
          * @param motorvals motor values returned by your controller (output)
+         * @param motorCount how many motors to get
          *
          */
-        virtual void getMotors(const double time, const MultirotorDynamics::state_t & state, double * motorvals)  = 0;
+        virtual void getMotors(const double time, const MultirotorDynamics::state_t & state, double * motorvals, uint8_t motorCount)  = 0;
         
         // OSD
         void showStatus(const double time, const MultirotorDynamics::state_t & state)
@@ -108,7 +109,7 @@ class FFlightManager : public FThreadedWorker {
 
             // PID controller: update the flight manager (e.g., HackflightManager) with
             // the dynamics state, getting back the motor values
-            this->getMotors(currentTime, _state, _motorvals);
+            this->getMotors(currentTime, _state, _motorvals, _dynamics->motorCount());
 
             // Show status in OSD
             showStatus(currentTime, _state);

@@ -19,7 +19,6 @@ class FGimbalManager : public FThreadedWorker {
         float _roll  = 0;
         float _pitch = 0;
         float _yaw   = 0;
-        float _fov   = 0;
 
     protected:
 
@@ -29,26 +28,24 @@ class FGimbalManager : public FThreadedWorker {
             _roll  = 0;
             _pitch = 0;
             _yaw   = 0;
-            _fov   = FOV_INIT;
         }
 
         // Called repeatedly on worker thread to process current image
         void performTask(double currentTime)
         {
-            set(currentTime, _roll, _pitch, _yaw, _fov);
+            set(currentTime, _roll, _pitch, _yaw);
         }
 
-        virtual void set(double currentTime, float & roll, float & pitch, float & yaw, float & fov) = 0;
+        virtual void set(double currentTime, float & roll, float & pitch, float & yaw) = 0;
 
     public:
 
         // Called on main thread
-        void get(float & roll, float & pitch, float & yaw, float & fov) 
+        void get(float & roll, float & pitch, float & yaw) 
         {
             roll = _roll;
             pitch = _pitch;
             yaw = _yaw;
-            fov = _fov;
         }
 
         ~FGimbalManager()

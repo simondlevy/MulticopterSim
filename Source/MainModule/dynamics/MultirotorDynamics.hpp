@@ -283,6 +283,7 @@ class MultirotorDynamics {
                 double thedot = _x[STATE_THETA_DOT];
                 double psidot = _x[STATE_PSI_DOT];
 
+                // XXX FACTOR THIS ===============================================================
                 double dxdt[12] = {
 
                     // Equation 12: compute temporal first derivative of state.
@@ -299,7 +300,8 @@ class MultirotorDynamics {
                     /* psi'    */ psidot,
                     /* psi''   */ thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _U4/_p.Iz,
                 };
-
+                // ===============================================================
+                
                 // Compute state as first temporal integral of first temporal derivative
                 for (uint8_t i=0; i<12; ++i) {
                     _x[i] += dt * dxdt[i];

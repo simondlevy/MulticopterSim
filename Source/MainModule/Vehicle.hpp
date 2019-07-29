@@ -422,8 +422,8 @@ class Vehicle {
             if (!_flightManager) return;
 
             // Get gimbal info from manager
-            float roll = 0, pitch = 0, yaw = 0, fov = 0;
-            gimbalManager->get(roll, pitch, yaw, fov);
+            float roll = 0, pitch = 0, yaw = 0;
+            gimbalManager->get(roll, pitch, yaw);
 
             FRotator rotation = _objects.springArm->GetComponentRotation();
 
@@ -432,12 +432,6 @@ class Vehicle {
             rotation.Yaw   += yaw;
 
             _objects.springArm->SetWorldRotation(rotation);
-
-            // XXX should we enable setting each camera's FOV independently?
-            for (uint8_t i=0; i<_objects.cameraCount; ++i) {
-                _objects.cameras[i]->_cameraComponent->FieldOfView = fov;
-                _objects.cameras[i]->_captureComponent->FOVAngle = fov - 45;
-            }
         }
 
     private:
