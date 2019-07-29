@@ -69,6 +69,7 @@ class MultirotorDynamics {
 
         } pose_t;
 
+        // Full state
         typedef struct {
 
             double angularVel[3]; 
@@ -209,6 +210,41 @@ class MultirotorDynamics {
             for (uint8_t i=0; i<12; ++i) {
                 _x[i] = 0;
             }
+        }
+
+        /**
+         * Implements Equation 12 computing temporal first derivative of state.
+         * Should fill _dxdx[0..11] with appropriate values.
+         * @param accelNED acceleration in NED inertial frame
+         * @param netz accelNED[2] with gravitational constant added in
+         * @param phidot rotational acceleration in roll axis
+         * @param thedot rotational acceleration in pitch axis
+         * @param psidot rotational acceleration in yaw axis
+         */
+        virtual void computeStateDerivative(double accelNED[3], double netz, double phidot, double thedot, double psidot)
+        {
+            _dxdt[0]  =  _x[STATE_X_DOT];                                                              // x'
+            _dxdt[1]  =  accelNED[0];                                                                  // x''
+            _dxdt[2]  =  _x[STATE_Y_DOT];                                                              // y'
+            _dxdt[3]  =  accelNED[1];                                                                  // y''
+            _dxdt[4]  =  _x[STATE_Z_DOT];                                                              // z'
+            _dxdt[5]  =  netz;                                                                         // z''
+            _dxdt[6]  =  phidot;                                                                       // phi'
+            _dxdt[7]  =  psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _U2/_p.Ix;    // phi''
+            _dxdt[8]  =  thedot;                                                                       // theta'
+            _dxdt[9]  =  -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _U3/_p.Iy); // theta''
+            _dxdt[10] = psidot;                                                                        // psi'
+            _dxdt[11] = thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _U4/_p.Iz;                               // psi''
+        }
+
+        /**
+         * Computes motor speed base on motor value
+         * @param motorval motor value in [0,1]
+         * @return motor speed in RPM
+         */
+        virtual double computeMotorRPM(double motorval)
+        {
+            return motorval * _p.maxrpm; 
         }
 
     public:
@@ -469,41 +505,6 @@ class MultirotorDynamics {
         uint8_t motorCount(void)
         {
             return _motorCount;
-        }
-
-        /**
-         * Implements Equation 12 computing temporal first derivative of state.
-         * Should fill _dxdx[0..11] with appropriate values.
-         * @param accelNED acceleration in NED inertial frame
-         * @param netz accelNED[2] with gravitational constant added in
-         * @param phidot rotational acceleration in roll axis
-         * @param thedot rotational acceleration in pitch axis
-         * @param psidot rotational acceleration in yaw axis
-         */
-        virtual void computeStateDerivative(double accelNED[3], double netz, double phidot, double thedot, double psidot)
-        {
-            _dxdt[0]  =  _x[STATE_X_DOT];                                                              // x'
-            _dxdt[1]  =  accelNED[0];                                                                  // x''
-            _dxdt[2]  =  _x[STATE_Y_DOT];                                                              // y'
-            _dxdt[3]  =  accelNED[1];                                                                  // y''
-            _dxdt[4]  =  _x[STATE_Z_DOT];                                                              // z'
-            _dxdt[5]  =  netz;                                                                         // z''
-            _dxdt[6]  =  phidot;                                                                       // phi'
-            _dxdt[7]  =  psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _U2/_p.Ix;    // phi''
-            _dxdt[8]  =  thedot;                                                                       // theta'
-            _dxdt[9]  =  -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _U3/_p.Iy); // theta''
-            _dxdt[10] = psidot;                                                                        // psi'
-            _dxdt[11] = thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _U4/_p.Iz;                               // psi''
-        }
-
-        /**
-         * Computes motor speed base on motor value
-         * @param motorval motor value in [0,1]
-         * @return motor speed in RPM
-         */
-        virtual double computeMotorRPM(double motorval)
-        {
-            return motorval * _p.maxrpm; 
         }
 
 }; // class MultirotorDynamics
