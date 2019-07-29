@@ -33,10 +33,10 @@ class FGimbalManager : public FThreadedWorker {
         // Called repeatedly on worker thread to process current image
         void performTask(double currentTime)
         {
-            set(currentTime, _roll, _pitch, _yaw);
+            get(currentTime, _roll, _pitch, _yaw);
         }
 
-        virtual void set(double currentTime, float & roll, float & pitch, float & yaw) = 0;
+        virtual void get(double currentTime, float & roll, float & pitch, float & yaw) = 0;
 
     public:
 

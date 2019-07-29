@@ -44,9 +44,9 @@ class Phantom {
 
         QuadXAPDynamics dynamics = QuadXAPDynamics(&params);
 
-    private:
+        Vehicle vehicle = Vehicle(&dynamics);
 
-        Vehicle _vehicle = Vehicle(&dynamics);
+    private:
 
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
@@ -55,14 +55,14 @@ class Phantom {
         {
             float d = 0.12;
 
-            _vehicle.addProp(index-1, x*d, y*d, +.15, mesh);
+            vehicle.addProp(index-1, x*d, y*d, +.15, mesh);
         }
 
     public:
 
         void build(APawn * pawn)
         {
-            _vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
+            vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
 
             // Add propellers
             addProp(1, +1, +1, Prop1Statics.mesh.Get());
@@ -75,14 +75,14 @@ class Phantom {
 
         void PostInitializeComponents()
         {
-            _vehicle.PostInitializeComponents();
+            vehicle.PostInitializeComponents();
         }
 
         void BeginPlay(FFlightManager * flightManager)
         {
             _flightManager = flightManager;
 
-            _vehicle.BeginPlay(flightManager);
+            vehicle.BeginPlay(flightManager);
         }
 
         void EndPlay(void)
@@ -92,7 +92,7 @@ class Phantom {
 
         void Tick(void)
         {
-            _vehicle.Tick();
+            vehicle.Tick();
         }
 
 }; // class Phantom 
