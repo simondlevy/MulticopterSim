@@ -39,6 +39,39 @@ class MultirotorDynamics {
 
     public:
 
+        class Parameters {
+
+            protected:
+
+                // From the table below Equation 3
+                double b;
+                double d;
+                double m;
+                double l;
+                double Ix;
+                double Iy;
+                double Iz;
+                double Jr;
+
+                uint16_t maxrpm;
+
+            public:
+
+                Parameters(double b, double d, double m, double l, double Ix, double Iy, double Iz, double Jr, uint16_t maxrpm)
+                {
+                    this->b  = b;
+                    this->d  = d;
+                    this->m  = m;
+                    this->l  = l;
+                    this->Ix = Ix;
+                    this->Iy = Iy;
+                    this->Iz = Iz;
+                    this->Jr = Jr;
+
+                    this->maxrpm = maxrpm;
+                }
+        };
+
         // Parameters from the table below Equation 3
         typedef struct {
 
@@ -53,7 +86,7 @@ class MultirotorDynamics {
 
             uint16_t maxrpm;
 
-			double motors_acceleration;
+            double motors_acceleration;
 
         } params_t;
 
@@ -90,7 +123,7 @@ class MultirotorDynamics {
         // Maximum vertical descent rate (m/s) not considered a crash
         static constexpr double MAX_DROP_RATE = 0.5;
 
-         // State vector (see Eqn. 11) and its first temporal derivative
+        // State vector (see Eqn. 11) and its first temporal derivative
         double _x[12]    = {};
         double _dxdt[12] = {};
 
