@@ -20,7 +20,7 @@ class QuadXAPDynamics : public MultirotorDynamics {
 
     public:	
 
-		QuadXAPDynamics(const Parameters & params) : MultirotorDynamics(params, 4)
+		QuadXAPDynamics(Parameters * params) : MultirotorDynamics(params, 4)
         {
         }
 

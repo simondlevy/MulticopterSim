@@ -35,12 +35,16 @@
 
 #include "../Debug.hpp"
 
+#ifndef M_PI
+static constexpr double M_PI = 3.14159;
+#endif
+
 class MultirotorDynamics {
 
     public:
 
         /**
-          * Class for parameters from the table below Equation 3
+         * Class for parameters from the table below Equation 3
           */
         class Parameters {
 
@@ -58,20 +62,6 @@ class MultirotorDynamics {
                 double Jr;
 
                 uint16_t maxrpm;
-
-                Parameters(const Parameters & params)
-                {
-                    this->b  = params.b;
-                    this->d  = params.d;
-                    this->m  = params.m;
-                    this->l  = params.l;
-                    this->Ix = params.Ix;
-                    this->Iy = params.Iy;
-                    this->Iz = params.Iz;
-                    this->Jr = params.Jr;
-
-                    this->maxrpm = params.maxrpm;
-                }
 
                 Parameters(double b, double d, double m, double l, double Ix, double Iy, double Iz, double Jr, uint16_t maxrpm)
                 {
@@ -116,7 +106,6 @@ class MultirotorDynamics {
 
         // Universal constants
         static constexpr double g  = 9.80665; // might want to allow this to vary!
-        static constexpr double pi = 3.14159;
 
         // Maximum vertical descent rate (m/s) not considered a crash
         static constexpr double MAX_DROP_RATE = 0.5;
@@ -205,7 +194,7 @@ class MultirotorDynamics {
         double _Omega = 0;  // torque clockwise
 
         // Parameter block
-        Parameters _p;
+        Parameters * _p = NULL;
 
         // roll right
         virtual double u2(double * o) = 0;
@@ -219,8 +208,9 @@ class MultirotorDynamics {
          /**
          *  Constructor
          */
-        MultirotorDynamics(const Parameters & params, const uint8_t motorCount) : _p(params)
+        MultirotorDynamics(Parameters * params, const uint8_t motorCount) 
         {
+            _p = params;
             _motorCount = motorCount;
 
             _omegas = new double[motorCount];
@@ -249,21 +239,21 @@ class MultirotorDynamics {
             _dxdt[4]  =  _x[STATE_Z_DOT];                                                              // z'
             _dxdt[5]  =  netz;                                                                         // z''
             _dxdt[6]  =  phidot;                                                                       // phi'
-            _dxdt[7]  =  psidot*thedot*(_p.Iy-_p.Iz)/_p.Ix - _p.Jr/_p.Ix*thedot*_Omega + _U2/_p.Ix;    // phi''
+            _dxdt[7]  =  psidot*thedot*(_p->Iy-_p->Iz)/_p->Ix - _p->Jr/_p->Ix*thedot*_Omega + _U2/_p->Ix;    // phi''
             _dxdt[8]  =  thedot;                                                                       // theta'
-            _dxdt[9]  =  -(psidot*phidot*(_p.Iz-_p.Ix)/_p.Iy + _p.Jr/_p.Iy*phidot*_Omega + _U3/_p.Iy); // theta''
+            _dxdt[9]  =  -(psidot*phidot*(_p->Iz-_p->Ix)/_p->Iy + _p->Jr/_p->Iy*phidot*_Omega + _U3/_p->Iy); // theta''
             _dxdt[10] = psidot;                                                                        // psi'
-            _dxdt[11] = thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _U4/_p.Iz;                               // psi''
+            _dxdt[11] = thedot*phidot*(_p->Ix-_p->Iy)/_p->Iz   + _U4/_p->Iz;                               // psi''
         }
 
         /**
          * Computes motor speed base on motor value
          * @param motorval motor value in [0,1]
-         * @return motor speed in RPM
+         * @return motor speed in rad/s
          */
-        virtual double computeMotorRPM(double motorval)
+        virtual double computeMotorSpeed(double motorval)
         {
-            return motorval * _p.maxrpm; 
+            return motorval * _p->maxrpm * M_PI / 30; 
         }
 
     public:
@@ -323,7 +313,7 @@ class MultirotorDynamics {
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
             double accelNED[3] = {};
-            bodyZToInertial(-_U1/_p.m, euler, accelNED);
+            bodyZToInertial(-_U1/_p->m, euler, accelNED);
 
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + g;
@@ -401,7 +391,7 @@ class MultirotorDynamics {
         {
             // Convert the  motor values to radians per second
            for (unsigned int i=0; i<_motorCount; ++i) {
-               _omegas[i] = computeMotorRPM(motorvals[i]) * pi / 30; //rad/s
+               _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
            }
 
            // Compute overall torque from omegas before squaring
@@ -411,13 +401,13 @@ class MultirotorDynamics {
            _U1 = 0;
            for (unsigned int i=0; i<_motorCount; ++i) {
                _omegas2[i] = _omegas[i] * _omegas[i];
-               _U1 +=  _p.b * _omegas2[i];
+               _U1 +=  _p->b * _omegas2[i];
            }
 
            // Use the squared Omegas to implement the rest of Eqn. 6
-           _U2 = _p.l*_p.b * u2(_omegas2);
-           _U3 = _p.l*_p.b * u3(_omegas2);
-           _U4 = _p.d * u4(_omegas2);
+           _U2 = _p->l*_p->b * u2(_omegas2);
+           _U3 = _p->l*_p->b * u3(_omegas2);
+           _U4 = _p->d * u4(_omegas2);
         }
 
         /*
