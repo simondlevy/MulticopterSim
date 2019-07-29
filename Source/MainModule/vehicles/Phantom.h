@@ -25,27 +25,24 @@ class Phantom {
 
     private:
 
-        MultirotorDynamics::params_t _params = {
+        MultirotorDynamics::Parameters params = MultirotorDynamics::Parameters(
 
-            // XXX These parameters are for a much larger vehicle
-            5.30216718361085E-05,   // b
-            2.23656692806239E-06,   // d
-            16.47,                  // m
-            0.6,                    // l
-            2,                      // Ix
-            2,                      // Iy
-            3,                      // Iz
-            3.08013E-04,            // Jr
+                // XXX These parameters are for a much larger vehicle
+                5.30216718361085E-05,   // b
+                2.23656692806239E-06,   // d
+                16.47,                  // m
+                0.6,                    // l
+                2,                      // Ix
+                2,                      // Iy
+                3,                      // Iz
+                3.08013E-04,            // Jr
 
-            // maxrpm, estimated
-            15000,                  
-
-            0                       // XXX motor acceleration 
-        };
+                // maxrpm, estimated
+                15000);
 
     public:
 
-        QuadXAPDynamics dynamics = QuadXAPDynamics(_params);
+        QuadXAPDynamics dynamics = QuadXAPDynamics(&params);
 
     private:
 
