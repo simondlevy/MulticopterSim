@@ -25,6 +25,7 @@
 #include "FlightManager.hpp"
 #include "Camera.hpp"
 #include "GimbalManager.hpp"
+#include "Debug.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
