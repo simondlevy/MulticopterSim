@@ -342,8 +342,7 @@ class MultirotorDynamics {
         {
             // Convert the  motor values to radians per second
            for (unsigned int i=0; i<_motorCount; ++i) {
-
-                _omegas[i] = motorvals[i] * _p.maxrpm * pi / 30; //rad/s
+               _omegas[i] = computeMotorRPM(motorvals[i]) * pi / 30; //rad/s
            }
 
            // Compute overall torque from omegas before squaring
@@ -497,5 +496,15 @@ class MultirotorDynamics {
             _dxdt[10] = psidot;                                                                        // psi'
             _dxdt[11] = thedot*phidot*(_p.Ix-_p.Iy)/_p.Iz   + _U4/_p.Iz;                               // psi''
         }
- 
+
+        /**
+         * Computes motor speed base on motor value
+         * @param motorval motor value in [0,1]
+         * @return motor speed in RPM
+         */
+        virtual double computeMotorRPM(double motorval)
+        {
+            return motorval * _p.maxrpm; 
+        }
+
 }; // class MultirotorDynamics
