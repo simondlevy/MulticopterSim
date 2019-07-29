@@ -328,6 +328,10 @@ class MultirotorDynamics {
 
         } // update
 
+        /**
+         * Returns state.
+         * @return state structure
+         */
         state_t getState(void)
         {
             return _state;
@@ -466,11 +470,6 @@ class MultirotorDynamics {
         {
             return _motorCount;
         }
-
-        /**
-         * Factory method
-         */
-        static MultirotorDynamics * create(void);
 
         /**
          * Implements Equation 12 computing temporal first derivative of state.
