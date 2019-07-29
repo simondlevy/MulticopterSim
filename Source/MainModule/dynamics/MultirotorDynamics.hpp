@@ -267,11 +267,11 @@ class MultirotorDynamics {
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
-            double ned[3] = {};
-            bodyZToInertial(-_U1/_p.m, euler, ned);
+            double accelNED[3] = {};
+            bodyZToInertial(-_U1/_p.m, euler, accelNED);
 
             // We're airborne once net downward acceleration goes below zero
-            double netz = ned[2] + g;
+            double netz = accelNED[2] + g;
             if (!_airborne) {
                 _airborne = netz < 0;
             }
@@ -280,7 +280,7 @@ class MultirotorDynamics {
             if (_airborne) {
 
                 // Compute the state derivatives using Equation 12
-                computeStateDerivative(ned, netz, _x[STATE_PHI_DOT], _x[STATE_THETA_DOT], _x[STATE_PSI_DOT]);
+                computeStateDerivative(accelNED, netz, _x[STATE_PHI_DOT], _x[STATE_THETA_DOT], _x[STATE_PSI_DOT]);
 
                 // Compute state as first temporal integral of first temporal derivative
                 for (uint8_t i=0; i<12; ++i) {
@@ -288,9 +288,9 @@ class MultirotorDynamics {
                 }
 
                 // Once airborne, inertial-frame acceleration is same as NED acceleration
-                _inertialAccel[0] = ned[0];
-                _inertialAccel[1] = ned[1];
-                _inertialAccel[2] = ned[2];
+                _inertialAccel[0] = accelNED[0];
+                _inertialAccel[1] = accelNED[1];
+                _inertialAccel[2] = accelNED[2];
             }
 
             // Get most values directly from state vector
@@ -473,13 +473,21 @@ class MultirotorDynamics {
          */
         static MultirotorDynamics * create(void);
 
-        // Equation 12: compute temporal first derivative of state.
-        virtual void computeStateDerivative(double ned[3], double netz, double phidot, double thedot, double psidot)
+        /**
+         * Implements Equation 12 computing temporal first derivative of state.
+         * Should fill _dxdx[0..11] with appropriate values.
+         * @param accelNED acceleration in NED inertial frame
+         * @param netz accelNED[2] with gravitational constant added in
+         * @param phidot rotational acceleration in roll axis
+         * @param thedot rotational acceleration in pitch axis
+         * @param psidot rotational acceleration in yaw axis
+         */
+        virtual void computeStateDerivative(double accelNED[3], double netz, double phidot, double thedot, double psidot)
         {
             _dxdt[0]  =  _x[STATE_X_DOT];                                                              // x'
-            _dxdt[1]  =  ned[0];                                                                       // x''
+            _dxdt[1]  =  accelNED[0];                                                                  // x''
             _dxdt[2]  =  _x[STATE_Y_DOT];                                                              // y'
-            _dxdt[3]  =  ned[1];                                                                       // y''
+            _dxdt[3]  =  accelNED[1];                                                                  // y''
             _dxdt[4]  =  _x[STATE_Z_DOT];                                                              // z'
             _dxdt[5]  =  netz;                                                                         // z''
             _dxdt[6]  =  phidot;                                                                       // phi'
