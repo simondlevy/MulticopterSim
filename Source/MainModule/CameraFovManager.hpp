@@ -16,16 +16,24 @@ class FCameraFovManager : public FThreadedWorker {
 
     private:
 
+        float _fov = 0;
+
     protected:
 
         // Constructor, called once on main thread
         FCameraFovManager() : FThreadedWorker()
         {
+            _fov = 0;
         }
 
         // Called repeatedly on worker thread to process current image
         void performTask(double currentTime)
         {
+        }
+
+        float getFov(void)
+        {
+            return _fov;
         }
 
 }; // Class FCameraFovManager

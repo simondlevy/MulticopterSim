@@ -88,6 +88,12 @@ class Camera {
         // Called on main thread
         void grabImage(void)
         {
+            // If there's an FOV manager, use it to get new FOV
+            if (_fovManager) {
+                _fov = _fovManager->getFov();
+                setFov();
+            }
+
             // Read the pixels from the RenderTarget
             TArray<FColor> renderTargetPixels;
             _renderTarget->ReadPixels(renderTargetPixels);
