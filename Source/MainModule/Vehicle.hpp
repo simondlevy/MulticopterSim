@@ -302,7 +302,7 @@ class Vehicle {
             camera->_captureComponent->TextureTarget = textureRenderTarget2D;
 
             // Set the initial field of view
-            camera->setFOV();
+            camera->setFov();
 
             // Get the render target resource for copying the image pixels
             camera->_renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();

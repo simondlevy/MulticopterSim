@@ -15,7 +15,7 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "Debug.hpp"
 
-#include "CameraFOVManager.hpp"
+#include "CameraFovManager.hpp"
 
 class Camera {
 
@@ -38,7 +38,7 @@ class Camera {
         uint8_t * _imageBytes = NULL;
 
         // Optional threaded worker for getting FOV
-        FCameraFOVManager * _fovManager = NULL;
+        FCameraFovManager * _fovManager = NULL;
 
     protected:
 
@@ -69,7 +69,7 @@ class Camera {
             _captureComponent = NULL;
             _renderTarget = NULL;
 
-            // Optionally set by setFOVManager()
+            // Optionally set by setFovManager()
             _fovManager = NULL;
         }
 
@@ -77,7 +77,7 @@ class Camera {
         virtual void processImageBytes(uint8_t * bytes) { (void)bytes; }
 
         // Can be called by Camera and Vehicle classes
-        void setFOV(void)
+        void setFov(void)
         {
             _cameraComponent->SetFieldOfView(_fov);
             _captureComponent->FOVAngle = _fov - 45;
@@ -99,7 +99,7 @@ class Camera {
             processImageBytes(_imageBytes);
         }
 
-        void setFOVManager(FCameraFOVManager * fovManager) 
+        void setFovManager(FCameraFovManager * fovManager) 
         {
             _fovManager = fovManager;
         }

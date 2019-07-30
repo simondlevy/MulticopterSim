@@ -1,5 +1,5 @@
 /*
- * Abstract, threaded class for camera FOV in MulticopterSim 
+ * Abstract, threaded class for managing camera field-of-view in MulticopterSim 
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -10,7 +10,7 @@
 
 #include "ThreadedWorker.hpp"
 
-class FCameraFOVManager : public FThreadedWorker {
+class FCameraFovManager : public FThreadedWorker {
 
     friend class Camera;
 
@@ -19,7 +19,7 @@ class FCameraFOVManager : public FThreadedWorker {
     protected:
 
         // Constructor, called once on main thread
-        FCameraFOVManager() : FThreadedWorker()
+        FCameraFovManager() : FThreadedWorker()
         {
         }
 
@@ -28,4 +28,4 @@ class FCameraFOVManager : public FThreadedWorker {
         {
         }
 
-}; // Class FCameraFOVManager
+}; // Class FCameraFovManager
