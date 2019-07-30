@@ -15,8 +15,6 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "Debug.hpp"
 
-#include "FovManager.hpp"
-
 class Camera {
 
     friend class Vehicle;
@@ -36,9 +34,6 @@ class Camera {
 
         // Byte array for RGBA image
         uint8_t * _imageBytes = NULL;
-
-        // Optional threaded worker for getting FOV
-        FFovManager * _fovManager = NULL;
 
     protected:
 
@@ -68,32 +63,32 @@ class Camera {
             _cameraComponent = NULL;
             _captureComponent = NULL;
             _renderTarget = NULL;
-
-            // Optionally set by setFovManager()
-            _fovManager = NULL;
         }
 
         // Override this method for your video application
         virtual void processImageBytes(uint8_t * bytes) { (void)bytes; }
 
-        // Can be called by Camera and Vehicle classes
-        void setFov(void)
+        // Sets current FOV
+        void setFov(float fov)
+        {
+            _fov = fov;
+            updateFov();
+        }
+
+        // Updates UE4 resource with current FOV
+        void updateFov(void)
         {
             _cameraComponent->SetFieldOfView(_fov);
             _captureComponent->FOVAngle = _fov - 45;
         }
+
+
 
     public:
 
         // Called on main thread
         void grabImage(void)
         {
-            // If there's an FOV manager, use it to get new FOV
-            if (_fovManager) {
-                _fov = _fovManager->getFov();
-                setFov();
-            }
-
             // Read the pixels from the RenderTarget
             TArray<FColor> renderTargetPixels;
             _renderTarget->ReadPixels(renderTargetPixels);
@@ -103,11 +98,6 @@ class Camera {
 
             // Virtual method implemented in subclass
             processImageBytes(_imageBytes);
-        }
-
-        void setFovManager(FFovManager * fovManager) 
-        {
-            _fovManager = fovManager;
         }
 
         virtual ~Camera()
