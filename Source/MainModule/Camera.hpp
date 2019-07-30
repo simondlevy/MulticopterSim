@@ -15,6 +15,7 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "Debug.hpp"
 
+#include "CameraFOVManager.hpp"
 
 class Camera {
 
