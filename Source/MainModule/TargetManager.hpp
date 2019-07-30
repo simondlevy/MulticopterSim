@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../MainModule/ThreadedWorker.hpp"
+#include "../MainModule/ThreadedManager.hpp"
 
-class FTargetManager : public FThreadedWorker {
+class FTargetManager : public FThreadedManager {
 
 protected:
 
@@ -13,7 +13,7 @@ protected:
 		computeLocation(currentTime);
 	}
 
-	FTargetManager() : FThreadedWorker()
+	FTargetManager() : FThreadedManager()
 	{
 		_location = FVector(0, 10, 0);
 	}

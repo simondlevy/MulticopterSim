@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "ThreadedWorker.hpp"
+#include "ThreadedManager.hpp"
 
-class FCameraFovManager : public FThreadedWorker {
+class FFovManager : public FThreadedManager {
 
     friend class Camera;
 
@@ -21,7 +21,7 @@ class FCameraFovManager : public FThreadedWorker {
     protected:
 
         // Constructor, called once on main thread
-        FCameraFovManager() : FThreadedWorker()
+        FFovManager() : FThreadedManager()
         {
             _fov = 0;
         }
@@ -36,4 +36,4 @@ class FCameraFovManager : public FThreadedWorker {
             return _fov;
         }
 
-}; // Class FCameraFovManager
+}; // Class FFovManager

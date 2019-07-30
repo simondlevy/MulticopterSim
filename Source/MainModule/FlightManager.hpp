@@ -12,10 +12,10 @@
 #include "Runnable.h"
 #include "Debug.hpp"
 #include "dynamics/MultirotorDynamics.hpp"
-#include "ThreadedWorker.hpp"
+#include "ThreadedManager.hpp"
 #include <stdarg.h>
 
-class FFlightManager : public FThreadedWorker {
+class FFlightManager : public FThreadedManager {
 
     private:
 
@@ -73,7 +73,7 @@ class FFlightManager : public FThreadedWorker {
 
         // Constructor, called main thread
         FFlightManager(MultirotorDynamics * dynamics) 
-            : FThreadedWorker()
+            : FThreadedManager()
         {
             // Allocate array for motor values
             _motorvals = new double[dynamics->motorCount()];

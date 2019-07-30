@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "ThreadedWorker.hpp"
+#include "ThreadedManager.hpp"
 
-class FGimbalManager : public FThreadedWorker {
+class FGimbalManager : public FThreadedManager {
 
     private:
 
@@ -23,7 +23,7 @@ class FGimbalManager : public FThreadedWorker {
     protected:
 
         // Constructor, called once on main thread
-        FGimbalManager() : FThreadedWorker()
+        FGimbalManager() : FThreadedManager()
         {
             _roll  = 0;
             _pitch = 0;

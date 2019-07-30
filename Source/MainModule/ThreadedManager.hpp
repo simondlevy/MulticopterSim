@@ -13,7 +13,7 @@
 
 #include <stdarg.h>
 
-class FThreadedWorker : public FRunnable {
+class FThreadedManager : public FRunnable {
 
     private:
 
@@ -34,9 +34,9 @@ class FThreadedWorker : public FRunnable {
 
     public:
 
-        FThreadedWorker(void)
+        FThreadedManager(void)
         {
-            _thread = FRunnableThread::Create(this, TEXT("FThreadedWorker"), 0, TPri_BelowNormal); 
+            _thread = FRunnableThread::Create(this, TEXT("FThreadedManage"), 0, TPri_BelowNormal); 
 
             _startTime = FPlatformTime::Seconds();
 
@@ -44,7 +44,7 @@ class FThreadedWorker : public FRunnable {
         }
 
 
-        ~FThreadedWorker()
+        ~FThreadedManager()
         {
             delete _thread;
         }
@@ -54,14 +54,14 @@ class FThreadedWorker : public FRunnable {
             return _count;
         }
 
-        static FThreadedWorker * stopThreadedWorker(FThreadedWorker * worker)
+        static FThreadedManager * stopThreadedManager(FThreadedManager * worker)
         {
             if (worker) {
                 worker->Stop();
                 delete worker;
             }
 
-            return (FThreadedWorker *)NULL;
+            return (FThreadedManager *)NULL;
         }
 
         // FRunnable interface.
@@ -105,4 +105,4 @@ class FThreadedWorker : public FRunnable {
 			FRunnable::Stop();
         }
 
-}; // class FThreadedWorker
+}; // class FThreadedManage
