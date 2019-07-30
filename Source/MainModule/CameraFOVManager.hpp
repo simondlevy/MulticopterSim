@@ -28,8 +28,4 @@ class FCameraFOVManager : public FThreadedWorker {
         {
         }
 
-        float getFOV(void)
-        {
-        }
-
 }; // Class FCameraFOVManager

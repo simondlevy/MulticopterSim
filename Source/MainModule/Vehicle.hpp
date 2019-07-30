@@ -292,7 +292,6 @@ class Vehicle {
             camera->_cameraComponent->SetupAttachment(_objects.springArm, USpringArmComponent::SocketName); 	
             camera->_cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             camera->_cameraComponent->SetWorldScale3D(cameraScale);
-            camera->_cameraComponent->SetFieldOfView(camera->_fov);
             camera->_cameraComponent->SetAspectRatio((float)camera->_cols / camera->_rows);
 
             // Create a scene-capture component and set its target to the render target
@@ -300,8 +299,10 @@ class Vehicle {
             camera->_captureComponent->SetWorldScale3D(cameraScale);
             camera->_captureComponent->SetupAttachment(_objects.springArm, USpringArmComponent::SocketName);
             camera->_captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            camera->_captureComponent->FOVAngle = camera->_fov - 45;
             camera->_captureComponent->TextureTarget = textureRenderTarget2D;
+
+            // Set the initial field of view
+            camera->setFOV();
 
             // Get the render target resource for copying the image pixels
             camera->_renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();

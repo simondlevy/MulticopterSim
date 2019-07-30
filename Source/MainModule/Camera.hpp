@@ -37,6 +37,9 @@ class Camera {
         // Byte array for RGBA image
         uint8_t * _imageBytes = NULL;
 
+        // Optional threaded worker for getting FOV
+        FCameraFOVManager * _fovManager = NULL;
+
     protected:
 
         // Image size and field of view, set in constructor
@@ -65,10 +68,20 @@ class Camera {
             _cameraComponent = NULL;
             _captureComponent = NULL;
             _renderTarget = NULL;
+
+            // Optionally set by setFOVManager()
+            _fovManager = NULL;
         }
 
         // Override this method for your video application
         virtual void processImageBytes(uint8_t * bytes) { (void)bytes; }
+
+        // Can be called by Camera and Vehicle classes
+        void setFOV(void)
+        {
+            _cameraComponent->SetFieldOfView(_fov);
+            _captureComponent->FOVAngle = _fov - 45;
+        }
 
     public:
 
@@ -84,6 +97,11 @@ class Camera {
 
             // Virtual method implemented in subclass
             processImageBytes(_imageBytes);
+        }
+
+        void setFOVManager(FCameraFOVManager * fovManager) 
+        {
+            _fovManager = fovManager;
         }
 
         virtual ~Camera()
