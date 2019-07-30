@@ -82,8 +82,6 @@ class Camera {
             _captureComponent->FOVAngle = _fov - 45;
         }
 
-
-
     public:
 
         // Called on main thread
