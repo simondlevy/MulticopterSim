@@ -24,7 +24,6 @@
 #include "dynamics/MultirotorDynamics.hpp"
 #include "FlightManager.hpp"
 #include "Camera.hpp"
-#include "GimbalManager.hpp"
 #include "Debug.hpp"
 
 #include "CoreMinimal.h"
@@ -417,23 +416,9 @@ class Vehicle {
             }
         }
 
-        // Called on main thread
-        void setGimbal(FGimbalManager * gimbalManager)
+        void rotateGimbal(FRotator rotator)
         {
-            // FlightManager will be null after crash
-            if (!_flightManager) return;
-
-            // Get gimbal info from manager
-            float roll = 0, pitch = 0, yaw = 0;
-            gimbalManager->get(roll, pitch, yaw);
-
-            FRotator rotation = _objects.springArm->GetComponentRotation();
-
-            rotation.Roll  += roll;
-            rotation.Pitch -= pitch;
-            rotation.Yaw   += yaw;
-
-            _objects.springArm->SetWorldRotation(rotation);
+            _objects.springArm->SetWorldRotation(_objects.springArm->GetComponentRotation() + rotator);
         }
 
     private:
