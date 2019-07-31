@@ -11,16 +11,16 @@ protected:
 	
 	virtual void performTask(double currentTime) override
 	{
-		computeState(currentTime);
+		computePose(currentTime);
 	}
 
 	FTargetManager() : FThreadedManager()
 	{
 		_location = FVector(0, 10, 0);
-		_rotation = FVector(0, 0, 0);
+		_rotation = FRotator(0, 0, 0);
 	}
 
-	virtual void computeState(double currentTime) = 0;
+	virtual void computePose(double currentTime) = 0;
 
 public:
 
