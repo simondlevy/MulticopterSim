@@ -9,7 +9,6 @@
 #pragma once
 
 #include "Engine.h"
-#include "Engine/World.h"
 
 static float _min(float a, float b)
 {

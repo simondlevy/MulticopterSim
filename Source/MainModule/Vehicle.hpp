@@ -16,21 +16,10 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-// Math support
-#define _USE_MATH_DEFINES
-#include <math.h>
-
 #include "Debug.hpp"
 #include "dynamics/MultirotorDynamics.hpp"
 #include "FlightManager.hpp"
 #include "Camera.hpp"
-#include "Debug.hpp"
-
-#include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
-#include "Runtime/Engine/Classes/Sound/SoundCue.h"
-#include "Components/AudioComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 
 #include <stdio.h>
 
@@ -54,10 +43,6 @@ class Vehicle {
 
     private: 
         
-        // Arbitrary array limits supporting statically declared assets
-        static const uint8_t MAX_MOTORS  = 20; 
-        static const uint8_t MAX_CAMERAS = 10; 
-
         // UE4 objects that must be built statically
         typedef struct {
 
@@ -65,13 +50,13 @@ class Vehicle {
             UStaticMesh              * frameMesh;
             UStaticMesh              * motorMesh;
             UStaticMeshComponent     * frameMeshComponent;
-            UStaticMeshComponent     * propellerMeshComponents[MAX_MOTORS];
+            UStaticMeshComponent     * propellerMeshComponents[FFlightManager::MAX_MOTORS];
             USoundCue                * soundCue;
             UAudioComponent          * audioComponent;
 
             USpringArmComponent      * springArm;
 
-            Camera                   * cameras[MAX_CAMERAS];
+            Camera                   * cameras[Camera::MAX_CAMERAS];
             uint8_t                    cameraCount;
 
         } objects_t;
@@ -84,7 +69,7 @@ class Vehicle {
 
 		MultirotorDynamics * _dynamics = NULL;
 
-        int8_t _motorDirections[MAX_MOTORS] = {};
+        int8_t _motorDirections[FFlightManager::MAX_MOTORS] = {};
 
         // Threaded worker for running flight control
         class FFlightManager * _flightManager = NULL;
@@ -93,7 +78,7 @@ class Vehicle {
         bool _mapSelected = false;
 
         // Motor values for animation/sound
-        float  _motorvals[MAX_MOTORS] = {};
+        float  _motorvals[FFlightManager::MAX_MOTORS] = {};
 
         // Circular buffer for moving average of motor values
         TCircularBuffer<float> * _motorBuffer = NULL;

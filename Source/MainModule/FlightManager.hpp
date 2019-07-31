@@ -8,12 +8,8 @@
 
 #pragma once
 
-#include "Core.h"
-#include "Runnable.h"
-#include "Debug.hpp"
 #include "dynamics/MultirotorDynamics.hpp"
 #include "ThreadedManager.hpp"
-#include <stdarg.h>
 
 class FFlightManager : public FThreadedManager {
 
@@ -118,6 +114,8 @@ class FFlightManager : public FThreadedManager {
         }
 
     public:
+
+        static const uint8_t MAX_MOTORS = 16;
 
         ~FFlightManager(void)
         {

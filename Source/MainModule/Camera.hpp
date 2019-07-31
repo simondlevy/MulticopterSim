@@ -8,11 +8,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Engine.h"
-#include "GameFramework/HUD.h"
-#include "GameFramework/HUD.h"
-#include "Engine/TextureRenderTarget2D.h"
 #include "Debug.hpp"
 
 class Camera {
@@ -20,6 +15,9 @@ class Camera {
     friend class Vehicle;
 
     public:
+
+        // Arbitrary array limits supporting statically declared assets
+        static const uint8_t MAX_CAMERAS = 10; 
 
         // Supported resolutions
         typedef enum {

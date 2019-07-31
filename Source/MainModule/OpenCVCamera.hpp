@@ -9,9 +9,7 @@
 #pragma once
 
 #include "Camera.hpp"
-#include "Debug.hpp"
 
-#include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 class OpenCVCamera : public Camera {

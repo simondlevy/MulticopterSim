@@ -8,10 +8,7 @@
 
 #pragma once
 
-#include "Core.h"
 #include "Runnable.h"
-
-#include <stdarg.h>
 
 class FThreadedManager : public FRunnable {
 
