@@ -263,7 +263,7 @@ class Vehicle {
         {
             static float rotation;
             for (uint8_t i=0; i<motorCount; ++i) {
-                _objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirections[i] * 100, 0));
+                _objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirections[i] * 200, 0));
             }
             rotation++;
         }
