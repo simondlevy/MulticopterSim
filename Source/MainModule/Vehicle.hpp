@@ -164,14 +164,6 @@ class Vehicle {
         {
             // Un-comment this to track the number of (re)starts
             //debug("starts: %d", _starts);
-
-            // Report FPS
-            if (_flightManager) {
-
-                // Get a high-fidelity current time value from the OS
-                double currentTime = FPlatformTime::Seconds() - _startTime;
-                //debug("FPS:  Main=%d    Flight=%d", (int)(++_count/currentTime), (int)(_flightManager->getCount()/currentTime));
-            }
         }
 
         void grabImages(void)

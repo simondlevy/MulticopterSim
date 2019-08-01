@@ -29,6 +29,11 @@ class FThreadedManager : public FRunnable {
         // Implemented differently by each subclass
         virtual void performTask(double currentTime) = 0;
 
+        uint32_t getFps(void)
+        {
+            return (uint32_t)(_count/(FPlatformTime::Seconds()-_startTime));
+        }
+
     public:
 
         FThreadedManager(void)
