@@ -35,10 +35,6 @@
 
 #include "../Debug.hpp"
 
-#ifndef M_PI
-static constexpr double M_PI = 3.14159;
-#endif
-
 class MultirotorDynamics {
 
     public:
@@ -255,7 +251,7 @@ class MultirotorDynamics {
          */
         virtual double computeMotorSpeed(double motorval)
         {
-            return motorval * _p->maxrpm * M_PI / 30; 
+            return motorval * _p->maxrpm * 3.14159 / 30; 
         }
 
     public:

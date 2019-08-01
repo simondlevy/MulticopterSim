@@ -87,7 +87,7 @@ class Phantom {
 
         void EndPlay(void)
         {
-            _flightManager = (FFlightManager *)FThreadedWorker::stopThreadedWorker(_flightManager);
+            _flightManager = (FFlightManager *)FThreadedManager::stopThreadedManager(_flightManager);
         }
 
         void Tick(void)
