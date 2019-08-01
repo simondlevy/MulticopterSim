@@ -43,6 +43,24 @@ class MultirotorDynamics {
 
     public:
 
+        /** 
+         * Position map for state vector
+         */
+        enum {
+            STATE_X, 
+            STATE_X_DOT, 
+            STATE_Y,
+            STATE_Y_DOT,
+            STATE_Z,
+            STATE_Z_DOT,
+            STATE_PHI,
+            STATE_PHI_DOT,
+            STATE_THETA,
+            STATE_THETA_DOT,
+            STATE_PSI,
+            STATE_PSI_DOT
+        };
+
         /**
          * Class for parameters from the table below Equation 3
           */
@@ -165,22 +183,6 @@ class MultirotorDynamics {
         }
 
     protected:
-
-        // State vector position map
-        enum {
-            STATE_X, 
-            STATE_X_DOT, 
-            STATE_Y,
-            STATE_Y_DOT,
-            STATE_Z,
-            STATE_Z_DOT,
-            STATE_PHI,
-            STATE_PHI_DOT,
-            STATE_THETA,
-            STATE_THETA_DOT,
-            STATE_PSI,
-            STATE_PSI_DOT
-        };
 
         // State vector (see Eqn. 11) and its first temporal derivative
         double _x[12]    = {};
