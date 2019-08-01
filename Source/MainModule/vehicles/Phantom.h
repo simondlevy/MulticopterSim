@@ -9,6 +9,7 @@
 #pragma once
 
 #include "../MainModule/Vehicle.hpp"
+#include "../MainModule/Camera.hpp"
 #include "../MainModule/dynamics/QuadXAP.hpp"
 
 #include "CoreMinimal.h"
@@ -93,6 +94,11 @@ class Phantom {
         void Tick(void)
         {
             vehicle.Tick();
+        }
+
+        void addCamera(Camera * camera)
+        {
+            vehicle.addCamera(camera);
         }
 
 }; // class Phantom 
