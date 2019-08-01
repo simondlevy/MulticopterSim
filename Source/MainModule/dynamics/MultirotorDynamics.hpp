@@ -374,12 +374,21 @@ class MultirotorDynamics {
         } // update
 
         /**
-         * Returns state.
+         * Returns state structure.
          * @return state structure
          */
         state_t getState(void)
         {
             return _state;
+        }
+
+        /**
+         * Returns "raw" state vector.
+         * @return state vector
+         */
+        double * getStateVector(void)
+        {
+            return _x;
         }
 
         /**

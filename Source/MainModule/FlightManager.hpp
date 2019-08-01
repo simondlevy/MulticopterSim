@@ -44,18 +44,17 @@ class FFlightManager : public FThreadedManager {
             const double * quat  = state.quaternion;
             const double * loc   = state.pose.location;
 
-            debug(
-                    "t: %4.1f"
-                    " | a: %+6.6f %+6.6f %+6.6f"
-                    " | g: %+6.6f %+6.6f %+6.6f"
-                    " | q: %+6.6f %+6.6f %+6.6f %+6.6f"
-                    " | p: %+6.6f %+6.6f %+6.6f\n", 
-                    time, 
-                    accel[0], accel[1], accel[2], 
-                    gyro[0], gyro[1], gyro[2], 
-                    quat[0], quat[1], quat[2], quat[3], 
-                    loc[0], loc[1], loc[2]);
-                    */
+            debug("t: %4.1f"
+                   " | a: %+6.6f %+6.6f %+6.6f"
+                   " | g: %+6.6f %+6.6f %+6.6f"
+                   " | q: %+6.6f %+6.6f %+6.6f %+6.6f"
+                   " | p: %+6.6f %+6.6f %+6.6f\n", 
+                   time, 
+                   accel[0], accel[1], accel[2], 
+                   gyro[0], gyro[1], gyro[2], 
+                   quat[0], quat[1], quat[2], quat[3], 
+                   loc[0], loc[1], loc[2]);
+                   */
 
         }
 
@@ -111,6 +110,12 @@ class FFlightManager : public FThreadedManager {
 
             // Track previous time for deltaT
             _previousTime = currentTime;
+        }
+
+        // Supports subclasses that might need direct access to dynamics state vector
+        double * getVehicleStateVector(void)
+        {
+            return _dynamics->getStateVector();
         }
 
     public:
