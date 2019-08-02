@@ -130,7 +130,7 @@ illustrates this arrangement, using a traditional
 [cascade-control](https://controlguru.com/the-cascade-control-architecture/)
 (slow outer loop / fast inner loop) diagram:
 
-<img src="Extras/media/Control.png" width=800></a>
+<img src="Extras/media/Control2.png" width=800></a>
 
 In addition, an abstract, threaded C++
 [TargetController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/target/TargetController.hpp)
