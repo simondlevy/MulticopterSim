@@ -162,13 +162,3 @@ To try this out, clone this branch into <b>MulticopterSim/Source</b>, rename it 
 Once you've got the basic demo working, you can modify the Python 
 [FlightManager.py](https://github.com/simondlevy/MulticopterSim/blob/PythonModule/python/multicopter_sim/__init__.py#L8-L25)
 class to do what you like.
-
-## Nengo
-
-The [NengoModule](https://github.com/simondlevy/MulticopterSim/tree/NengoModule) branch supports flying with a combination
-of Hackflight for general flight control and an altitude-hold PID controller
-using the [Nengo](https://www.nengo.ai/) neural simulation package.  To use this module, you should first install Nengo.
-Then install the module in a folder called <b>FlightModule</b> in the <b>MulticopterSim/Source</b> folder.  Finally, in the
-<b>MulticopterSim/Source/FlightModule/python</b> folder, run <tt>python3 setup.py
-install</tt>.  The altitude-hold will kick in when you move the auxiliary
-switch to its third position.
