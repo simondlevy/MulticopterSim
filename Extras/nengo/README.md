@@ -1,4 +1,4 @@
-<img src="nengo.png" width=800>
+<img src="nengo.png" width=600>
 
 # Running MulticopterSim with Nengo
 
