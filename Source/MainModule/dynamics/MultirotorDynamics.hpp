@@ -313,6 +313,7 @@ class MultirotorDynamics {
 
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + g;
+
             if (!_airborne) {
                 _airborne = netz < 0;
             }
@@ -392,7 +393,7 @@ class MultirotorDynamics {
          *
          * @param motorvals in interval [0,1]
          */
-        void setMotors(double * motorvals, double deltaT)
+        void setMotors(double * motorvals)
         {
             // Convert the  motor values to radians per second
            for (unsigned int i=0; i<_motorCount; ++i) {

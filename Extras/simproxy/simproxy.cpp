@@ -46,19 +46,21 @@ int main(int argc, char ** argv)
 
         while (true) {
 
-            double motorvals[4] = {0};
+            double motorvals[4] = {1,1,1,1};
 
             if (!twoWayUdp.receive(motorvals, sizeof(motorvals))) {
                 fprintf(stderr, "Timed out; restarting\n");
                 break;
             }
 
-            printf("%05f: %f %f %f %f\n", 
-                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
+            quad.setMotors(motorvals);
 
-            quad.setMotors(motorvals, DELTA_T);
+            quad.update(DELTA_T);
 
             MultirotorDynamics::state_t state = quad.getState();
+
+            printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
+                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], state.pose.location[2]);
 
             // Time Gyro, Quat, Location
             double telemetry[10] = {0};

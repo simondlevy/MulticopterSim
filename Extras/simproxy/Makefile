@@ -17,7 +17,7 @@ all: $(ALL)
 simproxy: simproxy.o 
 	g++ -o simproxy simproxy.o 
 
-simproxy.o: simproxy.cpp
+simproxy.o: simproxy.cpp ../../Source/MainModule/dynamics/MultirotorDynamics.hpp
 	g++ $(CFLAGS) -Isockets -I../../Source/MainModule -c simproxy.cpp
 
 test: simproxy

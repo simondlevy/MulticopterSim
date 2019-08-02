@@ -55,6 +55,8 @@ if __name__ == '__main__':
         # to PID controller.
         z = -telem[9]
 
+        print(z)
+
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
 

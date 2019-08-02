@@ -93,7 +93,7 @@ class FFlightManager : public FThreadedManager {
             double deltaT = currentTime - _previousTime;
 
             // Send current motor values to dynamics
-            _dynamics->setMotors(_motorvals, deltaT);
+            _dynamics->setMotors(_motorvals);
 
             // Update dynamics
             _dynamics->update(deltaT);
