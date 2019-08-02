@@ -91,7 +91,7 @@ class NengoPidController(object):
 
 if __name__ == '__main__':
 
-    p = PIDController(1, 1)
+    p = NengoPidController(1, 1)
 
     for k in range(10):
          

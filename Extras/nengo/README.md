@@ -1,3 +1,5 @@
+<img src="nengo.png" width=800>
+
 # Running MulticopterSim with Nengo
 
 The [NengoModule](https://github.com/simondlevy/MulticopterSim/tree/NengoModule) branch supports flying with a combination
