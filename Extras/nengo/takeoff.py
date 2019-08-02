@@ -9,7 +9,6 @@ MIT License
 
 from time import sleep
 import numpy as np
-from pidcontroller import AltitudePidController
 from multicopter import Multicopter
 from sys import stdout
 
@@ -33,10 +32,8 @@ if __name__ == '__main__':
 
     # initial conditions
     z = 0
-    zprev = 0
-    tprev = 0
-    dzdt = 0
     u = 0
+    tprev = 0
 
     debug('Importing Nengo ... ')
     from nengo_pid_controller import NengoPidController
@@ -72,10 +69,6 @@ if __name__ == '__main__':
 
             debug('%+3.3f\n' % z)
 
-            # Use temporal first difference to compute vertical velocity
-            dt = t - tprev
-            dzdt = (z-zprev) / dt
-
             # Get correction from PID controller
             u = npid.getCorrection(ALTITUDE_TARGET, z)[0]
 
@@ -86,7 +79,6 @@ if __name__ == '__main__':
         copter.setMotors(u*np.ones(4))
 
         # Update for first difference
-        zprev = z
         tprev = t
 
         # Yield to Multicopter thread
