@@ -8,5 +8,5 @@ module, you should first install Nengo.  Then install the
 [SocketModule](https://github.com/simondlevy/MulticopterSim/tree/SocketModule)
 branch of MulticopterSim in a folder called <b>FlightModule</b> in the
 <b>MulticopterSim/Source</b> folder.  Finally, in the
-<b>MulticopterSim/Source/FlightModule/nengo</b> folder, run <tt>python3
+<b>MulticopterSim/Extras/nengo</b> folder, run <tt>python3
 takeoff.py</tt>, and click the play button.
