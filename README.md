@@ -91,9 +91,10 @@ to build the project.
 
 # Launch and fly!
 
-In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Click
-the play button and you're ready to begin. Throttle up to fly.  You can use the
-spacebar to switch between the ground camera and FPV camera.
+In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Then in
+<b>Content/C++ Classes</b>, open the <b>FlightModule</b> folder and drag the
+vehicle pawn into the map. Click the play button and you're ready to begin.
+You can use the  1,2,3 keys to switch your point-of-view.
 
 # Design principles
 
