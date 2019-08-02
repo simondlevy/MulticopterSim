@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     debug('Importing Nengo ... ')
     from nengo_pid_controller import NengoPidController
-    debug('done\n')
+    debug('done\nHit the Play button ...')
 
     # Create PID controller
     npid = NengoPidController(KP, KD, KI)
