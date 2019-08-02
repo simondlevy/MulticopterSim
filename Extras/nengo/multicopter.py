@@ -69,9 +69,6 @@ class Multicopter(object):
         where g=gyro; a=accelerometer; p=position.
         '''
 
-        print(self.ready, self.state[-1])
-        stdout.flush()
- 
         return self.state
 
     def setMotors(self, motorVals):

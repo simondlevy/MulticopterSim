@@ -16,7 +16,7 @@ from sys import stdout
 ALTITUDE_TARGET = 10
 
 # PID params
-KP = 0.45
+KP = 0.4
 KD = 10.0
 KI = 0.03
 
