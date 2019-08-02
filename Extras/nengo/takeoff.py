@@ -11,6 +11,13 @@ from time import sleep
 import numpy as np
 from pidcontroller import AltitudePidController
 from multicopter import Multicopter
+from sys import stdout
+
+stdout.write('Importing Nengo ...')
+stdout.flush()
+from nengo_pid_controller import PidController
+print(' done')
+stdout.flush()
 
 # Target 
 ALTITUDE_TARGET = 10
