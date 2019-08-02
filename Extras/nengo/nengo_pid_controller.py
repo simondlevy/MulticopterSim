@@ -13,7 +13,7 @@ import numpy as np
 from sys import stdout
 from time import sleep
 
-class PidController(object):
+class NengoPidController(object):
 
     def __init__(self, Kp, Kd, Ki=0, n_dims=1, sim_time=.01, n_neurons=100, 
             integral_synapse=0.1, integral_radius=1, seed=None, in_gui=False):

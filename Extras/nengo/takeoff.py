@@ -13,12 +13,6 @@ from pidcontroller import AltitudePidController
 from multicopter import Multicopter
 from sys import stdout
 
-stdout.write('Importing Nengo ...')
-stdout.flush()
-from nengo_pid_controller import PidController
-print(' done')
-stdout.flush()
-
 # Target 
 ALTITUDE_TARGET = 10
 
@@ -27,6 +21,11 @@ ALT_P = 1.0
 VEL_P = 1.0
 VEL_I = 0
 VEL_D = 0
+
+def debug(msg):
+
+    stdout.write(msg)
+    stdout.flush()
 
 if __name__ == '__main__':
 
@@ -37,8 +36,13 @@ if __name__ == '__main__':
     dzdt = 0
     u = 0
 
+    debug('Importing Nengo ... ')
+    from nengo_pid_controller import NengoPidController
+    debug('done\n')
+
     # Create PID controller
     pid  = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
+    npid = NengoPidController(0.125, 0, 0, 1, 0.001, 200, 0.01)
 
     # Create a multicopter simulation
     copter = Multicopter()
@@ -71,6 +75,8 @@ if __name__ == '__main__':
 
             # Get correction from PID controller
             u = pid.u(z, dzdt, dt)
+            nu = npid.getCorrection(ALTITUDE_TARGET, 9.9)
+            debug('%+3.3f\n' % nu[0])
 
             # Constrain correction to [0,1] to represent motor value
             u = max(0, min(1, u))
