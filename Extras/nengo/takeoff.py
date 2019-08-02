@@ -15,14 +15,6 @@ from sys import stdout
 # Target 
 ALTITUDE_TARGET = 10
 
-# PID controller params
-KP                = 0.125
-KD                = 0.125
-KI                = 0.000
-SIM_TIME          = .001
-N_NEURONS         = 200
-INTEGRAL_SYNAPSE  = .01
-
 def debug(msg):
 
     stdout.write(msg)
@@ -40,7 +32,7 @@ if __name__ == '__main__':
     debug('done\n')
 
     # Create PID controller
-    npid = NengoPidController(1, 1)
+    npid = NengoPidController()
 
     # Create a multicopter simulation
     copter = Multicopter()
@@ -65,9 +57,9 @@ if __name__ == '__main__':
         z = -telem[9]
 
         # Compute vertical climb rate as first difference of altitude over time
-        if t > tprev:
+        if (not np.isnan(z)) and (abs(z) < 100) and (t > tprev):
 
-            debug('%+3.3f\n' % z)
+            debug('z=%+3.3f  u=%3.3f\n' % (z, u))
 
             # Get correction from PID controller
             u = npid.getCorrection(ALTITUDE_TARGET, z)[0]

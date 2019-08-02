@@ -15,8 +15,8 @@ from time import sleep
 
 class NengoPidController(object):
 
-    def __init__(self, Kp, Kd, Ki=0, n_dims=1, sim_time=.01, n_neurons=100, 
-            integral_synapse=0.1, integral_radius=1, seed=None, in_gui=False):
+    def __init__(self, Kp=0.4125, Kd=0.2, Ki=0, n_dims=1, sim_time=.001, n_neurons=100, 
+            integral_synapse=0.1, integral_radius=2, seed=None, in_gui=False):
 
         self.q_value = np.zeros(n_dims)
         self.q_target_value = np.zeros(n_dims)

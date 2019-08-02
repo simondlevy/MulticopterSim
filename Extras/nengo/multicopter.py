@@ -88,10 +88,10 @@ class Multicopter(object):
             data, _ = self.telemSocket.recvfrom(80)
             self.state = np.frombuffer(data)
 
+            sleep(.0001)
+
             if self.state[0] < 0:
                 self.motorSocket.close()
                 self.telemSocket.close()
                 self.running = False
                 break
-
-            sleep(.001)
