@@ -124,13 +124,18 @@ similar manner, the
 [Camera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/Camera.hpp)
 class can be used to process
 the images collected by a simulated gimbal-mounted camera on the vehicle, using
-OpenCV.  An abstract, threaded C++ 
-[TargetController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/target/TargetController.hpp)
-class supports modeling interaction with other moving objects having their own dynamics; for example,
-in a predator/prey scenario.  The following figure illustrates this arrangement, using a traditional 
+a library like OpenCV (see below).  Computer-vision algorithms runnin in a Camera subclass can then be used
+as input to the PID control running in the FlightManager.  The following figure
+illustrates this arrangement, using a traditional
 [cascade-control](https://controlguru.com/the-cascade-control-architecture/)
 (slow outer loop / fast inner loop) diagram:
 
+<img src="Extras/media/Control.png" width=800></a>
+
+In addition, an abstract, threaded C++  
+[TargetController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/target/TargetController.hpp)
+class supports modeling interaction with other moving objects having their own dynamics; for example,
+in a predator/prey scenario. 
 
 # Support for other programming languages / packages
 
