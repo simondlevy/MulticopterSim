@@ -69,6 +69,8 @@ class Multicopter(object):
         Returns current vehicle state as an array of the form [time, gx, gy, gz, ax, ay, az, px, py, pz],
         where g=gyro; a=accelerometer; p=position.
         '''
+
+        print(self.state)
  
         return self.state
 
