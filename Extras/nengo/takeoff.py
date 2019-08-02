@@ -15,6 +15,10 @@ from sys import stdout
 # Target 
 ALTITUDE_TARGET = 10
 
+# PID params
+KP = 0.4125
+KD = 4.5
+
 def debug(msg):
 
     stdout.write(msg)
@@ -32,7 +36,7 @@ if __name__ == '__main__':
     debug('done\n')
 
     # Create PID controller
-    npid = NengoPidController()
+    npid = NengoPidController(KP, KD)
 
     # Create a multicopter simulation
     copter = Multicopter()
