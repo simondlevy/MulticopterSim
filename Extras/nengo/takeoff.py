@@ -22,6 +22,13 @@ VEL_P = 1.0
 VEL_I = 0
 VEL_D = 0
 
+NENGO_KP                = 0.125
+NENGO_KD                = 0.125
+NENGO_KI                = 0.000
+NENGO_SIM_TIME          = .001
+NENGO_N_NEURONS         = 200
+NENGO_INTEGRAL_SYNAPSE  = .01
+
 def debug(msg):
 
     stdout.write(msg)
@@ -42,7 +49,7 @@ if __name__ == '__main__':
 
     # Create PID controller
     pid  = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
-    npid = NengoPidController(0.125, 0, 0, 1, 0.001, 200, 0.01)
+    npid = NengoPidController(NENGO_KP, NENGO_KD, NENGO_KI, 1, NENGO_SIM_TIME, NENGO_N_NEURONS, NENGO_INTEGRAL_SYNAPSE)
 
     # Create a multicopter simulation
     copter = Multicopter()
