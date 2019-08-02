@@ -30,7 +30,6 @@ if __name__ == '__main__':
     # initial conditions
     z = 0
     u = 0
-    tprev = 0
 
     debug('Importing Nengo ... ')
     from nengo_pid_controller import NengoPidController
@@ -62,7 +61,7 @@ if __name__ == '__main__':
         z = -telem[9]
 
         # Compute vertical climb rate as first difference of altitude over time
-        if (not np.isnan(z)) and (abs(z) < 100) and (t > tprev):
+        if copter.isReady():
 
             # Get correction from PID controller
             u = npid.getCorrection(ALTITUDE_TARGET, z)[0]
@@ -72,9 +71,6 @@ if __name__ == '__main__':
 
         # Set motor values in sim
         copter.setMotors(u*np.ones(4))
-
-        # Update for first difference
-        tprev = t
 
         # Yield to Multicopter thread
         sleep(.001)

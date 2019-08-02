@@ -12,6 +12,7 @@ from threading import Thread
 import socket
 import numpy as np
 from time import sleep
+from sys import stdout
 
 class Multicopter(object):
     '''
@@ -47,6 +48,8 @@ class Multicopter(object):
         self.motorVals = np.zeros(motorCount)
         self.state = np.zeros(11)
 
+        self.ready = False
+
     def start(self):
         '''
         Begins communication with simulator running on host.
@@ -56,13 +59,9 @@ class Multicopter(object):
 
         self.thread.start()
 
-    def isRunning(self):
-        '''
-        Returns True if running, False otherwise
-        '''
-
-        return self.running
-
+    def isReady(self):
+        
+        return self.ready
 
     def getState(self):
         '''
@@ -70,7 +69,8 @@ class Multicopter(object):
         where g=gyro; a=accelerometer; p=position.
         '''
 
-        print(self.state)
+        print(self.ready, self.state[-1])
+        stdout.flush()
  
         return self.state
 
@@ -90,7 +90,7 @@ class Multicopter(object):
             data, _ = self.telemSocket.recvfrom(80)
             self.state = np.frombuffer(data)
 
-            sleep(.0001)
+            self.ready = True
 
             if self.state[0] < 0:
                 self.motorSocket.close()
