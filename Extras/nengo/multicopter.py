@@ -11,6 +11,7 @@
 from threading import Thread
 import socket
 import numpy as np
+from time import sleep
 
 class Multicopter(object):
     '''
@@ -92,3 +93,5 @@ class Multicopter(object):
                 self.telemSocket.close()
                 self.running = False
                 break
+
+            sleep(.001)

@@ -16,18 +16,13 @@ from sys import stdout
 # Target 
 ALTITUDE_TARGET = 10
 
-# PID params
-ALT_P = 1.0
-VEL_P = 1.0
-VEL_I = 0
-VEL_D = 0
-
-NENGO_KP                = 0.125
-NENGO_KD                = 0.125
-NENGO_KI                = 0.000
-NENGO_SIM_TIME          = .001
-NENGO_N_NEURONS         = 200
-NENGO_INTEGRAL_SYNAPSE  = .01
+# PID controller params
+KP                = 0.125
+KD                = 0.125
+KI                = 0.000
+SIM_TIME          = .001
+N_NEURONS         = 200
+INTEGRAL_SYNAPSE  = .01
 
 def debug(msg):
 
@@ -48,8 +43,7 @@ if __name__ == '__main__':
     debug('done\n')
 
     # Create PID controller
-    pid  = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
-    npid = NengoPidController(NENGO_KP, NENGO_KD, NENGO_KI, 1, NENGO_SIM_TIME, NENGO_N_NEURONS, NENGO_INTEGRAL_SYNAPSE)
+    npid = NengoPidController(1, 1)
 
     # Create a multicopter simulation
     copter = Multicopter()
@@ -76,18 +70,18 @@ if __name__ == '__main__':
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
 
+            debug('%+3.3f\n' % z)
+
             # Use temporal first difference to compute vertical velocity
             dt = t - tprev
             dzdt = (z-zprev) / dt
 
             # Get correction from PID controller
-            u = pid.u(z, dzdt, dt)
-            nu = npid.getCorrection(ALTITUDE_TARGET, 9.9)
-            debug('%+3.3f\n' % nu[0])
+            u = npid.getCorrection(ALTITUDE_TARGET, z)[0]
 
             # Constrain correction to [0,1] to represent motor value
             u = max(0, min(1, u))
-     
+
         # Set motor values in sim
         copter.setMotors(u*np.ones(4))
 
