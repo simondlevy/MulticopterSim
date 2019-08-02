@@ -33,8 +33,6 @@
 #include <string.h>
 #include <math.h>
 
-#include "../Debug.hpp"
-
 class MultirotorDynamics {
 
     public:
