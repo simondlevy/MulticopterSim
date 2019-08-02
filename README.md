@@ -1,4 +1,4 @@
-<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="media/IndoorScene.png" width=800></a>
+<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="Extras/media/IndoorScene.png" width=800></a>
 
 # About
 
@@ -127,7 +127,10 @@ the images collected by a simulated gimbal-mounted camera on the vehicle, using
 OpenCV.  An abstract, threaded C++ 
 [TargetController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/target/TargetController.hpp)
 class supports modeling interaction with other moving objects having their own dynamics; for example,
-in a predator/prey scenario.
+in a predator/prey scenario.  The following figure illustrates this arrangement, using a traditional 
+[cascade-control](https://controlguru.com/the-cascade-control-architecture/)
+(slow outer loop / fast inner loop) diagram:
+
 
 # Support for other programming languages / packages
 
