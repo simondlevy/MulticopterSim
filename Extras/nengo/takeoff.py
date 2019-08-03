@@ -9,7 +9,7 @@ MIT License
 
 from time import sleep
 import numpy as np
-from multicopter import Multicopter
+from multicopter_sim import Multicopter
 from sys import stdout
 
 # Target 
