@@ -36,7 +36,7 @@ if __name__ == '__main__':
     debug('done\nHit the Play button ...')
 
     # Create PID controller
-    npid = NengoPidController(KP, KD, KI)
+    pid = NengoPidController(KP, KD, KI)
 
     # Create a multicopter simulation
     copter = Multicopter()
@@ -64,7 +64,7 @@ if __name__ == '__main__':
         if copter.isReady():
 
             # Get correction from PID controller
-            u = npid.getCorrection(ALTITUDE_TARGET, z)[0]
+            u = pid.getCorrection(ALTITUDE_TARGET, z)[0]
 
             # Constrain correction to [0,1] to represent motor value
             u = max(0, min(1, u))

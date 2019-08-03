@@ -41,34 +41,29 @@ class Multicopter(object):
         self.thread = Thread(target=self._run)
         self.thread.daemon = True
 
-        self.running = False
 
         self.motorVals = np.zeros(motorCount)
         self.state = np.zeros(11)
+
+        self.ready = False
 
     def start(self):
         '''
         Begins communication with simulator running on host.
         '''
 
-        self.running = True
-
         self.thread.start()
 
-    def isRunning(self):
-        '''
-        Returns True if running, False otherwise
-        '''
-
-        return self.running
-
+    def isReady(self):
+        
+        return self.ready
 
     def getState(self):
         '''
         Returns current vehicle state as an array of the form [time, gx, gy, gz, ax, ay, az, px, py, pz],
         where g=gyro; a=accelerometer; p=position.
         '''
- 
+
         return self.state
 
     def setMotors(self, motorVals):
@@ -87,8 +82,9 @@ class Multicopter(object):
             data, _ = self.telemSocket.recvfrom(80)
             self.state = np.frombuffer(data)
 
+            self.ready = True
+
             if self.state[0] < 0:
                 self.motorSocket.close()
                 self.telemSocket.close()
-                self.running = False
                 break

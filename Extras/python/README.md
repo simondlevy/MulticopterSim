@@ -18,3 +18,11 @@ of the repository onto your desktop, rename it <b>FlightModule</b>, and drag the
 
 5. Hit F5 to launch MulticopterSim, then hit the play button.
 
+If you want to use the Multicopter class in other projects, you can install in the usual way:
+
+```
+python3 setup.py install
+```
+
+Linux users may have to run this command with <tt>sudo</tt>.
+

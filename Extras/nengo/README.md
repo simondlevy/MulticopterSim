@@ -14,7 +14,10 @@ module, you should take the following steps:
 branch of MulticopterSim in a folder called <b>FlightModule</b> in the
 <b>MulticopterSim/Source</b> folder.  
 
-4. Follow the [directions](https://github.com/simondlevy/MulticopterSim#windows) for building MulticopterSim
+4. Follow the [directions](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/python) 
+in <b>MulticopterSim/Extras/python</b> for installing the <b>multicopter_sim</b> Python library.
+
+5. Follow the [directions](https://github.com/simondlevy/MulticopterSim#windows) for building MulticopterSim
 and choosing a vehicle.
 
-5. In <b>MulticopterSim/Extras/nengo</b> folder, run <tt>python3 takeoff.py</tt>, and click the play button.
+6. In <b>MulticopterSim/Extras/nengo</b> folder, run <tt>python3 takeoff.py</tt>, and click the play button.

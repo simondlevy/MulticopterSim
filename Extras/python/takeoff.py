@@ -10,7 +10,7 @@ MIT License
 from time import sleep
 import numpy as np
 from pidcontroller import AltitudePidController
-from multicopter import Multicopter
+from multicopter_sim import Multicopter
 
 # Target 
 ALTITUDE_TARGET = 10

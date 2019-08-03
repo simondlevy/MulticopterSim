@@ -69,6 +69,7 @@ class NengoPidController(object):
             output = nengo.Node(output_func, size_in=self.n_dims, label='output')
             nengo.Connection(u, output)
 
+
         if not in_gui:  
             self.sim = nengo.Simulator(self.model, progress_bar=False)  
 
@@ -93,6 +94,6 @@ if __name__ == '__main__':
 
     p = NengoPidController(1, 1)
 
-    for k in range(10):
+    while True:
          
         print(p.getCorrection(100, 0))
