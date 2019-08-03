@@ -42,6 +42,9 @@ if __name__ == '__main__':
     # Loop until user hits the stop button
     while True:
 
+        # Wait until simulator starts up
+        if not copter.isReady(): continue
+
         # Get vehicle state from sim
         telem = copter.getState()
 

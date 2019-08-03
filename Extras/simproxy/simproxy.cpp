@@ -14,7 +14,6 @@ static const char * HOST           = "127.0.0.1";
 static const short  MOTOR_PORT     = 5000;
 static const short  TELEM_PORT     = 5001;
 static const double DELTA_T        = 0.001;
-static const uint32_t TIMEOUT_MSEC = 1000;
 
 static MultirotorDynamics::Parameters params = MultirotorDynamics::Parameters(
 
@@ -34,7 +33,7 @@ int main(int argc, char ** argv)
 {
     while (true) {
 
-        TwoWayUdp twoWayUdp = TwoWayUdp(HOST, TELEM_PORT, MOTOR_PORT, TIMEOUT_MSEC);
+        TwoWayUdp twoWayUdp = TwoWayUdp(HOST, TELEM_PORT, MOTOR_PORT);
 
         QuadXAPDynamics quad = QuadXAPDynamics(&params);
 
@@ -46,21 +45,7 @@ int main(int argc, char ** argv)
 
         while (true) {
 
-            double motorvals[4] = {1,1,1,1};
-
-            if (!twoWayUdp.receive(motorvals, sizeof(motorvals))) {
-                fprintf(stderr, "Timed out; restarting\n");
-                break;
-            }
-
-            quad.setMotors(motorvals);
-
-            quad.update(DELTA_T);
-
             MultirotorDynamics::state_t state = quad.getState();
-
-            printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
-                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], state.pose.location[2]);
 
             // Time Gyro, Quat, Location
             double telemetry[10] = {0};
@@ -73,7 +58,18 @@ int main(int argc, char ** argv)
 
             twoWayUdp.send(telemetry, sizeof(telemetry));
 
-            time += DELTA_T;
+            double motorvals[4] = {};
+
+            twoWayUdp.receive(motorvals, sizeof(motorvals));
+
+            printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
+                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], state.pose.location[2]);
+
+            quad.setMotors(motorvals);
+
+            quad.update(DELTA_T);
+
+             time += DELTA_T;
         }
 
     } while (true)

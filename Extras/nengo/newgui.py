@@ -71,7 +71,7 @@ with model:
         # to PID controller.
         #z = -telem[9]
 
-        copter.setMotors(0.5*np.ones(4))        
+        copter.setMotors(0.4*np.ones(4))        
 
         return u
     

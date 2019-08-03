@@ -77,8 +77,6 @@ class Multicopter(object):
 
         while True:
 
-            self.motorSocket.sendto(np.ndarray.tobytes(self.motorVals), (self.host, self.motorPort))
-
             data, _ = self.telemSocket.recvfrom(80)
             self.state = np.frombuffer(data)
 
@@ -88,3 +86,6 @@ class Multicopter(object):
                 self.motorSocket.close()
                 self.telemSocket.close()
                 break
+
+            self.motorSocket.sendto(np.ndarray.tobytes(self.motorVals), (self.host, self.motorPort))
+
