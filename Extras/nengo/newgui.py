@@ -49,6 +49,18 @@ with model:
 
     x = nengo.Ensemble(n_neurons=1200, dimensions=3, radius=30)
 
+    u = nengo.Node(None, size_in=1, label='u')    # output
+    
+    nengo.Connection(q_err, u, transform=KP, synapse=None)
+
+    nengo.Connection(q_err_integral, u, transform=KI, synapse=None)
+    
+    dq_err = nengo.Ensemble(n_neurons=N_NEURONS, dimensions=1, label='dq_err')
+    nengo.Connection(dq_target, dq_err, synapse=None)
+    nengo.Connection(dq, dq_err, synapse=None, transform=-1)
+    
+    nengo.Connection(dq_err, u, transform=KD, synapse=None)
+
     synapse = 0.1
 
     def lorenz(x):
