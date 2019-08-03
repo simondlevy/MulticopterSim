@@ -14,9 +14,20 @@ KI = 0.03
 copter = Multicopter()
 copter.start()
 
+q_value = 0
+q_target_value = 0
+dq_value = 0
+last_actual = 0
+output_value = 0
+
 model = nengo.Network(seed=3)
+
 with model:
     
+    q_target = nengo.Node(lambda t: q_target_value, label='q_target')
+    q = nengo.Node(lambda t: q_value, label='q')
+    dq = nengo.Node(lambda t: dq_value, label='dq')
+
     x = nengo.Ensemble(n_neurons=1200, dimensions=3, radius=30)
 
     synapse = 0.1
