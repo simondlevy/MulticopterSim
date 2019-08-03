@@ -16,10 +16,6 @@ N_NEURONS        = 200
 INTEGRAL_SYNAPSE = 0.1
 INTEGRAL_RADIUS  = 2
 
-# Create a multicopter and start communications with simulator
-copter = Multicopter()
-copter.start()
-
 q_value = 0
 q_target_value = 0
 dq_value = 0
@@ -29,6 +25,10 @@ output_value = 0
 model = nengo.Network(seed=3)
 
 with model:
+    
+    # Create a multicopter and start communications with simulator
+    copter = Multicopter()
+    copter.start()
     
     q_target = nengo.Node(lambda t: q_target_value, label='q_target')
     q = nengo.Node(lambda t: q_value, label='q')
@@ -58,20 +58,8 @@ with model:
     dq_err = nengo.Ensemble(n_neurons=N_NEURONS, dimensions=1, label='dq_err')
     nengo.Connection(dq_target, dq_err, synapse=None)
     nengo.Connection(dq, dq_err, synapse=None, transform=-1)
-    
-    nengo.Connection(dq_err, u, transform=KD, synapse=None)
 
-    synapse = 0.1
-
-    def lorenz(x):
-
-        sigma = 10
-        beta = 8.0/3
-        rho = 28
-        
-        dx0 = -sigma * x[0] + sigma * x[1]
-        dx1 = -x[0] * x[2] - x[1]
-        dx2 = x[0] * x[1] - beta * (x[2] + rho) - rho
+    def loop(u):
 
         # Get vehicle state from sim
         telem = copter.getState()
@@ -81,17 +69,10 @@ with model:
 
         # Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
         # to PID controller.
-        z = -telem[9]
+        #z = -telem[9]
 
-        print(z)
+        copter.setMotors(0.5*np.ones(4))        
 
-        u = 0.5
-
-        # Set motor values in sim
-        copter.setMotors(u*np.ones(4))
-
-        return [dx0 * synapse + x[0],
-                dx1 * synapse + x[1],
-                dx2 * synapse + x[2]]
-
-    nengo.Connection(x, x, synapse=synapse, function=lorenz)
+        return u
+    
+    nengo.Connection(dq_err, u, transform=KD, synapse=None, function=loop)
