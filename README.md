@@ -134,7 +134,7 @@ illustrates this arrangement, using a traditional
 <img src="Extras/media/Control.png" width=800></a>
 
 In addition, an abstract, threaded C++
-[TargetController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/target/TargetController.hpp)
+[TargetController](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/TargetController.hpp)
 class supports modeling interaction with other moving objects having their own dynamics; for example,
 in a predator/prey scenario. 
 
