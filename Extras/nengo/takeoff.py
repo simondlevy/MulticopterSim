@@ -9,9 +9,9 @@ MIT License
 
 import nengo
 from time import sleep
-import numpy as np
 from multicopter_sim import Multicopter
 from sys import stdout
+from altitude_hold import runpid
 
 # Target 
 ALTITUDE_TARGET = 10
@@ -55,32 +55,10 @@ if __name__ == '__main__':
         copter.start()
 
         # Loop until user hits the stop button
-        while True:
-
-            # Get vehicle state from sim
-            telem = copter.getState()
-
-            # Extract time from state
-            t =  telem[0]
-
-            # Negative time means user hit stop button
-            if t < 0: break
-
-            # Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
-            # to PID controller.
-            z = -telem[9]
-
-            # Get correction from PID controller
-            u = pid.getCorrection(ALTITUDE_TARGET, z)[0]
+        while runpid(copter, pid):
 
             # Update the simulator
             sim.run(SIM_TIME)
-
-            # Constrain correction to [0,1] to represent motor value
-            u = max(0, min(1, u))
-
-            # Set motor values in sim
-            copter.setMotors(u*np.ones(4))
 
             # Yield to Multicopter thread
             sleep(.001)
