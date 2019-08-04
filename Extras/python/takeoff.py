@@ -8,6 +8,7 @@ MIT License
 '''
 
 from time import sleep
+from sys import stdout
 import numpy as np
 from pidcontroller import AltitudePidController
 from multicopter_sim import Multicopter
@@ -20,6 +21,10 @@ ALT_P = 1.0
 VEL_P = 1.0
 VEL_I = 0
 VEL_D = 0
+
+def report(msg):
+    stdout.write(msg)
+    stdout.flush()
 
 if __name__ == '__main__':
 
@@ -38,6 +43,8 @@ if __name__ == '__main__':
 
     # Start the simulation
     copter.start()
+
+    report('Hit the start button ... ')
 
     # Loop until user hits the stop button
     while True:
@@ -58,7 +65,7 @@ if __name__ == '__main__':
         # to PID controller.
         z = -telem[9]
 
-        print(z)
+        report('%+3.3f\n' % z)
 
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
