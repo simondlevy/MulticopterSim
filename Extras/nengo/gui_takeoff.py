@@ -28,14 +28,26 @@ with model:
 
 def on_step(sim):
     
-    print(pid.getCorrection(100, 0))
-
-    return
-
     if not hasattr(on_step, 'copter'):
+
+        # Start the 'copter
         on_step.copter = Multicopter()
         on_step.copter.start()
         
     if on_step.copter.isReady():
-        print(on_step.copter.getState())
-        on_step.copter.setMotors(.5*np.ones(4))
+
+        # Get 'copter state from sim
+        telem = on_step.copter.getState()
+
+        # Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
+        # to PID controller.
+        z = -telem[9]
+
+        # Get correction from PID controller
+        u = pid.getCorrection(ALTITUDE_TARGET, z)[0]
+
+        # Constrain correction to [0,1] to represent motor value
+        u = max(0, min(1, u))
+
+        # Set motor values in sim
+        on_step.copter.setMotors(u*np.ones(4))
