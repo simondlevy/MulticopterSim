@@ -9,25 +9,11 @@ MIT License
 
 import nengo
 from time import sleep
-from multicopter_sim import Multicopter
 from sys import stdout
-from altitude_hold import runpid
-
-# Target 
-ALTITUDE_TARGET = 10
-
-# PID params
-KP = 0.4
-KD = 10.0
-KI = 0.03
+from altitude_hold import buildpid, runpid, startcopter
 
 # Simulator params
 SIM_TIME = 0.001
-
-def debug(msg):
-
-    stdout.write(msg)
-    stdout.flush()
 
 if __name__ == '__main__':
 
@@ -35,27 +21,22 @@ if __name__ == '__main__':
     z = 0
     u = 0
 
-    debug('Importing Nengo ... ')
-    from nengo_pid_controller import NengoPidController
-    debug('done\nHit the Play button ...')
-
-    model = nengo.Network()
-
-    # Create PID controller
-    pid = NengoPidController(model, KP, KD, KI)
+    model, pid = buildpid()
 
     sim = nengo.Simulator(model, progress_bar=False)  
 
+    copter = startcopter()
+
     with model:
 
-        # Create a multicopter simulation
-        copter = Multicopter()
-
-        # Start the simulation
-        copter.start()
+        stdout.write('Hit Play in simulator ... ')
+        stdout.flush()
 
         # Loop until user hits the stop button
-        while runpid(copter, pid):
+        while  True:
+
+            # Run the PID controller
+            runpid(copter, pid)
 
             # Update the simulator
             sim.run(SIM_TIME)

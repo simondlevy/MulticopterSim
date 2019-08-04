@@ -69,7 +69,7 @@ int main(int argc, char ** argv)
 
             quad.update(DELTA_T);
 
-             time += DELTA_T;
+            time += DELTA_T;
         }
 
     } while (true)
