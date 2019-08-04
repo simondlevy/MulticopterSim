@@ -22,6 +22,8 @@ and choosing a vehicle.
 
 6. In <b>MulticopterSim/Extras/nengo</b> folder, run <tt>python3 takeoff.py</tt>, and click the play button.
 
+## GUI version
+
 To control the simulator from the Nengo GUI, you will need to clone and install the
 [hooks](https://github.com/nengo/nengo-gui/tree/hooks)
 branch of NengoGUI:
