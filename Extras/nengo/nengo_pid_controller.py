@@ -10,12 +10,9 @@ MIT License
 import nengo
 import numpy as np
 
-from sys import stdout
-from time import sleep
-
 class NengoPidController(object):
 
-    def __init__(self, Kp=0, Kd=0, Ki=0, n_dims=1, sim_time=.001, n_neurons=100, 
+    def __init__(self, model, Kp=0, Kd=0, Ki=0, n_dims=1, n_neurons=100, 
             integral_synapse=0.1, integral_radius=2, seed=None):
 
         self.q_value = np.zeros(n_dims)
@@ -24,15 +21,16 @@ class NengoPidController(object):
         self.last_actual = np.zeros(n_dims)
         self.output_value = np.zeros(n_dims)
 
-        self.model = nengo.Network(seed=seed)
-
         self.Kp = Kp
         self.Kd = Kd
+        self.Ki = Ki
         self.n_dims = n_dims
-        self.sim_time = sim_time
         self.n_neurons = n_neurons
-
-        with self.model:
+        self.integral_synapse = integral_synapse
+        self.integral_radius = integral_radius
+        self.seed = seed
+        
+        with model:
 
             q_target = nengo.Node(lambda t: self.q_target_value, label='q_target')
             q = nengo.Node(lambda t: self.q_value, label='q')
@@ -46,16 +44,16 @@ class NengoPidController(object):
             nengo.Connection(q_target, q_err, synapse=None)
             nengo.Connection(q, q_err, synapse=None, transform=-1)
 
-            q_err_integral = nengo.Ensemble(n_neurons=self.n_neurons, dimensions=self.n_dims, radius=integral_radius,
+            q_err_integral = nengo.Ensemble(n_neurons=self.n_neurons, dimensions=self.n_dims, radius=self.integral_radius,
                     label='q_err_integral')
-            nengo.Connection(q_err, q_err_integral, synapse=integral_synapse, transform=integral_synapse)
-            nengo.Connection(q_err_integral, q_err_integral, synapse=integral_synapse, transform=1)
+            nengo.Connection(q_err, q_err_integral, synapse=self.integral_synapse, transform=self.integral_synapse)
+            nengo.Connection(q_err_integral, q_err_integral, synapse=self.integral_synapse, transform=1)
             
             u = nengo.Node(None, size_in=self.n_dims, label='u')    # output
             
             nengo.Connection(q_err, u, transform=self.Kp, synapse=None)
 
-            nengo.Connection(q_err_integral, u, transform=Ki, synapse=None)
+            nengo.Connection(q_err_integral, u, transform=self.Ki, synapse=None)
             
             dq_err = nengo.Ensemble(n_neurons=self.n_neurons, dimensions=self.n_dims, label='dq_err')
             nengo.Connection(dq_target, dq_err, synapse=None)
@@ -69,8 +67,6 @@ class NengoPidController(object):
             output = nengo.Node(output_func, size_in=self.n_dims, label='output')
             nengo.Connection(u, output)
 
-            self.sim = nengo.Simulator(self.model, progress_bar=False)  
-
     def getCorrection(self, target, actual):
 
         # Make inputs into arrays if they aren't already
@@ -83,8 +79,6 @@ class NengoPidController(object):
 
         self.last_actual = actual
        
-        self.sim.run(self.sim_time)
-
         # Return correction as tuple
         return tuple(self.output_value)
 

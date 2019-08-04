@@ -1,9 +1,31 @@
 import nengo
 import numpy as np
+
 from multicopter_sim import Multicopter
+from nengo_pid_controller import NengoPidController
+
+# Target 
+ALTITUDE_TARGET = 10
+
+# PID params
+KP = 0.4
+KD = 10.0
+KI = 0.03
+
+'''
+# Create PID controller
+pid = NengoPidController(KP, KD, KI)
+model = nengo.Network()
+pid.build(model)
+with model:
+    pass
+'''
 
 model = nengo.Network()
+
 with model:
+
+    pid = NengoPidController(model, KP, KD, KI)
 
     x = nengo.Ensemble(n_neurons=200, dimensions=2)
 

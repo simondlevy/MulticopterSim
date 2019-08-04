@@ -7,6 +7,7 @@ Copyright (C) 2019 Simon D. Levy
 MIT License
 '''
 
+import nengo
 from time import sleep
 import numpy as np
 from multicopter_sim import Multicopter
@@ -19,6 +20,9 @@ ALTITUDE_TARGET = 10
 KP = 0.4
 KD = 10.0
 KI = 0.03
+
+# Simulator params
+SIM_TIME = 0.001
 
 def debug(msg):
 
@@ -35,42 +39,51 @@ if __name__ == '__main__':
     from nengo_pid_controller import NengoPidController
     debug('done\nHit the Play button ...')
 
+    model = nengo.Network()
+
     # Create PID controller
-    pid = NengoPidController(KP, KD, KI)
+    pid = NengoPidController(model, KP, KD, KI)
 
-    # Create a multicopter simulation
-    copter = Multicopter()
+    sim = nengo.Simulator(model, progress_bar=False)  
 
-    # Start the simulation
-    copter.start()
+    with model:
 
-    # Loop until user hits the stop button
-    while True:
+        # Create a multicopter simulation
+        copter = Multicopter()
 
-        # Get vehicle state from sim
-        telem = copter.getState()
+        # Start the simulation
+        copter.start()
 
-        # Extract time from state
-        t =  telem[0]
+        # Loop until user hits the stop button
+        while True:
 
-        # Negative time means user hit stop button
-        if t < 0: break
+            # Get vehicle state from sim
+            telem = copter.getState()
 
-        # Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
-        # to PID controller.
-        z = -telem[9]
+            # Extract time from state
+            t =  telem[0]
 
-        # Compute vertical climb rate as first difference of altitude over time
-        if copter.isReady():
+            # Negative time means user hit stop button
+            if t < 0: break
 
-            # Get correction from PID controller
-            u = pid.getCorrection(ALTITUDE_TARGET, z)[0]
+            # Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
+            # to PID controller.
+            z = -telem[9]
 
-            # Constrain correction to [0,1] to represent motor value
-            u = max(0, min(1, u))
+            # Compute vertical climb rate as first difference of altitude over time
+            if copter.isReady():
 
-        # Set motor values in sim
-        copter.setMotors(u*np.ones(4))
+                # Get correction from PID controller
+                u = pid.getCorrection(ALTITUDE_TARGET, z)[0]
 
-        # Yield to Multicopter thread
-        sleep(.001)
+                # Update the simulator
+                sim.run(SIM_TIME)
+
+                # Constrain correction to [0,1] to represent motor value
+                u = max(0, min(1, u))
+
+            # Set motor values in sim
+            copter.setMotors(u*np.ones(4))
+
+            # Yield to Multicopter thread
+            sleep(.001)
