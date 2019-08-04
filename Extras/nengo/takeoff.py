@@ -70,17 +70,14 @@ if __name__ == '__main__':
             # to PID controller.
             z = -telem[9]
 
-            # Compute vertical climb rate as first difference of altitude over time
-            if copter.isReady():
+            # Get correction from PID controller
+            u = pid.getCorrection(ALTITUDE_TARGET, z)[0]
 
-                # Get correction from PID controller
-                u = pid.getCorrection(ALTITUDE_TARGET, z)[0]
+            # Update the simulator
+            sim.run(SIM_TIME)
 
-                # Update the simulator
-                sim.run(SIM_TIME)
-
-                # Constrain correction to [0,1] to represent motor value
-                u = max(0, min(1, u))
+            # Constrain correction to [0,1] to represent motor value
+            u = max(0, min(1, u))
 
             # Set motor values in sim
             copter.setMotors(u*np.ones(4))
