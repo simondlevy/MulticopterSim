@@ -11,8 +11,11 @@ with model:
     def oscillator(x):
         r = 1
         s = 6
-        return [synapse * (-x[1] * s + x[0] * (r - x[0]**2 - x[1]**2)) + x[0],
-                synapse * ( x[0] * s + x[1] * (r - x[0]**2 - x[1]**2)) + x[1]]
+        
+        x1 = synapse * (-x[1] * s + x[0] * (r - x[0]**2 - x[1]**2)) + x[0]
+        x2 = synapse * ( x[0] * s + x[1] * (r - x[0]**2 - x[1]**2)) + x[1]
+        
+        return [x1, x2]
 
     nengo.Connection(x, x, synapse=synapse, function=oscillator)
     

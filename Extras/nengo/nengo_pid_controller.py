@@ -16,7 +16,7 @@ from time import sleep
 class NengoPidController(object):
 
     def __init__(self, Kp=0, Kd=0, Ki=0, n_dims=1, sim_time=.001, n_neurons=100, 
-            integral_synapse=0.1, integral_radius=2, seed=None, in_gui=False):
+            integral_synapse=0.1, integral_radius=2, seed=None):
 
         self.q_value = np.zeros(n_dims)
         self.q_target_value = np.zeros(n_dims)
@@ -69,8 +69,6 @@ class NengoPidController(object):
             output = nengo.Node(output_func, size_in=self.n_dims, label='output')
             nengo.Connection(u, output)
 
-
-        if not in_gui:  
             self.sim = nengo.Simulator(self.model, progress_bar=False)  
 
     def getCorrection(self, target, actual):
