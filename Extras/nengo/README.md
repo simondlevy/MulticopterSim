@@ -27,9 +27,9 @@ To control the simulator from the Nengo GUI, you will need to clone and install 
 branch of NengoGUI:
 
 ```
-%git clone -b hooks https://github.com/nengo/nengo-gui
-cd nengo-gui
-python3 setup.py install
+% git clone -b hooks https://github.com/nengo/nengo-gui
+% cd nengo-gui
+% python3 setup.py install
 ```
 
 (On Linux you may need to issue that last command with <tt>sudo</tt>.)
