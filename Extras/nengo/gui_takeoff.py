@@ -28,6 +28,10 @@ with model:
 
 def on_step(sim):
     
+    print(pid.getCorrection(100, 0))
+
+    return
+
     if not hasattr(on_step, 'copter'):
         on_step.copter = Multicopter()
         on_step.copter.start()
