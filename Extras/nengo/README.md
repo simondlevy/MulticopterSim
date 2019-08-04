@@ -21,3 +21,19 @@ in <b>MulticopterSim/Extras/python</b> for installing the <b>multicopter_sim</b>
 and choosing a vehicle.
 
 6. In <b>MulticopterSim/Extras/nengo</b> folder, run <tt>python3 takeoff.py</tt>, and click the play button.
+
+To control the simulator from the Nengo GUI, you will need to clone and install the
+[hooks](https://github.com/nengo/nengo-gui/tree/hooks)
+branch of NengoGUI:
+
+```
+%git clone -b hooks https://github.com/nengo/nengo-gui
+cd nengo-gui
+python3 setup.py install
+```
+
+(On Linux you may need to issue that last command with <tt>sudo</tt>.)
+
+Then in <b>MulticopterSim/Extras/nengo</b> folder, run <tt>nengo gui_takeoff.py</tt>, click the play button in the
+Nengo GUI, and then the play button in UE4 Editor.
+
