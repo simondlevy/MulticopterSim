@@ -393,9 +393,9 @@ class Vehicle {
             }
         }
 
-        void rotateGimbal(FRotator rotator)
+        void rotateGimbal(FQuat rotation)
         {
-            _objects.springArm->SetWorldRotation(_objects.springArm->GetComponentRotation() + rotator);
+			_objects.springArm->SetRelativeRotation(rotation);
         }
 
     private:
