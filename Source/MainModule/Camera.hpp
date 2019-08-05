@@ -41,7 +41,6 @@ class Camera {
         float    _fov  = 0;
 
         // UE4 resources, set in Vehicle::addCamera()
-        UCameraComponent         * _cameraComponent = NULL;
         USceneCaptureComponent2D * _captureComponent = NULL;
         FRenderTarget            * _renderTarget = NULL;
  
@@ -58,7 +57,6 @@ class Camera {
             _imageBytes = new uint8_t [_rows*_cols*4];
 
             // These will be set in Vehicle::addCamera()
-            _cameraComponent = NULL;
             _captureComponent = NULL;
             _renderTarget = NULL;
         }
@@ -69,15 +67,7 @@ class Camera {
         // Sets current FOV
         void setFov(float fov)
         {
-            _fov = fov;
-            updateFov();
-        }
-
-        // Updates UE4 resource with current FOV
-        void updateFov(void)
-        {
-            _cameraComponent->SetFieldOfView(_fov);
-            _captureComponent->FOVAngle = _fov - 45;
+           _captureComponent->FOVAngle = _fov;
         }
 
     public:

@@ -263,22 +263,12 @@ class Vehicle {
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject((TCHAR *)renderTargetName);
             UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObject.Object;
 
-            // Create a camera component 
-            camera->_cameraComponent = _objects.pawn->CreateDefaultSubobject<UCameraComponent>(makeName("Camera", id));
-            camera->_cameraComponent->SetupAttachment(_objects.springArm, USpringArmComponent::SocketName); 	
-            camera->_cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            camera->_cameraComponent->SetWorldScale3D(cameraScale);
-            camera->_cameraComponent->SetAspectRatio((float)camera->_cols / camera->_rows);
-
             // Create a scene-capture component and set its target to the render target
             camera->_captureComponent = _objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
             camera->_captureComponent->SetWorldScale3D(cameraScale);
             camera->_captureComponent->SetupAttachment(_objects.springArm, USpringArmComponent::SocketName);
             camera->_captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             camera->_captureComponent->TextureTarget = textureRenderTarget2D;
-
-            // Set the initial field of view
-            camera->updateFov();
 
             // Get the render target resource for copying the image pixels
             camera->_renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();
