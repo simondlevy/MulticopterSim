@@ -255,9 +255,6 @@ class Vehicle {
             swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), 
                     L"/Game/Flying/RenderTargets/renderTarget_%dx%d_%d", camera->_cols, camera->_rows, id);  
 
-            // Make the camera appear small in the editor so it doesn't obscure the vehicle
-            FVector cameraScale(0.1, 0.1, 0.1);
-
             // Create a static render target.  This provides less flexibility than creating it dynamically,
             // but acquiring the pixels seems to run twice as fast.
             static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject((TCHAR *)renderTargetName);
@@ -265,7 +262,7 @@ class Vehicle {
 
             // Create a scene-capture component and set its target to the render target
             camera->_captureComponent = _objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
-            camera->_captureComponent->SetWorldScale3D(cameraScale);
+            camera->_captureComponent->SetWorldScale3D(FVector(0.1,0.1,0.1));
             camera->_captureComponent->SetupAttachment(_objects.springArm, USpringArmComponent::SocketName);
             camera->_captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             camera->_captureComponent->TextureTarget = textureRenderTarget2D;
