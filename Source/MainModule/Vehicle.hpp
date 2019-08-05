@@ -16,7 +16,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-#include "Debug.hpp"
+#include "Utils.hpp"
 #include "dynamics/MultirotorDynamics.hpp"
 #include "FlightManager.hpp"
 #include "Camera.hpp"
@@ -58,10 +58,6 @@ class Vehicle {
         uint8_t  _cameraCount;
 
     private:
-
-        static constexpr float CAMERA_X = +20;
-        static constexpr float CAMERA_Y =   0;
-        static constexpr float CAMERA_Z = +30;
 
         MultirotorDynamics * _dynamics = NULL;
 
@@ -246,34 +242,11 @@ class Vehicle {
             // Use one-based indexing for asset names
             uint8_t id = _cameraCount + 1;
 
-            camera->addToVehicle(_pawn, _springArm);
+            // Add camera to spring arm
+            camera->addToVehicle(_pawn, _springArm, id);
 
-            // Create name of render target asset
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(L"/Game/Flying/RenderTargets/renderTarget_640x480_1");
-
-            // Create a static render target.  This provides less flexibility than creating it dynamically,
-            // but acquiring the pixels seems to run twice as fast.
-            UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObject.Object;
-
-            // Create a scene-capture component and set its target to the render target
-            camera->_captureComponent = _pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
-            camera->_captureComponent->SetWorldScale3D(FVector(0.1,0.1,0.1));
-            camera->_captureComponent->SetupAttachment(_springArm, USpringArmComponent::SocketName);
-            camera->_captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            camera->_captureComponent->TextureTarget = textureRenderTarget2D;
-
-            // Get the render target resource for copying the image pixels
-            camera->_renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();
-
-            // Increment the camera count for next time
+           // Increment the camera count for next time
             _cameras[_cameraCount++] = camera;
-        }
-
-        static const FName makeName(const char * prefix, const uint8_t index, const char * suffix="")
-        {
-            char name[200];
-            SPRINTF(name, "%s%d%s", prefix, index+1, suffix);
-            return FName(name);
         }
 
         Vehicle(void)

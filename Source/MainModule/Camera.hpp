@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "Debug.hpp"
+#include "Utils.hpp"
 
 class Camera {
 
@@ -29,6 +29,10 @@ class Camera {
         } Resolution_t;
 
     private:
+
+        static constexpr float CAMERA_X = +20;
+        static constexpr float CAMERA_Y =   0;
+        static constexpr float CAMERA_Z = +30;
 
         // Byte array for RGBA image
         uint8_t * _imageBytes = NULL;
@@ -62,8 +66,24 @@ class Camera {
         }
 
         // Called by Vehicle::addCamera()
-        void addToVehicle(APawn * pawn, USpringArmComponent * springArm)
+        void addToVehicle(APawn * pawn, USpringArmComponent * springArm, uint8_t id)
         {
+            // Create name of render target asset
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(L"/Game/Flying/RenderTargets/renderTarget_640x480_1");
+
+            // Create a static render target.  This provides less flexibility than creating it dynamically,
+            // but acquiring the pixels seems to run twice as fast.
+            UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObject.Object;
+
+            // Create a scene-capture component and set its target to the render target
+            _captureComponent = pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
+            _captureComponent->SetWorldScale3D(FVector(0.1,0.1,0.1));
+            _captureComponent->SetupAttachment(springArm, USpringArmComponent::SocketName);
+            _captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            _captureComponent->TextureTarget = textureRenderTarget2D;
+
+            // Get the render target resource for copying the image pixels
+            _renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();
         }
 
         // Override this method for your video application
@@ -72,7 +92,7 @@ class Camera {
         // Sets current FOV
         void setFov(float fov)
         {
-           _captureComponent->FOVAngle = _fov;
+            _captureComponent->FOVAngle = _fov;
         }
 
     public:
