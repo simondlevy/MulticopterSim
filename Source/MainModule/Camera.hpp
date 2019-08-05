@@ -75,8 +75,11 @@ class Camera {
         // Called by Vehicle::addCamera()
         void addToVehicle(APawn * pawn, USpringArmComponent * springArm, uint8_t id)
         {
-            // Get static assets for all render targets
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D> cameraTextureObjects[RES_COUNT][MAX_CAMERAS] =
+            // Get static assets for all render targets.  This provides less
+            // flexibility than creating it dynamically, but acquiring the
+            // pixels seems to run twice as fast.
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>
+                cameraTextureObjects[RES_COUNT][MAX_CAMERAS] =
             { 
                 {
                     ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_1"),
@@ -116,8 +119,6 @@ class Camera {
                 }
             };
 
-            // Create a static render target.  This provides less flexibility than creating it dynamically,
-            // but acquiring the pixels seems to run twice as fast.
             UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObjects[_res][id].Object;
 
             // Create a scene-capture component and set its target to the render target
