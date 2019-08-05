@@ -73,7 +73,7 @@ class Camera {
         }
 
         // Called by Vehicle::addCamera()
-        void addToVehicle(APawn * pawn, USpringArmComponent * springArm, uint8_t id)
+        virtual void addToVehicle(APawn * pawn, USpringArmComponent * springArm, uint8_t id)
         {
             // Get static assets for all render targets.  This provides less
             // flexibility than creating it dynamically, but acquiring the

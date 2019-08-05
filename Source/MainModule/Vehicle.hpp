@@ -239,11 +239,8 @@ class Vehicle {
 
         void addCamera(Camera * camera)
         {
-            // Use one-based indexing for asset names
-            uint8_t id = _cameraCount + 1;
-
             // Add camera to spring arm
-            camera->addToVehicle(_pawn, _springArm, id);
+            camera->addToVehicle(_pawn, _springArm, _cameraCount);
 
            // Increment the camera count for next time
             _cameras[_cameraCount++] = camera;
