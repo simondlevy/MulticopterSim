@@ -24,15 +24,19 @@ class Camera {
 
             RES_640x480,
             RES_1280x720,
-            RES_1920x1080
+            RES_1920x1080,
+            RES_COUNT
 
         } Resolution_t;
 
     private:
 
+        // Camera position w.r.t. to vehicle
         static constexpr float CAMERA_X = +20;
         static constexpr float CAMERA_Y =   0;
         static constexpr float CAMERA_Z = +30;
+
+        Resolution_t _res;
 
         // Byte array for RGBA image
         uint8_t * _imageBytes = NULL;
@@ -42,6 +46,8 @@ class Camera {
         // Image size and field of view, set in constructor
         uint16_t _rows = 0;
         uint16_t _cols = 0;
+
+        // Initial FOV can be overridden by setFov()
         float    _fov  = 0;
 
         // UE4 resources, set in Vehicle::addCamera()
@@ -55,6 +61,7 @@ class Camera {
 
             _rows = rowss[resolution];
             _cols = colss[resolution];
+            _res  = resolution;
             _fov = fov;
 
             // Create a byte array sufficient to hold the RGBA image
@@ -68,12 +75,50 @@ class Camera {
         // Called by Vehicle::addCamera()
         void addToVehicle(APawn * pawn, USpringArmComponent * springArm, uint8_t id)
         {
-            // Create name of render target asset
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(L"/Game/Flying/RenderTargets/renderTarget_640x480_1");
+            // Get static assets for all render targets
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D> cameraTextureObjects[RES_COUNT][MAX_CAMERAS] =
+            { 
+                {
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_1"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_2"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_3"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_4"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_5"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_6"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_7"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_8"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_9"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_640x480_10") 
+                },
+                {
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1280x720_1"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1280x720_2"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1280x720_3"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1280x720_4"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1280x720_5"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1280x720_6"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1280x720_7"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1280x720_8"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1280x720_9"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1280x720_10") 
+                },
+                {
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1920x1080_1"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1920x1080_2"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1920x1080_3"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1920x1080_4"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1920x1080_5"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1920x1080_6"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1920x1080_7"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1920x1080_8"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1920x1080_9"),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(L"/Game/Flying/RenderTargets/renderTarget_1920x1080_10") 
+                }
+            };
 
             // Create a static render target.  This provides less flexibility than creating it dynamically,
             // but acquiring the pixels seems to run twice as fast.
-            UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObject.Object;
+            UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObjects[_res][id].Object;
 
             // Create a scene-capture component and set its target to the render target
             _captureComponent = pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
@@ -84,6 +129,9 @@ class Camera {
 
             // Get the render target resource for copying the image pixels
             _renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();
+            
+            // Set the initial FOV
+            setFov(_fov);
         }
 
         // Override this method for your video application
@@ -92,7 +140,7 @@ class Camera {
         // Sets current FOV
         void setFov(float fov)
         {
-            _captureComponent->FOVAngle = _fov;
+            _captureComponent->FOVAngle = fov;
         }
 
     public:
