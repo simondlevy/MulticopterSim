@@ -61,6 +61,11 @@ class Camera {
             _renderTarget = NULL;
         }
 
+        // Called by Vehicle::addCamera()
+        void addToVehicle(APawn * pawn, USpringArmComponent * springArm)
+        {
+        }
+
         // Override this method for your video application
         virtual void processImageBytes(uint8_t * bytes) { (void)bytes; }
 

@@ -44,30 +44,26 @@ class Vehicle {
     private: 
         
         // UE4 objects that must be built statically
-        typedef struct {
+        APawn                    * _pawn;
+        UStaticMesh              * _frameMesh;
+        UStaticMesh              * _motorMesh;
+        UStaticMeshComponent     * _frameMeshComponent;
+        UStaticMeshComponent     * _propellerMeshComponents[FFlightManager::MAX_MOTORS];
+        USoundCue                * _soundCue;
+        UAudioComponent          * _audioComponent;
+        USpringArmComponent      * _springArm;
 
-            APawn                    * pawn;
-            UStaticMesh              * frameMesh;
-            UStaticMesh              * motorMesh;
-            UStaticMeshComponent     * frameMeshComponent;
-            UStaticMeshComponent     * propellerMeshComponents[FFlightManager::MAX_MOTORS];
-            USoundCue                * soundCue;
-            UAudioComponent          * audioComponent;
-
-            USpringArmComponent      * springArm;
-
-            Camera                   * cameras[Camera::MAX_CAMERAS];
-            uint8_t                    cameraCount;
-
-        } objects_t;
+        // Cameras
+        Camera * _cameras[Camera::MAX_CAMERAS];
+        uint8_t  _cameraCount;
 
     private:
 
-		static constexpr float CAMERA_X = +20;
-		static constexpr float CAMERA_Y =   0;
-		static constexpr float CAMERA_Z = +30;
+        static constexpr float CAMERA_X = +20;
+        static constexpr float CAMERA_Y =   0;
+        static constexpr float CAMERA_Z = +30;
 
-		MultirotorDynamics * _dynamics = NULL;
+        MultirotorDynamics * _dynamics = NULL;
 
         int8_t _motorDirections[FFlightManager::MAX_MOTORS] = {};
 
@@ -95,8 +91,8 @@ class Vehicle {
         // Retrieves kinematics from dynamics computed in another thread
         bool getKinematics(void)
         {
-			// FlightManager will be null after crash
-			if (!_flightManager) return false;
+            // FlightManager will be null after crash
+            if (!_flightManager) return false;
 
             // Get current pose kinematics and motor values dynamics (from flight
             // manager). Motor values are used only for animation effects (prop
@@ -120,8 +116,8 @@ class Vehicle {
 
             if (_dynamics->crashed()) return false;
 
-            _objects.pawn->SetActorLocation(location);
-            _objects.pawn->SetActorRotation(rotation);
+            _pawn->SetActorLocation(location);
+            _pawn->SetActorRotation(rotation);
 
             return true;
         }
@@ -156,8 +152,8 @@ class Vehicle {
             smoothedMotorMean /= _motorBuffer->Capacity();
 
             // Use the mean motor value to modulate the pitch and voume of the propeller sound
-            _objects.audioComponent->SetFloatParameter(FName("pitch"), smoothedMotorMean);
-            _objects.audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
+            _audioComponent->SetFloatParameter(FName("pitch"), smoothedMotorMean);
+            _audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
         }
 
         void reportStatus(void)
@@ -168,8 +164,8 @@ class Vehicle {
 
         void grabImages(void)
         {
-            for (uint8_t i=0; i<_objects.cameraCount; ++i) {
-                _objects.cameras[i]->grabImage();
+            for (uint8_t i=0; i<_cameraCount; ++i) {
+                _cameras[i]->grabImage();
             }
         }
 
@@ -177,15 +173,15 @@ class Vehicle {
 
         void build(APawn * pawn, UStaticMesh * frameMesh)
         {
-            _objects.pawn = pawn;
-            _objects.frameMesh = frameMesh;
+            _pawn = pawn;
+            _frameMesh = frameMesh;
 
-            _objects.frameMeshComponent = _objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
-            _objects.frameMeshComponent->SetStaticMesh(_objects.frameMesh);
-            _objects.pawn->SetRootComponent(_objects.frameMeshComponent);
+            _frameMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
+            _frameMeshComponent->SetStaticMesh(_frameMesh);
+            _pawn->SetRootComponent(_frameMeshComponent);
 
             // Turn off UE4 physics
-            _objects.frameMeshComponent->SetSimulatePhysics(false);
+            _frameMeshComponent->SetSimulatePhysics(false);
           }
 
         void buildWithAudio(APawn * pawn, UStaticMesh * frameMesh)
@@ -196,30 +192,30 @@ class Vehicle {
             static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/Flying/Audio/MotorSoundCue"));
 
             // Store a reference to the Cue asset - we'll need it later.
-            _objects.soundCue = soundCue.Object;
+            _soundCue = soundCue.Object;
 
             // Create an audio component, the audio component wraps the Cue, 
             // and allows us to ineract with it, and its parameters from code.
-            _objects.audioComponent = _objects.pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
+            _audioComponent = _pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
 
             // Stop the sound from sound playing the moment it's created.
-            _objects.audioComponent->bAutoActivate = false;
+            _audioComponent->bAutoActivate = false;
 
             // Attach the sound to the pawn's root, the sound follows the pawn around
-            _objects.audioComponent->SetupAttachment(_objects.pawn->GetRootComponent());
+            _audioComponent->SetupAttachment(_pawn->GetRootComponent());
 
             // Create a spring-arm for the gimbal
-            _objects.springArm = _objects.pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-            _objects.springArm->SetupAttachment(_objects.pawn->GetRootComponent());
-            _objects.springArm->TargetArmLength = 0.f; 
+            _springArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+            _springArm->SetupAttachment(_pawn->GetRootComponent());
+            _springArm->TargetArmLength = 0.f; 
           }
 
         void addMesh(UStaticMesh * mesh, const char * name, const FVector & location, const FRotator rotation, const FVector & scale)
         {
             UStaticMeshComponent * meshComponent = 
-                _objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
+                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
             meshComponent->SetStaticMesh(mesh);
-            meshComponent->SetupAttachment(_objects.frameMeshComponent, USpringArmComponent::SocketName); 	
+            meshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName); 	
             meshComponent->AddRelativeLocation(location*100); // m => cm
             meshComponent->AddLocalRotation(rotation);
 			meshComponent->SetRelativeScale3D(scale);
@@ -228,19 +224,19 @@ class Vehicle {
         void addProp(uint8_t index, float x, float y, const float z, UStaticMesh * propMesh)
         {
             UStaticMeshComponent * pMeshComponent = 
-                _objects.pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
+                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
             pMeshComponent->SetStaticMesh(propMesh);
-            pMeshComponent->SetupAttachment(_objects.frameMeshComponent, USpringArmComponent::SocketName);
+            pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
             pMeshComponent->AddRelativeLocation(FVector(x, y, z)*100); // m => cm
 
-            _objects.propellerMeshComponents[index] = pMeshComponent;
+            _propellerMeshComponents[index] = pMeshComponent;
         }
 
         void rotateProps(int8_t * motorDirections, uint8_t motorCount)
         {
             static float rotation;
             for (uint8_t i=0; i<motorCount; ++i) {
-                _objects.propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirections[i] * 200, 0));
+                _propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirections[i] * 200, 0));
             }
             rotation++;
         }
@@ -248,22 +244,21 @@ class Vehicle {
         void addCamera(Camera * camera)
         {
             // Use one-based indexing for asset names
-            uint8_t id = _objects.cameraCount + 1;
+            uint8_t id = _cameraCount + 1;
+
+            camera->addToVehicle(_pawn, _springArm);
 
             // Create name of render target asset
-            wchar_t renderTargetName[200];
-            swprintf(renderTargetName, sizeof(renderTargetName)/sizeof(*renderTargetName), 
-                    L"/Game/Flying/RenderTargets/renderTarget_%dx%d_%d", camera->_cols, camera->_rows, id);  
+            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject(L"/Game/Flying/RenderTargets/renderTarget_640x480_1");
 
             // Create a static render target.  This provides less flexibility than creating it dynamically,
             // but acquiring the pixels seems to run twice as fast.
-            static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>cameraTextureObject((TCHAR *)renderTargetName);
             UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObject.Object;
 
             // Create a scene-capture component and set its target to the render target
-            camera->_captureComponent = _objects.pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
+            camera->_captureComponent = _pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
             camera->_captureComponent->SetWorldScale3D(FVector(0.1,0.1,0.1));
-            camera->_captureComponent->SetupAttachment(_objects.springArm, USpringArmComponent::SocketName);
+            camera->_captureComponent->SetupAttachment(_springArm, USpringArmComponent::SocketName);
             camera->_captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
             camera->_captureComponent->TextureTarget = textureRenderTarget2D;
 
@@ -271,7 +266,7 @@ class Vehicle {
             camera->_renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();
 
             // Increment the camera count for next time
-            _objects.cameras[_objects.cameraCount++] = camera;
+            _cameras[_cameraCount++] = camera;
         }
 
         static const FName makeName(const char * prefix, const uint8_t index, const char * suffix="")
@@ -307,7 +302,7 @@ class Vehicle {
             _flightManager = flightManager;
 
             // Make sure a map has been selected
-            FString mapName = _objects.pawn->GetWorld()->GetMapName();
+            FString mapName = _pawn->GetWorld()->GetMapName();
             _mapSelected = !mapName.Contains("Untitled");
 
             _starts = 0;
@@ -321,14 +316,14 @@ class Vehicle {
                 // Start the audio for the propellers Note that because the
                 // Cue Asset is set to loop the sound, once we start playing the sound, it
                 // will play continiously...
-                _objects.audioComponent->Play();
+                _audioComponent->Play();
 
                 // Create circular queue for moving-average of motor values
                 _motorBuffer = new TCircularBuffer<float>(20);
 
                 // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
-                FVector  startLocation = _objects.pawn->GetActorLocation();
-                FRotator startRotation = _objects.pawn->GetActorRotation(); 
+                FVector  startLocation = _pawn->GetActorLocation();
+                FRotator startRotation = _pawn->GetActorRotation(); 
                 MultirotorDynamics::pose_t pose = {};
 
                 // Convert ENU centimeters => NED meters
@@ -373,20 +368,16 @@ class Vehicle {
         void PostInitializeComponents()
         {
             // Add "Vehicle" tag for use by level blueprint
-            _objects.pawn->Tags.Add(FName("Vehicle"));
+            _pawn->Tags.Add(FName("Vehicle"));
 
-            if (_objects.soundCue->IsValidLowLevelFast()) {
-                _objects.audioComponent->SetSound(_objects.soundCue);
+            if (_soundCue->IsValidLowLevelFast()) {
+                _audioComponent->SetSound(_soundCue);
             }
         }
 
         void rotateGimbal(FQuat rotation)
         {
-			_objects.springArm->SetRelativeRotation(rotation);
+			_springArm->SetRelativeRotation(rotation);
         }
-
-    private:
-
-        objects_t _objects;
 
 }; // class Vehicle
