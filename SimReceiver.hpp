@@ -12,8 +12,6 @@
 
 #include <receiver.hpp>
 
-#include "Debug.hpp"
-
 #include "../MainModule/joystick/Joystick.h"
 
 class SimReceiver : public hf::Receiver {

@@ -9,7 +9,6 @@
 */
 
 #include "../MainModule/FlightManager.hpp"
-#include "../MainModule/Debug.hpp"
 
 #include <hackflight.hpp>
 
