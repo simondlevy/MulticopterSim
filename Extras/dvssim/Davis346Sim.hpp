@@ -24,6 +24,9 @@ class Davis346 {
 
     public:
         
+        static const uint16_t RES_COLS = 346;
+        static const uint16_t RES_ROWS = 260;
+
         // Simplified AER event structure, based on
         // https://github.com/SensorsINI/jaer/blob/master/src/net/sf/jaer/event/BasicEvent.java
         typedef struct {
@@ -56,7 +59,7 @@ class Davis346 {
         queue<event_t> _eventq;
 
     public:
-        
+
         Davis346(double targetSize)
         {
             _targetSize = targetSize;
@@ -68,9 +71,9 @@ class Davis346 {
 
         void update(const location_t & vehicleLocation, const location_t & targetLocation)
         {
-			debug("vehicle: %+3.3f %+3.3f %+3.3f    target: %+3.3f %+3.3f %+3.3f",
-				vehicleLocation.x, vehicleLocation.y, vehicleLocation.z,
-				targetLocation.x, targetLocation.y, targetLocation.z);
+            debug("vehicle: %+3.3f %+3.3f %+3.3f    target: %+3.3f %+3.3f %+3.3f",
+                    vehicleLocation.x, vehicleLocation.y, vehicleLocation.z,
+                    targetLocation.x, targetLocation.y, targetLocation.z);
         }
 
         event_t dequeueEvent(void)
