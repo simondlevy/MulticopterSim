@@ -6,9 +6,8 @@
    MIT License
 */
 
-#include <opencv2/highgui/highgui.hpp>
-
 #include "Davis346Sim.hpp"
+#include "Davis346Display.hpp"
 
 // meters, seconds
 static constexpr double TARGET_SIZE     = 1; 
@@ -17,15 +16,13 @@ static constexpr double TARGET_SPEED    = 0.5;
 
 int main(int argc, char ** argv)
 {
-    Davis346 dvs(TARGET_SIZE);
+    Davis346 sensor(TARGET_SIZE);
+
+    Davis346Display display;
 
     while (true) {
 
-        cv::Mat cameraImage = cv::Mat::zeros(Davis346::RES_ROWS, Davis346::RES_COLS, CV_8UC3);
-
-        cv::imshow("EventCamera", cameraImage);
-
-        if (cv::waitKey(1) == 27) break; // quit on ESC
+        if (!display.displayEvents()) break;
     }
 
     return 0;
