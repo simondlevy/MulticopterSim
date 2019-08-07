@@ -56,14 +56,14 @@ class FThreadedManager : public FRunnable {
             return _count;
         }
 
-        static FThreadedManager * stopThreadedManager(FThreadedManager * worker)
+        static void stopThread(FThreadedManager ** worker)
         {
-            if (worker) {
-                worker->Stop();
-                delete worker;
+            if (*worker) {
+                (*worker)->Stop();
+                delete *worker;
             }
 
-            return (FThreadedManager *)NULL;
+            *worker = NULL;
         }
 
         // FRunnable interface.
