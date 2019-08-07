@@ -15,7 +15,7 @@ CFLAGS = -Wall -std=c++11
 all: $(ALL)
 
 simdvs: simdvs.o 
-	g++ -o simdvs simdvs.o 
+	g++ -o simdvs simdvs.o -lopencv_core -lopencv_highgui
 
 simdvs.o: simdvs.cpp 
 	g++ $(CFLAGS) -c simdvs.cpp
