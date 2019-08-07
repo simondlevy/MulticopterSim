@@ -19,6 +19,8 @@ static constexpr double TARGET_DIST = 10;
 
 int main(int argc, char ** argv)
 {
+    Davis346 dvs(TARGET_SIZE);
+
     while (true) {
 
         cv::Mat cameraImage = cv::Mat::zeros(CAMERA_ROWS, CAMERA_COLS, CV_8UC3);
