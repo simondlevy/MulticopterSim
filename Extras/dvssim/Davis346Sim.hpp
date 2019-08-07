@@ -28,9 +28,10 @@ class Davis346 {
         // https://github.com/SensorsINI/jaer/blob/master/src/net/sf/jaer/event/BasicEvent.java
         typedef struct {
 
-            uint32_t timestamp; // us
+            uint32_t t; // us
             uint16_t x;
             uint16_t y;
+            int8_t   p;
 
         } event_t;
 

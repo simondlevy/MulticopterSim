@@ -17,7 +17,7 @@ all: $(ALL)
 simdvs: simdvs.o 
 	g++ -o simdvs simdvs.o -lopencv_core -lopencv_highgui
 
-simdvs.o: simdvs.cpp 
+simdvs.o: simdvs.cpp Davis346Sim.hpp
 	g++ $(CFLAGS) -c simdvs.cpp
 
 test: simdvs
