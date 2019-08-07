@@ -13,6 +13,10 @@
 static const uint16_t CAMERA_COLS = 346;
 static const uint16_t CAMERA_ROWS = 260;
 
+// meters
+static constexpr double TARGET_SIZE = 1; 
+static constexpr double TARGET_DIST = 10; 
+
 int main(int argc, char ** argv)
 {
     while (true) {
