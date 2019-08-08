@@ -217,6 +217,16 @@ class Vehicle {
 			meshComponent->SetRelativeScale3D(scale);
         }
 
+        void addMesh(UStaticMesh * mesh, const char * name, const FVector & location, const FRotator rotation, const float scale)
+        {
+            addMesh(mesh, name, location, rotation, FVector(1,1,1)*scale);
+        }
+
+        void addMesh(UStaticMesh * mesh, const char * name, const FVector & location)
+        {
+            addMesh(mesh, name, location, FRotator(0,0,0), FVector(1,1,1));
+        }
+
         void addProp(uint8_t index, float x, float y, const float z, UStaticMesh * propMesh)
         {
             UStaticMeshComponent * pMeshComponent = 
