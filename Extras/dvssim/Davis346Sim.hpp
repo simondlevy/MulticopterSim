@@ -25,19 +25,6 @@ class Davis346 {
 
     public:
         
-        static const uint16_t RES_COLS = 346;
-        static const uint16_t RES_ROWS = 260;
-
-        // Simplified AER event structure, based on https://arxiv.org/pdf/1510.01972.pdf
-        typedef struct {
-
-            uint32_t t; // time (microseconds)
-            uint16_t x; // X coordinate
-            uint16_t y; // X coordinate
-            int8_t   p; // polarity +/-
-
-        } event_t;
-
         class Location {
 
             private:
@@ -50,6 +37,19 @@ class Davis346 {
 
                 Location(const Location & loc): _x(loc._x), _y(loc._y), _z(loc._z) { }
         };
+
+        static const uint16_t RES_COLS = 346;
+        static const uint16_t RES_ROWS = 260;
+
+        // Simplified AER event structure, based on https://arxiv.org/pdf/1510.01972.pdf
+        typedef struct {
+
+            uint32_t t; // time (microseconds)
+            uint16_t x; // X coordinate
+            uint16_t y; // X coordinate
+            int8_t   p; // polarity +/-
+
+        } event_t;
 
     private:
 
