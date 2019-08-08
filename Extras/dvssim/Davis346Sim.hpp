@@ -13,6 +13,7 @@ using namespace std;
 
 #include <stdint.h>
 
+// Debugging support
 #ifdef _WIN32
 #include "../MainModule/Utils.hpp"
 #else
@@ -27,14 +28,13 @@ class Davis346 {
         static const uint16_t RES_COLS = 346;
         static const uint16_t RES_ROWS = 260;
 
-        // Simplified AER event structure, based on
-        // https://github.com/SensorsINI/jaer/blob/master/src/net/sf/jaer/event/BasicEvent.java
+        // Simplified AER event structure, based on https://arxiv.org/pdf/1510.01972.pdf
         typedef struct {
 
-            uint32_t t; // us
-            uint16_t x;
-            uint16_t y;
-            int8_t   p;
+            uint32_t t; // time (microseconds)
+            uint16_t x; // X coordinate
+            uint16_t y; // X coordinate
+            int8_t   p; // polarity +/-
 
         } event_t;
 
@@ -74,6 +74,11 @@ class Davis346 {
             debug("vehicle: %+3.3f %+3.3f %+3.3f    target: %+3.3f %+3.3f %+3.3f",
                     vehicleLocation.x, vehicleLocation.y, vehicleLocation.z,
                     targetLocation.x, targetLocation.y, targetLocation.z);
+        }
+
+        bool hasMoreEvents(void)
+        {
+            return !_eventq.empty();
         }
 
         event_t dequeueEvent(void)
