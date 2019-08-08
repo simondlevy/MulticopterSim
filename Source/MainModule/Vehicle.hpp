@@ -222,6 +222,11 @@ class Vehicle {
             addMesh(mesh, name, location, rotation, FVector(1,1,1)*scale);
         }
 
+        void addMesh(UStaticMesh * mesh, const char * name, const FVector & location, const FRotator rotation)
+        {
+            addMesh(mesh, name, location, rotation, 1.0);
+        }
+
         void addMesh(UStaticMesh * mesh, const char * name, const FVector & location)
         {
             addMesh(mesh, name, location, FRotator(0,0,0), FVector(1,1,1));
