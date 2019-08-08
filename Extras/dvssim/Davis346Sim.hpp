@@ -58,6 +58,11 @@ class Davis346 {
 
         queue<event_t> _eventq;
 
+        bool inView(const location_t & vehicleLocation, const location_t & targetLocation)
+        {
+            return true;
+        }
+
     public:
 
         Davis346(double targetSize)
@@ -71,6 +76,8 @@ class Davis346 {
 
         void update(const location_t & vehicleLocation, const location_t & targetLocation)
         {
+            if (!inView(vehicleLocation, targetLocation)) return;
+
             debug("vehicle: %+3.3f %+3.3f %+3.3f    target: %+3.3f %+3.3f %+3.3f",
                     vehicleLocation.x, vehicleLocation.y, vehicleLocation.z,
                     targetLocation.x, targetLocation.y, targetLocation.z);
