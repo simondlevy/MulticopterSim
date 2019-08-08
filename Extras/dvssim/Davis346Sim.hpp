@@ -38,13 +38,18 @@ class Davis346 {
 
         } event_t;
 
-        typedef struct {
+        class Location {
 
-            double x;
-            double y;
-            double z;
+            private:
 
-        } location_t;
+                double _x, _y, _z;
+
+            public:
+
+                Location(double x, double y, double z) : _x(x), _y(y), _z(z) { }
+
+                Location(const Location & loc): _x(loc._x), _y(loc._y), _z(loc._z) { }
+        };
 
     private:
 
@@ -58,7 +63,7 @@ class Davis346 {
 
         queue<event_t> _eventq;
 
-        bool inView(const location_t & vehicleLocation, const location_t & targetLocation)
+        bool inView(const Location & vehicleLocation, const Location & targetLocation)
         {
             return true;
         }
@@ -74,13 +79,11 @@ class Davis346 {
         {
         }
 
-        void update(const location_t & vehicleLocation, const location_t & targetLocation)
+        void update(const Location & vehicleLocation, const Location & targetLocation)
         {
             if (!inView(vehicleLocation, targetLocation)) return;
 
-            debug("vehicle: %+3.3f %+3.3f %+3.3f    target: %+3.3f %+3.3f %+3.3f",
-                    vehicleLocation.x, vehicleLocation.y, vehicleLocation.z,
-                    targetLocation.x, targetLocation.y, targetLocation.z);
+            //debug("vehicle: %s    target: %s", vehicleLocation.toString(), targetLocation.toString());
         }
 
         bool hasMoreEvents(void)
