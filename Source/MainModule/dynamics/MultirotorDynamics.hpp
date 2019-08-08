@@ -116,9 +116,6 @@ class MultirotorDynamics {
 
     private:
 
-        // Universal constants
-        static constexpr double g  = 9.80665; // might want to allow this to vary!
-
         // Maximum vertical descent rate (m/s) not considered a crash
         static constexpr double MAX_DROP_RATE = 0.5;
 
@@ -177,6 +174,9 @@ class MultirotorDynamics {
         }
 
     protected:
+
+        // Universal constants
+        static constexpr double g  = 9.80665; // might want to allow this to vary!
 
         // State vector (see Eqn. 11) and its first temporal derivative
         double _x[12]    = {};
