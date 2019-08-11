@@ -337,10 +337,6 @@ class MultirotorDynamics {
                 _inertialAccel[2] = accelNED[2];
             }
 
-            static double time;
-            //debug("time=%f  airborne=%d  qw=%+3.3f", time, _airborne, _state.quaternion[0]);
-            time += dt;
-
             // Get most values directly from state vector
             for (uint8_t i=0; i<3; ++i) {
                 uint8_t ii = 2 * i;
