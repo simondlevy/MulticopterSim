@@ -35,29 +35,6 @@ class FFlightManager : public FThreadedManager {
          */
         virtual void getMotors(const double time, const MultirotorDynamics::state_t & state, double * motorvals)  = 0;
         
-        // OSD
-        void showStatus(const double time, const MultirotorDynamics::state_t & state)
-        {
-            /*
-            const double * accel = state.bodyAccel;
-            const double * gyro  = state.angularVel;
-            const double * quat  = state.quaternion;
-            const double * loc   = state.pose.location;
-
-            debug("t: %4.1f"
-                   " | a: %+6.6f %+6.6f %+6.6f"
-                   " | g: %+6.6f %+6.6f %+6.6f"
-                   " | q: %+6.6f %+6.6f %+6.6f %+6.6f"
-                   " | p: %+6.6f %+6.6f %+6.6f\n", 
-                   time, 
-                   accel[0], accel[1], accel[2], 
-                   gyro[0], gyro[1], gyro[2], 
-                   quat[0], quat[1], quat[2], quat[3], 
-                   loc[0], loc[1], loc[2]);
-                   */
-
-        }
-
     protected:
 
         uint8_t _motorCount = 0;
@@ -105,8 +82,7 @@ class FFlightManager : public FThreadedManager {
             // the dynamics state, getting back the motor values
             this->getMotors(currentTime, _state, _motorvals);
 
-            // Show status in OSD
-            showStatus(currentTime, _state);
+            debug("t=%3.3f  qw=%+3.3f", currentTime, _state.quaternion[0]);
 
             // Track previous time for deltaT
             _previousTime = currentTime;
