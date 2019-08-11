@@ -333,21 +333,13 @@ class Vehicle {
         void Tick(void)
         {
             // Checking count is a hack to avoid accessing kinematics before dynamics thread is ready
-            if (_mapSelected && _count++>10) {
+            if (!_mapSelected || _count++<10 || !getKinematics()) return;
 
-                // Kinematics from dynamics
-                if (getKinematics()) {
+            // Keepin' it real(istic)!
+            addAnimationEffects();
 
-                    // Keepin' it real(istic)!
-                    addAnimationEffects();
-
-                    // Grab images
-                    grabImages();
-
-                    // Report status (optional)
-                    //reportStatus();
-                }
-            }
+            // Grab images
+            grabImages();
         }
 
         void PostInitializeComponents()
@@ -362,7 +354,7 @@ class Vehicle {
 
         void rotateGimbal(FQuat rotation)
         {
-			_springArm->SetRelativeRotation(rotation);
+            _springArm->SetRelativeRotation(rotation);
         }
 
 }; // class Vehicle
