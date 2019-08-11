@@ -9,7 +9,7 @@
  *     author    = {Samir Bouabdallah and Pierpaolo Murrieri and Roland Siegwart},
  *     title     = {Design and Control of an Indoor Micro Quadrotor},
  *     booktitle = {Proceedings of the 2004 {IEEE} International Conference on Robotics and 
-                    Automation, {ICRA} 2004, April 26 - May 1, 2004, New Orleans, LA, {USA}},
+ *                 Automation, {ICRA} 2004, April 26 - May 1, 2004, New Orleans, LA, {USA}},
  *     pages     = {4393--4398},
  *     year      = {2004},
  *     crossref  = {DBLP:conf/icra/2004},
@@ -59,37 +59,37 @@ class MultirotorDynamics {
 
         /**
          * Class for parameters from the table below Equation 3
-          */
+         */
         class Parameters {
 
             friend class MultirotorDynamics;
 
             public:
 
-                double b;
-                double d;
-                double m;
-                double l;
-                double Ix;
-                double Iy;
-                double Iz;
-                double Jr;
+            double b;
+            double d;
+            double m;
+            double l;
+            double Ix;
+            double Iy;
+            double Iz;
+            double Jr;
 
-                uint16_t maxrpm;
+            uint16_t maxrpm;
 
-                Parameters(double b, double d, double m, double l, double Ix, double Iy, double Iz, double Jr, uint16_t maxrpm)
-                {
-                    this->b  = b;
-                    this->d  = d;
-                    this->m  = m;
-                    this->l  = l;
-                    this->Ix = Ix;
-                    this->Iy = Iy;
-                    this->Iz = Iz;
-                    this->Jr = Jr;
+            Parameters(double b, double d, double m, double l, double Ix, double Iy, double Iz, double Jr, uint16_t maxrpm)
+            {
+                this->b  = b;
+                this->d  = d;
+                this->m  = m;
+                this->l  = l;
+                this->Ix = Ix;
+                this->Iy = Iy;
+                this->Iz = Iz;
+                this->Jr = Jr;
 
-                    this->maxrpm = maxrpm;
-                }
+                this->maxrpm = maxrpm;
+            }
         };
 
         /**
@@ -203,7 +203,7 @@ class MultirotorDynamics {
         // yaw cw
         virtual double u4(double * o) = 0;
 
-         /**
+        /**
          *  Constructor
          */
         MultirotorDynamics(Parameters * params, const uint8_t motorCount) 
@@ -211,8 +211,8 @@ class MultirotorDynamics {
             _p = params;
             _motorCount = motorCount;
 
-            _omegas = new double[motorCount];
-            _omegas2 = new double[motorCount];
+            _omegas = new double[motorCount]();
+            _omegas2 = new double[motorCount]();
 
             for (uint8_t i=0; i<12; ++i) {
                 _x[i] = 0;
@@ -338,7 +338,7 @@ class MultirotorDynamics {
             }
 
             static double time;
-            debug("time=%f  airborne=%d  qw=%+3.3f", time, _airborne, _state.quaternion[0]);
+            //debug("time=%f  airborne=%d  qw=%+3.3f", time, _airborne, _state.quaternion[0]);
             time += dt;
 
             // Get most values directly from state vector
@@ -402,24 +402,24 @@ class MultirotorDynamics {
         void setMotors(double * motorvals)
         {
             // Convert the  motor values to radians per second
-           for (unsigned int i=0; i<_motorCount; ++i) {
-               _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
-           }
+            for (unsigned int i=0; i<_motorCount; ++i) {
+                _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
+            }
 
-           // Compute overall torque from omegas before squaring
-           _Omega = u4(_omegas);
+            // Compute overall torque from omegas before squaring
+            _Omega = u4(_omegas);
 
-           // Overall thrust is sum of squared omegas
-           _U1 = 0;
-           for (unsigned int i=0; i<_motorCount; ++i) {
-               _omegas2[i] = _omegas[i] * _omegas[i];
-               _U1 +=  _p->b * _omegas2[i];
-           }
+            // Overall thrust is sum of squared omegas
+            _U1 = 0;
+            for (unsigned int i=0; i<_motorCount; ++i) {
+                _omegas2[i] = _omegas[i] * _omegas[i];
+                _U1 +=  _p->b * _omegas2[i];
+            }
 
-           // Use the squared Omegas to implement the rest of Eqn. 6
-           _U2 = _p->l*_p->b * u2(_omegas2);
-           _U3 = _p->l*_p->b * u3(_omegas2);
-           _U4 = _p->d * u4(_omegas2);
+            // Use the squared Omegas to implement the rest of Eqn. 6
+            _U2 = _p->l*_p->b * u2(_omegas2);
+            _U3 = _p->l*_p->b * u3(_omegas2);
+            _U4 = _p->d * u4(_omegas2);
         }
 
         /*
@@ -464,8 +464,8 @@ class MultirotorDynamics {
             double sps = sin(psi);
 
             double R[3][3] = { {cps*cth,  cps*sph*sth - cph*sps,  sph*sps + cph*cps*sth}, 
-                               {cth*sps,  cph*cps + sph*sps*sth,  cph*sps*sth - cps*sph}, 
-                               {-sth,     cth*sph,                cph*cth}               };
+                {cth*sps,  cph*cps + sph*sps*sth,  cph*sps*sth - cps*sph}, 
+                {-sth,     cth*sph,                cph*cth}               };
 
             dot(R, body, inertial);
         }
@@ -484,8 +484,8 @@ class MultirotorDynamics {
             double sps = sin(psi);
 
             double R[3][3] = { {cps*cth,                cth*sps,                   -sth}, 
-                               {cps*sph*sth - cph*sps,  cph*cps + sph*sps*sth,  cth*sph}, 
-                               {sph*sps + cph*cps*sth,  cph*sps*sth - cps*sph,  cph*cth} };
+                {cps*sph*sth - cph*sps,  cph*cps + sph*sps*sth,  cth*sph}, 
+                {sph*sps + cph*cps*sth,  cph*sps*sth - cps*sph,  cph*cth} };
 
             dot(R, inertial, body);
         }

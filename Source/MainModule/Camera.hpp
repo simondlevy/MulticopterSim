@@ -65,7 +65,7 @@ class Camera {
             _fov = fov;
 
             // Create a byte array sufficient to hold the RGBA image
-            _imageBytes = new uint8_t [_rows*_cols*4];
+            _imageBytes = new uint8_t [_rows*_cols*4]();
 
             // These will be set in Vehicle::addCamera()
             _captureComponent = NULL;

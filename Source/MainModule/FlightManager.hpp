@@ -48,7 +48,7 @@ class FFlightManager : public FThreadedManager {
             : FThreadedManager()
         {
             // Allocate array for motor values
-            _motorvals = new double[dynamics->motorCount()];
+            _motorvals = new double[dynamics->motorCount()]();
 
             // Store dynamics for performTask()
             _dynamics = dynamics;
