@@ -66,14 +66,11 @@ class FFlightManager : public FThreadedManager {
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
         void performTask(double currentTime)
         {
-            // Compute DeltaT
-            double deltaT = currentTime - _previousTime;
-
             // Send current motor values to dynamics
             _dynamics->setMotors(_motorvals);
 
             // Update dynamics
-            _dynamics->update(deltaT);
+            _dynamics->update(currentTime - _previousTime);
 
             // Get new vehicle state
             _state = _dynamics->getState();
@@ -81,8 +78,6 @@ class FFlightManager : public FThreadedManager {
             // PID controller: update the flight manager (e.g., HackflightManager) with
             // the dynamics state, getting back the motor values
             this->getMotors(currentTime, _state, _motorvals);
-
-            debug("t=%3.3f  qw=%+3.3f", currentTime, _state.quaternion[0]);
 
             // Track previous time for deltaT
             _previousTime = currentTime;

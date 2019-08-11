@@ -33,6 +33,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "../Utils.hpp"
+
 class MultirotorDynamics {
 
     public:
@@ -120,7 +122,7 @@ class MultirotorDynamics {
         static constexpr double MAX_DROP_RATE = 0.5;
 
         // Data structure for returning state
-        state_t _state;
+        state_t _state = {};
 
         uint8_t _motorCount = 0;
 
@@ -334,6 +336,10 @@ class MultirotorDynamics {
                 _inertialAccel[1] = accelNED[1];
                 _inertialAccel[2] = accelNED[2];
             }
+
+            static double time;
+            debug("time=%f  airborne=%d  qw=%+3.3f", time, _airborne, _state.quaternion[0]);
+            time += dt;
 
             // Get most values directly from state vector
             for (uint8_t i=0; i<3; ++i) {
