@@ -82,8 +82,6 @@ class Vehicle {
         // A hack to avoid accessing kinematics before dynamics thread is ready
         uint32_t _count = 0;
 
-        uint32_t _starts = 0;
-
         // Retrieves kinematics from dynamics computed in another thread
         bool getKinematics(void)
         {
@@ -152,12 +150,6 @@ class Vehicle {
             _audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
         }
 
-        void reportStatus(void)
-        {
-            // Un-comment this to track the number of (re)starts
-            //debug("starts: %d", _starts);
-        }
-
         void grabImages(void)
         {
             for (uint8_t i=0; i<_cameraCount; ++i) {
@@ -190,8 +182,7 @@ class Vehicle {
             // Store a reference to the Cue asset - we'll need it later.
             _soundCue = soundCue.Object;
 
-            // Create an audio component, the audio component wraps the Cue, 
-            // and allows us to ineract with it, and its parameters from code.
+            // Create an audio component, which wraps the sound cue, and allows us to ineract with it and its parameters from code
             _audioComponent = _pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
 
             // Set the audio component's volume to zero
@@ -289,8 +280,6 @@ class Vehicle {
             // Make sure a map has been selected
             FString mapName = _pawn->GetWorld()->GetMapName();
             _mapSelected = !mapName.Contains("Untitled");
-
-            _starts = 0;
 
             if (_mapSelected) {
 
