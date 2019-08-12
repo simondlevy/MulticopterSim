@@ -52,12 +52,6 @@ class TinyWhoop {
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
-        void addProp(uint8_t index, UStaticMesh * mesh)
-        {
-            vehicle.addProp(index-1, 0, 0, 0, mesh);
-        }
-
-
     public:
 
         void build(APawn * pawn)
@@ -69,10 +63,10 @@ class TinyWhoop {
             float y23 = -.0200;
 
             // Add propellers
-            addProp(1, Prop1Statics.mesh.Get());
-            addProp(2, Prop2Statics.mesh.Get());
-            addProp(3, Prop3Statics.mesh.Get());
-            addProp(4, Prop4Statics.mesh.Get());
+            vehicle.addProp(Prop1Statics.mesh.Get());
+            vehicle.addProp(Prop2Statics.mesh.Get());
+            vehicle.addProp(Prop3Statics.mesh.Get());
+            vehicle.addProp(Prop4Statics.mesh.Get());
 
             _flightManager = NULL;
         }
