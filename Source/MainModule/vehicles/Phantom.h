@@ -28,18 +28,20 @@ class Phantom {
 
         MultirotorDynamics::Parameters params = MultirotorDynamics::Parameters(
 
-                // XXX These parameters are for a much larger vehicle
-                5.30216718361085E-05,   // b
-                2.23656692806239E-06,   // d
-                16.47,                  // m
-                0.6,                    // l
-                2,                      // Ix
-                2,                      // Iy
-                3,                      // Iz
-                3.08013E-04,            // Jr
+                // Estimated
+                5.E-06, // b
+                2.E-06, // d
 
-                // maxrpm, estimated
-                15000);
+                // https://www.dji.com/phantom-4/info
+                1.380,  // m
+                0.350,  // l
+
+                // Estimated
+                2,      // Ix
+                2,      // Iy
+                3,      // Iz
+                38E-04, // Jr
+                15000); // maxrpm
 
     public:
 
