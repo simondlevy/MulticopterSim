@@ -52,6 +52,7 @@ class Vehicle {
         USoundCue                * _soundCue;
         UAudioComponent          * _audioComponent;
         USpringArmComponent      * _springArm;
+        uint8_t                    _propCount;
 
         // Cameras
         Camera * _cameras[Camera::MAX_CAMERAS];
@@ -170,6 +171,8 @@ class Vehicle {
 
             // Turn off UE4 physics
             _frameMeshComponent->SetSimulatePhysics(false);
+
+            _propCount = 0;
           }
 
         void buildWithAudio(APawn * pawn, UStaticMesh * frameMesh)
@@ -223,15 +226,13 @@ class Vehicle {
             addMesh(mesh, name, location, FRotator(0,0,0), FVector(1,1,1));
         }
 
-        void addProp(uint8_t index, float x, float y, const float z, UStaticMesh * propMesh)
+        void addProp(UStaticMesh * propMesh)
         {
             UStaticMeshComponent * pMeshComponent = 
-                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", index, "Mesh"));
+                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", _propCount, "Mesh"));
             pMeshComponent->SetStaticMesh(propMesh);
             pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
-            pMeshComponent->AddRelativeLocation(FVector(x, y, z)*100); // m => cm
-
-            _propellerMeshComponents[index] = pMeshComponent;
+            _propellerMeshComponents[_propCount++] = pMeshComponent;
         }
 
         void rotateProps(int8_t * motorDirections, uint8_t motorCount)
