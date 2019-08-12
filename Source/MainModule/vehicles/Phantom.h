@@ -17,10 +17,10 @@
 
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "Phantom/Frame.Frame", FrameStatics)
-DECLARE_STATIC_MESH(FProp1Statics, "Phantom/Prop.Prop", Prop1Statics)
-DECLARE_STATIC_MESH(FProp2Statics, "Phantom/Prop.Prop", Prop2Statics)
-DECLARE_STATIC_MESH(FProp3Statics, "Phantom/Prop.Prop", Prop3Statics)
-DECLARE_STATIC_MESH(FProp4Statics, "Phantom/Prop.Prop", Prop4Statics)
+DECLARE_STATIC_MESH(FProp1Statics, "Phantom/Prop1.Prop1", Prop1Statics)
+DECLARE_STATIC_MESH(FProp2Statics, "Phantom/Prop2.Prop2", Prop2Statics)
+DECLARE_STATIC_MESH(FProp3Statics, "Phantom/Prop3.Prop3", Prop3Statics)
+DECLARE_STATIC_MESH(FProp4Statics, "Phantom/Prop4.Prop4", Prop4Statics)
 
 class Phantom {
 
@@ -54,11 +54,11 @@ class Phantom {
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
-        void addProp(uint8_t index, int8_t x, int8_t y, UStaticMesh * mesh)
+        void addProp(uint8_t index, UStaticMesh * mesh)
         {
-            float d = 0.12;
+            //x,y= 0.12; z = .15
 
-            vehicle.addProp(index-1, x*d, y*d, +.15, mesh);
+            vehicle.addProp(index-1, 0, 0, 0, mesh);
         }
 
     public:
@@ -68,10 +68,10 @@ class Phantom {
             vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
 
             // Add propellers
-            addProp(1, +1, +1, Prop1Statics.mesh.Get());
-            addProp(2, -1, -1, Prop2Statics.mesh.Get());
-            addProp(3, +1, -1, Prop3Statics.mesh.Get());
-            addProp(4, -1, +1, Prop4Statics.mesh.Get());
+            addProp(1, Prop1Statics.mesh.Get());
+            addProp(2, Prop2Statics.mesh.Get());
+            addProp(3, Prop3Statics.mesh.Get());
+            addProp(4, Prop4Statics.mesh.Get());
 
             _flightManager = NULL;
         }

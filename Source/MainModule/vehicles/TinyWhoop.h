@@ -63,7 +63,7 @@ class TinyWhoop {
         void build(APawn * pawn)
         {
             //vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
-            vehicle.build(pawn, FrameStatics.mesh.Get());
+            vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
 
             float y14 = +.0725;
             float y23 = -.0200;
