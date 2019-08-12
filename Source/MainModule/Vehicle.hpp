@@ -194,8 +194,8 @@ class Vehicle {
             // and allows us to ineract with it, and its parameters from code.
             _audioComponent = _pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
 
-            // Stop the sound from sound playing the moment it's created.
-            _audioComponent->bAutoActivate = false;
+            // Set the audio component's volume to zero
+            _audioComponent->SetFloatParameter(FName("volume"), 0);
 
             // Attach the sound to the pawn's root, the sound follows the pawn around
             _audioComponent->SetupAttachment(_pawn->GetRootComponent());
