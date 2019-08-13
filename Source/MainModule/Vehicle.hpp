@@ -66,9 +66,6 @@ class Vehicle {
         // Threaded worker for running flight control
         class FFlightManager * _flightManager = NULL;
 
-		// The landscape, for determining altitude
-		ALandscape* _landscape = NULL;
-
         // Bozo filter for failure to select a map
         bool _mapSelected = false;
 
@@ -259,7 +256,6 @@ class Vehicle {
         {
             _dynamics = NULL;
             _flightManager = NULL;
-            _landscape = NULL;
         }
 
          Vehicle(MultirotorDynamics * dynamics)
@@ -289,18 +285,6 @@ class Vehicle {
             if (!_mapSelected) {
                 error("NO MAP SELECTED");
                 return;
-            }
-
-            // Get all actors tagged as "Landscape" in scene (should be just one!)
-            TArray<AActor*> foundLandscapes;
-			UGameplayStatics::GetAllActorsWithTag(_pawn->GetWorld(), FName("Landscape"), foundLandscapes);
-
-            // Use the first one found
-            if (foundLandscapes.Num() == 0) {
-                debug("No landscape object found in scene");
-            }
-            else {
-                _landscape = (ALandscape *)foundLandscapes[0];
             }
 
             // Reset FPS count
@@ -345,7 +329,7 @@ class Vehicle {
             // Grab images
             grabImages();
 
-			if (_landscape) debug("Distance: %f", _pawn->GetDistanceTo(_landscape));
+			debug("%p", _pawn->GetWorld());
         }
 
         void PostInitializeComponents()
