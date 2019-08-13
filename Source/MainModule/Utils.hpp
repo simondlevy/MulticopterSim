@@ -40,6 +40,16 @@ static void debug(const char * fmt, ...)
 	va_end(ap);
 }
 
+static void debugline(const char * fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	char buf[200];
+	vsnprintf(buf, 200, fmt, ap);
+	osd(buf, false, true);
+	va_end(ap);
+}
+
 static void error(const char * fmt, ...)
 {
 	va_list ap;

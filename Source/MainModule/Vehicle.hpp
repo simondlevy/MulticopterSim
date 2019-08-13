@@ -329,7 +329,26 @@ class Vehicle {
             // Grab images
             grabImages();
 
-			debug("%p", _pawn->GetWorld());
+            /*
+            // https://unrealcpp.com/line-trace-on-tick/
+            FVector Start = _pawn->GetActorLocation();
+            Start.Z -= 20;
+            FVector End = FVector(Start.X, Start.Y, Start.Z-1000);
+            //DrawDebugLine(_pawn->GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
+            DrawDebugLine(_pawn->GetWorld(), Start, End, FColor::Green, false, 0.125, 0, 1);
+
+            FHitResult OutHit;
+            FCollisionQueryParams CollisionParams;
+            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams)) {
+
+
+                if(OutHit.bBlockingHit) {
+                    debug("Hit: %s", TCHAR_TO_UTF8(*OutHit.GetActor()->GetName()));
+                    debug("Impact Point: %s", TCHAR_TO_UTF8(*OutHit.ImpactPoint.ToString()));
+                    debug("Normal Point: %s", TCHAR_TO_UTF8(*OutHit.ImpactNormal.ToString()));
+                }
+            }
+            */
         }
 
         void PostInitializeComponents()
