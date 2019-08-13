@@ -259,6 +259,7 @@ class Vehicle {
         {
             _dynamics = NULL;
             _flightManager = NULL;
+            _landscape = NULL;
         }
 
          Vehicle(MultirotorDynamics * dynamics)
@@ -284,42 +285,53 @@ class Vehicle {
             FString mapName = _pawn->GetWorld()->GetMapName();
             _mapSelected = !mapName.Contains("Untitled");
 
-            if (_mapSelected) {
-
-                // Reset FPS count
-                _startTime = FPlatformTime::Seconds();
-                _count = 0;
-
-                // Start the audio for the propellers Note that because the
-                // Cue Asset is set to loop the sound, once we start playing the sound, it
-                // will play continiously...
-                _audioComponent->Play();
-
-                // Create circular queue for moving-average of motor values
-                _motorBuffer = new TCircularBuffer<float>(20);
-
-                // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
-                FVector  startLocation = _pawn->GetActorLocation();
-                FRotator startRotation = _pawn->GetActorRotation(); 
-                MultirotorDynamics::pose_t pose = {};
-
-                // Convert ENU centimeters => NED meters
-                pose.location[0] =  startLocation.X / 100;
-                pose.location[1] =  startLocation.Y / 100;
-                pose.location[2] = -startLocation.Z / 100;
-
-                // Convert degrees => radians
-                pose.rotation[0] = FMath::DegreesToRadians(startRotation.Roll);
-                pose.rotation[1] = FMath::DegreesToRadians(startRotation.Pitch);
-                pose.rotation[2] = FMath::DegreesToRadians(startRotation.Yaw);
-
-                // Initialize dynamics with initial pose
-                _dynamics->init(pose);
-            }
-
-            else {
+            // Bozo filter
+            if (!_mapSelected) {
                 error("NO MAP SELECTED");
+                return;
             }
+
+            // Get all actors tagged as "Landscape" in scene (should be just one!)
+            TArray<AActor*> foundLandscapes;
+			UGameplayStatics::GetAllActorsWithTag(_pawn->GetWorld(), FName("Landscape"), foundLandscapes);
+
+            // Use the first one found
+            if (foundLandscapes.Num() == 0) {
+                debug("No landscape object found in scene");
+            }
+            else {
+                _landscape = (ALandscape *)foundLandscapes[0];
+            }
+
+            // Reset FPS count
+            _startTime = FPlatformTime::Seconds();
+            _count = 0;
+
+            // Start the audio for the propellers Note that because the
+            // Cue Asset is set to loop the sound, once we start playing the sound, it
+            // will play continiously...
+            _audioComponent->Play();
+
+            // Create circular queue for moving-average of motor values
+            _motorBuffer = new TCircularBuffer<float>(20);
+
+            // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
+            FVector  startLocation = _pawn->GetActorLocation();
+            FRotator startRotation = _pawn->GetActorRotation(); 
+            MultirotorDynamics::pose_t pose = {};
+
+            // Convert ENU centimeters => NED meters
+            pose.location[0] =  startLocation.X / 100;
+            pose.location[1] =  startLocation.Y / 100;
+            pose.location[2] = -startLocation.Z / 100;
+
+            // Convert degrees => radians
+            pose.rotation[0] = FMath::DegreesToRadians(startRotation.Roll);
+            pose.rotation[1] = FMath::DegreesToRadians(startRotation.Pitch);
+            pose.rotation[2] = FMath::DegreesToRadians(startRotation.Yaw);
+
+            // Initialize dynamics with initial pose
+            _dynamics->init(pose);
         }
 
         void Tick(void)
@@ -333,7 +345,7 @@ class Vehicle {
             // Grab images
             grabImages();
 
-			//_pawn->GetDistanceTo(_landscape);
+			if (_landscape) debug("Distance: %f", _pawn->GetDistanceTo(_landscape));
         }
 
         void PostInitializeComponents()
