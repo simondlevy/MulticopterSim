@@ -20,6 +20,7 @@
 #include "dynamics/MultirotorDynamics.hpp"
 #include "FlightManager.hpp"
 #include "Camera.hpp"
+#include "Landscape.h"
 
 #include <stdio.h>
 
@@ -58,14 +59,15 @@ class Vehicle {
         Camera * _cameras[Camera::MAX_CAMERAS];
         uint8_t  _cameraCount;
 
-    private:
-
         MultirotorDynamics * _dynamics = NULL;
 
         int8_t _motorDirections[FFlightManager::MAX_MOTORS] = {};
 
         // Threaded worker for running flight control
         class FFlightManager * _flightManager = NULL;
+
+		// The landscape, for determining altitude
+		ALandscape* _landscape = NULL;
 
         // Bozo filter for failure to select a map
         bool _mapSelected = false;
@@ -330,6 +332,8 @@ class Vehicle {
 
             // Grab images
             grabImages();
+
+			//_pawn->GetDistanceTo(_landscape);
         }
 
         void PostInitializeComponents()
