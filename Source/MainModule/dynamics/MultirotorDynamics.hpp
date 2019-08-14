@@ -394,8 +394,9 @@ class MultirotorDynamics {
          * Uses motor values to implement Equation 6.
          *
          * @param motorvals in interval [0,1]
+         * @param dt time constant in seconds
          */
-        void setMotors(double * motorvals)
+        void setMotors(double * motorvals, double dt)
         {
             // Convert the  motor values to radians per second
             for (unsigned int i=0; i<_motorCount; ++i) {
