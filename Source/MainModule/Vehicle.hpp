@@ -347,17 +347,22 @@ class Vehicle {
         {
             // See https://unrealcpp.com/line-trace-on-tick/
 
-            FVector startPoint = _pawn->GetActorLocation();
-            startPoint.Z -= 20;
+            // Start at a point at the bottom of the sphere enclosing the vehicle
+			FVector startPoint = _pawn->GetActorLocation();
+            startPoint.Z -= _frameMesh->GetBounds().GetSphere().W;
 
-            FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1000);
-            DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
+			// End at a point far below the sphere
+            FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1e6);
+
+            //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
+
             FHitResult OutHit;
             FCollisionQueryParams CollisionParams;
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
-                if(OutHit.bBlockingHit) {
+                if(OutHit.bBlockingHit && OutHit.GetActor()->GetName() == "Landscape_0") {
                     FVector impactPoint = OutHit.ImpactPoint;
-                    debugline("Hit: %s,  AGL = %+3.3f m", TCHAR_TO_UTF8(*OutHit.GetActor()->GetName()), (startPoint.Z - impactPoint.Z)/100);
+					float agl = (startPoint.Z - impactPoint.Z) / 100;
+                    debugline("AGL = %4.2f m",  agl);
                 }
             }
         }
