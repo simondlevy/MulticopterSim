@@ -423,12 +423,10 @@ class MultirotorDynamics {
                 return;
             }
 
-            debugline("AGL = %3.2f", agl);
+            debugline("AGL = %3.2f m", agl);
 
             // We've returned to the ground
             if (agl == 0) {
-
-                debugline("Returned to ground");
 
                 _airborne = false;
 
