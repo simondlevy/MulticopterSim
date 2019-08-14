@@ -349,16 +349,15 @@ class Vehicle {
 
             FVector startPoint = _pawn->GetActorLocation();
             startPoint.Z -= 20;
+
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1000);
-            DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 1);
+            DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
             FHitResult OutHit;
             FCollisionQueryParams CollisionParams;
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
                 if(OutHit.bBlockingHit) {
                     FVector impactPoint = OutHit.ImpactPoint;
-                    debugline("Hit: %s at (%+3.3f, %+3.3f, %+3.3f)", 
-                            TCHAR_TO_UTF8(*OutHit.GetActor()->GetName()),
-                            impactPoint.X, impactPoint.Y, impactPoint.Z);
+                    debugline("Hit: %s,  AGL = %+3.3f m", TCHAR_TO_UTF8(*OutHit.GetActor()->GetName()), (startPoint.Z - impactPoint.Z)/100);
                 }
             }
         }
