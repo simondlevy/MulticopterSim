@@ -130,9 +130,7 @@ class MultirotorDynamics {
         // Status flags
         bool _airborne = false;
         bool _crashed = false;
-
-        // Starting altitude for crash detection
-        double _zstart = 0;
+        bool _posagl = false;
 
         // y = Ax + b helper for frame-of-reference conversion methods
         static void dot(double A[3][3], double x[3], double y[3])
@@ -294,11 +292,9 @@ class MultirotorDynamics {
             // We can start on the ground (default) or in the air
             _airborne = airborne;
 
-            // No crash yet
+            // No crash yet, and haven't cleared ground
             _crashed = false;
-
-            // Remember our altitude at takeoff
-            _zstart = pose.location[2];
+            _posagl = false;
         }
 
         /** 
@@ -352,24 +348,6 @@ class MultirotorDynamics {
 
             // Convert Euler angles to quaternion
             eulerToQuaternion(_state.pose.rotation, _state.quaternion);
-
-            // If airborne, check crash / land status
-            if (_airborne) {
-
-                // We've returned to the ground
-                if (_state.pose.location[2] > _zstart) {
-
-                    _airborne = false;
-
-                    // Descending too fast: crashed!
-                    if (_state.inertialVel[2] > MAX_DROP_RATE) {
-                        _crashed = true;
-                    }
-
-                    // A soft landing: set vertical velocity to zero
-                    _state.inertialVel[2] = 0;
-                }
-            }
 
         } // update
 
@@ -431,6 +409,36 @@ class MultirotorDynamics {
                 uint8_t ii = 2 * i;
                 pose.rotation[i] = _x[STATE_PHI+ii];
                 pose.location[i] = _x[STATE_X+ii];
+            }
+        }
+
+        void checkAgl(double agl)
+        {
+            // Not even airborne yet
+            if (!_airborne) return;
+
+            // Airborne, but no positive AGL measured
+            if (!_posagl) {
+                _posagl = agl > 0;
+                return;
+            }
+
+            debugline("AGL = %3.2f", agl);
+
+            // We've returned to the ground
+            if (agl == 0) {
+
+                debugline("Returned to ground");
+
+                _airborne = false;
+
+                // Descending too fast: crashed!
+                if (_state.inertialVel[2] > MAX_DROP_RATE) {
+                    _crashed = true;
+                }
+
+                // A soft landing: set vertical velocity to zero
+                _state.inertialVel[2] = 0;
             }
         }
 

@@ -329,8 +329,8 @@ class Vehicle {
             // Grab images
             grabImages();
 
-            // Compute height above ground level
-            computeAgl();
+            // Compute AGL (height above ground level) and check it in dynamics
+            _dynamics->checkAgl(computeAgl());
         }
 
         void PostInitializeComponents()
@@ -343,7 +343,7 @@ class Vehicle {
             }
         }
 
-        void computeAgl(void)
+        float computeAgl(void)
         {
             // See https://unrealcpp.com/line-trace-on-tick/
 
@@ -356,15 +356,18 @@ class Vehicle {
 
             //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
 
+            // Trace a ray to the ground
             FHitResult OutHit;
             FCollisionQueryParams CollisionParams;
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
                 if(OutHit.bBlockingHit && OutHit.GetActor()->GetName() == "Landscape_0") {
                     FVector impactPoint = OutHit.ImpactPoint;
-					float agl = (startPoint.Z - impactPoint.Z) / 100;
-                    debugline("AGL = %4.2f m",  agl);
+					return (startPoint.Z - impactPoint.Z) / 100;
                 }
             }
+
+            // No AGL computed; return zero
+            return 0;
         }
 
         void rotateGimbal(FQuat rotation)
