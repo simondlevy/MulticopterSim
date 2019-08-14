@@ -225,6 +225,16 @@ class Vehicle {
             addMesh(mesh, name, location, FRotator(0,0,0), FVector(1,1,1));
         }
 
+        void addMesh(UStaticMesh * mesh, const char * name, const FVector & location, const FVector & scale)
+        {
+            addMesh(mesh, name, location, FRotator(0,0,0), scale);
+        }
+
+        void addMesh(UStaticMesh * mesh, const char * name)
+        {
+            addMesh(mesh, name, FVector(0,0,0), FRotator(0,0,0), FVector(1,1,1));
+        }
+
         void addProp(UStaticMesh * propMesh)
         {
             UStaticMeshComponent * pMeshComponent = 
