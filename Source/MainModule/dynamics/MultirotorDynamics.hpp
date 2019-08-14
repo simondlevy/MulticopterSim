@@ -124,12 +124,6 @@ class MultirotorDynamics {
         // Data structure for returning state
         state_t _state = {};
 
-        uint8_t _motorCount = 0;
-
-        // Radians per second for each motor
-        double * _omegas = NULL;
-        double * _omegas2 = NULL;
-
         // Inertial-frame acceleration
         double _inertialAccel[3] = {};
 
@@ -177,10 +171,10 @@ class MultirotorDynamics {
 
     protected:
 
-        // Universal constants
+        // universal constants
         static constexpr double g  = 9.80665; // might want to allow this to vary!
 
-        // State vector (see Eqn. 11) and its first temporal derivative
+        // state vector (see Eqn. 11) and its first temporal derivative
         double _x[12]    = {};
         double _dxdt[12] = {};
 
@@ -191,7 +185,7 @@ class MultirotorDynamics {
         double _U4 = 0;     // yaw thrust clockwise
         double _Omega = 0;  // torque clockwise
 
-        // Parameter block
+        // parameter block
         Parameters * _p = NULL;
 
         // roll right
@@ -202,6 +196,13 @@ class MultirotorDynamics {
 
         // yaw cw
         virtual double u4(double * o) = 0;
+
+        // radians per second for each motor, and their squared values
+        double * _omegas = NULL;
+        double * _omegas2 = NULL;
+
+        // quad, hexa, octo, etc.
+        uint8_t _motorCount = 0;
 
         /**
          *  Constructor
@@ -396,7 +397,7 @@ class MultirotorDynamics {
          * @param motorvals in interval [0,1]
          * @param dt time constant in seconds
          */
-        void setMotors(double * motorvals, double dt)
+        virtual void setMotors(double * motorvals, double dt)
         {
             // Convert the  motor values to radians per second
             for (unsigned int i=0; i<_motorCount; ++i) {
