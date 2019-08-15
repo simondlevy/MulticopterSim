@@ -422,7 +422,7 @@ class MultirotorDynamics {
                 _posagl = agl > 0;
             }
 
-            debugline("AGL = %3.2f m", agl);
+            //debugline("AGL = %3.2f m", agl);
 
             // We've returned to the ground after a positive AGL
             if (_posagl && agl == 0) {

@@ -82,6 +82,9 @@ class Vehicle {
         // A hack to avoid accessing kinematics before dynamics thread is ready
         uint32_t _count = 0;
 
+        // Radius of sphere containing vehicle mesh
+        float _vehicleSize = 0;
+
         // Retrieves kinematics from dynamics computed in another thread
         bool getKinematics(void)
         {
@@ -351,6 +354,8 @@ class Vehicle {
             if (_soundCue->IsValidLowLevelFast()) {
                 _audioComponent->SetSound(_soundCue);
             }
+
+            _vehicleSize = _frameMesh->GetBounds().GetSphere().W;
         }
 
         float computeAgl(void)
@@ -359,7 +364,9 @@ class Vehicle {
 
             // Start at a point at the bottom of the sphere enclosing the vehicle
 			FVector startPoint = _pawn->GetActorLocation();
-            startPoint.Z -= _frameMesh->GetBounds().GetSphere().W;
+            startPoint.Z -= _vehicleSize;
+
+            debugline("%f", _vehicleSize);
 
 			// End at a point far below the sphere
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1e6);
