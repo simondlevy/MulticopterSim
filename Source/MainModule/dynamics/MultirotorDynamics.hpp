@@ -128,9 +128,9 @@ class MultirotorDynamics {
         double _inertialAccel[3] = {};
 
         // Status flags
-        bool _airborne = false;
-        bool _crashed = false;
-        bool _posagl = false;
+        bool _airborne = false; // vertical acceleration has overcome gravity
+        bool _posagl = false;   // we've received a positive AGL
+        bool _crashed = false;  // AGL is zero and downward velocity is high
 
         // y = Ax + b helper for frame-of-reference conversion methods
         static void dot(double A[3][3], double x[3], double y[3])
@@ -420,13 +420,12 @@ class MultirotorDynamics {
             // Airborne, but no positive AGL measured
             if (!_posagl) {
                 _posagl = agl > 0;
-                return;
             }
 
             debugline("AGL = %3.2f m", agl);
 
-            // We've returned to the ground
-            if (agl == 0) {
+            // We've returned to the ground after a positive AGL
+            if (_posagl && agl == 0) {
 
                 _airborne = false;
 
