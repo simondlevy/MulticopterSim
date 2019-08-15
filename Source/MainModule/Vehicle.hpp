@@ -366,8 +366,6 @@ class Vehicle {
 			FVector startPoint = _pawn->GetActorLocation();
             startPoint.Z -= _vehicleSize;
 
-            debugline("%f", _vehicleSize);
-
 			// End at a point far below the sphere
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1e6);
 
