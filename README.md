@@ -138,6 +138,15 @@ In addition, an abstract, threaded C++
 class supports modeling interaction with other moving objects having their own dynamics; for example,
 in a predator/prey scenario. 
 
+Because we disable UE4's built-in physics, it becomes necessary to compute the status of the vehicle
+algorithmically.  To do this, we maintain three status variables: (1) whether the vehicle has sufficient thrust
+to overcome the force of gravity and become <b>airborne</b>; (2) whether the vehicle has a positive height
+above ground level (<b>AGL</b>); (3) whether the vehicle has returned to the ground
+with sufficient force to constitute a <b>crash</b>:
+
+AGL is approxmiated by [tracing a line segment](https://unrealcpp.com/line-trace-on-tick/)
+from below the vehicle to the mesh named <tt>Lanscape_0</tt>. 
+
 # Support for other programming languages / packages
 
 ## Matlab
