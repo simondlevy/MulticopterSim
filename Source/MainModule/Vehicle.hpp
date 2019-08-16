@@ -94,8 +94,7 @@ class Vehicle {
         bool getKinematics(void)
         {
             // Get vehicle pose from dynamics
-            MultirotorDynamics::pose_t pose = {};
-            _dynamics->getPose(pose);
+            MultirotorDynamics::pose_t pose = _dynamics->getPose();
 
             // Convert pose to UE4 location, rotator
             FVector location = FVector(pose.location[0], pose.location[1], -pose.location[2]) * 100;  // NED => ENU
