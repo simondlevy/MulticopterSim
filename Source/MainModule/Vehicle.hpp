@@ -115,7 +115,7 @@ class Vehicle {
             rotation.Yaw =   FMath::RadiansToDegrees(pose.rotation[2]);
 
             // Get AGL
-            float agl = getDistance();
+            float agl = getDistance(0, 0, -1);
 
             // Check for AGL going positive
             if (!_posagl) {
@@ -144,15 +144,17 @@ class Vehicle {
         // Animation effects (sound, spinning props)
 
         // See https://unrealcpp.com/line-trace-on-tick/
-        float getDistance(void)
+        float getDistance(int8_t dx, int8_t dy, int8_t dz)
         {
-            // Start at a point at the bottom of the sphere enclosing the vehicle
-
+            // Start at a point on the surface of the sphere enclosing the vehicle
             FVector startPoint = _pawn->GetActorLocation();
-            startPoint.Z -= _vehicleSize;
+            startPoint.X += dx * _vehicleSize;
+            startPoint.X += dy * _vehicleSize;
+            startPoint.Z += dz * _vehicleSize;
 
-            // End at a point far below the sphere
-            FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1e6);
+            // End at a point far from the sphere
+            float d = 1e6;
+            FVector endPoint = FVector(startPoint.X+dx*d, startPoint.Y+dy*d, startPoint.Z+dz*d);
 
             //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
 
