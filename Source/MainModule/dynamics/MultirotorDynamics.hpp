@@ -118,9 +118,6 @@ class MultirotorDynamics {
 
     private:
 
-        // Maximum vertical descent rate (m/s) not considered a crash
-        static constexpr double MAX_DROP_RATE = 0.5;
-
         // Data structure for returning state
         state_t _state = {};
 
@@ -396,7 +393,7 @@ class MultirotorDynamics {
             _U4 = _p->d * u4(_omegas2);
         }
 
-        /*
+        /**
          *  Gets current pose
          *
          *  @param pose data structure that will contain pose
@@ -410,22 +407,15 @@ class MultirotorDynamics {
             }
         }
 
+        /**
+         * Sets airborne flag to false and velocities to zero.
+         * This should be done when a landing or collisions is detected.
+         */
         void stop(void)
         {
             _airborne = false;
 
-            // Descending too fast: crashed!
-            if (_state.inertialVel[2] > MAX_DROP_RATE) {
-                _crashed = true;
-            }
-
-            // A soft landing: set vertical velocity to zero
             _state.inertialVel[2] = 0;
-        }
-
-        bool crashed(void)
-        {
-            return _crashed;
         }
 
         // Motor direction for animation

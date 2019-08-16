@@ -88,7 +88,7 @@ class Vehicle {
         // Becomes true on first positive AGL
         bool _posagl = false;
 
-        // Retrieves kinematics from dynamics computed in another thread
+        // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
         bool getKinematics(void)
         {
             // FlightManager will be null after crash
@@ -114,13 +114,52 @@ class Vehicle {
             rotation.Pitch = FMath::RadiansToDegrees(pose.rotation[1]);
             rotation.Yaw =   FMath::RadiansToDegrees(pose.rotation[2]);
 
-            if (_dynamics->crashed()) return false;
+            // See https://unrealcpp.com/line-trace-on-tick/
+
+            // Start at a point at the bottom of the sphere enclosing the vehicle
+			FVector startPoint = _pawn->GetActorLocation();
+            startPoint.Z -= _vehicleSize;
+
+            // End at a point far below the sphere
+            FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1e6);
+
+            //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
+
+            float agl = 0;
+
+            // Trace a ray to the ground
+            FHitResult OutHit;
+            FCollisionQueryParams CollisionParams;
+            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
+                if(OutHit.bBlockingHit && OutHit.GetActor()->GetName() == "Landscape_0") {
+                    FVector impactPoint = OutHit.ImpactPoint;
+
+                    agl = (startPoint.Z - impactPoint.Z) / 100;
+
+                    // No positive AGL yet
+                    if (!_posagl) {
+                        _posagl = agl > 0;
+                    }
+                }
+            }
+
+            // We've returned to the ground after a positive AGL
+            if (_posagl && agl == 0) {
+                _dynamics->stop();
+                debugline("STOP");
+            }
+
+            else {
+                debugline("AGL = %3.2f m", agl);
+            }
 
             _pawn->SetActorLocation(location);
             _pawn->SetActorRotation(rotation);
 
+            // Airborne
             return true;
-        }
+
+        } // getKinematics
 
         // Animation effects (sound, spinning props)
 
@@ -347,9 +386,6 @@ class Vehicle {
 
             // Grab images
             grabImages();
-
-            // Compute AGL (height above ground level) and check it in dynamics
-            checkAgl();
         }
 
         void PostInitializeComponents()
@@ -366,44 +402,6 @@ class Vehicle {
 
         void checkAgl(void)
         {
-            // See https://unrealcpp.com/line-trace-on-tick/
-
-            // Start at a point at the bottom of the sphere enclosing the vehicle
-			FVector startPoint = _pawn->GetActorLocation();
-            startPoint.Z -= _vehicleSize;
-
-            // End at a point far below the sphere
-            FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1e6);
-
-            //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
-
-            float agl = 0;
-
-            // Trace a ray to the ground
-            FHitResult OutHit;
-            FCollisionQueryParams CollisionParams;
-            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
-                if(OutHit.bBlockingHit && OutHit.GetActor()->GetName() == "Landscape_0") {
-                    FVector impactPoint = OutHit.ImpactPoint;
-
-                    agl = (startPoint.Z - impactPoint.Z) / 100;
-
-                    // No positive AGL yet
-                    if (!_posagl) {
-                        _posagl = agl > 0;
-                    }
-                }
-            }
-
-            // We've returned to the ground after a positive AGL
-            if (_posagl && agl == 0) {
-                _dynamics->stop();
-                debugline("STOP");
-            }
-
-            else {
-                debugline("AGL = %3.2f m", agl);
-            }
         }
 
         void rotateGimbal(FQuat rotation)
