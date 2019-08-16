@@ -85,6 +85,9 @@ class Vehicle {
         // Radius of sphere containing vehicle mesh
         float _vehicleSize = 0;
 
+        // Becomes true on first positive AGL
+        bool _posagl = false;
+
         // Retrieves kinematics from dynamics computed in another thread
         bool getKinematics(void)
         {
@@ -304,6 +307,9 @@ class Vehicle {
             _startTime = FPlatformTime::Seconds();
             _count = 0;
 
+            // No positive AGL yet
+            _posagl = false;
+
             // Start the audio for the propellers Note that because the
             // Cue Asset is set to loop the sound, once we start playing the sound, it
             // will play continiously...
@@ -343,7 +349,7 @@ class Vehicle {
             grabImages();
 
             // Compute AGL (height above ground level) and check it in dynamics
-            _dynamics->checkAgl(computeAgl());
+            checkAgl();
         }
 
         void PostInitializeComponents()
@@ -358,7 +364,7 @@ class Vehicle {
             _vehicleSize = _frameMesh->GetBounds().GetSphere().W;
         }
 
-        float computeAgl(void)
+        void checkAgl(void)
         {
             // See https://unrealcpp.com/line-trace-on-tick/
 
@@ -366,10 +372,12 @@ class Vehicle {
 			FVector startPoint = _pawn->GetActorLocation();
             startPoint.Z -= _vehicleSize;
 
-			// End at a point far below the sphere
+            // End at a point far below the sphere
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1e6);
 
             //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
+
+            float agl = 0;
 
             // Trace a ray to the ground
             FHitResult OutHit;
@@ -377,12 +385,25 @@ class Vehicle {
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
                 if(OutHit.bBlockingHit && OutHit.GetActor()->GetName() == "Landscape_0") {
                     FVector impactPoint = OutHit.ImpactPoint;
-					return (startPoint.Z - impactPoint.Z) / 100;
+
+                    agl = (startPoint.Z - impactPoint.Z) / 100;
+
+                    // No positive AGL yet
+                    if (!_posagl) {
+                        _posagl = agl > 0;
+                    }
                 }
             }
 
-            // No AGL computed; return zero
-            return 0;
+            // We've returned to the ground after a positive AGL
+            if (_posagl && agl == 0) {
+                _dynamics->stop();
+                debugline("STOP");
+            }
+
+            else {
+                debugline("AGL = %3.2f m", agl);
+            }
         }
 
         void rotateGimbal(FQuat rotation)

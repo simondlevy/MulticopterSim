@@ -129,7 +129,6 @@ class MultirotorDynamics {
 
         // Status flags
         bool _airborne = false; // vertical acceleration has overcome gravity
-        bool _posagl = false;   // we've received a positive AGL
         bool _crashed = false;  // AGL is zero and downward velocity is high
 
         // y = Ax + b helper for frame-of-reference conversion methods
@@ -294,7 +293,6 @@ class MultirotorDynamics {
 
             // No crash yet, and haven't cleared ground
             _crashed = false;
-            _posagl = false;
         }
 
         /** 
@@ -412,28 +410,17 @@ class MultirotorDynamics {
             }
         }
 
-        void checkAgl(double agl)
+        void stop(void)
         {
-            // No positive AGL yet
-            if (!_posagl) {
-                _posagl = agl > 0;
+            _airborne = false;
+
+            // Descending too fast: crashed!
+            if (_state.inertialVel[2] > MAX_DROP_RATE) {
+                _crashed = true;
             }
 
-            debugline("AGL = %3.2f m", agl);
-
-            // We've returned to the ground after a positive AGL
-            if (_posagl && agl == 0) {
-
-                _airborne = false;
-
-                // Descending too fast: crashed!
-                if (_state.inertialVel[2] > MAX_DROP_RATE) {
-                    _crashed = true;
-                }
-
-                // A soft landing: set vertical velocity to zero
-                _state.inertialVel[2] = 0;
-            }
+            // A soft landing: set vertical velocity to zero
+            _state.inertialVel[2] = 0;
         }
 
         bool crashed(void)
