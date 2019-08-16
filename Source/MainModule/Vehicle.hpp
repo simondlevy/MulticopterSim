@@ -130,7 +130,7 @@ class Vehicle {
 
         // Returns distance to collision with nearest mesh in a cardinal direction, or -1 if none encountered.
         // See https://unrealcpp.com/line-trace-on-tick/
-        float distanceToObstacle(int8_t dx, int8_t dy, int8_t dz)
+        float distanceToObstacle(int8_t dx, int8_t dy, int8_t dz, const char * obstacleName="Landscape_0")
         {
             // Start at a point on the surface of the sphere enclosing the vehicle
             FVector startPoint = _pawn->GetActorLocation() + _vehicleSize * FVector(dx, dy, dz);
@@ -145,7 +145,7 @@ class Vehicle {
             FHitResult OutHit;
             FCollisionQueryParams CollisionParams;
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
-                if(OutHit.bBlockingHit && OutHit.GetActor() != _pawn) { // disallow self-collisions
+                if (OutHit.bBlockingHit && OutHit.GetActor()->GetName() == obstacleName) {
                     FVector impactPoint = OutHit.ImpactPoint;
                     return (dx+dy+dz) * (abs(dx)*(impactPoint.X-startPoint.X) + abs(dy)*(impactPoint.Y-startPoint.Y) +  abs(dz)*(impactPoint.Z-startPoint.Z)) / 100;
                 }
