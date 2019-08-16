@@ -96,25 +96,13 @@ class Vehicle {
             // FlightManager will be null after crash
             if (!_flightManager) return false;
 
-            // Get current pose kinematics and motor values dynamics (from flight
-            // manager). Motor values are used only for animation effects (prop
-            // rotation, sound).
-            FVector location;
-            FRotator rotation;
-
             // Get vehicle pose from dynamics
             MultirotorDynamics::pose_t pose = {};
             _dynamics->getPose(pose);
 
-            // Convert NED meters => ENU centimeters
-            location.X =  pose.location[0] * 100; 
-            location.Y =  pose.location[1] * 100; 
-            location.Z = -pose.location[2] * 100; 
-
-            // Convert radians to degrees
-            rotation.Roll =  FMath::RadiansToDegrees(pose.rotation[0]);
-            rotation.Pitch = FMath::RadiansToDegrees(pose.rotation[1]);
-            rotation.Yaw =   FMath::RadiansToDegrees(pose.rotation[2]);
+            // Convert pose to UE4 location, rotator
+            FVector location = FVector(pose.location[0], pose.location[1], -pose.location[2]) * 100;  // NED => ENU
+            FRotator rotation = FMath::RadiansToDegrees(FRotator(pose.rotation[1], pose.rotation[2], pose.rotation[0]));
 
             // Get distances from obstacles
             float agl = distanceToObstacle( 0,  0, -1);
@@ -142,8 +130,7 @@ class Vehicle {
             }
 
             else  {
-                debugline("crashed: %d  AGL=%3.2f top=%3.2f  fwd=%3.2f  bak=%3.2f  rgt=%3.2f  lft=%3.2f", 
-                        _crashed, agl, top, fwd, bak, rgt, lft);
+                debugline("AGL=%3.2f top=%3.2f  fwd=%3.2f  bak=%3.2f  rgt=%3.2f  lft=%3.2f", agl, top, fwd, bak, rgt, lft);
             }
 
             // Set vehicle pose in animation
