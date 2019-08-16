@@ -115,12 +115,12 @@ class Vehicle {
             rotation.Yaw =   FMath::RadiansToDegrees(pose.rotation[2]);
 
             // Get distances from obstacles
-            float agl = -getDistance( 0,  0, -1);
-            float top =  getDistance( 0,  0, +1);
-            float fwd =  getDistance(+1,  0,  0);
-            float bak =  getDistance(-1,  0,  0);
-            float rgt =  getDistance( 0, +1,  0);
-            float lft =  getDistance( 0, -1,  0);
+            float agl = distanceToObstacle( 0,  0, -1);
+            float top = distanceToObstacle( 0,  0, +1);
+            float fwd = distanceToObstacle(+1,  0,  0);
+            float bak = distanceToObstacle(-1,  0,  0);
+            float rgt = distanceToObstacle( 0, +1,  0);
+            float lft = distanceToObstacle( 0, -1,  0);
 
             // Check for AGL going positive
             if (!_posagl) {
@@ -150,8 +150,7 @@ class Vehicle {
 
         // Returns distance to collision with nearest mesh in a cardinal direction, or 0 if none encountered.
         // See https://unrealcpp.com/line-trace-on-tick/
-
-        float getDistance(int8_t dx, int8_t dy, int8_t dz)
+        float distanceToObstacle(int8_t dx, int8_t dy, int8_t dz)
         {
             // Start at a point on the surface of the sphere enclosing the vehicle
             FVector startPoint = _pawn->GetActorLocation() + _vehicleSize * FVector(dx, dy, dz);
@@ -168,11 +167,11 @@ class Vehicle {
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
                 if(OutHit.bBlockingHit) {
                     FVector impactPoint = OutHit.ImpactPoint;
-                    return (abs(dx)*(impactPoint.X-startPoint.X) + abs(dy)*(impactPoint.Y-startPoint.Y) +  abs(dz)*(impactPoint.Z-startPoint.Z)) / 100;
+                    return (dx+dy+dz) * (abs(dx)*(impactPoint.X-startPoint.X) + abs(dy)*(impactPoint.Y-startPoint.Y) +  abs(dz)*(impactPoint.Z-startPoint.Z)) / 100;
                 }
             }
 
-            // No collision
+            // No obstacle
             return 0;
         }
 
