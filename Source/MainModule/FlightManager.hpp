@@ -21,6 +21,8 @@ class FFlightManager : public FThreadedManager {
         // For computing deltaT
         double   _previousTime = 0;
 
+        bool _running = false;
+
         /**
          * Flight-control method running repeatedly on its own thread.  
          * Override this method to implement your own flight controller.
@@ -55,11 +57,15 @@ class FFlightManager : public FThreadedManager {
 
             // For periodic update
             _previousTime = 0;
+
+            _running = true;
         }
 
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
         void performTask(double currentTime)
         {
+            if (!_running) return;
+
             // Compute time deltay in seconds
 			double dt = currentTime - _previousTime;
 
@@ -101,6 +107,12 @@ class FFlightManager : public FThreadedManager {
             for (uint8_t j=0; j<_motorCount; ++j) {
                 motorvals[j] = _motorvals[j];
             }
+        }
+
+        void stop(void)
+        {
+            _dynamics->stop();
+            _running = false;
         }
 
 }; // class FFlightManager

@@ -69,6 +69,8 @@ class Vehicle {
         // Bozo filter for failure to select a map
         bool _mapSelected = false;
 
+		bool _crashed = false;
+
         // Motor values for animation/sound
         float  _motorvals[FFlightManager::MAX_MOTORS] = {};
 
@@ -127,14 +129,21 @@ class Vehicle {
                 _posagl = agl > 0;
             }
 
+            if (top < .01) {
+                _flightManager->stop();
+                _frameMeshComponent->SetSimulatePhysics(true);
+				_frameMeshComponent->SetEnableGravity(true);
+                _crashed = true;
+            }
+
             // We've returned to the ground after a positive AGL
-            if (_posagl && agl <= 0) {
+            else if (_posagl && agl <= 0) {
                 _dynamics->stop();
-                debugline("STOP");
             }
 
             else  {
-                debugline("AGL=%3.2f top=%3.2f  fwd=%3.2f  bak=%3.2f  rgt=%3.2f  lft=%3.2f", agl, top, fwd, bak, rgt, lft);
+                debugline("crashed: %d  AGL=%3.2f top=%3.2f  fwd=%3.2f  bak=%3.2f  rgt=%3.2f  lft=%3.2f", 
+                        _crashed, agl, top, fwd, bak, rgt, lft);
             }
 
             // Set vehicle pose in animation
@@ -272,21 +281,6 @@ class Vehicle {
             addMesh(mesh, name, location, rotation, FVector(1,1,1)*scale);
         }
 
-        void addMesh(UStaticMesh * mesh, const char * name, const FVector & location, const FRotator rotation)
-        {
-            addMesh(mesh, name, location, rotation, 1.0);
-        }
-
-        void addMesh(UStaticMesh * mesh, const char * name, const FVector & location)
-        {
-            addMesh(mesh, name, location, FRotator(0,0,0), FVector(1,1,1));
-        }
-
-        void addMesh(UStaticMesh * mesh, const char * name, const FVector & location, const FVector & scale)
-        {
-            addMesh(mesh, name, location, FRotator(0,0,0), scale);
-        }
-
         void addMesh(UStaticMesh * mesh, const char * name)
         {
             addMesh(mesh, name, FVector(0,0,0), FRotator(0,0,0), FVector(1,1,1));
@@ -361,6 +355,8 @@ class Vehicle {
             // No positive AGL yet
             _posagl = false;
 
+			_crashed = false;
+
             // Start the audio for the propellers Note that because the
             // Cue Asset is set to loop the sound, once we start playing the sound, it
             // will play continiously...
@@ -390,6 +386,8 @@ class Vehicle {
 
         void Tick(void)
         {
+			if (_crashed) return;
+
             // Checking count is a hack to avoid accessing kinematics before dynamics thread is ready
             if (!_mapSelected || _count++<10 || !getKinematics()) return;
 
