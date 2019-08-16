@@ -114,9 +114,13 @@ class Vehicle {
             rotation.Pitch = FMath::RadiansToDegrees(pose.rotation[1]);
             rotation.Yaw =   FMath::RadiansToDegrees(pose.rotation[2]);
 
+            // Get distances from obstacles
             float agl = -getDistance( 0,  0, -1);
+            float top =  getDistance( 0,  0, +1);
             float fwd =  getDistance(+1,  0,  0);
+            float bak =  getDistance(-1,  0,  0);
             float rgt =  getDistance( 0, +1,  0);
+            float lft =  getDistance( 0, -1,  0);
 
             // Check for AGL going positive
             if (!_posagl) {
@@ -130,7 +134,7 @@ class Vehicle {
             }
 
             else  {
-                debugline("AGL=%3.2f fwd=%3.2f  rgt=%3.2f", agl, fwd, rgt);
+                debugline("AGL=%3.2f top=%3.2f  fwd=%3.2f  bak=%3.2f  rgt=%3.2f  lft=%3.2f", agl, top, fwd, bak, rgt, lft);
             }
 
             // Set vehicle pose in animation
