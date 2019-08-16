@@ -417,8 +417,6 @@ class MultirotorDynamics {
          */
         void stop(void)
         {
-            debugline("STOP");
-
             _airborne = false;
 
             _state.inertialVel[0] = 0;

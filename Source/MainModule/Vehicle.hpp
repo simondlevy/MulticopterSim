@@ -78,48 +78,36 @@ class Vehicle {
         TCircularBuffer<float> * _motorBuffer = NULL;
         uint32_t _bufferIndex = 0;
 
-        // Start-time offset so timing begins at zero
-        double _startTime = 0;
-
-        // A hack to avoid accessing kinematics before dynamics thread is ready
-        uint32_t _count = 0;
-
         // Radius of sphere containing vehicle mesh
         float _vehicleSize = 0;
 
         // Becomes true on first positive AGL
         bool _posagl = false;
 
-        void checkCollision(void)
+        void checkAgl(void)
         {
             // Get distances from obstacles
             float agl = distanceToObstacle( 0,  0, -1);
-            float top = distanceToObstacle( 0,  0, +1);
-            float fwd = distanceToObstacle(+1,  0,  0);
-            float bak = distanceToObstacle(-1,  0,  0);
-            float rgt = distanceToObstacle( 0, +1,  0);
-            float lft = distanceToObstacle( 0, -1,  0);
 
             // Check for AGL going positive
             if (!_posagl) {
                 _posagl = agl > 0;
             }
 
-            if (false) {
-                _flightManager->stop();
-                _frameMeshComponent->SetSimulatePhysics(true);
-				_frameMeshComponent->SetEnableGravity(true);
-                _crashed = true;
-            }
+            if (_posagl) {
 
-            // We've returned to the ground after a positive AGL
-            else if (_posagl && agl <= 0) {
-                _dynamics->stop();
-            }
+                debugline("AGL = %3.2fm", agl);
 
-            else  {
-                debugline("AGL=%3.2f top=%3.2f  fwd=%3.2f  bak=%3.2f  rgt=%3.2f  lft=%3.2f", agl, top, fwd, bak, rgt, lft);
+                // We've returned to the ground after a positive AGL
+                if (agl <= 0) {
+                    _dynamics->stop();
+                }
             }
+        }
+
+        static bool collided(float distance)
+        {
+            return distance >= 0 && distance < .01;
         }
 
         // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
@@ -157,7 +145,7 @@ class Vehicle {
             FHitResult OutHit;
             FCollisionQueryParams CollisionParams;
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
-                if(OutHit.bBlockingHit) {
+                if(OutHit.bBlockingHit && OutHit.GetActor() != _pawn) { // disallow self-collisions
                     FVector impactPoint = OutHit.ImpactPoint;
                     return (dx+dy+dz) * (abs(dx)*(impactPoint.X-startPoint.X) + abs(dy)*(impactPoint.Y-startPoint.Y) +  abs(dz)*(impactPoint.Z-startPoint.Z)) / 100;
                 }
@@ -296,6 +284,23 @@ class Vehicle {
             _cameras[_cameraCount++] = camera;
         }
 
+        void checkCrash(void)
+        {
+            // Get distances from obstacles
+            float top = distanceToObstacle( 0,  0, +1);
+            float fwd = distanceToObstacle(+1,  0,  0);
+            float bak = distanceToObstacle(-1,  0,  0);
+            float rgt = distanceToObstacle( 0, +1,  0);
+            float lft = distanceToObstacle( 0, -1,  0);
+
+            if (collided(top) || collided(fwd) || collided(bak) || collided(rgt) || collided(lft)) {
+                _flightManager->stop();
+                _frameMeshComponent->SetSimulatePhysics(true);
+				_frameMeshComponent->SetEnableGravity(true);
+                _crashed = true;
+            }
+        }
+
         Vehicle(void)
         {
             _dynamics = NULL;
@@ -330,10 +335,6 @@ class Vehicle {
                 error("NO MAP SELECTED");
                 return;
             }
-
-            // Reset FPS count
-            _startTime = FPlatformTime::Seconds();
-            _count = 0;
 
             // No positive AGL yet
             _posagl = false;
@@ -373,9 +374,9 @@ class Vehicle {
 
 			if (_crashed) return;
 
-            if (_count++<10) return;
+            //if (_count++<10) return;
 
-            checkCollision();
+            checkAgl();
 
             updateKinematics();
 
@@ -396,9 +397,6 @@ class Vehicle {
             _vehicleSize = _frameMesh->GetBounds().GetSphere().W;
         }
 
-        void checkAgl(void)
-        {
-        }
 
         void rotateGimbal(FQuat rotation)
         {
