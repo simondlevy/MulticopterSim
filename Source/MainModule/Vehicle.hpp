@@ -117,6 +117,7 @@ class Vehicle {
             // See https://unrealcpp.com/line-trace-on-tick/
 
             // Start at a point at the bottom of the sphere enclosing the vehicle
+
 			FVector startPoint = _pawn->GetActorLocation();
             startPoint.Z -= _vehicleSize;
 
@@ -135,12 +136,12 @@ class Vehicle {
                     FVector impactPoint = OutHit.ImpactPoint;
 
                     agl = (startPoint.Z - impactPoint.Z) / 100;
-
-                    // No positive AGL yet
-                    if (!_posagl) {
-                        _posagl = agl > 0;
-                    }
                 }
+            }
+
+            // Check for AGL going positive
+            if (!_posagl) {
+                _posagl = agl > 0;
             }
 
             // We've returned to the ground after a positive AGL
