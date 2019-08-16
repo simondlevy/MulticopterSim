@@ -93,9 +93,6 @@ class Vehicle {
         // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
         bool getKinematics(void)
         {
-            // FlightManager will be null after crash
-            if (!_flightManager) return false;
-
             // Get vehicle pose from dynamics
             MultirotorDynamics::pose_t pose = {};
             _dynamics->getPose(pose);
