@@ -414,10 +414,7 @@ class MultirotorDynamics {
 
         void checkAgl(double agl)
         {
-            // Not even airborne yet
-            if (!_airborne) return;
-
-            // Airborne, but no positive AGL measured
+            // No positive AGL yet
             if (!_posagl) {
                 _posagl = agl > 0;
             }
