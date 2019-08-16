@@ -105,7 +105,7 @@ class Vehicle {
                 _posagl = agl > 0;
             }
 
-            if (top < .01) {
+            if (false) {
                 _flightManager->stop();
                 _frameMeshComponent->SetSimulatePhysics(true);
 				_frameMeshComponent->SetEnableGravity(true);
@@ -140,7 +140,7 @@ class Vehicle {
 
         // Animation effects (sound, spinning props)
 
-        // Returns distance to collision with nearest mesh in a cardinal direction, or 0 if none encountered.
+        // Returns distance to collision with nearest mesh in a cardinal direction, or -1 if none encountered.
         // See https://unrealcpp.com/line-trace-on-tick/
         float distanceToObstacle(int8_t dx, int8_t dy, int8_t dz)
         {
@@ -164,7 +164,7 @@ class Vehicle {
             }
 
             // No obstacle
-            return 0;
+            return -1;
         }
 
         void addAnimationEffects(void)
