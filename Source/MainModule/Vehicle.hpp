@@ -90,16 +90,8 @@ class Vehicle {
         // Becomes true on first positive AGL
         bool _posagl = false;
 
-        // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
-        void updateKinematics(void)
+        void checkCollision(void)
         {
-            // Get vehicle pose from dynamics
-            MultirotorDynamics::pose_t pose = _dynamics->getPose();
-
-            // Convert pose to UE4 location, rotator
-            FVector location = FVector(pose.location[0], pose.location[1], -pose.location[2]) * 100;  // NED => ENU
-            FRotator rotation = FMath::RadiansToDegrees(FRotator(pose.rotation[1], pose.rotation[2], pose.rotation[0]));
-
             // Get distances from obstacles
             float agl = distanceToObstacle( 0,  0, -1);
             float top = distanceToObstacle( 0,  0, +1);
@@ -128,12 +120,23 @@ class Vehicle {
             else  {
                 debugline("AGL=%3.2f top=%3.2f  fwd=%3.2f  bak=%3.2f  rgt=%3.2f  lft=%3.2f", agl, top, fwd, bak, rgt, lft);
             }
+        }
+
+        // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
+        void updateKinematics(void)
+        {
+             // Get vehicle pose from dynamics
+            MultirotorDynamics::pose_t pose = _dynamics->getPose();
+
+            // Convert pose to UE4 location, rotator
+            FVector location = FVector(pose.location[0], pose.location[1], -pose.location[2]) * 100;  // NED => ENU
+            FRotator rotation = FMath::RadiansToDegrees(FRotator(pose.rotation[1], pose.rotation[2], pose.rotation[0]));
 
             // Set vehicle pose in animation
             _pawn->SetActorLocation(location);
             _pawn->SetActorRotation(rotation);
 
-        } // updateKinematics
+        }
 
         // Animation effects (sound, spinning props)
 
@@ -371,6 +374,8 @@ class Vehicle {
 			if (_crashed) return;
 
             if (_count++<10) return;
+
+            checkCollision();
 
             updateKinematics();
 
