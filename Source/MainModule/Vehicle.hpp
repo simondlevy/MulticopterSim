@@ -91,7 +91,7 @@ class Vehicle {
         bool _posagl = false;
 
         // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
-        bool getKinematics(void)
+        void updateKinematics(void)
         {
             // Get vehicle pose from dynamics
             MultirotorDynamics::pose_t pose = _dynamics->getPose();
@@ -133,10 +133,7 @@ class Vehicle {
             _pawn->SetActorLocation(location);
             _pawn->SetActorRotation(rotation);
 
-            // Airborne
-            return true;
-
-        } // getKinematics
+        } // updateKinematics
 
         // Animation effects (sound, spinning props)
 
@@ -369,15 +366,16 @@ class Vehicle {
 
         void Tick(void)
         {
+            if (!_mapSelected) return;
+
 			if (_crashed) return;
 
-            // Checking count is a hack to avoid accessing kinematics before dynamics thread is ready
-            if (!_mapSelected || _count++<10 || !getKinematics()) return;
+            if (_count++<10) return;
 
-            // Keepin' it real(istic)!
+            updateKinematics();
+
             addAnimationEffects();
 
-            // Grab images
             grabImages();
         }
 
