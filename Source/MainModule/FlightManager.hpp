@@ -21,9 +21,6 @@ class FFlightManager : public FThreadedManager {
         // For computing deltaT
         double   _previousTime = 0;
 
-        // Flag for whether we've crashed and need to reset
-        bool _crashed = false;
-
         /**
          * Flight-control method running repeatedly on its own thread.  
          * Override this method to implement your own flight controller.
@@ -58,9 +55,6 @@ class FFlightManager : public FThreadedManager {
 
             // For periodic update
             _previousTime = 0;
-
-            // No crash yet
-            _crashed = false;
         }
 
         // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
