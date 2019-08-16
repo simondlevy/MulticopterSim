@@ -114,10 +114,9 @@ class Vehicle {
             rotation.Pitch = FMath::RadiansToDegrees(pose.rotation[1]);
             rotation.Yaw =   FMath::RadiansToDegrees(pose.rotation[2]);
 
-            // Get AGL
-            float agl = getAgl();
-
-            float fwd = getFwd();
+            float agl = -getDistance( 0,  0, -1);
+            float fwd =  getDistance(+1,  0,  0);
+            float rgt =  getDistance( 0, +1,  0);
 
             // Check for AGL going positive
             if (!_posagl) {
@@ -131,7 +130,7 @@ class Vehicle {
             }
 
             else  {
-                debugline("AGL=%3.2f fwd=%3.2f", agl, fwd);
+                debugline("AGL=%3.2f fwd=%3.2f  rgt=%3.2f", agl, fwd, rgt);
             }
 
             // Set vehicle pose in animation
@@ -145,18 +144,17 @@ class Vehicle {
 
         // Animation effects (sound, spinning props)
 
-        // Returns distance to collision with nearest mesh in a cardinal direction, or -1 if none encountered.
+        // Returns distance to collision with nearest mesh in a cardinal direction, or 0 if none encountered.
         // See https://unrealcpp.com/line-trace-on-tick/
 
-        float getAgl(void)
+        float getDistance(int8_t dx, int8_t dy, int8_t dz)
         {
             // Start at a point on the surface of the sphere enclosing the vehicle
-            FVector startPoint = _pawn->GetActorLocation();
-            startPoint.Z -= _vehicleSize;
+            FVector startPoint = _pawn->GetActorLocation() + _vehicleSize * FVector(dx, dy, dz);
 
             // End at a point far from the sphere
             float d = 1e6;
-            FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-d);
+            FVector endPoint = FVector(startPoint.X+dx*d, startPoint.Y+dy*d, startPoint.Z+dz*d);
 
             //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
 
@@ -166,38 +164,12 @@ class Vehicle {
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
                 if(OutHit.bBlockingHit) {
                     FVector impactPoint = OutHit.ImpactPoint;
-                    return (startPoint.Z-impactPoint.Z) / 100;
+                    return (abs(dx)*(impactPoint.X-startPoint.X) + abs(dy)*(impactPoint.Y-startPoint.Y) +  abs(dz)*(impactPoint.Z-startPoint.Z)) / 100;
                 }
             }
 
             // No collision
-            return -1;
-        }
-
-        float getFwd(void)
-        {
-            // Start at a point on the surface of the sphere enclosing the vehicle
-            FVector startPoint = _pawn->GetActorLocation();
-            startPoint.X += _vehicleSize;
-
-            // End at a point far from the sphere
-            float d = 1e6;
-            FVector endPoint = FVector(startPoint.X+d, startPoint.Y, startPoint.Z);
-
-            //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
-
-            // Trace a ray to any other mesh
-            FHitResult OutHit;
-            FCollisionQueryParams CollisionParams;
-            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
-                if(OutHit.bBlockingHit) {
-                    FVector impactPoint = OutHit.ImpactPoint;
-                    return (impactPoint.X-startPoint.X) / 100;
-                }
-            }
-
-            // No collision
-            return -1;
+            return 0;
         }
 
         void addAnimationEffects(void)
