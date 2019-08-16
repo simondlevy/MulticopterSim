@@ -114,30 +114,8 @@ class Vehicle {
             rotation.Pitch = FMath::RadiansToDegrees(pose.rotation[1]);
             rotation.Yaw =   FMath::RadiansToDegrees(pose.rotation[2]);
 
-            // See https://unrealcpp.com/line-trace-on-tick/
-
-            // Start at a point at the bottom of the sphere enclosing the vehicle
-
-			FVector startPoint = _pawn->GetActorLocation();
-            startPoint.Z -= _vehicleSize;
-
-            // End at a point far below the sphere
-            FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1e6);
-
-            //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
-
-            float agl = 0;
-
-            // Trace a ray to the ground
-            FHitResult OutHit;
-            FCollisionQueryParams CollisionParams;
-            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
-                if(OutHit.bBlockingHit) {
-                    FVector impactPoint = OutHit.ImpactPoint;
-
-                    agl = (startPoint.Z - impactPoint.Z) / 100;
-                }
-            }
+            // Get AGL
+            float agl = getDistance();
 
             // Check for AGL going positive
             if (!_posagl) {
@@ -154,6 +132,7 @@ class Vehicle {
                 debugline("AGL = %3.2f m", agl);
             }
 
+            // Set vehicle pose in animation
             _pawn->SetActorLocation(location);
             _pawn->SetActorRotation(rotation);
 
@@ -163,6 +142,32 @@ class Vehicle {
         } // getKinematics
 
         // Animation effects (sound, spinning props)
+
+        // See https://unrealcpp.com/line-trace-on-tick/
+        float getDistance(void)
+        {
+            // Start at a point at the bottom of the sphere enclosing the vehicle
+
+            FVector startPoint = _pawn->GetActorLocation();
+            startPoint.Z -= _vehicleSize;
+
+            // End at a point far below the sphere
+            FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-1e6);
+
+            //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
+
+            // Trace a ray to any other mesh
+            FHitResult OutHit;
+            FCollisionQueryParams CollisionParams;
+            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
+                if(OutHit.bBlockingHit) {
+                    FVector impactPoint = OutHit.ImpactPoint;
+                    return (startPoint.Z - impactPoint.Z) / 100;
+                }
+            }
+
+            return 0;
+        }
 
         void addAnimationEffects(void)
         {
@@ -218,7 +223,7 @@ class Vehicle {
             _frameMeshComponent->SetSimulatePhysics(false);
 
             _propCount = 0;
-          }
+        }
 
         void buildWithAudio(APawn * pawn, UStaticMesh * frameMesh)
         {
@@ -243,7 +248,7 @@ class Vehicle {
             _springArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
             _springArm->SetupAttachment(_pawn->GetRootComponent());
             _springArm->TargetArmLength = 0.f; 
-          }
+        }
 
         void addMesh(UStaticMesh * mesh, const char * name, const FVector & location, const FRotator rotation, const FVector & scale)
         {
@@ -253,7 +258,7 @@ class Vehicle {
             meshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName); 	
             meshComponent->AddRelativeLocation(location*100); // m => cm
             meshComponent->AddLocalRotation(rotation);
-			meshComponent->SetRelativeScale3D(scale);
+            meshComponent->SetRelativeScale3D(scale);
         }
 
         void addMesh(UStaticMesh * mesh, const char * name, const FVector & location, const FRotator rotation, const float scale)
@@ -304,7 +309,7 @@ class Vehicle {
             // Add camera to spring arm
             camera->addToVehicle(_pawn, _springArm, _cameraCount);
 
-           // Increment the camera count for next time
+            // Increment the camera count for next time
             _cameras[_cameraCount++] = camera;
         }
 
@@ -314,7 +319,7 @@ class Vehicle {
             _flightManager = NULL;
         }
 
-         Vehicle(MultirotorDynamics * dynamics)
+        Vehicle(MultirotorDynamics * dynamics)
         {
             _dynamics = dynamics;
 
@@ -323,8 +328,8 @@ class Vehicle {
             }
 
             _flightManager = NULL;
-         }
-        
+        }
+
         ~Vehicle(void) 
         {
         }
