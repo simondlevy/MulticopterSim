@@ -131,7 +131,7 @@ class Vehicle {
             FHitResult OutHit;
             FCollisionQueryParams CollisionParams;
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
-                if(OutHit.bBlockingHit && OutHit.GetActor()->GetName() == "Landscape_0") {
+                if(OutHit.bBlockingHit) {
                     FVector impactPoint = OutHit.ImpactPoint;
 
                     agl = (startPoint.Z - impactPoint.Z) / 100;
