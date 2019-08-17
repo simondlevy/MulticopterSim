@@ -71,9 +71,8 @@ class Vehicle {
 
             STATE_NOMAP,
             STATE_CRASHED,
-            STATE_ONGROUND, 
-            STATE_LANDING,
-            STATE_FLYING,
+            STATE_READY,
+            STATE_RUNNING,
             STATE_COUNT
 
         } kinematicState_t;
@@ -89,30 +88,6 @@ class Vehicle {
 
         // Radius of sphere containing vehicle mesh
         float _vehicleSize = 0;
-
-        // Becomes true on first positive AGL
-        bool _posagl = false;
-
-        void checkAgl(void)
-        {
-            // Get distances from obstacles
-            float agl = distanceToObstacle( 0,  0, -1);
-
-            // Check for AGL going positive
-            if (!_posagl) {
-                _posagl = agl > 0;
-            }
-
-            if (_posagl) {
-
-                debugline("AGL = %3.2fm", agl);
-
-                // We've returned to the ground after a positive AGL
-                if (agl <= 0) {
-                    _dynamics->stop();
-                }
-            }
-        }
 
         static bool collided(float distance)
         {
@@ -335,11 +310,8 @@ class Vehicle {
                 return;
             }
 
-            // Start on ground
-            _kinematicState = STATE_ONGROUND;
-
-            // No positive AGL yet
-            _posagl = false;
+            // Rady to fly
+            _kinematicState = STATE_READY;
 
             // Start the audio for the propellers Note that because the
             // Cue Asset is set to loop the sound, once we start playing the sound, it
@@ -370,7 +342,7 @@ class Vehicle {
 
         void Tick(float DeltaSeconds)
         {
-            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "ONGROUND", "LANDING", "FLYING"};
+            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "READY", "RUNNING"};
             debugline("State: %s", states[_kinematicState]);
 
             switch (_kinematicState) {
@@ -380,9 +352,26 @@ class Vehicle {
                     break;
 
                 default:
-                    checkAgl();
+                    {
+                        // Get distances from obstacles
+                        float agl = distanceToObstacle( 0,  0, -1);
+
+                        // Check for AGL going positive
+                        if (_kinematicState != STATE_RUNNING && agl > 0) { 
+                            _kinematicState = STATE_RUNNING;
+                        }
+
+                        if (_kinematicState == STATE_RUNNING) {
+
+                            // We've returned to the ground after a positive AGL
+                            if (agl <= 0) {
+                                _dynamics->stop();
+                            }
+                        }
+                    }
+
                     updateKinematics();
-                    
+
             } // switch (_kinematicState)
         }
 
