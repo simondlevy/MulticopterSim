@@ -368,7 +368,7 @@ class Vehicle {
             _dynamics->init(pose);
         }
 
-        void Tick(void)
+        void Tick(float DeltaSeconds)
         {
             if (!_mapSelected) return;
 
