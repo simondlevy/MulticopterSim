@@ -343,7 +343,7 @@ class Vehicle {
         void Tick(float DeltaSeconds)
         {
             const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "READY", "RUNNING"};
-            debugline("State: %s", states[_kinematicState]);
+            debugline("State: %s  AGL: %+3.2f", states[_kinematicState], agl());
 
             switch (_kinematicState) {
 
