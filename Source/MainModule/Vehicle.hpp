@@ -80,11 +80,6 @@ class Vehicle {
 
         kinematicState_t _kinematicState = STATE_NOMAP;
  
-        // Bozo filter for failure to select a map
-        bool _mapSelected = false;
-
-		bool _crashed = false;
-
         // Motor values for animation/sound
         float  _motorvals[FFlightManager::MAX_MOTORS] = {};
 
@@ -303,7 +298,6 @@ class Vehicle {
                 _flightManager->stop();
                 _frameMeshComponent->SetSimulatePhysics(true);
 				_frameMeshComponent->SetEnableGravity(true);
-                _crashed = true;
                 _kinematicState = STATE_CRASHED;
             }
         }
@@ -336,11 +330,7 @@ class Vehicle {
             _kinematicState = STATE_NOMAP;
 
             // Make sure a map has been selected
-            FString mapName = _pawn->GetWorld()->GetMapName();
-            _mapSelected = !mapName.Contains("Untitled");
-
-            // Bozo filter
-            if (!_mapSelected) {
+            if (_pawn->GetWorld()->GetMapName().Contains("Untitled")) {
                 error("NO MAP SELECTED");
                 return;
             }
@@ -350,8 +340,6 @@ class Vehicle {
 
             // No positive AGL yet
             _posagl = false;
-
-			_crashed = false;
 
             // Start the audio for the propellers Note that because the
             // Cue Asset is set to loop the sound, once we start playing the sound, it
@@ -385,13 +373,17 @@ class Vehicle {
             const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "ONGROUND", "LANDING", "FLYING"};
             debugline("State: %s", states[_kinematicState]);
 
-            if (!_mapSelected) return;
+            switch (_kinematicState) {
 
-			if (_crashed) return;
+                case STATE_NOMAP:
+                case STATE_CRASHED: 
+                    break;
 
-            checkAgl();
-
-            updateKinematics();
+                default:
+                    checkAgl();
+                    updateKinematics();
+                    
+            } // switch (_kinematicState)
         }
 
         void PostInitializeComponents()
