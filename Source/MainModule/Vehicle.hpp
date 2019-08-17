@@ -351,28 +351,26 @@ class Vehicle {
                 case STATE_CRASHED: 
                     break;
 
-                default:
-                    {
-                        // Get distances from obstacles
-                        float agl = distanceToObstacle( 0,  0, -1);
-
-                        // Check for AGL going positive
-                        if (_kinematicState != STATE_RUNNING && agl > 0) { 
-                            _kinematicState = STATE_RUNNING;
-                        }
-
-                        if (_kinematicState == STATE_RUNNING) {
-
-                            // We've returned to the ground after a positive AGL
-                            if (agl <= 0) {
-                                _dynamics->stop();
-                            }
-                        }
+                case STATE_READY:
+                    if (agl() > 0) {
+                        _kinematicState = STATE_RUNNING;
                     }
-
                     updateKinematics();
+                    break;
 
-            } // switch (_kinematicState)
+                case STATE_RUNNING:
+                    if (agl() <= 0) {
+                        _dynamics->stop();
+                    }
+                    updateKinematics();
+                    break;
+
+            } 
+        }
+
+        float agl(void)
+        {
+            return distanceToObstacle( 0,  0, -1);
         }
 
         void PostInitializeComponents()
