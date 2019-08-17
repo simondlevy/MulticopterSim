@@ -339,8 +339,9 @@ class Vehicle {
 
         void Tick(float DeltaSeconds)
         {
+            static bool reset;
             const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "READY", "RUNNING"};
-            debugline("State: %s  AGL: %+3.2f", states[_kinematicState], agl());
+            debugline("State: %s  AGL: %+3.2f   reset: %d", states[_kinematicState], agl(), reset);
 
             switch (_kinematicState) {
 
@@ -359,6 +360,10 @@ class Vehicle {
                 case STATE_RUNNING:
                     if (agl() <= 0 && _dynamics->getState().pose.location[2] > 0.4) { // close to ground and descending
                         _dynamics->reset();
+                        reset = true;
+                    }
+                    else {
+                        reset = false;
                     }
                     updateKinematics();
                     break;
