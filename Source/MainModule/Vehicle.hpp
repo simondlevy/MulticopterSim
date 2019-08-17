@@ -360,7 +360,7 @@ class Vehicle {
 
                 case STATE_RUNNING:
                     if (agl() <= 0) {
-                        _dynamics->stop();
+                        _dynamics->reset();
                     }
                     updateKinematics();
                     break;

@@ -111,7 +111,7 @@ class FFlightManager : public FThreadedManager {
 
         void stop(void)
         {
-            _dynamics->stop();
+            _dynamics->reset();
             _running = false;
         }
 

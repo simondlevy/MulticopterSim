@@ -412,10 +412,10 @@ class MultirotorDynamics {
         }
 
         /**
-         * Sets airborne flag to false and velocities to zero.
+         * Resets airborne flag to false and velocities to zero.
          * This should be done when a landing or collision is detected.
          */
-        void stop(void)
+        void reset(void)
         {
             _airborne = false;
 
