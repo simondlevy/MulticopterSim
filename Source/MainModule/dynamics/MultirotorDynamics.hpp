@@ -126,7 +126,6 @@ class MultirotorDynamics {
 
         // Status flags
         bool _airborne = false; // vertical acceleration has overcome gravity
-        bool _crashed = false;  // AGL is zero and downward velocity is high
 
         // y = Ax + b helper for frame-of-reference conversion methods
         static void dot(double A[3][3], double x[3], double y[3])
@@ -287,9 +286,6 @@ class MultirotorDynamics {
 
             // We can start on the ground (default) or in the air
             _airborne = airborne;
-
-            // No crash yet, and haven't cleared ground
-            _crashed = false;
         }
 
         /** 
