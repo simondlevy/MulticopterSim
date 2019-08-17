@@ -181,9 +181,6 @@ class Vehicle {
             _frameMeshComponent->SetStaticMesh(_frameMesh);
             _pawn->SetRootComponent(_frameMeshComponent);
 
-            // Turn off UE4 physics
-            _frameMeshComponent->SetSimulatePhysics(false);
-
             _propCount = 0;
         }
 
@@ -354,6 +351,7 @@ class Vehicle {
                 case STATE_READY:
                     if (agl() > 0) {
                         _kinematicState = STATE_RUNNING;
+                        _frameMeshComponent->SetSimulatePhysics(false);
                     }
                     updateKinematics();
                     break;
