@@ -66,6 +66,20 @@ class Vehicle {
         // Threaded worker for running flight control
         class FFlightManager * _flightManager = NULL;
 
+        // States
+        typedef enum {
+
+            STATE_NOMAP,
+            STATE_CRASHED,
+            STATE_ONGROUND, 
+            STATE_LANDING,
+            STATE_FLYING,
+            STATE_COUNT
+
+        } kinematicState_t;
+
+        kinematicState_t _kinematicState = STATE_NOMAP;
+ 
         // Bozo filter for failure to select a map
         bool _mapSelected = false;
 
@@ -124,39 +138,6 @@ class Vehicle {
             _pawn->SetActorLocation(location);
             _pawn->SetActorRotation(rotation);
 
-        }
-
-        // Animation effects (sound, spinning props)
-
-        // Returns distance to collision with nearest mesh in a cardinal direction, or -1 if none encountered.
-        // See https://unrealcpp.com/line-trace-on-tick/
-        float distanceToObstacle(int8_t dx, int8_t dy, int8_t dz, const char * obstacleName="Landscape_0")
-        {
-            // Start at a point on the surface of the sphere enclosing the vehicle
-            FVector startPoint = _pawn->GetActorLocation() + _vehicleSize * FVector(dx, dy, dz);
-
-            // End at a point far from the sphere
-            float d = 1e6;
-            FVector endPoint = FVector(startPoint.X+dx*d, startPoint.Y+dy*d, startPoint.Z+dz*d);
-
-            //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
-
-            // Trace a ray to any other mesh
-            FHitResult OutHit;
-            FCollisionQueryParams CollisionParams;
-            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
-                if (OutHit.bBlockingHit && OutHit.GetActor()->GetName() == obstacleName) {
-                    FVector impactPoint = OutHit.ImpactPoint;
-                    return (dx+dy+dz) * (abs(dx)*(impactPoint.X-startPoint.X) + abs(dy)*(impactPoint.Y-startPoint.Y) +  abs(dz)*(impactPoint.Z-startPoint.Z)) / 100;
-                }
-            }
-
-            // No obstacle
-            return -1;
-        }
-
-        void addAnimationEffects(void)
-        {
             // Get motor values from dynamics
             _flightManager->getMotorValues(_motorvals);
 
@@ -185,13 +166,38 @@ class Vehicle {
             // Use the mean motor value to modulate the pitch and voume of the propeller sound
             _audioComponent->SetFloatParameter(FName("pitch"), smoothedMotorMean);
             _audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
-        }
-
-        void grabImages(void)
-        {
+        
             for (uint8_t i=0; i<_cameraCount; ++i) {
                 _cameras[i]->grabImage();
             }
+
+        } // updateKinematics
+
+        // Returns distance to collision with nearest mesh in a cardinal direction, or -1 if none encountered.
+        // See https://unrealcpp.com/line-trace-on-tick/
+        float distanceToObstacle(int8_t dx, int8_t dy, int8_t dz, const char * obstacleName="Landscape_0")
+        {
+            // Start at a point on the surface of the sphere enclosing the vehicle
+            FVector startPoint = _pawn->GetActorLocation() + _vehicleSize * FVector(dx, dy, dz);
+
+            // End at a point far from the sphere
+            float d = 1e6;
+            FVector endPoint = FVector(startPoint.X+dx*d, startPoint.Y+dy*d, startPoint.Z+dz*d);
+
+            //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
+
+            // Trace a ray to any other mesh
+            FHitResult OutHit;
+            FCollisionQueryParams CollisionParams;
+            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
+                if (OutHit.bBlockingHit && OutHit.GetActor()->GetName() == obstacleName) {
+                    FVector impactPoint = OutHit.ImpactPoint;
+                    return (dx+dy+dz) * (abs(dx)*(impactPoint.X-startPoint.X) + abs(dy)*(impactPoint.Y-startPoint.Y) +  abs(dz)*(impactPoint.Z-startPoint.Z)) / 100;
+                }
+            }
+
+            // No obstacle
+            return -1;
         }
 
     public:
@@ -298,6 +304,7 @@ class Vehicle {
                 _frameMeshComponent->SetSimulatePhysics(true);
 				_frameMeshComponent->SetEnableGravity(true);
                 _crashed = true;
+                _kinematicState = STATE_CRASHED;
             }
         }
 
@@ -326,6 +333,8 @@ class Vehicle {
         {
             _flightManager = flightManager;
 
+            _kinematicState = STATE_NOMAP;
+
             // Make sure a map has been selected
             FString mapName = _pawn->GetWorld()->GetMapName();
             _mapSelected = !mapName.Contains("Untitled");
@@ -335,6 +344,9 @@ class Vehicle {
                 error("NO MAP SELECTED");
                 return;
             }
+
+            // Start on ground
+            _kinematicState = STATE_ONGROUND;
 
             // No positive AGL yet
             _posagl = false;
@@ -370,19 +382,16 @@ class Vehicle {
 
         void Tick(float DeltaSeconds)
         {
+            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "ONGROUND", "LANDING", "FLYING"};
+            debugline("State: %s", states[_kinematicState]);
+
             if (!_mapSelected) return;
 
 			if (_crashed) return;
 
-            //if (_count++<10) return;
-
             checkAgl();
 
             updateKinematics();
-
-            addAnimationEffects();
-
-            grabImages();
         }
 
         void PostInitializeComponents()
