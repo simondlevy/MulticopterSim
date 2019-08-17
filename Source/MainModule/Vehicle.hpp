@@ -357,7 +357,7 @@ class Vehicle {
                     break;
 
                 case STATE_RUNNING:
-                    if (agl() <= 0) {
+                    if (agl() <= 0 && _dynamics->getState().pose.location[2] > 0.4) { // close to ground and descending
                         _dynamics->reset();
                     }
                     updateKinematics();
@@ -368,7 +368,8 @@ class Vehicle {
 
         float agl(void)
         {
-            return distanceToObstacle( 0,  0, -1);
+            float d = distanceToObstacle( 0,  0, -1);
+            return d < 0 ? 0 : d;
         }
 
         void PostInitializeComponents()
