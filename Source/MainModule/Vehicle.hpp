@@ -295,7 +295,7 @@ class Vehicle {
         {
             const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "RUNNING"};
             if (agl() < INF) {
-                debugline("AGL: %3.2f", agl());
+                debugline("AGL: %6.6f", agl());
             }
             else {
                 debugline("AGL: n/a");
@@ -319,9 +319,9 @@ class Vehicle {
         // Returns AGL when vehicle is level above ground, "infinity" otherwise
         float agl(void)
         {
-            // Start at a point slightly below the bottom of the box enclosing the vehicle
+            // Start at a point slightly above the bottom of the box enclosing the vehicle
             FVector startPoint = _pawn->GetActorLocation();
-            startPoint.Z = startPoint.Z + _vehicleBottom;
+            startPoint.Z = startPoint.Z + _vehicleBottom + 10; // cm
 
             // End at a point an "infinite" distance from the bottom
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-INF);
