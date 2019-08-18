@@ -89,8 +89,8 @@ class Vehicle {
         // For computing AGL
         float _vehicleBottom = 0;
 
-        // Useful constant for tracing rays
-        static constexpr float INF = 1e6;
+        // Useful approximation to infinity for tracing rays
+        static constexpr float INF = 1e9;
 
         // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
         void updateKinematics(void)
@@ -293,13 +293,12 @@ class Vehicle {
 
         void Tick(float DeltaSeconds)
         {
-            static bool reset;
             const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "READY", "RUNNING"};
             if (agl() == INF) {
-                debugline("State: %s  AGL: n/a  reset: %d", states[_kinematicState], reset);
+                //debug("State: %s  AGL: n/a", states[_kinematicState]);
             }
             else {
-                debugline("State: %s  AGL: %+3.2f   reset: %d", states[_kinematicState], agl(), reset);
+                //debug("State: %s  AGL: %3.2f", states[_kinematicState], agl());
             }
 
             switch (_kinematicState) {
@@ -317,12 +316,9 @@ class Vehicle {
                     break;
 
                 case STATE_RUNNING:
-                    if (agl() <= 0) {
+                    if (agl() <= 0.01 && _dynamics->getState().inertialVel[2] > 0) {
+                        debug("RESET");
                         _dynamics->reset();
-                        reset = true;
-                    }
-                    else {
-                        reset = false;
                     }
                     updateKinematics();
                     break;

@@ -414,6 +414,13 @@ class MultirotorDynamics {
         void reset(void)
         {
             _airborne = false;
+
+            _x[STATE_X_DOT]     = 0;
+            _x[STATE_Y_DOT]     = 0;
+            _x[STATE_Z_DOT]     = 0;
+            _x[STATE_PHI_DOT]   = 0;
+            _x[STATE_THETA_DOT] = 0;
+            _x[STATE_PSI_DOT]   = 0;
         }
 
         // Motor direction for animation
