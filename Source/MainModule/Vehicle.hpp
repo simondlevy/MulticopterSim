@@ -86,8 +86,9 @@ class Vehicle {
         TCircularBuffer<float> * _motorBuffer = NULL;
         uint32_t _bufferIndex = 0;
 
-        // Radius of sphere containing vehicle mesh
+        // For computing AGL and collisions
         float _vehicleSize = 0;
+        float _vehicleBottom = 0;
 
         static bool collided(float distance)
         {
@@ -154,7 +155,8 @@ class Vehicle {
             float d = 1e6;
             FVector endPoint = FVector(startPoint.X+dx*d, startPoint.Y+dy*d, startPoint.Z+dz*d);
 
-            //DrawDebugLine(_pawn->GetWorld(), startPoint, endPoint, FColor::Green, false, 1, 0, 0.5);
+            drawHorizontal(startPoint);
+            drawLine(startPoint, endPoint);
 
             // Trace a ray to any other mesh
             FHitResult OutHit;
@@ -374,8 +376,42 @@ class Vehicle {
 
         float agl(void)
         {
-            float d = distanceToObstacle( 0,  0, -1);
-            return d < 0 ? 0 : d;
+            const float Z_OFFSET = 2.5;
+            const float INF = 1e6;
+
+            // Start at a point slightly below the bottom of the box enclosing the vehicle
+            FVector startPoint = _pawn->GetActorLocation();
+            startPoint.Z = startPoint.Z + _vehicleBottom - Z_OFFSET;
+
+            drawHorizontal(startPoint);
+
+            // End at a point far from the bottom
+            FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-INF);
+
+            // Trace a ray to the landscape mesh
+            FHitResult OutHit;
+            FCollisionQueryParams CollisionParams;
+            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
+                if (OutHit.bBlockingHit && OutHit.GetActor()->GetName() == "Landscape_0") {
+                    drawLine(startPoint, endPoint);
+                    FVector impactPoint = OutHit.ImpactPoint;
+                    return (startPoint.Z - impactPoint.Z) / 100;
+                }
+            }
+
+            return INF;
+        }
+
+        void drawHorizontal(FVector point)
+        {
+            FVector lftPoint = FVector(point.X, point.Y-100, point.Z);
+            FVector rgtPoint = FVector(point.X, point.Y+100, point.Z);
+            drawLine(lftPoint, rgtPoint);
+        }
+
+        void drawLine(FVector point1, FVector point2)
+        {
+            DrawDebugLine(_pawn->GetWorld(), point1, point2, FColor::Green, false, .01, 0, 0.5);
         }
 
         void PostInitializeComponents()
@@ -388,6 +424,8 @@ class Vehicle {
             }
 
             _vehicleSize = _frameMesh->GetBounds().GetSphere().W;
+
+            _vehicleBottom = _frameMesh->GetBoundingBox().Min.Z;
         }
 
 
