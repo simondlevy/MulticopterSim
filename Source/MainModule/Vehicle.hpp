@@ -260,7 +260,7 @@ class Vehicle {
                 return;
             }
 
-            // Switch state to running and disable built-in physics
+            // Switch state to ready and disable built-in physics
             _kinematicState = STATE_RUNNING;
             _frameMeshComponent->SetSimulatePhysics(false);
 
@@ -294,11 +294,11 @@ class Vehicle {
         void Tick(float DeltaSeconds)
         {
             const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "RUNNING"};
-            if (agl() == INF) {
-                debugline("State: %s  AGL: n/a", states[_kinematicState]);
+            if (agl() < INF) {
+                debugline("AGL: %3.2f", agl());
             }
             else {
-                debugline("State: %s  AGL: %3.2f", states[_kinematicState], agl());
+                debugline("AGL: n/a");
             }
 
             switch (_kinematicState) {
@@ -308,7 +308,7 @@ class Vehicle {
                     break;
 
                 case STATE_RUNNING:
-                    if (agl() <= 0.01 && _dynamics->getState().inertialVel[2] > 0) { // near ground and descending
+                    if (agl() < 0.01 && _dynamics->getState().inertialVel[2] > 0) { // near ground and descending
                         _dynamics->reset();
                     }
                     updateKinematics();
@@ -319,11 +319,9 @@ class Vehicle {
         // Returns AGL when vehicle is level above ground, "infinity" otherwise
         float agl(void)
         {
-            const float Z_OFFSET = 2.5;
-
             // Start at a point slightly below the bottom of the box enclosing the vehicle
             FVector startPoint = _pawn->GetActorLocation();
-            startPoint.Z = startPoint.Z + _vehicleBottom - Z_OFFSET;
+            startPoint.Z = startPoint.Z + _vehicleBottom;
 
             // End at a point an "infinite" distance from the bottom
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-INF);
@@ -334,11 +332,15 @@ class Vehicle {
             return getImpactDistance(startPoint, endPoint, "Landscape_0");
         }
 
+        // Returns distance to mesh between points, or "infinity" if none found
         float getImpactDistance(FVector startPoint, FVector endPoint, const char * meshName)
         {
+            TArray<AActor *> actorsToIgnore;
+            actorsToIgnore.Add(_pawn);
+            FCollisionQueryParams traceParams(FName(TEXT("Distance Trace")), true, actorsToIgnore[0]);
+            traceParams.AddIgnoredActors(actorsToIgnore);
             FHitResult OutHit;
-            FCollisionQueryParams CollisionParams;
-            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
+            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, traceParams)) {
                 if (OutHit.bBlockingHit && OutHit.GetActor()->GetName() == meshName) {
                     FVector impactPoint = OutHit.ImpactPoint;
                     return (startPoint.Z - impactPoint.Z) / 100;
