@@ -162,7 +162,8 @@ class Vehicle {
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
                 if (OutHit.bBlockingHit && OutHit.GetActor()->GetName() == obstacleName) {
                     FVector impactPoint = OutHit.ImpactPoint;
-                    return (dx+dy+dz) * (abs(dx)*(impactPoint.X-startPoint.X) + abs(dy)*(impactPoint.Y-startPoint.Y) +  abs(dz)*(impactPoint.Z-startPoint.Z)) / 100;
+                    FVector diff = (dx+dy+dz) * FVector(dx,dy,dz).GetAbs() * (impactPoint-startPoint) / 100;
+                    return diff.X + diff.Y + diff.Z;
                 }
             }
 
