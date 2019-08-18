@@ -267,25 +267,19 @@ class MultirotorDynamics {
          */
         void init(const pose_t & pose, bool airborne=false)
         {
-            // Initialize state
+            // Initialize pose
             _x[STATE_X]         = pose.location[0];
-            _x[STATE_X_DOT]     = 0;
             _x[STATE_Y]         = pose.location[1];
-            _x[STATE_Y_DOT]     = 0;
             _x[STATE_Z]         = pose.location[2];
-            _x[STATE_Z_DOT]     = 0;
             _x[STATE_PHI]       = pose.rotation[0];
-            _x[STATE_PHI_DOT]   = 0;
             _x[STATE_THETA]     = pose.rotation[1];
-            _x[STATE_THETA_DOT] = 0;
             _x[STATE_PSI]       = pose.rotation[2];
-            _x[STATE_PSI_DOT]   = 0;
+
+            // Initialize velocities and airborne flag
+            reset(airborne);
 
             // Initialize inertial frame acceleration in NED coordinates
             bodyZToInertial(-g, pose.rotation, _inertialAccel);
-
-            // We can start on the ground (default) or in the air
-            _airborne = airborne;
         }
 
         /** 
@@ -408,12 +402,13 @@ class MultirotorDynamics {
         }
 
         /**
-         * Resets airborne flag to false.
-         * This should be done when a landing or collision is detected.
+         * Resets airborne flag to false and velocities to zero.
+         * Called by init(), and can also be called when a landing
+         * or collision is detected.
          */
-        void reset(void)
+        void reset(bool airborne=false)
         {
-            _airborne = false;
+            _airborne = airborne;
 
             _x[STATE_X_DOT]     = 0;
             _x[STATE_Y_DOT]     = 0;
