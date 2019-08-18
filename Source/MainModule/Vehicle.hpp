@@ -293,9 +293,8 @@ class Vehicle {
 
         void Tick(float DeltaSeconds)
         {
-            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "RUNNING"};
             if (agl() < INF) {
-                debugline("AGL: %6.6f", agl());
+                debugline("AGL: %3.2f", agl());
             }
             else {
                 debugline("AGL: n/a");
@@ -329,19 +328,23 @@ class Vehicle {
             drawHorizontal(startPoint);
             drawLine(startPoint, endPoint);
 
-            return getImpactDistance(startPoint, endPoint, "Landscape_0");
+            return getImpactDistance(startPoint, endPoint);
         }
 
-        // Returns distance to mesh between points, or "infinity" if none found
-        float getImpactDistance(FVector startPoint, FVector endPoint, const char * meshName)
+        // Returns distance to mesh between points, or "infinity" if none found.
+        // Eventually we may want to be able to specifiy an actor or actors to include or exclude
+        // (other than the vehicle itself).
+        float getImpactDistance(FVector startPoint, FVector endPoint)
         {
+            // Currently, the only collisions we ignore are with the pawn itself
             TArray<AActor *> actorsToIgnore;
             actorsToIgnore.Add(_pawn);
             FCollisionQueryParams traceParams(FName(TEXT("Distance Trace")), true, actorsToIgnore[0]);
             traceParams.AddIgnoredActors(actorsToIgnore);
+
             FHitResult OutHit;
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, traceParams)) {
-                if (OutHit.bBlockingHit && OutHit.GetActor()->GetName() == meshName) {
+                if (OutHit.bBlockingHit) {
                     FVector impactPoint = OutHit.ImpactPoint;
                     return (startPoint.Z - impactPoint.Z) / 100;
                 }
