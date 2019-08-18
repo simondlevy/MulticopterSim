@@ -325,8 +325,8 @@ class Vehicle {
             // End at a point an "infinite" distance from the bottom
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-INF);
 
-            drawHorizontal(startPoint);
-            drawLine(startPoint, endPoint);
+            //drawHorizontal(startPoint);
+            //drawLine(startPoint, endPoint);
 
             return getImpactDistance(startPoint, endPoint);
         }
