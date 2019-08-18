@@ -408,16 +408,12 @@ class MultirotorDynamics {
         }
 
         /**
-         * Resets airborne flag to false and velocities to zero.
+         * Resets airborne flag to false.
          * This should be done when a landing or collision is detected.
          */
         void reset(void)
         {
             _airborne = false;
-
-            _state.inertialVel[0] = 0;
-            _state.inertialVel[1] = 0;
-            _state.inertialVel[2] = 0;
         }
 
         // Motor direction for animation
