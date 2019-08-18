@@ -71,7 +71,6 @@ class Vehicle {
 
             STATE_NOMAP,
             STATE_CRASHED,
-            STATE_READY,
             STATE_RUNNING,
             STATE_COUNT
 
@@ -261,8 +260,9 @@ class Vehicle {
                 return;
             }
 
-            // Rady to fly
-            _kinematicState = STATE_READY;
+            // Switch state to running and disable built-in physics
+            _kinematicState = STATE_RUNNING;
+            _frameMeshComponent->SetSimulatePhysics(false);
 
             // Start the audio for the propellers Note that because the
             // Cue Asset is set to loop the sound, once we start playing the sound, it
@@ -293,12 +293,12 @@ class Vehicle {
 
         void Tick(float DeltaSeconds)
         {
-            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "READY", "RUNNING"};
+            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "RUNNING"};
             if (agl() == INF) {
-                //debug("State: %s  AGL: n/a", states[_kinematicState]);
+                debugline("State: %s  AGL: n/a", states[_kinematicState]);
             }
             else {
-                //debug("State: %s  AGL: %3.2f", states[_kinematicState], agl());
+                debugline("State: %s  AGL: %3.2f", states[_kinematicState], agl());
             }
 
             switch (_kinematicState) {
@@ -307,22 +307,12 @@ class Vehicle {
                 case STATE_CRASHED: 
                     break;
 
-                case STATE_READY:
-                    if (agl() > 0) {
-                        _kinematicState = STATE_RUNNING;
-                        _frameMeshComponent->SetSimulatePhysics(false);
-                    }
-                    updateKinematics();
-                    break;
-
                 case STATE_RUNNING:
-                    if (agl() <= 0.01 && _dynamics->getState().inertialVel[2] > 0) {
-                        debug("RESET");
+                    if (agl() <= 0.01 && _dynamics->getState().inertialVel[2] > 0) { // near ground and descending
                         _dynamics->reset();
                     }
                     updateKinematics();
                     break;
-
             } 
         }
 
