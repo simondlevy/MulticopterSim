@@ -359,7 +359,7 @@ class Vehicle {
                     break;
 
                 case STATE_RUNNING:
-                    if (agl() <= 0 && _dynamics->getState().pose.location[2] > 0.4) { // close to ground and descending
+                    if (agl() <= 0) {
                         _dynamics->reset();
                         reset = true;
                     }
