@@ -86,14 +86,11 @@ class Vehicle {
         TCircularBuffer<float> * _motorBuffer = NULL;
         uint32_t _bufferIndex = 0;
 
-        // For computing AGL and collisions
-        float _vehicleSize = 0;
+        // For computing AGL
         float _vehicleBottom = 0;
 
-        static bool collided(float distance)
-        {
-            return distance >= 0 && distance < .01;
-        }
+        // Useful constant for tracing rays
+        static constexpr float INF = 1e6;
 
         // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
         void updateKinematics(void)
@@ -143,35 +140,6 @@ class Vehicle {
             }
 
         } // updateKinematics
-
-        // Returns distance to collision with nearest mesh in a cardinal direction, or -1 if none encountered.
-        // See https://unrealcpp.com/line-trace-on-tick/
-        float distanceToObstacle(int8_t dx, int8_t dy, int8_t dz, const char * obstacleName="Landscape_0")
-        {
-            // Start at a point on the surface of the sphere enclosing the vehicle
-            FVector startPoint = _pawn->GetActorLocation() + _vehicleSize * FVector(dx, dy, dz);
-
-            // End at a point far from the sphere
-            float d = 1e6;
-            FVector endPoint = FVector(startPoint.X+dx*d, startPoint.Y+dy*d, startPoint.Z+dz*d);
-
-            drawHorizontal(startPoint);
-            drawLine(startPoint, endPoint);
-
-            // Trace a ray to any other mesh
-            FHitResult OutHit;
-            FCollisionQueryParams CollisionParams;
-            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
-                if (OutHit.bBlockingHit && OutHit.GetActor()->GetName() == obstacleName) {
-                    FVector impactPoint = OutHit.ImpactPoint;
-                    FVector diff = (dx+dy+dz) * FVector(dx,dy,dz).GetAbs() * (impactPoint-startPoint) / 100;
-                    return diff.X + diff.Y + diff.Z;
-                }
-            }
-
-            // No obstacle
-            return -1;
-        }
 
     public:
 
@@ -260,23 +228,6 @@ class Vehicle {
             _cameras[_cameraCount++] = camera;
         }
 
-        void checkCrash(void)
-        {
-            // Get distances from obstacles
-            float top = distanceToObstacle( 0,  0, +1);
-            float fwd = distanceToObstacle(+1,  0,  0);
-            float bak = distanceToObstacle(-1,  0,  0);
-            float rgt = distanceToObstacle( 0, +1,  0);
-            float lft = distanceToObstacle( 0, -1,  0);
-
-            if (collided(top) || collided(fwd) || collided(bak) || collided(rgt) || collided(lft)) {
-                _flightManager->stop();
-                _frameMeshComponent->SetSimulatePhysics(true);
-				_frameMeshComponent->SetEnableGravity(true);
-                _kinematicState = STATE_CRASHED;
-            }
-        }
-
         Vehicle(void)
         {
             _dynamics = NULL;
@@ -344,7 +295,12 @@ class Vehicle {
         {
             static bool reset;
             const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "READY", "RUNNING"};
-            debugline("State: %s  AGL: %+3.2f   reset: %d", states[_kinematicState], agl(), reset);
+            if (agl() == INF) {
+                debugline("State: %s  AGL: n/a  reset: %d", states[_kinematicState], reset);
+            }
+            else {
+                debugline("State: %s  AGL: %+3.2f   reset: %d", states[_kinematicState], agl(), reset);
+            }
 
             switch (_kinematicState) {
 
@@ -374,26 +330,30 @@ class Vehicle {
             } 
         }
 
+        // Returns AGL when vehicle is level above ground, "infinity" otherwise
         float agl(void)
         {
             const float Z_OFFSET = 2.5;
-            const float INF = 1e6;
 
             // Start at a point slightly below the bottom of the box enclosing the vehicle
             FVector startPoint = _pawn->GetActorLocation();
             startPoint.Z = startPoint.Z + _vehicleBottom - Z_OFFSET;
 
-            drawHorizontal(startPoint);
-
-            // End at a point far from the bottom
+            // End at a point an "infinite" distance from the bottom
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-INF);
 
-            // Trace a ray to the landscape mesh
+            drawHorizontal(startPoint);
+            drawLine(startPoint, endPoint);
+
+            return getImpactDistance(startPoint, endPoint, "Landscape_0");
+        }
+
+        float getImpactDistance(FVector startPoint, FVector endPoint, const char * meshName)
+        {
             FHitResult OutHit;
             FCollisionQueryParams CollisionParams;
             if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, CollisionParams)) {
-                if (OutHit.bBlockingHit && OutHit.GetActor()->GetName() == "Landscape_0") {
-                    drawLine(startPoint, endPoint);
+                if (OutHit.bBlockingHit && OutHit.GetActor()->GetName() == meshName) {
                     FVector impactPoint = OutHit.ImpactPoint;
                     return (startPoint.Z - impactPoint.Z) / 100;
                 }
@@ -423,7 +383,6 @@ class Vehicle {
                 _audioComponent->SetSound(_soundCue);
             }
 
-            _vehicleSize = _frameMesh->GetBounds().GetSphere().W;
 
             _vehicleBottom = _frameMesh->GetBoundingBox().Min.Z;
         }
