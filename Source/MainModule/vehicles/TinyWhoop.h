@@ -27,6 +27,7 @@ DECLARE_STATIC_MESH(FMotor4Statics, "TinyWhoop/Motor4.Motor4", Motor4Statics)
 DECLARE_STATIC_MESH(FBatteryStatics,"TinyWhoop/Battery.Battery", BatteryStatics)
 DECLARE_STATIC_MESH(FCameraMountStatics,  "TinyWhoop/CameraMount.CameraMount", CameraMountStatics)
 DECLARE_STATIC_MESH(FCameraStatics,  "TinyWhoop/Camera.Camera", CameraStatics)
+DECLARE_STATIC_MESH(FWhoopFCStatics,  "TinyWhoop/WhoopFC.WhoopFC", WhoopFCStatics)
 
 class TinyWhoop {
 
@@ -86,10 +87,11 @@ class TinyWhoop {
             addMotor(Motor3Statics.mesh.Get(), 3);
             addMotor(Motor4Statics.mesh.Get(), 4);
 
-            // Add battery and camera
+            // Add battery, camera, etc.
             vehicle.addMesh(BatteryStatics.mesh.Get(), "BatteryMesh");
             vehicle.addMesh(CameraMountStatics.mesh.Get(), "CameraMountMesh");
             vehicle.addMesh(CameraStatics.mesh.Get(), "CameraMesh");
+            vehicle.addMesh(WhoopFCStatics.mesh.Get(), "WhoopFCMesh");
 
             // Flight manager will be set in BeginPlay()
             _flightManager = NULL;
