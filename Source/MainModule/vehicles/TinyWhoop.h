@@ -35,11 +35,11 @@ class TinyWhoop {
         MultirotorDynamics::Parameters params = MultirotorDynamics::Parameters(
 
                 // Estimated
-                5.E-06, // b
-                2.E-06, // d
+                5.E-05, // b
+                2.E-05, // d
 
-                1.380,  // m
-                0.350,  // l
+                0.028,  // m (kg)
+                0.0275, // l (meters)
 
                 // Estimated
                 2,      // Ix

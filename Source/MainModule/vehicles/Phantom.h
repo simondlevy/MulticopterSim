@@ -33,8 +33,8 @@ class Phantom {
                 2.E-06, // d
 
                 // https://www.dji.com/phantom-4/info
-                1.380,  // m
-                0.350,  // l
+                1.380,  // m (kg)
+                0.350,  // l (meters)
 
                 // Estimated
                 2,      // Ix
