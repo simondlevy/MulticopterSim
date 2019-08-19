@@ -86,9 +86,9 @@ class Phantom {
             FThreadedManager::stopThread((FThreadedManager **)&_flightManager);
         }
 
-        void Tick(void)
+        void Tick(float DeltaSeconds)
         {
-            vehicle.Tick();
+            vehicle.Tick(DeltaSeconds);
         }
 
         void addCamera(Camera * camera)
