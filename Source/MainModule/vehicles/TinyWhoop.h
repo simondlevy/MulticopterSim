@@ -15,10 +15,8 @@
 
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "TinyWhoop/Frame.Frame", FrameStatics)
-DECLARE_STATIC_MESH(FProp1Statics, "TinyWhoop/Prop1.Prop1", Prop1Statics)
-DECLARE_STATIC_MESH(FProp2Statics, "TinyWhoop/Prop2.Prop2", Prop2Statics)
-DECLARE_STATIC_MESH(FProp3Statics, "TinyWhoop/Prop3.Prop3", Prop3Statics)
-DECLARE_STATIC_MESH(FProp4Statics, "TinyWhoop/Prop4.Prop4", Prop4Statics)
+DECLARE_STATIC_MESH(FPropCWStatics, "TinyWhoop/PropCW.PropCW", PropCWStatics)
+DECLARE_STATIC_MESH(FPropCCWStatics, "TinyWhoop/PropCCW.PropCCW", PropCCWStatics)
 DECLARE_STATIC_MESH(FMotor1Statics, "TinyWhoop/Motor1.Motor1", Motor1Statics)
 DECLARE_STATIC_MESH(FMotor2Statics, "TinyWhoop/Motor2.Motor2", Motor2Statics)
 DECLARE_STATIC_MESH(FMotor3Statics, "TinyWhoop/Motor3.Motor3", Motor3Statics)
@@ -79,10 +77,10 @@ class TinyWhoop {
             vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
 
             // Add propellers
-            vehicle.addProp(Prop1Statics.mesh.Get());
-            vehicle.addProp(Prop2Statics.mesh.Get());
-            vehicle.addProp(Prop3Statics.mesh.Get());
-            vehicle.addProp(Prop4Statics.mesh.Get());
+            vehicle.addProp(PropCCWStatics.mesh.Get(), +.095, +.0725);
+            vehicle.addProp(PropCCWStatics.mesh.Get(), +.005, -.02);
+            vehicle.addProp(PropCWStatics.mesh.Get(),  +.015, -.02);
+            vehicle.addProp(PropCWStatics.mesh.Get(),  -.075, +.0725);
 
             // Add motor barrels
             addMotor(Motor1Statics.mesh.Get(), 1);
