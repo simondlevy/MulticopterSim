@@ -15,11 +15,15 @@
 #include "GameFramework/Pawn.h"
 
 // Structures to hold static mesh initializations
-DECLARE_STATIC_MESH(FFrameStatics, "TinyWhoop/Frame.Frame", FrameStatics)
-DECLARE_STATIC_MESH(FProp1Statics, "TinyWhoop/Prop1.Prop1", Prop1Statics)
-DECLARE_STATIC_MESH(FProp2Statics, "TinyWhoop/Prop2.Prop2", Prop2Statics)
-DECLARE_STATIC_MESH(FProp3Statics, "TinyWhoop/Prop3.Prop3", Prop3Statics)
-DECLARE_STATIC_MESH(FProp4Statics, "TinyWhoop/Prop4.Prop4", Prop4Statics)
+DECLARE_STATIC_MESH(FFrameStatics,  "TinyWhoop/Frame.Frame",   FrameStatics)
+DECLARE_STATIC_MESH(FProp1Statics,  "TinyWhoop/Prop1.Prop1",   Prop1Statics)
+DECLARE_STATIC_MESH(FProp2Statics,  "TinyWhoop/Prop2.Prop2",   Prop2Statics)
+DECLARE_STATIC_MESH(FProp3Statics,  "TinyWhoop/Prop3.Prop3",   Prop3Statics)
+DECLARE_STATIC_MESH(FProp4Statics,  "TinyWhoop/Prop4.Prop4",   Prop4Statics)
+DECLARE_STATIC_MESH(FMotor1Statics, "TinyWhoop/Motor1.Motor1", Motor1Statics)
+DECLARE_STATIC_MESH(FMotor2Statics, "TinyWhoop/Motor2.Motor2", Motor2Statics)
+DECLARE_STATIC_MESH(FMotor3Statics, "TinyWhoop/Motor3.Motor3", Motor3Statics)
+DECLARE_STATIC_MESH(FMotor4Statics, "TinyWhoop/Motor4.Motor4", Motor4Statics)
 
 class TinyWhoop {
 
@@ -52,6 +56,14 @@ class TinyWhoop {
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
+        // Adds simulated motor barrel to frame
+        void addMotor(UStaticMesh * motorMesh, uint8_t id)
+        {
+            char meshName[10];
+            SPRINTF(meshName, "Motor%d", id);
+            vehicle.addMesh(motorMesh, meshName);
+        }
+
     public:
 
         void build(APawn * pawn)
@@ -67,6 +79,13 @@ class TinyWhoop {
             vehicle.addProp(Prop2Statics.mesh.Get());
             vehicle.addProp(Prop3Statics.mesh.Get());
             vehicle.addProp(Prop4Statics.mesh.Get());
+
+            // Add motor barrels
+            addMotor(Motor1Statics.mesh.Get(), 1);
+            addMotor(Motor2Statics.mesh.Get(), 2);
+            addMotor(Motor3Statics.mesh.Get(), 3);
+            addMotor(Motor4Statics.mesh.Get(), 4);
+
 
             _flightManager = NULL;
         }
