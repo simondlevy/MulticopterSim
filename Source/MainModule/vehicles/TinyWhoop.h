@@ -15,15 +15,17 @@
 #include "GameFramework/Pawn.h"
 
 // Structures to hold static mesh initializations
-DECLARE_STATIC_MESH(FFrameStatics,  "TinyWhoop/Frame.Frame",   FrameStatics)
-DECLARE_STATIC_MESH(FProp1Statics,  "TinyWhoop/Prop1.Prop1",   Prop1Statics)
-DECLARE_STATIC_MESH(FProp2Statics,  "TinyWhoop/Prop2.Prop2",   Prop2Statics)
-DECLARE_STATIC_MESH(FProp3Statics,  "TinyWhoop/Prop3.Prop3",   Prop3Statics)
-DECLARE_STATIC_MESH(FProp4Statics,  "TinyWhoop/Prop4.Prop4",   Prop4Statics)
+DECLARE_STATIC_MESH(FFrameStatics, "TinyWhoop/Frame.Frame", FrameStatics)
+DECLARE_STATIC_MESH(FProp1Statics, "TinyWhoop/Prop1.Prop1", Prop1Statics)
+DECLARE_STATIC_MESH(FProp2Statics, "TinyWhoop/Prop2.Prop2", Prop2Statics)
+DECLARE_STATIC_MESH(FProp3Statics, "TinyWhoop/Prop3.Prop3", Prop3Statics)
+DECLARE_STATIC_MESH(FProp4Statics, "TinyWhoop/Prop4.Prop4", Prop4Statics)
 DECLARE_STATIC_MESH(FMotor1Statics, "TinyWhoop/Motor1.Motor1", Motor1Statics)
 DECLARE_STATIC_MESH(FMotor2Statics, "TinyWhoop/Motor2.Motor2", Motor2Statics)
 DECLARE_STATIC_MESH(FMotor3Statics, "TinyWhoop/Motor3.Motor3", Motor3Statics)
 DECLARE_STATIC_MESH(FMotor4Statics, "TinyWhoop/Motor4.Motor4", Motor4Statics)
+DECLARE_STATIC_MESH(FBatteryStatics,"TinyWhoop/Battery.Battery", BatteryStatics)
+DECLARE_STATIC_MESH(FCameraMountStatics,  "TinyWhoop/CameraMount.CameraMount", CameraMountStatics)
 
 class TinyWhoop {
 
@@ -68,11 +70,8 @@ class TinyWhoop {
 
         void build(APawn * pawn)
         {
-            //vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
+            // Build the frame
             vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
-
-            float y14 = +.0725;
-            float y23 = -.0200;
 
             // Add propellers
             vehicle.addProp(Prop1Statics.mesh.Get());
@@ -86,7 +85,11 @@ class TinyWhoop {
             addMotor(Motor3Statics.mesh.Get(), 3);
             addMotor(Motor4Statics.mesh.Get(), 4);
 
+            // Add battery and camera
+            vehicle.addMesh(BatteryStatics.mesh.Get(), "BatteryMesh");
+            vehicle.addMesh(CameraMountStatics.mesh.Get(), "CameraMountMesh");
 
+            // Flight manager will be set in BeginPlay()
             _flightManager = NULL;
         }
 
