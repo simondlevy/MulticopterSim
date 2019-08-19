@@ -26,10 +26,7 @@ Content/Flying/Maps/Goshawk.umap
 Content/Flying/Maps/Goshawk_BuiltData.uasset
 Content/Flying/Meshes/Goshawk/
 Content/Flying/Meshes/Target/Frame.uasset
-Content/Flying/Meshes/Target/Prop1.uasset
-Content/Flying/Meshes/Target/Prop2.uasset
-Content/Flying/Meshes/Target/Prop3.uasset
-Content/Flying/Meshes/Target/Prop4.uasset
+Content/Flying/Meshes/Target/Prop.uasset
 Content/Realistic_Dynamic_SkySystem/
 Content/UltraDynamicSky/
 RDS_System.png

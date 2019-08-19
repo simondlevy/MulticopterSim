@@ -209,6 +209,17 @@ class Vehicle {
             _propellerMeshComponents[_propCount++] = pMeshComponent;
         }
 
+        // z is set in editor
+        void addProp(UStaticMesh * propMesh, float x, float y)
+        {
+            UStaticMeshComponent * pMeshComponent = 
+                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", _propCount, "Mesh"));
+            pMeshComponent->SetStaticMesh(propMesh);
+            pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
+            pMeshComponent->AddRelativeLocation(FVector(x,y,0)*100); // m => cm
+            _propellerMeshComponents[_propCount++] = pMeshComponent;
+        }
+
         void rotateProps(int8_t * motorDirections, uint8_t motorCount)
         {
             static float rotation;
