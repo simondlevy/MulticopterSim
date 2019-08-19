@@ -38,7 +38,7 @@ void AHackflightPhantomPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 // Called automatically on main thread
 void AHackflightPhantomPawn::Tick(float DeltaSeconds)
 {
-    _phantom.Tick();
+    _phantom.Tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
 }

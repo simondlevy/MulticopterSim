@@ -38,7 +38,7 @@ void AHackflightTinyWhoopPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 // Called automatically on main thread
 void AHackflightTinyWhoopPawn::Tick(float DeltaSeconds)
 {
-    _tinyWhoop.Tick();
+    _tinyWhoop.Tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
 }
