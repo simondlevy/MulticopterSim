@@ -1,14 +1,13 @@
-/*
- Helper class for pawns using DJI TinyWhoop frame
+/* Helper class for pawns using DJI TinyWhoop frame 
  *
- * Copyright (C) 2019 Simon D. Levy
+ * Copyright (C) 2019 Simon D. Levy 
  *
- * MIT License
- */
+ * MIT License 
+ */ 
 
-#pragma once
+#pragma once 
 
-#include "../MainModule/Vehicle.hpp"
+#include "../MainModule/Vehicle.hpp" 
 #include "../MainModule/dynamics/QuadXAP.hpp"
 
 #include "CoreMinimal.h"
@@ -27,7 +26,11 @@ DECLARE_STATIC_MESH(FMotor4Statics, "TinyWhoop/Motor4.Motor4", Motor4Statics)
 DECLARE_STATIC_MESH(FBatteryStatics,"TinyWhoop/Battery.Battery", BatteryStatics)
 DECLARE_STATIC_MESH(FCameraMountStatics,  "TinyWhoop/CameraMount.CameraMount", CameraMountStatics)
 DECLARE_STATIC_MESH(FCameraStatics,  "TinyWhoop/Camera.Camera", CameraStatics)
-DECLARE_STATIC_MESH(FWhoopFCStatics,  "TinyWhoop/WhoopFC.WhoopFC", WhoopFCStatics)
+DECLARE_STATIC_MESH(FWhoopFCStatics, "TinyWhoop/WhoopFC.WhoopFC", WhoopFCStatics)
+DECLARE_STATIC_MESH(FScrew1Statics,  "TinyWhoop/Screw1.Screw1", Screw1Statics)
+DECLARE_STATIC_MESH(FScrew2Statics,  "TinyWhoop/Screw2.Screw2", Screw2Statics)
+DECLARE_STATIC_MESH(FScrew3Statics,  "TinyWhoop/Screw3.Screw3", Screw3Statics)
+DECLARE_STATIC_MESH(FScrew4Statics,  "TinyWhoop/Screw4.Screw4", Screw4Statics)
 
 class TinyWhoop {
 
@@ -92,6 +95,10 @@ class TinyWhoop {
             vehicle.addMesh(CameraMountStatics.mesh.Get(), "CameraMountMesh");
             vehicle.addMesh(CameraStatics.mesh.Get(), "CameraMesh");
             vehicle.addMesh(WhoopFCStatics.mesh.Get(), "WhoopFCMesh");
+            vehicle.addMesh(Screw1Statics.mesh.Get(), "Screw1Mesh");
+            vehicle.addMesh(Screw2Statics.mesh.Get(), "Screw2Mesh");
+            vehicle.addMesh(Screw3Statics.mesh.Get(), "Screw3Mesh");
+            vehicle.addMesh(Screw4Statics.mesh.Get(), "Screw4Mesh");
 
             // Flight manager will be set in BeginPlay()
             _flightManager = NULL;
