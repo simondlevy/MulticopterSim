@@ -71,7 +71,8 @@ class Vehicle {
 
             STATE_NOMAP,
             STATE_CRASHED,
-            STATE_RUNNING,
+            STATE_ONGROUND,
+            STATE_FLYING,
             STATE_COUNT
 
         } kinematicState_t;
@@ -104,7 +105,10 @@ class Vehicle {
             _pawn->SetActorLocation(_startLocation + 
                     FVector(pose.location[0], pose.location[1], -pose.location[2]) * 100);  // NED => ENU
             _pawn->SetActorRotation(FMath::RadiansToDegrees(FRotator(pose.rotation[1], pose.rotation[2], pose.rotation[0])));
+        }
 
+        void animatePropellers(void)
+        {
             // Get motor values from dynamics
             _flightManager->getMotorValues(_motorvals);
 
@@ -263,7 +267,7 @@ class Vehicle {
             }
 
             // Switch state to ready and disable built-in physics
-            _kinematicState = STATE_RUNNING;
+            _kinematicState = STATE_ONGROUND;
             _frameMeshComponent->SetSimulatePhysics(false);
 
             // Start the audio for the propellers Note that because the
@@ -291,12 +295,9 @@ class Vehicle {
 
         void Tick(float DeltaSeconds)
         {
-            if (agl() < INF) {
-                debugline("AGL: %3.2f", agl());
-            }
-            else {
-                debugline("AGL: n/a");
-            }
+            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "ONGROUND", "FLYING"};
+            char tmp[10]; if (agl() < INF) SPRINTF(tmp, "%3.2f", agl()); else SPRINTF(tmp, "n/a");
+            debugline("State: %s   AGL: %s   Airborne: %d", states[_kinematicState], tmp, _dynamics->getState().airborne);
 
             switch (_kinematicState) {
 
@@ -304,13 +305,30 @@ class Vehicle {
                 case STATE_CRASHED: 
                     break;
 
-                case STATE_RUNNING:
-                    if (agl() < 0.01 && _dynamics->getState().inertialVel[2] > 0) { // near ground and descending
-                        _dynamics->reset();
+                case STATE_ONGROUND:
+                    if (verticalVelocity() < 0) { // climbing
+                        _kinematicState = STATE_FLYING;
+                        updateKinematics();
                     }
-                    updateKinematics();
+                    animatePropellers();
+                    break;
+
+                case STATE_FLYING:
+                    if (agl() == INF && verticalVelocity() > 0) { // on ground and descending
+                        _dynamics->reset();
+                        _kinematicState = STATE_ONGROUND;
+                    }
+                    else {
+                        updateKinematics();
+                        animatePropellers();
+                    }
                     break;
             } 
+        }
+
+        double verticalVelocity(void)
+        {
+            return _dynamics->getState().inertialVel[2];
         }
 
         // Returns AGL when vehicle is level above ground, "infinity" otherwise

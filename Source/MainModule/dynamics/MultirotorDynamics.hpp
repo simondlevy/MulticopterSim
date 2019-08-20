@@ -114,6 +114,8 @@ class MultirotorDynamics {
 
             pose_t pose;
 
+            bool airborne;
+
         } state_t;
 
     private:
@@ -123,9 +125,6 @@ class MultirotorDynamics {
 
         // Inertial-frame acceleration
         double _inertialAccel[3] = {};
-
-        // Status flags
-        bool _airborne = false; // vertical acceleration has overcome gravity
 
         // y = Ax + b helper for frame-of-reference conversion methods
         static void dot(double A[3][3], double x[3], double y[3])
@@ -299,12 +298,12 @@ class MultirotorDynamics {
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + g;
 
-            if (!_airborne) {
-                _airborne = netz < 0;
+            if (!_state.airborne) {
+                _state.airborne = netz < 0;
             }
 
             // Once airborne, we can update dynamics
-            if (_airborne) {
+            if (_state.airborne) {
 
                 // Compute the state derivatives using Equation 12
                 computeStateDerivative(accelNED, netz, _x[STATE_PHI_DOT], _x[STATE_THETA_DOT], _x[STATE_PSI_DOT]);
@@ -409,7 +408,7 @@ class MultirotorDynamics {
          */
         void reset(bool airborne=false)
         {
-            _airborne = airborne;
+            _state.airborne = airborne;
 
             _x[STATE_X_DOT]     = 0;
             _x[STATE_Y_DOT]     = 0;
