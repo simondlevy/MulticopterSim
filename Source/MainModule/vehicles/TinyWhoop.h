@@ -77,8 +77,11 @@ class TinyWhoop {
             vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
 
             // Add propellers
-            vehicle.addProp(PropCCWStatics.mesh.Get(), -.05, -.02);
-            vehicle.addProp(PropCCWStatics.mesh.Get(), +.04, +.07);
+            float x13 = -.0470, x24 = +.0430, y14 = -.020, y23 = +.070;
+            vehicle.addProp(PropCCWStatics.mesh.Get(), x13, y14);
+            vehicle.addProp(PropCCWStatics.mesh.Get(), x24, y23);
+            vehicle.addProp(PropCCWStatics.mesh.Get(), x13, y23);
+            vehicle.addProp(PropCCWStatics.mesh.Get(), x24, y14);
 
             // Add motor barrels
             addMotor(Motor1Statics.mesh.Get(), 1);
