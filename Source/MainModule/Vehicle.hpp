@@ -91,19 +91,19 @@ class Vehicle {
         // Useful approximation to infinity for tracing rays
         static constexpr float INF = 1e9;
 
+        // Starting location, for kinematic offset
+        FVector _startLocation = {};
+
         // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
         void updateKinematics(void)
         {
              // Get vehicle pose from dynamics
             MultirotorDynamics::pose_t pose = _dynamics->getPose();
 
-            // Convert pose to UE4 location, rotator
-            FVector location = FVector(pose.location[0], pose.location[1], -pose.location[2]) * 100;  // NED => ENU
-            FRotator rotation = FMath::RadiansToDegrees(FRotator(pose.rotation[1], pose.rotation[2], pose.rotation[0]));
-
             // Set vehicle pose in animation
-            _pawn->SetActorLocation(location);
-            _pawn->SetActorRotation(rotation);
+            _pawn->SetActorLocation(_startLocation + 
+                    FVector(pose.location[0], pose.location[1], -pose.location[2]) * 100);  // NED => ENU
+            _pawn->SetActorRotation(FMath::RadiansToDegrees(FRotator(pose.rotation[1], pose.rotation[2], pose.rotation[0])));
 
             // Get motor values from dynamics
             _flightManager->getMotorValues(_motorvals);
@@ -215,7 +215,7 @@ class Vehicle {
         {
             static float rotation;
             for (uint8_t i=0; i<motorCount; ++i) {
-                _propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirections[i] * 10 /*200*/, 0));
+                _propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirections[i]*200, 0));
             }
             rotation++;
         }
@@ -274,23 +274,19 @@ class Vehicle {
             // Create circular queue for moving-average of motor values
             _motorBuffer = new TCircularBuffer<float>(20);
 
-            // Get vehicle ground-truth location and rotation to initialize flight manager, now and after any crashes
-            FVector  startLocation = _pawn->GetActorLocation();
+            // Get vehicle ground-truth location for kinematic offset
+            _startLocation = _pawn->GetActorLocation();
+
+            // Get vehicle ground-truth rotation to initialize flight manager
             FRotator startRotation = _pawn->GetActorRotation(); 
-            MultirotorDynamics::pose_t pose = {};
 
-            // Convert ENU centimeters => NED meters
-            pose.location[0] =  startLocation.X / 100;
-            pose.location[1] =  startLocation.Y / 100;
-            pose.location[2] = -startLocation.Z / 100;
+            // Initialize dynamics with initial rotation
+            double rotation[3] = {
+                FMath::DegreesToRadians(startRotation.Roll),
+                FMath::DegreesToRadians(startRotation.Pitch),
+                FMath::DegreesToRadians(startRotation.Yaw)};
 
-            // Convert degrees => radians
-            pose.rotation[0] = FMath::DegreesToRadians(startRotation.Roll);
-            pose.rotation[1] = FMath::DegreesToRadians(startRotation.Pitch);
-            pose.rotation[2] = FMath::DegreesToRadians(startRotation.Yaw);
-
-            // Initialize dynamics with initial pose
-            _dynamics->init(pose);
+            _dynamics->init(rotation);
         }
 
         void Tick(float DeltaSeconds)

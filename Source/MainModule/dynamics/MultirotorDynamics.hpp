@@ -262,24 +262,25 @@ class MultirotorDynamics {
         /** 
          * Initializes kinematic pose, with flag for whether we're airbone (helps with testing gravity).
          *
-         * @param pose location X,Y,Z; rotation phi,theta,psi
+         * @param rotation initial rotation
          * @param airborne allows us to start on the ground (default) or in the air (e.g., gravity test)
          */
-        void init(const pose_t & pose, bool airborne=false)
+        void init(double rotation[3], bool airborne=false)
         {
-            // Initialize pose
-            _x[STATE_X]         = pose.location[0];
-            _x[STATE_Y]         = pose.location[1];
-            _x[STATE_Z]         = pose.location[2];
-            _x[STATE_PHI]       = pose.rotation[0];
-            _x[STATE_THETA]     = pose.rotation[1];
-            _x[STATE_PSI]       = pose.rotation[2];
+            // Always start at location (0,0,0)
+            _x[STATE_X]         = 0;
+            _x[STATE_Y]         = 0;
+            _x[STATE_Z]         = 0;
+
+            _x[STATE_PHI]       = rotation[0];
+            _x[STATE_THETA]     = rotation[1];
+            _x[STATE_PSI]       = rotation[2];
 
             // Initialize velocities and airborne flag
             reset(airborne);
 
             // Initialize inertial frame acceleration in NED coordinates
-            bodyZToInertial(-g, pose.rotation, _inertialAccel);
+            bodyZToInertial(-g, rotation, _inertialAccel);
         }
 
         /** 
