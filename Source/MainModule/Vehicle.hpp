@@ -295,9 +295,7 @@ class Vehicle {
 
         void Tick(float DeltaSeconds)
         {
-            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "ONGROUND", "FLYING"};
-            char tmp[10]; if (agl() < INF) SPRINTF(tmp, "%3.2f", agl()); else SPRINTF(tmp, "n/a");
-            debugline("State: %s   AGL: %s   Airborne: %d", states[_kinematicState], tmp, _dynamics->getState().airborne);
+            //report();
 
             switch (_kinematicState) {
 
@@ -324,6 +322,13 @@ class Vehicle {
                     }
                     break;
             } 
+        }
+
+        void report(void)
+        {
+            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "ONGROUND", "FLYING"};
+            char tmp[10]; if (agl() < INF) SPRINTF(tmp, "%3.2f", agl()); else SPRINTF(tmp, "n/a");
+            debugline("State: %s   AGL: %s   Airborne: %d", states[_kinematicState], tmp, _dynamics->getState().airborne);
         }
 
         double verticalVelocity(void)

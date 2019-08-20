@@ -299,6 +299,8 @@ class MultirotorDynamics {
             double netz = accelNED[2] + g;
 
             if (!_state.airborne) {
+                static int count;
+                debugline("GOING AIRBORNE: %d", count++);
                 _state.airborne = netz < 0;
             }
 
