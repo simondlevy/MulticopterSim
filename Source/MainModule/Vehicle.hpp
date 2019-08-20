@@ -44,6 +44,12 @@ class Vehicle {
 
     private: 
         
+        // Useful approximation to infinity for tracing rays
+        static constexpr float INF = 1e9;
+
+        // Time during which velocity will be set to zero during final phase oflanding
+        static constexpr float SETTLING_TIME = 1.0;
+
         // UE4 objects that must be built statically
         APawn                    * _pawn;
         UStaticMesh              * _frameMesh;
@@ -73,6 +79,7 @@ class Vehicle {
             STATE_CRASHED,
             STATE_ONGROUND,
             STATE_FLYING,
+            STATE_SETTLING,
             STATE_COUNT
 
         } kinematicState_t;
@@ -89,8 +96,8 @@ class Vehicle {
         // For computing AGL
         float _vehicleBottom = 0;
 
-        // Useful approximation to infinity for tracing rays
-        static constexpr float INF = 1e9;
+        // Countdown for zeroing-out velocity during final phase of landing
+        float _settlingCountdown = 0;
 
         // Starting location, for kinematic offset
         FVector _startLocation = {};
@@ -295,7 +302,7 @@ class Vehicle {
 
         void Tick(float DeltaSeconds)
         {
-            //report();
+            report();
 
             switch (_kinematicState) {
 
@@ -304,7 +311,7 @@ class Vehicle {
                     break;
 
                 case STATE_ONGROUND:
-                    if (verticalVelocity() < 0) { // climbing
+                    if (verticalVelocity() < 0) {                   // climbing
                         _kinematicState = STATE_FLYING;
                         updateKinematics();
                     }
@@ -312,13 +319,23 @@ class Vehicle {
                     break;
 
                 case STATE_FLYING:
-                    if (agl() == INF && verticalVelocity() > 0) { // on ground and descending
-                        _dynamics->reset();
-                        _kinematicState = STATE_ONGROUND;
+                    if (agl() == INF && verticalVelocity() > 0) {   // on ground and descending
+                        _kinematicState = STATE_SETTLING;
+                        _settlingCountdown = SETTLING_TIME;
                     }
                     else {
                         updateKinematics();
                         animatePropellers();
+                    }
+                    break;
+
+                case STATE_SETTLING:
+                    if (_settlingCountdown > 0) {                   // dynamics still settling
+                        _dynamics->reset();
+                        _settlingCountdown -= DeltaSeconds;
+                    }
+                    else {                                          // dynamics done settling
+                        _kinematicState = STATE_ONGROUND;
                     }
                     break;
             } 
@@ -326,7 +343,7 @@ class Vehicle {
 
         void report(void)
         {
-            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "ONGROUND", "FLYING"};
+            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "ONGROUND", "FLYING", "SETTLING"};
             char tmp[10]; if (agl() < INF) SPRINTF(tmp, "%3.2f", agl()); else SPRINTF(tmp, "n/a");
             debugline("State: %s   AGL: %s   Airborne: %d", states[_kinematicState], tmp, _dynamics->getState().airborne);
         }
