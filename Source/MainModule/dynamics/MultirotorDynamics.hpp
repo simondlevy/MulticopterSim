@@ -302,8 +302,6 @@ class MultirotorDynamics {
          */
         void update(double dt)
         {
-            debugline("Airborne: %d  AGL: %3.2f", _airborne, _agl);
-
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
@@ -313,10 +311,12 @@ class MultirotorDynamics {
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + g;
 
-            // If we're airborne, check for "negative" AGL (i.e., on ground)
+            debugline("Airborne: %d  AGL: %3.2f    velz: %+3.2f", _airborne, _agl, _x[STATE_Z_DOT]);
+
+            // If we're airborne, check for low AGL on descent
             if (_airborne) {
 
-                if (_agl < 0) {
+                if (_agl <= 0 && _x[STATE_Z_DOT] > 0) {
                     _airborne = false;
                 }
             }
