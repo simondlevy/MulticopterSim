@@ -72,19 +72,8 @@ class Vehicle {
         // Threaded worker for running flight control
         class FFlightManager * _flightManager = NULL;
 
-        // States
-        typedef enum {
-
-            STATE_NOMAP,
-            STATE_CRASHED,
-            STATE_ONGROUND,
-            STATE_FLYING,
-            STATE_SETTLING,
-            STATE_COUNT
-
-        } kinematicState_t;
-
-        kinematicState_t _kinematicState = STATE_NOMAP;
+        // Have to seledct a map before flying
+        bool _mapSelected = false;
  
         // Motor values for animation/sound
         float  _motorvals[FFlightManager::MAX_MOTORS] = {};
@@ -265,16 +254,16 @@ class Vehicle {
         {
             _flightManager = flightManager;
 
-            _kinematicState = STATE_NOMAP;
+            _mapSelected = false;
 
             // Make sure a map has been selected
             if (_pawn->GetWorld()->GetMapName().Contains("Untitled")) {
                 error("NO MAP SELECTED");
                 return;
             }
+            _mapSelected = true;
 
-            // Switch state to ready and disable built-in physics
-            _kinematicState = STATE_ONGROUND;
+            // Disable built-in physics
             _frameMeshComponent->SetSimulatePhysics(false);
 
             // Start the audio for the propellers Note that because the
@@ -302,55 +291,14 @@ class Vehicle {
 
         void Tick(float DeltaSeconds)
         {
-            report();
+            if (_mapSelected) {
 
-            switch (_kinematicState) {
+                updateKinematics();
 
-                case STATE_NOMAP:
-                case STATE_CRASHED: 
-                    break;
+                animatePropellers();
 
-                case STATE_ONGROUND:
-                    if (verticalVelocity() < 0) {                   // climbing
-                        _kinematicState = STATE_FLYING;
-                        updateKinematics();
-                    }
-                    animatePropellers();
-                    break;
-
-                case STATE_FLYING:
-                    if (agl() == INF && verticalVelocity() > 0) {   // on ground and descending
-                        _kinematicState = STATE_SETTLING;
-                        _settlingCountdown = SETTLING_TIME;
-                    }
-                    else {
-                        updateKinematics();
-                        animatePropellers();
-                    }
-                    break;
-
-                case STATE_SETTLING:
-                    if (_settlingCountdown > 0) {                   // dynamics still settling
-                        _dynamics->reset();
-                        _settlingCountdown -= DeltaSeconds;
-                    }
-                    else {                                          // dynamics done settling
-                        _kinematicState = STATE_ONGROUND;
-                    }
-                    break;
-            } 
-        }
-
-        void report(void)
-        {
-            const char * states[STATE_COUNT] = {"NOMAP", "CRASHED", "ONGROUND", "FLYING", "SETTLING"};
-            char tmp[10]; if (agl() < INF) SPRINTF(tmp, "%3.2f", agl()); else SPRINTF(tmp, "n/a");
-            debugline("State: %s   AGL: %s   Airborne: %d", states[_kinematicState], tmp, _dynamics->getState().airborne);
-        }
-
-        double verticalVelocity(void)
-        {
-            return _dynamics->getState().inertialVel[2];
+                _dynamics->setAgl(agl());
+            }
         }
 
         // Returns AGL when vehicle is level above ground, "infinity" otherwise
@@ -369,7 +317,7 @@ class Vehicle {
             return getImpactDistance(startPoint, endPoint);
         }
 
-        // Returns distance to mesh between points, or "infinity" if none found.
+        // Returns distance to mesh between points, or -1 if none found.
         // Eventually we may want to be able to specifiy an actor or actors to include or exclude
         // (other than the vehicle itself).
         float getImpactDistance(FVector startPoint, FVector endPoint)
@@ -388,7 +336,7 @@ class Vehicle {
                 }
             }
 
-            return INF;
+            return -1;
         }
 
         void drawHorizontal(FVector point)

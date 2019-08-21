@@ -104,7 +104,7 @@ class MultirotorDynamics {
 
         } pose_t;
 
-        // Full state
+        // Dynamics
         typedef struct {
 
             double angularVel[3]; 
@@ -114,14 +114,15 @@ class MultirotorDynamics {
 
             pose_t pose;
 
-            bool airborne;
-
         } state_t;
 
     private:
 
         // Data structure for returning state
         state_t _state = {};
+
+        // Flag for whether we're airborne and can update dynamics
+        bool _airborne = false;
 
         // Inertial-frame acceleration
         double _inertialAccel[3] = {};
@@ -160,6 +161,9 @@ class MultirotorDynamics {
                 inertial[i] = bodyZ * R[i];
             }
         }
+
+        // Height above ground, set by kinematics
+        double _agl = 0;
 
     protected:
 
@@ -276,10 +280,19 @@ class MultirotorDynamics {
             _x[STATE_PSI]       = rotation[2];
 
             // Initialize velocities and airborne flag
-            reset(airborne);
+            _airborne = airborne;
+            _x[STATE_X_DOT]     = 0;
+            _x[STATE_Y_DOT]     = 0;
+            _x[STATE_Z_DOT]     = 0;
+            _x[STATE_PHI_DOT]   = 0;
+            _x[STATE_THETA_DOT] = 0;
+            _x[STATE_PSI_DOT]   = 0;
 
             // Initialize inertial frame acceleration in NED coordinates
             bodyZToInertial(-g, rotation, _inertialAccel);
+
+            // We usuall start on ground, but can start in air for testing
+            _airborne = airborne;
         }
 
         /** 
@@ -289,6 +302,8 @@ class MultirotorDynamics {
          */
         void update(double dt)
         {
+            debugline("Airborne: %d  AGL: %3.2f", _airborne, _agl);
+
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
@@ -298,12 +313,21 @@ class MultirotorDynamics {
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + g;
 
-            if (!_state.airborne) {
-                _state.airborne = netz < 0;
+            // If we're airborne, check for "negative" AGL (i.e., on ground)
+            if (_airborne) {
+
+                if (_agl < 0) {
+                    _airborne = false;
+                }
+            }
+
+            // If we're not airborne, we become airborne when downward acceleration has become negative
+            else {
+                _airborne = netz < 0;
             }
 
             // Once airborne, we can update dynamics
-            if (_state.airborne) {
+            if (_airborne) {
 
                 // Compute the state derivatives using Equation 12
                 computeStateDerivative(accelNED, netz, _x[STATE_PHI_DOT], _x[STATE_THETA_DOT], _x[STATE_PSI_DOT]);
@@ -402,20 +426,12 @@ class MultirotorDynamics {
         }
 
         /**
-         * Resets airborne flag to false and velocities to zero.
-         * Called by init(), and can also be called when a landing
-         * or collision is detected.
+         * Sets height above ground level (AGL).
+         * This method can be called by the kinematic visualization.
          */
-        void reset(bool airborne=false)
+        void setAgl(double agl) 
         {
-            _state.airborne = airborne;
-
-            _x[STATE_X_DOT]     = 0;
-            _x[STATE_Y_DOT]     = 0;
-            _x[STATE_Z_DOT]     = 0;
-            _x[STATE_PHI_DOT]   = 0;
-            _x[STATE_THETA_DOT] = 0;
-            _x[STATE_PSI_DOT]   = 0;
+            _agl = agl;
         }
 
         // Motor direction for animation
