@@ -37,7 +37,7 @@ class TinyWhoop {
         MultirotorDynamics::Parameters params = MultirotorDynamics::Parameters(
 
                 // Estimated
-                4.E-08, // b
+                2.5E-09, // b
                 2.E-08, // d
 
                 0.028,  // m (kg)
@@ -48,7 +48,7 @@ class TinyWhoop {
                 2,      // Iy
                 3,      // Iz
                 38E-04, // Jr
-                15000); // maxrpm
+                60000); // maxrpm
 
     public:
 
