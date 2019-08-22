@@ -311,12 +311,14 @@ class MultirotorDynamics {
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + g;
 
-            debugline("Airborne: %d  AGL: %3.2f    velz: %+3.2f", _airborne, _agl, _x[STATE_Z_DOT]);
+            double velz = _x[STATE_Z_DOT];
+
+            debugline("Airborne: %d  AGL: %3.2f velz: %+3.2f", _airborne, _agl, velz);
 
             // If we're airborne, check for low AGL on descent
             if (_airborne) {
 
-                if (_agl <= 0 && _x[STATE_Z_DOT] > 0) {
+                if (_agl <= 0 && velz > 0) {
                     _airborne = false;
                 }
             }

@@ -83,7 +83,7 @@ class Vehicle {
         uint32_t _bufferIndex = 0;
 
         // For computing AGL
-        float _vehicleBottom = 0;
+        float _aglOffset = 0;
 
         // Countdown for zeroing-out velocity during final phase of landing
         float _settlingCountdown = 0;
@@ -277,6 +277,10 @@ class Vehicle {
             // Get vehicle ground-truth location for kinematic offset
             _startLocation = _pawn->GetActorLocation();
 
+            // AGL offset will be set to a positve value the first time agl() is called
+            _aglOffset = 0;
+            
+
             // Get vehicle ground-truth rotation to initialize flight manager
             FRotator startRotation = _pawn->GetActorRotation(); 
 
@@ -285,7 +289,6 @@ class Vehicle {
                 FMath::DegreesToRadians(startRotation.Roll),
                 FMath::DegreesToRadians(startRotation.Pitch),
                 FMath::DegreesToRadians(startRotation.Yaw)};
-
             _dynamics->init(rotation);
         }
 
@@ -304,17 +307,23 @@ class Vehicle {
         // Returns AGL when vehicle is level above ground, "infinity" otherwise
         float agl(void)
         {
-            // Start at a point slightly above the bottom of the box enclosing the vehicle
+            // Start at the center of the vehicle
             FVector startPoint = _pawn->GetActorLocation();
-            startPoint.Z = startPoint.Z + _vehicleBottom + 10; // cm
 
-            // End at a point an "infinite" distance from the bottom
+            // End at a point an "infinite" distance below the start point
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-INF);
 
             drawHorizontal(startPoint);
             drawLine(startPoint, endPoint);
 
-            return getImpactDistance(startPoint, endPoint);
+            float d = getImpactDistance(startPoint, endPoint);
+
+            // The first time we measure, we need to set the offset
+            if (_aglOffset == 0) {
+                _aglOffset = d;
+            }
+
+            return d - _aglOffset;
         }
 
         // Returns distance to mesh between points, or -1 if none found.
@@ -359,9 +368,6 @@ class Vehicle {
             if (_soundCue->IsValidLowLevelFast()) {
                 _audioComponent->SetSound(_soundCue);
             }
-
-
-            _vehicleBottom = _frameMesh->GetBoundingBox().Min.Z;
         }
 
 
