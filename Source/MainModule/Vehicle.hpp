@@ -313,8 +313,8 @@ class Vehicle {
             // End at a point an "infinite" distance below the start point
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-INF);
 
-            drawHorizontal(startPoint);
-            drawLine(startPoint, endPoint);
+            //drawHorizontal(startPoint);
+            //drawLine(startPoint, endPoint);
 
             float d = getImpactDistance(startPoint, endPoint);
 
