@@ -209,8 +209,17 @@ class Vehicle {
             pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
             pMeshComponent->AddRelativeLocation(FVector(x,y,0)*100); // m => cm
             _propellerMeshComponents[_propCount] = pMeshComponent;
-            setPropRotation(_propCount, 0);
+            setPropRotation(_propCount, propStartAngle(x, y));
             _propCount++;
+        }
+
+        float propStartAngle(float propX, float propY)
+        {
+            FVector vehicleCenter = _pawn->GetActorLocation();
+
+            double theta = -atan2((propY-vehicleCenter.Y), (propX-vehicleCenter.X));
+
+            return FMath::RadiansToDegrees(3.14159/2-theta) + 45;
         }
 
         void setPropRotation(uint8_t index, float angle)
