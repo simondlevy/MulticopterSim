@@ -208,14 +208,21 @@ class Vehicle {
             pMeshComponent->SetStaticMesh(propMesh);
             pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
             pMeshComponent->AddRelativeLocation(FVector(x,y,0)*100); // m => cm
-            _propellerMeshComponents[_propCount++] = pMeshComponent;
+            _propellerMeshComponents[_propCount] = pMeshComponent;
+            setPropRotation(_propCount, 0);
+            _propCount++;
+        }
+
+        void setPropRotation(uint8_t index, float angle)
+        {
+            _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, angle, 0));
         }
 
         void rotateProps(int8_t * motorDirections, uint8_t motorCount)
         {
             static float rotation;
             for (uint8_t i=0; i<motorCount; ++i) {
-                _propellerMeshComponents[i]->SetRelativeRotation(FRotator(0, rotation * motorDirections[i]*200, 0));
+                setPropRotation(i, rotation * motorDirections[i]*200);
             }
             rotation++;
         }
