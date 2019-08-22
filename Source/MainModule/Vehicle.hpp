@@ -311,8 +311,8 @@ class Vehicle {
             // End at a point an "infinite" distance from the bottom
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-INF);
 
-            //drawHorizontal(startPoint);
-            //drawLine(startPoint, endPoint);
+            drawHorizontal(startPoint);
+            drawLine(startPoint, endPoint);
 
             return getImpactDistance(startPoint, endPoint);
         }
@@ -348,7 +348,7 @@ class Vehicle {
 
         void drawLine(FVector point1, FVector point2)
         {
-            DrawDebugLine(_pawn->GetWorld(), point1, point2, FColor::Green, false, .01, 0, 0.5);
+            DrawDebugLine(_pawn->GetWorld(), point1, point2, FColor::Green, false, .1, 0, 0.5);
         }
 
         void PostInitializeComponents()
