@@ -219,7 +219,7 @@ class Vehicle {
 
             double theta = -atan2((propY-vehicleCenter.Y), (propX-vehicleCenter.X));
 
-            return FMath::RadiansToDegrees(3.14159/2-theta) + 45;
+            return FMath::RadiansToDegrees(3.14159/2-theta) + 57.5;
         }
 
         void setPropRotation(uint8_t index, float angle)
