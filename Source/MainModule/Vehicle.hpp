@@ -133,12 +133,14 @@ class Vehicle {
             // Use the mean motor value to modulate the pitch and voume of the propeller sound
             _audioComponent->SetFloatParameter(FName("pitch"), smoothedMotorMean);
             _audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
-        
+        }
+
+        void grabImages(void)
+        {
             for (uint8_t i=0; i<_cameraCount; ++i) {
                 _cameras[i]->grabImage();
             }
-
-        } // updateKinematics
+        } 
 
     public:
 
@@ -313,6 +315,8 @@ class Vehicle {
             if (_mapSelected) {
 
                 updateKinematics();
+
+                grabImages();
 
                 animatePropellers();
 
