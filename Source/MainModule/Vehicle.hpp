@@ -144,6 +144,10 @@ class Vehicle {
 
     public:
 
+    	UStaticMeshComponent* getFrameMesh() {
+			return _frameMeshComponent;
+		}
+    
         void build(APawn * pawn, UStaticMesh * frameMesh)
         {
             _pawn = pawn;
