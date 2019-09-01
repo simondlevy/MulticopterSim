@@ -216,6 +216,8 @@ class MultirotorDynamics {
             }
         }
 
+		virtual void updateGimbalDynamics(double dt) {}
+
         /**
          * Implements Equation 12 computing temporal first derivative of state.
          * Should fill _dxdx[0..11] with appropriate values.
@@ -344,6 +346,8 @@ class MultirotorDynamics {
                 _inertialAccel[1] = accelNED[1];
                 _inertialAccel[2] = accelNED[2];
             }
+
+			updateGimbalDynamics(dt);
 
             // Get most values directly from state vector
             for (uint8_t i=0; i<3; ++i) {
