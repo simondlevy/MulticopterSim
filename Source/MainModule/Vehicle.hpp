@@ -1,5 +1,5 @@
 /*
- * Header-only support for vehicles in MulticopterSim
+ * General support for vehicles in MulticopterSim
  *
  * This class peforms the following functions:
  *
@@ -50,23 +50,34 @@ class Vehicle {
         // Time during which velocity will be set to zero during final phase oflanding
         static constexpr float SETTLING_TIME = 1.0;
 
+        // Chase camera settings
+        static constexpr float CHASE_CAMERA_RELATIVE_X = 100.f;
+        static constexpr float CHASE_CAMERA_ARM_LENGTH = 100.f;
+        static constexpr float CHASE_CAMERA_LAG_SPEED  = 2.0f;  // lower = slower follow, less jitter
+
         // UE4 objects that must be built statically
-        APawn                    * _pawn;
-        UStaticMesh              * _frameMesh;
-        UStaticMesh              * _motorMesh;
-        UStaticMeshComponent     * _frameMeshComponent;
-        UStaticMeshComponent     * _propellerMeshComponents[FFlightManager::MAX_MOTORS];
-        USoundCue                * _soundCue;
-        UAudioComponent          * _audioComponent;
-        USpringArmComponent      * _springArm;
-        uint8_t                    _propCount;
+        APawn                * _pawn = NULL;
+        UStaticMesh          * _frameMesh = NULL;
+        UStaticMesh          * _motorMesh = NULL;
+        UStaticMeshComponent * _frameMeshComponent = NULL;
+        UStaticMeshComponent * _propellerMeshComponents[FFlightManager::MAX_MOTORS] = {};
+        USoundCue            * _soundCue = NULL;
+        UAudioComponent      * _audioComponent = NULL;
+        USpringArmComponent  * _gimbalSpringArm = NULL;
+        USpringArmComponent  * _chaseCameraSpringArm = NULL;
+        UCameraComponent     * _chaseCamera = NULL;
+
+        // Starts at zero and increases each time we call addProp()
+        uint8_t _propCount;
 
         // Cameras
         Camera * _cameras[Camera::MAX_CAMERAS];
         uint8_t  _cameraCount;
 
+        // Set in constructor
         MultirotorDynamics * _dynamics = NULL;
 
+        // Also set in constructor, but purely for visual effect
         int8_t _motorDirections[FFlightManager::MAX_MOTORS] = {};
 
         // Threaded worker for running flight control
@@ -144,10 +155,6 @@ class Vehicle {
 
     public:
 
-    	UStaticMeshComponent* getFrameMesh() {
-			return _frameMeshComponent;
-		}
-    
         void build(APawn * pawn, UStaticMesh * frameMesh)
         {
             _pawn = pawn;
@@ -155,15 +162,12 @@ class Vehicle {
 
             _frameMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
             _frameMeshComponent->SetStaticMesh(_frameMesh);
-            
-            _frameMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap); //for collision detection
-            
             _pawn->SetRootComponent(_frameMeshComponent);
 
             _propCount = 0;
         }
 
-        void buildWithAudio(APawn * pawn, UStaticMesh * frameMesh)
+        void buildFull(APawn * pawn, UStaticMesh * frameMesh)
         {
             build(pawn, frameMesh);
 
@@ -183,9 +187,19 @@ class Vehicle {
             _audioComponent->SetupAttachment(_pawn->GetRootComponent());
 
             // Create a spring-arm for the gimbal
-            _springArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-            _springArm->SetupAttachment(_pawn->GetRootComponent());
-            _springArm->TargetArmLength = 0.f; 
+            _gimbalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("GimbalSpringArm"));
+            _gimbalSpringArm->SetupAttachment(_pawn->GetRootComponent());
+            _gimbalSpringArm->TargetArmLength = 0.f; 
+
+            // Add a chase camera at the end of a spring-arm
+            _chaseCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("ChaseCameraSpringArm"));
+            _chaseCameraSpringArm->SetupAttachment(_frameMeshComponent);
+            _chaseCameraSpringArm->SetRelativeLocationAndRotation(FVector(-CHASE_CAMERA_RELATIVE_X, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+            _chaseCameraSpringArm->TargetArmLength = CHASE_CAMERA_ARM_LENGTH;
+            _chaseCameraSpringArm->bEnableCameraLag = false;//true;
+            _chaseCameraSpringArm->CameraLagSpeed =  CHASE_CAMERA_LAG_SPEED;
+            _chaseCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("ChaseCamera"));
+            _chaseCamera->SetupAttachment(_chaseCameraSpringArm, USpringArmComponent::SocketName);
         }
 
         void addMesh(UStaticMesh * mesh, const char * name, const FVector & location, const FRotator rotation, const FVector & scale)
@@ -248,7 +262,7 @@ class Vehicle {
         void addCamera(Camera * camera)
         {
             // Add camera to spring arm
-            camera->addToVehicle(_pawn, _springArm, _cameraCount);
+            camera->addToVehicle(_pawn, _gimbalSpringArm, _cameraCount);
 
             // Increment the camera count for next time
             _cameras[_cameraCount++] = camera;
@@ -397,10 +411,15 @@ class Vehicle {
             }
         }
 
-
         void rotateGimbal(FQuat rotation)
         {
-            _springArm->SetRelativeRotation(rotation);
+            _gimbalSpringArm->SetRelativeRotation(rotation);
+        }
+
+
+        UStaticMeshComponent * getFrameMesh(void)
+        { 
+            return _frameMeshComponent;
         }
 
 }; // class Vehicle
