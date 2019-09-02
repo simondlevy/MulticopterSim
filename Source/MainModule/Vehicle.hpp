@@ -51,9 +51,9 @@ class Vehicle {
         static constexpr float SETTLING_TIME = 1.0;
 
         // Chase camera settings
-        static constexpr float CHASE_CAMERA_RELATIVE_X = 100.f;
-        static constexpr float CHASE_CAMERA_ARM_LENGTH = 100.f;
-        static constexpr float CHASE_CAMERA_LAG_SPEED  = 2.0f;  // lower = slower follow, less jitter
+        //static constexpr float CHASE_CAMERA_RELATIVE_X = 150.f;
+        static constexpr float CHASE_CAMERA_ARM_LENGTH = 150.f;
+        static constexpr float CHASE_CAMERA_LAG_SPEED  = 7.0f;  // lower = slower follow, less jitter
 
         // UE4 objects that must be built statically
         APawn                * _pawn = NULL;
@@ -65,6 +65,7 @@ class Vehicle {
         UAudioComponent      * _audioComponent = NULL;
         USpringArmComponent  * _gimbalSpringArm = NULL;
         USpringArmComponent  * _chaseCameraSpringArm = NULL;
+        USpringArmComponent  * _bodyHorizontalSpringArm = NULL;
         UCameraComponent     * _chaseCamera = NULL;
 
         // Starts at zero and increases each time we call addProp()
@@ -191,13 +192,31 @@ class Vehicle {
             _gimbalSpringArm->SetupAttachment(_pawn->GetRootComponent());
             _gimbalSpringArm->TargetArmLength = 0.f; 
 
-            // Add a chase camera at the end of a spring-arm
+			// Add a chase camera at the end of a spring-arm
+			_bodyHorizontalSpringArm=_pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("BodyHorizontalSpringArm"));
+			_bodyHorizontalSpringArm->SetupAttachment(_frameMeshComponent);
+			_bodyHorizontalSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+			_bodyHorizontalSpringArm->TargetArmLength = 0;
+			_bodyHorizontalSpringArm->bEnableCameraLag = false;
+			_bodyHorizontalSpringArm->bAbsoluteRotation = false;
+			_bodyHorizontalSpringArm->bInheritYaw = true;
+			_bodyHorizontalSpringArm->bInheritPitch = false;
+			_bodyHorizontalSpringArm->bInheritRoll = false;
+
             _chaseCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("ChaseCameraSpringArm"));
-            _chaseCameraSpringArm->SetupAttachment(_frameMeshComponent);
-            _chaseCameraSpringArm->SetRelativeLocationAndRotation(FVector(-CHASE_CAMERA_RELATIVE_X, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+            _chaseCameraSpringArm->SetupAttachment(_bodyHorizontalSpringArm);
+            _chaseCameraSpringArm->SetRelativeLocationAndRotation(FVector(-CHASE_CAMERA_ARM_LENGTH, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
             _chaseCameraSpringArm->TargetArmLength = CHASE_CAMERA_ARM_LENGTH;
-            _chaseCameraSpringArm->bEnableCameraLag = false;//true;
+            _chaseCameraSpringArm->bEnableCameraLag = true;
             _chaseCameraSpringArm->CameraLagSpeed =  CHASE_CAMERA_LAG_SPEED;
+			_chaseCameraSpringArm->bAbsoluteRotation = false;
+			_chaseCameraSpringArm->bInheritYaw = true;
+			_chaseCameraSpringArm->bInheritPitch = false;
+			_chaseCameraSpringArm->bInheritRoll = false;
+			_chaseCameraSpringArm->bEnableCameraRotationLag = true;
+			
+
+
             _chaseCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("ChaseCamera"));
             _chaseCamera->SetupAttachment(_chaseCameraSpringArm, USpringArmComponent::SocketName);
         }
