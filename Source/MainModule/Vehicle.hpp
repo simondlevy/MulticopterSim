@@ -369,7 +369,7 @@ class Vehicle {
         {
             // Start at the center of the vehicle
             FVector startPoint = _pawn->GetActorLocation();
-
+			startPoint.Z += 100;
             // End at a point an "infinite" distance below the start point
             FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z-INF);
 
