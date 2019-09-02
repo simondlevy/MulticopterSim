@@ -200,6 +200,8 @@ class MultirotorDynamics {
         // quad, hexa, octo, etc.
         uint8_t _motorCount = 0;
 
+		
+
         /**
          *  Constructor
          */
@@ -227,8 +229,12 @@ class MultirotorDynamics {
          * @param thedot rotational acceleration in pitch axis
          * @param psidot rotational acceleration in yaw axis
          */
-        virtual void computeStateDerivative(double accelNED[3], double netz, double phidot, double thedot, double psidot)
+        virtual void computeStateDerivative(double accelNED[3], double netz)
         {
+			double phidot = _x[STATE_PHI_DOT];
+			double thedot = _x[STATE_THETA_DOT];
+			double psidot = _x[STATE_PSI_DOT];
+
             _dxdt[0]  =  _x[STATE_X_DOT];                                                              // x'
             _dxdt[1]  =  accelNED[0];                                                                  // x''
             _dxdt[2]  =  _x[STATE_Y_DOT];                                                              // y'
@@ -315,13 +321,24 @@ class MultirotorDynamics {
 
             double velz = _x[STATE_Z_DOT];
 
-            debugline("Airborne: %d  AGL: %3.2f velz: %+3.2f", _airborne, _agl, velz);
+            //debugline("Airborne: %d   AGL: %3.2f   velz: %+3.2f   netz: %+3.2f", _airborne, _agl, velz, netz);
 
             // If we're airborne, check for low AGL on descent
             if (_airborne) {
 
-                if (_agl <= 0 && velz > 0) {
+                //if (_agl <= 0 && velz > 0) {
+                if (_agl <= 0 && netz >= 0) {
                     _airborne = false;
+					_x[STATE_PHI_DOT] = 0;
+					_x[STATE_THETA_DOT] = 0;
+					_x[STATE_PSI_DOT] = 0;
+					_x[STATE_X_DOT] = 0;
+					_x[STATE_Y_DOT] = 0;
+					_x[STATE_Z_DOT] = 0;
+
+					_x[STATE_PHI] = 0;
+					_x[STATE_THETA] = 0;
+					_x[STATE_Z] += _agl;
                 }
             }
 
@@ -334,7 +351,7 @@ class MultirotorDynamics {
             if (_airborne) {
 
                 // Compute the state derivatives using Equation 12
-                computeStateDerivative(accelNED, netz, _x[STATE_PHI_DOT], _x[STATE_THETA_DOT], _x[STATE_PSI_DOT]);
+                computeStateDerivative(accelNED, netz);
 
                 // Compute state as first temporal integral of first temporal derivative
                 for (uint8_t i=0; i<12; ++i) {
@@ -346,6 +363,11 @@ class MultirotorDynamics {
                 _inertialAccel[1] = accelNED[1];
                 _inertialAccel[2] = accelNED[2];
             }
+			else {
+				//"fly" to agl=0
+				double vz = 5 * _agl;
+				_x[STATE_Z] += vz*dt;
+			}
 
 			updateGimbalDynamics(dt);
 
