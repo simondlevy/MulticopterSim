@@ -163,6 +163,8 @@ public:
 
 		_frameMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
 		_frameMeshComponent->SetStaticMesh(_frameMesh);
+		_frameMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+		
 		_pawn->SetRootComponent(_frameMeshComponent);
 
 		_propCount = 0;
