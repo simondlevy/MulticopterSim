@@ -63,12 +63,7 @@ private:
 	UStaticMeshComponent* _propellerMeshComponents[FFlightManager::MAX_MOTORS] = {};
 	USoundCue* _soundCue = NULL;
 	UAudioComponent* _audioComponent = NULL;
-
-    // Optional spring-arm camera
 	USpringArmComponent* _gimbalSpringArm = NULL;
-	USpringArmComponent* _chaseCameraSpringArm = NULL;
-	USpringArmComponent* _bodyHorizontalSpringArm = NULL;
-	UCameraComponent* _chaseCamera = NULL;
 
 	// Starts at zero and increases each time we call addProp()
 	uint8_t _propCount;
@@ -172,7 +167,7 @@ public:
 		_propCount = 0;
 	}
 
-	void buildWithAudio(APawn* pawn, UStaticMesh* frameMesh)
+	void buildFull(APawn* pawn, UStaticMesh* frameMesh)
 	{
 		build(pawn, frameMesh);
 
@@ -190,112 +185,111 @@ public:
 
 		// Attach the sound to the pawn's root, the sound follows the pawn around
 		_audioComponent->SetupAttachment(_pawn->GetRootComponent());
+        
+   		// Create a spring-arm for the gimbal
+		_gimbalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("GimbalSpringArm"));
+		_gimbalSpringArm->SetupAttachment(_pawn->GetRootComponent());
+		_gimbalSpringArm->TargetArmLength = 0.f;
     }
 
     void addChaseCamera(void)
     {
-		// Create a spring-arm for the gimbal
-		_gimbalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("GimbalSpringArm"));
-		_gimbalSpringArm->SetupAttachment(_pawn->GetRootComponent());
-		_gimbalSpringArm->TargetArmLength = 0.f;
+        USpringArmComponent* bodyHorizontalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("BodyHorizontalSpringArm"));
+        bodyHorizontalSpringArm->SetupAttachment(_frameMeshComponent);
+        bodyHorizontalSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+        bodyHorizontalSpringArm->TargetArmLength = 0;
+        bodyHorizontalSpringArm->bEnableCameraLag = false;
+        bodyHorizontalSpringArm->bAbsoluteRotation = false;
+        bodyHorizontalSpringArm->bInheritYaw = true;
+        bodyHorizontalSpringArm->bInheritPitch = false;
+        bodyHorizontalSpringArm->bInheritRoll = false;
 
-		// Add a chase camera at the end of a spring-arm
-		_bodyHorizontalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("BodyHorizontalSpringArm"));
-		_bodyHorizontalSpringArm->SetupAttachment(_frameMeshComponent);
-		_bodyHorizontalSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-		_bodyHorizontalSpringArm->TargetArmLength = 0;
-		_bodyHorizontalSpringArm->bEnableCameraLag = false;
-		_bodyHorizontalSpringArm->bAbsoluteRotation = false;
-		_bodyHorizontalSpringArm->bInheritYaw = true;
-		_bodyHorizontalSpringArm->bInheritPitch = false;
-		_bodyHorizontalSpringArm->bInheritRoll = false;
+        USpringArmComponent * chaseCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("ChaseCameraSpringArm"));
+        chaseCameraSpringArm->SetupAttachment(bodyHorizontalSpringArm);
+        chaseCameraSpringArm->SetRelativeLocationAndRotation(FVector(-CHASE_CAMERA_ARM_LENGTH, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+        chaseCameraSpringArm->TargetArmLength = CHASE_CAMERA_ARM_LENGTH;
+        chaseCameraSpringArm->bEnableCameraLag = true;
+        chaseCameraSpringArm->CameraLagSpeed = CHASE_CAMERA_LAG_SPEED;
+        chaseCameraSpringArm->bAbsoluteRotation = false;
+        chaseCameraSpringArm->bInheritYaw = true;
+        chaseCameraSpringArm->bInheritPitch = false;
+        chaseCameraSpringArm->bInheritRoll = false;
+        chaseCameraSpringArm->bEnableCameraRotationLag = true;
 
-		_chaseCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("ChaseCameraSpringArm"));
-		_chaseCameraSpringArm->SetupAttachment(_bodyHorizontalSpringArm);
-		_chaseCameraSpringArm->SetRelativeLocationAndRotation(FVector(-CHASE_CAMERA_ARM_LENGTH, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
-		_chaseCameraSpringArm->TargetArmLength = CHASE_CAMERA_ARM_LENGTH;
-		_chaseCameraSpringArm->bEnableCameraLag = true;
-		_chaseCameraSpringArm->CameraLagSpeed = CHASE_CAMERA_LAG_SPEED;
-		_chaseCameraSpringArm->bAbsoluteRotation = false;
-		_chaseCameraSpringArm->bInheritYaw = true;
-		_chaseCameraSpringArm->bInheritPitch = false;
-		_chaseCameraSpringArm->bInheritRoll = false;
-		_chaseCameraSpringArm->bEnableCameraRotationLag = true;
+        UCameraComponent* chaseCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("ChaseCamera"));
+        chaseCamera->SetupAttachment(chaseCameraSpringArm, USpringArmComponent::SocketName);
+    }
 
-		_chaseCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("ChaseCamera"));
-		_chaseCamera->SetupAttachment(_chaseCameraSpringArm, USpringArmComponent::SocketName);
-	}
+    void addMesh(UStaticMesh* mesh, const char* name, const FVector& location, const FRotator rotation, const FVector& scale)
+    {
+        UStaticMeshComponent* meshComponent =
+            _pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
+        meshComponent->SetStaticMesh(mesh);
+        meshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
+        meshComponent->AddRelativeLocation(location * 100); // m => cm
+        meshComponent->AddLocalRotation(rotation);
+        meshComponent->SetRelativeScale3D(scale);
+    }
 
-	void addMesh(UStaticMesh* mesh, const char* name, const FVector& location, const FRotator rotation, const FVector& scale)
-	{
-		UStaticMeshComponent* meshComponent =
-			_pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
-		meshComponent->SetStaticMesh(mesh);
-		meshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
-		meshComponent->AddRelativeLocation(location * 100); // m => cm
-		meshComponent->AddLocalRotation(rotation);
-		meshComponent->SetRelativeScale3D(scale);
-	}
+    void addMesh(UStaticMesh* mesh, const char* name, const FVector& location, const FRotator rotation, const float scale)
+    {
+        addMesh(mesh, name, location, rotation, FVector(1, 1, 1) * scale);
+    }
 
-	void addMesh(UStaticMesh* mesh, const char* name, const FVector& location, const FRotator rotation, const float scale)
-	{
-		addMesh(mesh, name, location, rotation, FVector(1, 1, 1) * scale);
-	}
+    void addMesh(UStaticMesh* mesh, const char* name)
+    {
+        addMesh(mesh, name, FVector(0, 0, 0), FRotator(0, 0, 0), FVector(1, 1, 1));
+    }
 
-	void addMesh(UStaticMesh* mesh, const char* name)
-	{
-		addMesh(mesh, name, FVector(0, 0, 0), FRotator(0, 0, 0), FVector(1, 1, 1));
-	}
+    // z is set in editor
+    void addProp(UStaticMesh* propMesh, float x, float y)
+    {
+        UStaticMeshComponent* pMeshComponent =
+            _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", _propCount, "Mesh"));
+        pMeshComponent->SetStaticMesh(propMesh);
+        pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
+        pMeshComponent->AddRelativeLocation(FVector(x, y, 0) * 100); // m => cm
+        _propellerMeshComponents[_propCount] = pMeshComponent;
+        setPropRotation(_propCount, propStartAngle(x, y));
+        _propCount++;
+    }
 
-	// z is set in editor
-	void addProp(UStaticMesh* propMesh, float x, float y)
-	{
-		UStaticMeshComponent* pMeshComponent =
-			_pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", _propCount, "Mesh"));
-		pMeshComponent->SetStaticMesh(propMesh);
-		pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
-		pMeshComponent->AddRelativeLocation(FVector(x, y, 0) * 100); // m => cm
-		_propellerMeshComponents[_propCount] = pMeshComponent;
-		setPropRotation(_propCount, propStartAngle(x, y));
-		_propCount++;
-	}
+    float propStartAngle(float propX, float propY)
+    {
+        FVector vehicleCenter = _pawn->GetActorLocation();
 
-	float propStartAngle(float propX, float propY)
-	{
-		FVector vehicleCenter = _pawn->GetActorLocation();
+        double theta = -atan2((propY - vehicleCenter.Y), (propX - vehicleCenter.X));
 
-		double theta = -atan2((propY - vehicleCenter.Y), (propX - vehicleCenter.X));
+        return FMath::RadiansToDegrees(3.14159 / 2 - theta) + 57.5;
+    }
 
-		return FMath::RadiansToDegrees(3.14159 / 2 - theta) + 57.5;
-	}
+    void setPropRotation(uint8_t index, float angle)
+    {
+        _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, angle, 0));
+    }
 
-	void setPropRotation(uint8_t index, float angle)
-	{
-		_propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, angle, 0));
-	}
+    void rotateProps(int8_t* motorDirections, uint8_t motorCount)
+    {
+        static float rotation;
+        for (uint8_t i = 0; i < motorCount; ++i) {
+            setPropRotation(i, rotation * motorDirections[i] * 200);
+        }
+        rotation++;
+    }
 
-	void rotateProps(int8_t* motorDirections, uint8_t motorCount)
-	{
-		static float rotation;
-		for (uint8_t i = 0; i < motorCount; ++i) {
-			setPropRotation(i, rotation * motorDirections[i] * 200);
-		}
-		rotation++;
-	}
+    void addCamera(Camera* camera)
+    {
+        // Add camera to spring arm
+        camera->addToVehicle(_pawn, _gimbalSpringArm, _cameraCount);
 
-	void addCamera(Camera* camera)
-	{
-		// Add camera to spring arm
-		camera->addToVehicle(_pawn, _gimbalSpringArm, _cameraCount);
+        // Increment the camera count for next time
+        _cameras[_cameraCount++] = camera;
+    }
 
-		// Increment the camera count for next time
-		_cameras[_cameraCount++] = camera;
-	}
-
-	Vehicle(void)
-	{
-		_dynamics = NULL;
-		_flightManager = NULL;
+    Vehicle(void)
+    {
+        _dynamics = NULL;
+        _flightManager = NULL;
 	}
 
 	Vehicle(MultirotorDynamics* dynamics)
