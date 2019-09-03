@@ -53,7 +53,7 @@ private:
 	// Chase camera settings
 	//static constexpr float CHASE_CAMERA_RELATIVE_X = 150.f;
 	static constexpr float CHASE_CAMERA_ARM_LENGTH = 150.f;
-	static constexpr float CHASE_CAMERA_LAG_SPEED = 7.0f;  // lower = slower follow, less jitter
+	//static constexpr float CHASE_CAMERA_LAG_SPEED = 7.0f;  // lower = slower follow, less jitter
 
 	// UE4 objects that must be built statically
 	APawn* _pawn = NULL;
@@ -208,8 +208,8 @@ public:
         chaseCameraSpringArm->SetupAttachment(bodyHorizontalSpringArm);
         chaseCameraSpringArm->SetRelativeLocationAndRotation(FVector(-CHASE_CAMERA_ARM_LENGTH, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
         chaseCameraSpringArm->TargetArmLength = CHASE_CAMERA_ARM_LENGTH;
-        chaseCameraSpringArm->bEnableCameraLag = true;
-        chaseCameraSpringArm->CameraLagSpeed = CHASE_CAMERA_LAG_SPEED;
+        chaseCameraSpringArm->bEnableCameraLag = false; // true;
+        //chaseCameraSpringArm->CameraLagSpeed = CHASE_CAMERA_LAG_SPEED;
         chaseCameraSpringArm->bAbsoluteRotation = false;
         chaseCameraSpringArm->bInheritYaw = true;
         chaseCameraSpringArm->bInheritPitch = false;
