@@ -55,7 +55,7 @@ class Phantom {
 
         void build(APawn * pawn)
         {
-            vehicle.buildWithAudio(pawn, FrameStatics.mesh.Get());
+            vehicle.buildFull(pawn, FrameStatics.mesh.Get());
 
             // Add propellers
             addProp(+1, +1);
