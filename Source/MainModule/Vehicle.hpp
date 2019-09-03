@@ -63,6 +63,8 @@ private:
 	UStaticMeshComponent* _propellerMeshComponents[FFlightManager::MAX_MOTORS] = {};
 	USoundCue* _soundCue = NULL;
 	UAudioComponent* _audioComponent = NULL;
+
+    // Optional spring-arm camera
 	USpringArmComponent* _gimbalSpringArm = NULL;
 	USpringArmComponent* _chaseCameraSpringArm = NULL;
 	USpringArmComponent* _bodyHorizontalSpringArm = NULL;
@@ -170,7 +172,7 @@ public:
 		_propCount = 0;
 	}
 
-	void buildFull(APawn* pawn, UStaticMesh* frameMesh)
+	void buildWithAudio(APawn* pawn, UStaticMesh* frameMesh)
 	{
 		build(pawn, frameMesh);
 
@@ -188,7 +190,10 @@ public:
 
 		// Attach the sound to the pawn's root, the sound follows the pawn around
 		_audioComponent->SetupAttachment(_pawn->GetRootComponent());
+    }
 
+    void addChaseCamera(void)
+    {
 		// Create a spring-arm for the gimbal
 		_gimbalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("GimbalSpringArm"));
 		_gimbalSpringArm->SetupAttachment(_pawn->GetRootComponent());
@@ -216,8 +221,6 @@ public:
 		_chaseCameraSpringArm->bInheritPitch = false;
 		_chaseCameraSpringArm->bInheritRoll = false;
 		_chaseCameraSpringArm->bEnableCameraRotationLag = true;
-
-
 
 		_chaseCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("ChaseCamera"));
 		_chaseCamera->SetupAttachment(_chaseCameraSpringArm, USpringArmComponent::SocketName);
