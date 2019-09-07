@@ -50,9 +50,6 @@ private:
 	// Time during which velocity will be set to zero during final phase oflanding
 	static constexpr float SETTLING_TIME = 1.0;
 
-	// Chase camera settings
-	static constexpr float CHASE_CAMERA_ARM_LENGTH = 150.f;
-
 	// UE4 objects that must be built statically
 	APawn* _pawn = NULL;
 	UStaticMesh* _frameMesh = NULL;
@@ -62,6 +59,11 @@ private:
 	USoundCue* _soundCue = NULL;
 	UAudioComponent* _audioComponent = NULL;
 	USpringArmComponent* _gimbalSpringArm = NULL;
+    USpringArmComponent * _playerCameraSpringArm = NULL;
+
+    // Support for switching from chase camera to FPV
+    float _playerCameraFollowMeters = 0;
+    float _playerCameraElevationMeters = 0;
 
     // PlayerController for getting keyboard events
     APlayerController * _playerController = NULL;
@@ -152,6 +154,50 @@ private:
 		}
 	}
 
+	void buildPlayerCamera(float distanceMeters, float elevationMeters)
+    {
+        USpringArmComponent* bodyHorizontalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("BodyHorizontalSpringArm"));
+        bodyHorizontalSpringArm->SetupAttachment(_frameMeshComponent);
+        bodyHorizontalSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+        bodyHorizontalSpringArm->TargetArmLength = 0;
+        bodyHorizontalSpringArm->bEnableCameraLag = false;
+        bodyHorizontalSpringArm->bAbsoluteRotation = false;
+        bodyHorizontalSpringArm->bInheritYaw = true;
+        bodyHorizontalSpringArm->bInheritPitch = false;
+        bodyHorizontalSpringArm->bInheritRoll = false;
+
+        _playerCameraFollowMeters = distanceMeters;
+        _playerCameraElevationMeters = elevationMeters;
+
+        _playerCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("ChaseCameraSpringArm"));
+        _playerCameraSpringArm->SetupAttachment(bodyHorizontalSpringArm);
+
+        playerCameraSetChaseView();
+
+        _playerCameraSpringArm->bEnableCameraLag = false;
+        _playerCameraSpringArm->bAbsoluteRotation = false;
+        _playerCameraSpringArm->bInheritYaw = true;
+        _playerCameraSpringArm->bInheritPitch = false;
+        _playerCameraSpringArm->bInheritRoll = false;
+        _playerCameraSpringArm->bEnableCameraRotationLag = true;
+
+        UCameraComponent* chaseCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("ChaseCamera"));
+        chaseCamera->SetupAttachment(_playerCameraSpringArm, USpringArmComponent::SocketName);
+    }
+
+    void playerCameraSetChaseView()
+    {
+        _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector(-_playerCameraFollowMeters, 0, _playerCameraElevationMeters)*100, 
+                FRotator::ZeroRotator);;
+        _playerCameraSpringArm->TargetArmLength = _playerCameraFollowMeters*100;
+    }
+
+    void playerCameraSetFrontView()
+    {
+        _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+        _playerCameraSpringArm->TargetArmLength = 0;
+    }
+
 public:
 
 	void build(APawn* pawn, UStaticMesh* frameMesh)
@@ -168,9 +214,12 @@ public:
 		_propCount = 0;
 	}
 
-	void buildFull(APawn* pawn, UStaticMesh* frameMesh)
+	void buildFull(APawn* pawn, UStaticMesh* frameMesh, float chaseCameraDistanceMeters, float chaseCameraElevationMeters)
 	{
 		build(pawn, frameMesh);
+
+        // Build the player-view camera
+        buildPlayerCamera(chaseCameraDistanceMeters, chaseCameraElevationMeters);
 
 		// Get sound cue from Contents
 		static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/Flying/Audio/MotorSoundCue"));
@@ -191,33 +240,6 @@ public:
 		_gimbalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("GimbalSpringArm"));
 		_gimbalSpringArm->SetupAttachment(_pawn->GetRootComponent());
 		_gimbalSpringArm->TargetArmLength = 0.f;
-    }
-
-    void addChaseCamera(void)
-    {
-        USpringArmComponent* bodyHorizontalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("BodyHorizontalSpringArm"));
-        bodyHorizontalSpringArm->SetupAttachment(_frameMeshComponent);
-        bodyHorizontalSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-        bodyHorizontalSpringArm->TargetArmLength = 0;
-        bodyHorizontalSpringArm->bEnableCameraLag = false;
-        bodyHorizontalSpringArm->bAbsoluteRotation = false;
-        bodyHorizontalSpringArm->bInheritYaw = true;
-        bodyHorizontalSpringArm->bInheritPitch = false;
-        bodyHorizontalSpringArm->bInheritRoll = false;
-
-        USpringArmComponent * chaseCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("ChaseCameraSpringArm"));
-        chaseCameraSpringArm->SetupAttachment(bodyHorizontalSpringArm);
-        chaseCameraSpringArm->SetRelativeLocationAndRotation(FVector(-CHASE_CAMERA_ARM_LENGTH, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
-        chaseCameraSpringArm->TargetArmLength = CHASE_CAMERA_ARM_LENGTH;
-        chaseCameraSpringArm->bEnableCameraLag = false; // true;
-        chaseCameraSpringArm->bAbsoluteRotation = false;
-        chaseCameraSpringArm->bInheritYaw = true;
-        chaseCameraSpringArm->bInheritPitch = false;
-        chaseCameraSpringArm->bInheritRoll = false;
-        chaseCameraSpringArm->bEnableCameraRotationLag = true;
-
-        UCameraComponent* chaseCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("ChaseCamera"));
-        chaseCamera->SetupAttachment(chaseCameraSpringArm, USpringArmComponent::SocketName);
     }
 
     void addMesh(UStaticMesh* mesh, const char* name, const FVector& location, const FRotator rotation, const FVector& scale)
@@ -311,8 +333,11 @@ public:
 	{
 		_flightManager = flightManager;
 
-        // We'll use this to get keyboard events
+        // Player controller is useful for gettin keyboard events, switching cameas, etc.
         _playerController = UGameplayStatics::GetPlayerController(_pawn->GetWorld(), 0);
+
+		// Change view to chase camera on start
+		_playerController->SetViewTargetWithBlend(_pawn);
 
 		// Make sure a map has been selected
 		_mapSelected = false;
@@ -355,13 +380,15 @@ public:
 	{
 
         // Quit on ESCape key
-        if (hitKey(EKeys::Escape)) {
-            GIsRequestingExit = true;
-        }
+        if (hitKey(EKeys::Escape))  GIsRequestingExit = true;
 
         // Run the game if a map has been selected
 		if (_mapSelected) {
 
+            // Use 1/2 keys to switch player-camera view
+            if (hitKey(EKeys::One) || hitKey(EKeys::NumPadOne)) playerCameraSetFrontView();
+            if (hitKey(EKeys::Two) || hitKey(EKeys::NumPadTwo)) playerCameraSetChaseView();
+            
 			updateKinematics();
 
 			grabImages();

@@ -74,7 +74,7 @@ class TinyWhoop {
         void build(APawn * pawn)
         {
             // Build the frame
-            vehicle.buildFull(pawn, FrameStatics.mesh.Get());
+            vehicle.buildFull(pawn, FrameStatics.mesh.Get(), 1.5, 0.50);
 
             // Add propellers
             float x13 = -.0470, x24 = +.0430, y14 = -.020, y23 = +.070;
