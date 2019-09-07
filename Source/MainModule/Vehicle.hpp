@@ -154,7 +154,7 @@ private:
 		}
 	}
 
-	void buildPlayerCamera(float distanceMeters, float elevationMeters)
+	void buildPlayerCameras(float distanceMeters, float elevationMeters)
     {
         USpringArmComponent* bodyHorizontalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("BodyHorizontalSpringArm"));
         bodyHorizontalSpringArm->SetupAttachment(_frameMeshComponent);
@@ -169,7 +169,7 @@ private:
         _playerCameraFollowMeters = distanceMeters;
         _playerCameraElevationMeters = elevationMeters;
 
-        _playerCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("ChaseCameraSpringArm"));
+        _playerCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("PlayerCameraSpringArm"));
         _playerCameraSpringArm->SetupAttachment(bodyHorizontalSpringArm);
 
         playerCameraSetChaseView();
@@ -181,8 +181,8 @@ private:
         _playerCameraSpringArm->bInheritRoll = false;
         _playerCameraSpringArm->bEnableCameraRotationLag = true;
 
-        UCameraComponent* chaseCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("ChaseCamera"));
-        chaseCamera->SetupAttachment(_playerCameraSpringArm, USpringArmComponent::SocketName);
+        UCameraComponent* playerCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
+        playerCamera->SetupAttachment(_playerCameraSpringArm, USpringArmComponent::SocketName);
     }
 
     void playerCameraSetChaseView()
@@ -190,6 +190,12 @@ private:
         _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector(-_playerCameraFollowMeters, 0, _playerCameraElevationMeters)*100, 
                 FRotator::ZeroRotator);;
         _playerCameraSpringArm->TargetArmLength = _playerCameraFollowMeters*100;
+    }
+
+    void playerCameraSetGroundView()
+    {
+        _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+        _playerCameraSpringArm->TargetArmLength = 0;
     }
 
     void playerCameraSetFrontView()
@@ -218,8 +224,8 @@ public:
 	{
 		build(pawn, frameMesh);
 
-        // Build the player-view camera
-        buildPlayerCamera(chaseCameraDistanceMeters, chaseCameraElevationMeters);
+        // Build the player-view cameras
+        buildPlayerCameras(chaseCameraDistanceMeters, chaseCameraElevationMeters);
 
 		// Get sound cue from Contents
 		static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/Flying/Audio/MotorSoundCue"));
@@ -333,10 +339,10 @@ public:
 	{
 		_flightManager = flightManager;
 
-        // Player controller is useful for gettin keyboard events, switching cameas, etc.
+        // Player controller is useful for getting keyboard events, switching cameas, etc.
         _playerController = UGameplayStatics::GetPlayerController(_pawn->GetWorld(), 0);
 
-		// Change view to chase camera on start
+		// Change view to player camera on start
 		_playerController->SetViewTargetWithBlend(_pawn);
 
 		// Make sure a map has been selected
@@ -386,8 +392,7 @@ public:
 		if (_mapSelected) {
 
             // Use 1/2 keys to switch player-camera view
-            if (hitKey(EKeys::One) || hitKey(EKeys::NumPadOne)) playerCameraSetFrontView();
-            if (hitKey(EKeys::Two) || hitKey(EKeys::NumPadTwo)) playerCameraSetChaseView();
+            setPlayerCameraView();
             
 			updateKinematics();
 
@@ -398,6 +403,13 @@ public:
 			_dynamics->setAgl(agl());
 		}
 	}
+
+    void setPlayerCameraView(void)
+    {
+        if (hitKey(EKeys::One)   || hitKey(EKeys::NumPadOne))   playerCameraSetFrontView();
+        if (hitKey(EKeys::Two)   || hitKey(EKeys::NumPadTwo))   playerCameraSetChaseView();
+        if (hitKey(EKeys::Three) || hitKey(EKeys::NumPadThree)) playerCameraSetGroundView();
+    }
 
     bool hitKey(const FKey key)
     {
