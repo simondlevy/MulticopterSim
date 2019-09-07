@@ -51,9 +51,7 @@ private:
 	static constexpr float SETTLING_TIME = 1.0;
 
 	// Chase camera settings
-	//static constexpr float CHASE_CAMERA_RELATIVE_X = 150.f;
 	static constexpr float CHASE_CAMERA_ARM_LENGTH = 150.f;
-	//static constexpr float CHASE_CAMERA_LAG_SPEED = 7.0f;  // lower = slower follow, less jitter
 
 	// UE4 objects that must be built statically
 	APawn* _pawn = NULL;
@@ -64,6 +62,9 @@ private:
 	USoundCue* _soundCue = NULL;
 	UAudioComponent* _audioComponent = NULL;
 	USpringArmComponent* _gimbalSpringArm = NULL;
+
+    // PlayerController for getting keyboard events
+    APlayerController * _playerController = NULL;
 
 	// Starts at zero and increases each time we call addProp()
 	uint8_t _propCount;
@@ -209,7 +210,6 @@ public:
         chaseCameraSpringArm->SetRelativeLocationAndRotation(FVector(-CHASE_CAMERA_ARM_LENGTH, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
         chaseCameraSpringArm->TargetArmLength = CHASE_CAMERA_ARM_LENGTH;
         chaseCameraSpringArm->bEnableCameraLag = false; // true;
-        //chaseCameraSpringArm->CameraLagSpeed = CHASE_CAMERA_LAG_SPEED;
         chaseCameraSpringArm->bAbsoluteRotation = false;
         chaseCameraSpringArm->bInheritYaw = true;
         chaseCameraSpringArm->bInheritPitch = false;
@@ -311,9 +311,11 @@ public:
 	{
 		_flightManager = flightManager;
 
-		_mapSelected = false;
+        // We'll use this to get keyboard events
+        _playerController = UGameplayStatics::GetPlayerController(_pawn->GetWorld(), 0);
 
 		// Make sure a map has been selected
+		_mapSelected = false;
 		if (_pawn->GetWorld()->GetMapName().Contains("Untitled")) {
 			error("NO MAP SELECTED");
 			return;
@@ -351,6 +353,13 @@ public:
 
 	void Tick(float DeltaSeconds)
 	{
+
+        // Quit on ESCape key
+        if (hitKey(EKeys::Escape)) {
+            GIsRequestingExit = true;
+        }
+
+        // Run the game if a map has been selected
 		if (_mapSelected) {
 
 			updateKinematics();
@@ -362,6 +371,11 @@ public:
 			_dynamics->setAgl(agl());
 		}
 	}
+
+    bool hitKey(const FKey key)
+    {
+        return _playerController->IsInputKeyDown(key);
+    }
 
 	// Returns AGL when vehicle is level above ground, "infinity" otherwise
 	float agl(void)
