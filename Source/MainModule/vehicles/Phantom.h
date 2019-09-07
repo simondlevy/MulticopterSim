@@ -63,6 +63,8 @@ class Phantom {
             addProp(+1, -1);
             addProp(-1, +1);
 
+            vehicle.addChaseCamera();
+
             _flightManager = NULL;
         }
 
