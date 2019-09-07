@@ -194,7 +194,7 @@ private:
 
     void playerCameraSetGroundView()
     {
-        _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+        _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator(90,0,0));
         _playerCameraSpringArm->TargetArmLength = 0;
     }
 
@@ -369,7 +369,6 @@ public:
 
 		// AGL offset will be set to a positve value the first time agl() is called
 		_aglOffset = 0;
-
 
 		// Get vehicle ground-truth rotation to initialize flight manager
 		FRotator startRotation = _pawn->GetActorRotation();
