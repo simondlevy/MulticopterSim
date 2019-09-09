@@ -22,6 +22,8 @@
 #include "Camera.hpp"
 #include "Landscape.h"
 
+#include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
+
 #include <stdio.h>
 
  // Windows/Linux compatibility 
@@ -203,7 +205,7 @@ private:
 
 	void playerCameraSetGroundView()
 	{
-		_playerController->SetViewTargetWithBlend(_groundCamera);
+		if (_groundCamera) _playerController->SetViewTargetWithBlend(_groundCamera);
 	}
 
 public:
@@ -382,9 +384,14 @@ public:
 			FMath::DegreesToRadians(startRotation.Yaw) };
 		_dynamics->init(rotation);
 
+		// Find the first cine camera in the viewport
 		_groundCamera = NULL;
 		for (TActorIterator<ACameraActor> cameraItr(_pawn->GetWorld()); cameraItr; ++cameraItr) {
-			_groundCamera = *cameraItr;
+
+			ACameraActor * cameraActor = *cameraItr;
+			if (cameraActor->GetName().StartsWith("CineCamera")) {
+				_groundCamera = cameraActor;
+			}
 		}
 
 		playerCameraSetChaseView();
@@ -413,6 +420,11 @@ public:
 
     void setPlayerCameraView(void)
     {
+		if (_groundCamera) {
+			_groundCamera->SetActorRotation(
+				UKismetMathLibrary::FindLookAtRotation(_groundCamera->GetActorLocation(), _pawn->GetActorLocation()));
+		}
+
         if (hitKey(EKeys::One)   || hitKey(EKeys::NumPadOne))   playerCameraSetFrontView();
         if (hitKey(EKeys::Two)   || hitKey(EKeys::NumPadTwo))   playerCameraSetChaseView();
 		if (hitKey(EKeys::Three) || hitKey(EKeys::NumPadThree)) playerCameraSetGroundView();
