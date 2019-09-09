@@ -52,6 +52,7 @@ class Camera {
 
         // UE4 resources, set in Vehicle::addCamera()
         USceneCaptureComponent2D * _captureComponent = NULL;
+        UCameraComponent         * _cameraComponent = NULL;
         FRenderTarget            * _renderTarget = NULL;
  
         Camera(float fov, Resolution_t resolution) 
@@ -69,6 +70,7 @@ class Camera {
 
             // These will be set in Vehicle::addCamera()
             _captureComponent = NULL;
+            _cameraComponent = NULL;
             _renderTarget = NULL;
         }
 
@@ -121,12 +123,18 @@ class Camera {
 
             UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObjects[_res][id].Object;
 
+            _cameraComponent = pawn->CreateDefaultSubobject<UCameraComponent >(makeName("Camera", id));
+            _cameraComponent->SetWorldScale3D(FVector(0.1,0.1,0.1));
+            _cameraComponent->SetupAttachment(springArm, USpringArmComponent::SocketName);
+            _cameraComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            //_cameraComponent->TextureTarget = textureRenderTarget2D;
+
             // Create a scene-capture component and set its target to the render target
-            _captureComponent = pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
-            _captureComponent->SetWorldScale3D(FVector(0.1,0.1,0.1));
-            _captureComponent->SetupAttachment(springArm, USpringArmComponent::SocketName);
-            _captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
-            _captureComponent->TextureTarget = textureRenderTarget2D;
+            //_captureComponent = pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
+            //_captureComponent->SetWorldScale3D(FVector(0.1,0.1,0.1));
+            //_captureComponent->SetupAttachment(springArm, USpringArmComponent::SocketName);
+            //_captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            //_captureComponent->TextureTarget = textureRenderTarget2D;
 
             // Get the render target resource for copying the image pixels
             _renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();
@@ -141,7 +149,7 @@ class Camera {
         // Sets current FOV
         void setFov(float fov)
         {
-            _captureComponent->FOVAngle = fov;
+            //_captureComponent->FOVAngle = fov;
         }
 
     public:

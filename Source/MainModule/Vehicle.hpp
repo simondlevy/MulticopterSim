@@ -44,6 +44,8 @@ class Vehicle {
 
 private:
 
+	ACameraActor* _groundCamera = NULL;
+
 	// Useful approximation to infinity for tracing rays
 	static constexpr float INF = 1e9;
 
@@ -60,6 +62,7 @@ private:
 	UAudioComponent* _audioComponent = NULL;
 	USpringArmComponent* _gimbalSpringArm = NULL;
     USpringArmComponent * _playerCameraSpringArm = NULL;
+	UCameraComponent* _playerCamera = NULL;
 
     // Support for switching from chase camera to FPV
     float _playerCameraFollowMeters = 0;
@@ -172,8 +175,6 @@ private:
         _playerCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("PlayerCameraSpringArm"));
         _playerCameraSpringArm->SetupAttachment(bodyHorizontalSpringArm);
 
-        playerCameraSetChaseView();
-
         _playerCameraSpringArm->bEnableCameraLag = false;
         _playerCameraSpringArm->bAbsoluteRotation = false;
         _playerCameraSpringArm->bInheritYaw = true;
@@ -181,28 +182,29 @@ private:
         _playerCameraSpringArm->bInheritRoll = false;
         _playerCameraSpringArm->bEnableCameraRotationLag = true;
 
-        UCameraComponent* playerCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
-        playerCamera->SetupAttachment(_playerCameraSpringArm, USpringArmComponent::SocketName);
+        _playerCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
+        _playerCamera->SetupAttachment(_playerCameraSpringArm, USpringArmComponent::SocketName);
     }
 
     void playerCameraSetChaseView()
     {
-        _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector(-_playerCameraFollowMeters, 0, _playerCameraElevationMeters)*100, 
+		_playerController->SetViewTargetWithBlend(_pawn);
+		_playerCameraSpringArm->SetRelativeLocationAndRotation(FVector(-_playerCameraFollowMeters, 0, _playerCameraElevationMeters)*100,
                 FRotator::ZeroRotator);;
         _playerCameraSpringArm->TargetArmLength = _playerCameraFollowMeters*100;
     }
 
-    void playerCameraSetGroundView()
+    void playerCameraSetFrontView()
     {
-        _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator(90,0,0));
+		_playerController->SetViewTargetWithBlend(_pawn);
+		_playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
         _playerCameraSpringArm->TargetArmLength = 0;
     }
 
-    void playerCameraSetFrontView()
-    {
-        _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-        _playerCameraSpringArm->TargetArmLength = 0;
-    }
+	void playerCameraSetGroundView()
+	{
+		_playerController->SetViewTargetWithBlend(_groundCamera);
+	}
 
 public:
 
@@ -379,13 +381,19 @@ public:
 			FMath::DegreesToRadians(startRotation.Pitch),
 			FMath::DegreesToRadians(startRotation.Yaw) };
 		_dynamics->init(rotation);
+
+		_groundCamera = NULL;
+		for (TActorIterator<ACameraActor> cameraItr(_pawn->GetWorld()); cameraItr; ++cameraItr) {
+			_groundCamera = *cameraItr;
+		}
+
+		playerCameraSetChaseView();
 	}
 
 	void Tick(float DeltaSeconds)
 	{
-
         // Quit on ESCape key
-        if (hitKey(EKeys::Escape))  GIsRequestingExit = true;
+        if (hitKey(EKeys::Escape)) GIsRequestingExit = true;
 
         // Run the game if a map has been selected
 		if (_mapSelected) {
@@ -407,7 +415,7 @@ public:
     {
         if (hitKey(EKeys::One)   || hitKey(EKeys::NumPadOne))   playerCameraSetFrontView();
         if (hitKey(EKeys::Two)   || hitKey(EKeys::NumPadTwo))   playerCameraSetChaseView();
-        if (hitKey(EKeys::Three) || hitKey(EKeys::NumPadThree)) playerCameraSetGroundView();
+		if (hitKey(EKeys::Three) || hitKey(EKeys::NumPadThree)) playerCameraSetGroundView();
     }
 
     bool hitKey(const FKey key)
