@@ -32,12 +32,15 @@ class FHackflightFlightManager : public FFlightManager {
 
         // Rate
         hf::Rate ratePid = hf::Rate(
-                0.01,	// Roll/Pitch P
-                0.01,	// Roll/Pitch I
-                0.01,	// Roll/Pitch D
-                0.025,	// Yaw P
-                0.01,	// Yaw I
-                8.00);	// Demands to rate
+
+                0.1,	// Roll/Pitch P
+                0.1,	// Roll/Pitch I
+                0.1,	// Roll/Pitch D
+
+                .025,	// Yaw P
+                .01,	// Yaw I
+
+                8.00);	// Demand multipler
 
         // Level
         hf::Level level = hf::Level(0.1);
