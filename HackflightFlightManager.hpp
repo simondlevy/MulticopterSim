@@ -67,12 +67,6 @@ class FHackflightFlightManager : public FFlightManager {
         // "Sensors" (get values from dynamics)
         SimSensors * _sensors = NULL;
 
-        // Gimbal axes
-        float _gimbalRoll = 0;
-        float _gimbalPitch = 0;
-        float _gimbalYaw = 0;
-        float _gimbalFOV = 0;
-
     public:
 
         // Constructor
@@ -92,11 +86,6 @@ class FHackflightFlightManager : public FFlightManager {
             // Add altitude-hold and position-hold PID controllers in switch position 2
             _hackflight.addPidController(&althold, 2);    
             _hackflight.addPidController(&flowhold, 2);    
-
-            // Start gimbal in center, medium Field-Of-View
-            _gimbalRoll = 0;
-            _gimbalPitch = 0;
-            _gimbalFOV = 90;
         }
 
         virtual ~FHackflightFlightManager(void)
@@ -119,23 +108,11 @@ class FHackflightFlightManager : public FFlightManager {
 
                 default:
 
-                    if (_receiver.inGimbalMode()) {
-                        _receiver.getGimbal(_gimbalRoll, _gimbalPitch, _gimbalYaw, _gimbalFOV);
-                    }
-
                     _hackflight.update();
 
                     // Input deltaT, quat, gyro; output motor values
                     _board.getMotors(time, state.quaternion, state.angularVel, motorvals, 4);
             }
          }
-
-        void getGimbal(float & roll, float &pitch, float & yaw, float & fov)
-        {
-            roll  = _gimbalRoll;
-            pitch = _gimbalPitch;
-            yaw   = _gimbalYaw;
-            fov   = _gimbalFOV;
-        }
 
 }; // HackflightFlightManager
