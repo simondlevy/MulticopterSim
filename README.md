@@ -57,7 +57,7 @@ do the following:
 <b>Documents/Unreal Projects</b> folder, first creating that folder if it
 doesn't exist.
    
-2. Clone the  [HackflightModule](https://github.com/simondlevy/MulticopterSim/tree/HackflightQuadModule) branch
+2. Clone the  [HackflightModule](https://github.com/simondlevy/MulticopterSim/tree/HackflightModule) branch
 of the repository onto your desktop, rename it <b>FlightModule</b>, and drag the
 <b>FlightModule</b> folder into the <b>MulticopterSim/Source</b> folder.
 
