@@ -29,12 +29,21 @@ public class FlightModule : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
-        if (IsLinux) {
-            PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("HOME") + "/Documents/Arduino/libraries/Hackflight/src");
+        string home = Environment.GetEnvironmentVariable("HOME");
+
+        // Windows support: home defaults to C:\Users\<yourname>; create HOME environment variable if you don't have Arduino there
+        if (home == null) {
+            home = Environment.GetEnvironmentVariable("userprofile");
         }
-        else {
+
+        string path = home + "/Documents/Arduino/libraries/Hackflight/src";
+
+        // Windows support: re-format path
+        if (!IsLinux) {
+            path = (path.Substring(1,1) + ":" + path.Substring(2)).Replace('/', '\\');
             PublicDependencyModuleNames.Add("MainModule");
-            PrivateIncludePaths.Add(Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\Arduino\\libraries\\Hackflight\\src");
         }
+
+        PrivateIncludePaths.Add(path);
     }
 }

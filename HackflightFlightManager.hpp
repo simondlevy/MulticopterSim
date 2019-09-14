@@ -13,6 +13,8 @@
 #include <hackflight.hpp>
 
 // PID controllers
+#include <pidcontrollers/rate.hpp>
+#include <pidcontrollers/yaw.hpp>
 #include <pidcontrollers/level.hpp>
 #include <pidcontrollers/althold.hpp>
 #include <pidcontrollers/flowhold.hpp>
@@ -37,13 +39,13 @@ class FHackflightFlightManager : public FFlightManager {
                 0.1,	// Roll/Pitch I
                 0.1,	// Roll/Pitch D
 
-                .025,	// Yaw P
-                .01,	// Yaw I
+                0.025,	// Yaw P
+                0.01,	// Yaw I
 
                 8.00);	// Demand multipler
 
         // Level
-        hf::Level level = hf::Level(0.1);
+        hf::Level levelPid = hf::Level(0.1);
 
         // Alt-hold
         hf::AltitudeHold althold = hf::AltitudeHold(
@@ -77,14 +79,17 @@ class FHackflightFlightManager : public FFlightManager {
             : FFlightManager(dynamics) 
         {
             // Start Hackflight firmware, indicating already armed
-            _hackflight.init(&_board, &_receiver, &_mixer, &ratePid, true);
+            _hackflight.init(&_board, &_receiver, &_mixer, true);
 
             // Add simulated sensor suite
             _sensors = new SimSensors(_dynamics);
             _hackflight.addSensor(_sensors);
 
-            // Add level PID controller for aux switch position 1
-            _hackflight.addPidController(&level, 1);
+			// Add rate PID controller for aux switch position 0
+			//_hackflight.addPidController(&ratePid, 0);
+
+            // Add level PID controller for aux switch position 0
+            _hackflight.addPidController(&levelPid, 0);
 
             // Add altitude-hold and position-hold PID controllers in switch position 2
             _hackflight.addPidController(&althold, 2);    
