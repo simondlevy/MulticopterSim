@@ -18,7 +18,7 @@ int main(int argc, char ** argv)
 
         if (!js.poll(axes)) {
 
-            printf("thr:%+f rol:%+f pit:%+f yaw:%+f au1:%+f au2:%+f\n", axes[0], axes[1], axes[2], axes[3], axes[4], axes[5]);
+            printf("thr:%+f rol:%+f pit:%+f yaw:%+f aux:%+f\n", axes[0], axes[1], axes[2], axes[3], axes[4]);
         }
     }
 

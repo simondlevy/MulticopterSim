@@ -36,10 +36,10 @@ static void getAxes5(float axes[6], uint8_t & naxes, DWORD axis0, DWORD axis1, D
 // XXX Should use a separate calibration program
 static void adjustAxesInterlink(float * axes)
 {
-    axes[0] /= 0.575;
-    axes[1] /= 0.65;
-    axes[2] /= 0.58;
-    axes[3] /= 0.65;
+    axes[0] /= 0.575f;
+    axes[1] /= 0.65f;
+    axes[2] /= 0.58f;
+    axes[3] /= 0.65f;
 }
 
 Joystick::Joystick(const char * devname)
@@ -67,7 +67,7 @@ Joystick::Joystick(const char * devname)
 static void getAuxInterlink(float * axes, uint8_t buttons, uint8_t aux1, uint8_t aux2, float auxMid)
 {
 	axes[aux1] = -1;
-	axes[aux2] = (buttons & 0x01) ? -1 : 1;
+	axes[aux2] = (buttons & 0x01) ? -1.f : +1.f;
 
 	switch (buttons) {
 
@@ -97,7 +97,6 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 
         case PRODUCT_SPEKTRUM:
             getAxes5(axes, naxes, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwXpos, joyState.dwUpos);
-            axes[5] = joyState.dwButtons & 0x01 ? -1 : +1;
             break;
 
         case PRODUCT_TARANIS:
@@ -125,7 +124,7 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 
         case PRODUCT_INTERLINK:
             getAxes4(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos);
-			getAuxInterlink(axes, joyState.dwButtons, AX_AU1, AX_AU2, AUX1_MID);
+			getAuxInterlink(axes, (uint8_t)joyState.dwButtons, AX_AU1, AX_AU2, AUX1_MID);
             break;
 
         default:
@@ -142,7 +141,7 @@ Joystick::error_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
         adjustAxesInterlink(axes);
     }
 
-    buttons = joyState.dwButtons;
+    buttons = (uint8_t)joyState.dwButtons;
 
 	return Joystick::ERROR_NOERROR;
 }
