@@ -44,6 +44,8 @@ public class FlightModule : ModuleRules
             PublicDependencyModuleNames.Add("MainModule");
         }
 
+        Console.WriteLine(path);
+
         PrivateIncludePaths.Add(path);
     }
 }

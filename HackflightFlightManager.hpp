@@ -33,20 +33,20 @@ class FHackflightFlightManager : public FFlightManager {
         // PID tuning
 
         // Level
-        hf::Level levelPid = hf::Level(0.1);
+        hf::LevelPid levelPid = hf::LevelPid(0.1);
 
         // Yaw
-        hf::Yaw yawPid = hf::Yaw(.025, .01);
+        hf::YawPid yawPid = hf::YawPid(.025, .01);
 
         // Alt-hold
-        hf::AltitudeHold althold = hf::AltitudeHold(
+        hf::AltitudeHoldPid althold = hf::AltitudeHoldPid(
                 5.00f,  // altHoldP
                 1.00f,  // altHoldVelP
                 0.01f,  // altHoldVelI
                 0.10f); // altHoldVelD
 
         // Pos-hold (via simulated optical flow)
-        hf::FlowHold flowhold = hf::FlowHold(0.01);
+        hf::FlowHoldPid flowhold = hf::FlowHoldPid(0.01);
 
         // Main firmware
         hf::Hackflight _hackflight;
