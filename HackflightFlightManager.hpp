@@ -13,7 +13,6 @@
 #include <hackflight.hpp>
 
 // PID controllers
-#include <pidcontrollers/yaw.hpp>
 #include <pidcontrollers/level.hpp>
 #include <pidcontrollers/rate.hpp>
 #include <pidcontrollers/althold.hpp>
@@ -33,13 +32,10 @@ class FHackflightFlightManager : public FFlightManager {
         // PID tuning
 
 		// Rate
-		hf::RatePid ratePid = hf::RatePid(.01, .01, .01);
+		hf::RatePid ratePid = hf::RatePid(.01, .01, .01, .025, .01);
 
         // Level
-        hf::LevelPid levelPid = hf::LevelPid(0.1);
-
-        // Yaw
-        hf::YawPid yawPid = hf::YawPid(.025, .01);
+        hf::LevelPid levelPid = hf::LevelPid(0.2);
 
         // Alt-hold
         hf::AltitudeHoldPid althold = hf::AltitudeHoldPid(
@@ -79,9 +75,9 @@ class FHackflightFlightManager : public FFlightManager {
             _sensors = new SimSensors(_dynamics);
             _hackflight.addSensor(_sensors);
 
-            // Add level and yaw PID controller for all aux-switch psoitions
+            // Add rate and level PID controllers for all aux switch positions
+            _hackflight.addPidController(&ratePid);
             _hackflight.addPidController(&levelPid);
-            _hackflight.addPidController(&yawPid);
 
             // Add altitude-hold and position-hold PID controllers in switch position 1
             _hackflight.addPidController(&althold, 1);    
