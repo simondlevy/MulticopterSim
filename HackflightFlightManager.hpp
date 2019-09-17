@@ -15,7 +15,7 @@
 // PID controllers
 #include <pidcontrollers/yaw.hpp>
 #include <pidcontrollers/level.hpp>
-#include <pidcontrollers/acro.hpp>
+#include <pidcontrollers/rate.hpp>
 #include <pidcontrollers/althold.hpp>
 #include <pidcontrollers/flowhold.hpp>
 
@@ -31,6 +31,9 @@ class FHackflightFlightManager : public FFlightManager {
     private:
 
         // PID tuning
+
+		// Rate
+		hf::RatePid ratePid = hf::RatePid(.01, .01, .01);
 
         // Level
         hf::LevelPid levelPid = hf::LevelPid(0.1);
