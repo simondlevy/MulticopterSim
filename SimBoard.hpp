@@ -17,6 +17,7 @@ class SimBoard : public hf::Board {
     private:
    
         static const uint8_t MAXMOTORS = 10;
+		static const uint8_t Q_DIVISOR = 5; // this many gyro readings per quaternion reading
 
         float _currentTime = 0; // must be float for Hackflight
 
@@ -24,11 +25,17 @@ class SimBoard : public hf::Board {
         double _gyro[3] = {0};
         double _motors[MAXMOTORS] = {0};
 
+		uint8_t _qcount = 0;
+
     protected:
 
 
         bool getQuaternion(float & qw, float & qx, float & qy, float & qz)
         {
+			_qcount = ((_qcount+1) % Q_DIVISOR);
+
+			if (_qcount) return false;
+
             qw =   _quat[0];
             qx = - _quat[1];// invert X
             qy = - _quat[2];// invert Y
@@ -58,9 +65,14 @@ class SimBoard : public hf::Board {
 
     public:
 
-        SimBoard() { }
+        SimBoard() 
+		{
+			_qcount = 0;
+		}
 
-        virtual ~SimBoard() { }
+        virtual ~SimBoard() 
+		{ 
+		}
 
         void getMotors(const double time, const double quat[4], const double gyro[3], double * motors, uint8_t motorCount)
         {

@@ -21,7 +21,7 @@ class SimReceiver : public hf::Receiver {
     private:
 
 		static constexpr uint8_t DEFAULT_CHANNEL_MAP[6] = { 0, 1, 2, 3, 4, 5 };
-		static constexpr float DEMAND_SCALE = 8.0f;
+		static constexpr float DEMAND_SCALE = 1.0f;
 
 		Joystick * _joystick;
 
