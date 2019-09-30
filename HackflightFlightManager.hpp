@@ -40,7 +40,7 @@ class FHackflightFlightManager : public FFlightManager {
 			.01); 	// Ki_yaw
 
         // Level
-        hf::LevelPid levelPid = hf::LevelPid(0.4);
+        hf::LevelPid levelPid = hf::LevelPid(0.8);
 
         // Alt-hold
         hf::AltitudeHoldPid althold = hf::AltitudeHoldPid(
@@ -50,7 +50,7 @@ class FHackflightFlightManager : public FFlightManager {
                 0.10f); // altHoldVelD
 
         // Pos-hold (via simulated optical flow)
-        hf::FlowHoldPid flowhold = hf::FlowHoldPid(0, .01, .05);
+        hf::FlowHoldPid flowhold = hf::FlowHoldPid(0.05, 0.05, 0);
 
         // Main firmware
         hf::Hackflight _hackflight;
@@ -80,13 +80,13 @@ class FHackflightFlightManager : public FFlightManager {
             _sensors = new SimSensors(_dynamics);
             _hackflight.addSensor(_sensors);
 
+			// Add altitude-hold and position-hold PID controllers in switch position 1
+			_hackflight.addPidController(&althold, 1);
+			_hackflight.addPidController(&flowhold, 1);
+
 			// Add rate and level PID controllers for all aux switch positions
 			_hackflight.addPidController(&levelPid);
 			_hackflight.addPidController(&ratePid);
-
-			// Add altitude-hold and position-hold PID controllers in switch position 1
-			//_hackflight.addPidController(&althold, 1);
-			//_hackflight.addPidController(&flowhold, 1);
 		}
 
         virtual ~FHackflightFlightManager(void)
