@@ -37,18 +37,19 @@ class TinyWhoop {
         MultirotorDynamics::Parameters params = MultirotorDynamics::Parameters(
 
                 // Estimated
-                2.5E-09, // b
-                2.E-08, // d
+                5.E-06, // b
+                2.E-06, // d
 
-                0.028,  // m (kg)
-                0.0275, // l (meters)
+                // https://www.dji.com/phantom-4/info
+                1.380,  // m (kg)
+                0.350,  // l (meters)
 
                 // Estimated
                 2,      // Ix
                 2,      // Iy
                 3,      // Iz
                 38E-04, // Jr
-                60000); // maxrpm
+                15000); // maxrpm
 
     public:
 
