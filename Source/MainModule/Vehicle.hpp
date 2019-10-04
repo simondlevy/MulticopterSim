@@ -64,6 +64,7 @@ private:
 	UAudioComponent* _audioComponent = NULL;
 	USpringArmComponent* _gimbalSpringArm = NULL;
     USpringArmComponent * _playerCameraSpringArm = NULL;
+    USpringArmComponent* _bodyHorizontalSpringArm = NULL;
 	UCameraComponent* _playerCamera = NULL;
 
     // Support for switching from chase camera to FPV
@@ -161,21 +162,20 @@ private:
 
 	void buildPlayerCameras(float distanceMeters, float elevationMeters)
     {
-        USpringArmComponent* bodyHorizontalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("BodyHorizontalSpringArm"));
-        bodyHorizontalSpringArm->SetupAttachment(_frameMeshComponent);
-        bodyHorizontalSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-        bodyHorizontalSpringArm->TargetArmLength = 0;
-        bodyHorizontalSpringArm->bEnableCameraLag = false;
-        bodyHorizontalSpringArm->bAbsoluteRotation = false;
-        bodyHorizontalSpringArm->bInheritYaw = true;
-        bodyHorizontalSpringArm->bInheritPitch = false;
-        bodyHorizontalSpringArm->bInheritRoll = false;
+        _bodyHorizontalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("BodyHorizontalSpringArm"));
+        _bodyHorizontalSpringArm->SetupAttachment(_frameMeshComponent);
+        _bodyHorizontalSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+        _bodyHorizontalSpringArm->TargetArmLength = 0;
+        _bodyHorizontalSpringArm->bEnableCameraLag = false;
+        _bodyHorizontalSpringArm->bAbsoluteRotation = false;
+        _bodyHorizontalSpringArm->bInheritPitch = false;
+        _bodyHorizontalSpringArm->bInheritRoll = false;
 
         _playerCameraFollowMeters = distanceMeters;
         _playerCameraElevationMeters = elevationMeters;
 
         _playerCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("PlayerCameraSpringArm"));
-        _playerCameraSpringArm->SetupAttachment(bodyHorizontalSpringArm);
+        _playerCameraSpringArm->SetupAttachment(_bodyHorizontalSpringArm);
 
         _playerCameraSpringArm->bEnableCameraLag = false;
         _playerCameraSpringArm->bAbsoluteRotation = false;
@@ -194,6 +194,8 @@ private:
 		_playerCameraSpringArm->SetRelativeLocationAndRotation(FVector(-_playerCameraFollowMeters, 0, _playerCameraElevationMeters)*100,
                 FRotator::ZeroRotator);;
         _playerCameraSpringArm->TargetArmLength = _playerCameraFollowMeters*100;
+
+        _bodyHorizontalSpringArm->bInheritYaw = false ;
     }
 
     void playerCameraSetFrontView()
@@ -201,6 +203,8 @@ private:
 		_playerController->SetViewTargetWithBlend(_pawn);
 		_playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
         _playerCameraSpringArm->TargetArmLength = 0;
+
+        _bodyHorizontalSpringArm->bInheritYaw = true;
     }
 
 	void playerCameraSetGroundView()
