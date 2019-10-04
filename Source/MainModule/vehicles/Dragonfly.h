@@ -57,11 +57,13 @@ class Dragonfly {
         {
             vehicle.buildFull(pawn, BodyStatics.mesh.Get(), 1.5, 0.5);
 
+            vehicle.addProp(WingStatics.mesh.Get(), +.5, +.06, 115);
+
             // Add wings
-            addWing(+1, +1);
-            addWing(-1, -1);
-            addWing(+1, -1);
-            addWing(-1, +1);
+            //addWing(+1, +1, 90);
+            //addWing(-1, -1, 45);
+            //addWing(+1, -1, 45);
+            //addWing(-1, +1, 45);
 
             _flightManager = NULL;
         }
@@ -93,9 +95,9 @@ class Dragonfly {
             vehicle.addCamera(camera);
         }
 
-        void addWing(int8_t dx, int8_t dy)
+        void addWing(int8_t dx, int8_t dy, float angle)
         {
-            vehicle.addProp(WingStatics.mesh.Get(), dx*0.12, dy*0.12);
+            vehicle.addProp(WingStatics.mesh.Get(), dx*0.12, dy*0.12, angle);
         }
 
 }; // class Dragonfly 

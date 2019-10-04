@@ -278,7 +278,7 @@ public:
     }
 
     // z is set in editor
-    void addProp(UStaticMesh* propMesh, float x, float y)
+    void addProp(UStaticMesh* propMesh, float x, float y, float angle)
     {
         UStaticMeshComponent* pMeshComponent =
             _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", _propCount, "Mesh"));
@@ -286,11 +286,16 @@ public:
         pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
         pMeshComponent->AddRelativeLocation(FVector(x, y, 0) * 100); // m => cm
         _propellerMeshComponents[_propCount] = pMeshComponent;
-        setPropRotation(_propCount, propStartAngle(x, y));
+        setPropRotation(_propCount, angle);
         _propCount++;
     }
 
-    float propStartAngle(float propX, float propY)
+    void addProp(UStaticMesh* propMesh, float x, float y)
+    {
+        addProp(propMesh, x, y, propStartAngle(x,y));
+    }
+
+     float propStartAngle(float propX, float propY)
     {
         FVector vehicleCenter = _pawn->GetActorLocation();
 
@@ -308,7 +313,7 @@ public:
     {
         static float rotation;
         for (uint8_t i = 0; i < motorCount; ++i) {
-            setPropRotation(i, rotation * motorDirections[i] * 200);
+            //setPropRotation(i, rotation * motorDirections[i] * 200);
         }
         rotation++;
     }
