@@ -57,7 +57,7 @@ class Dragonfly {
         {
             vehicle.buildFull(pawn, BodyStatics.mesh.Get(), 1.5, 0.5);
 
-            vehicle.addProp(WingStatics.mesh.Get(), +.5, +.06, 115);
+            vehicle.addProp(WingStatics.mesh.Get(), +0.05, +0.25, 22);
 
             // Add wings
             //addWing(+1, +1, 90);
