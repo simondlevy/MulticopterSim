@@ -31,7 +31,9 @@ class Ornithopter : public Vehicle {
         virtual void setPropRotation(uint8_t index, float angle) override
         {
             // XXX Remove guard once all wings are working
-            if (_propellerMeshComponents[index]) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, angle, 0));
+            if (_propellerMeshComponents[index]) {
+                _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, 0, 45*sin(angle/100)));
+            }
         }
 
 
