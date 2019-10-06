@@ -1,5 +1,5 @@
 /*
- Helper class for pawns using DJI Dragonfly frame
+ Helper class for pawns using Dragonfly insect frame
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../MainModule/Vehicle.hpp"
+#include "Ornithopter.hpp"
 #include "../MainModule/Camera.hpp"
 #include "../MainModule/dynamics/QuadXAP.hpp"
 
@@ -44,7 +44,7 @@ class Dragonfly {
 
         QuadXAPDynamics dynamics = QuadXAPDynamics(&params);
 
-        Vehicle vehicle = Vehicle(&dynamics);
+        Ornithopter ornithopter = Ornithopter(&dynamics);
 
     private:
 
@@ -55,29 +55,23 @@ class Dragonfly {
 
         void build(APawn * pawn)
         {
-            vehicle.buildFull(pawn, BodyStatics.mesh.Get(), 1.5, 0.5);
+            ornithopter.buildFull(pawn, BodyStatics.mesh.Get(), 1.5, 0.5);
 
-            vehicle.addProp(WingStatics.mesh.Get(), +0.05, +0.25, 22);
-
-            // Add wings
-            //addWing(+1, +1, 90);
-            //addWing(-1, -1, 45);
-            //addWing(+1, -1, 45);
-            //addWing(-1, +1, 45);
+            ornithopter.addWing(WingStatics.mesh.Get(), +0.05, +0.25, 22);
 
             _flightManager = NULL;
         }
 
         void PostInitializeComponents()
         {
-            vehicle.PostInitializeComponents();
+            ornithopter.PostInitializeComponents();
         }
 
         void BeginPlay(FFlightManager * flightManager)
         {
             _flightManager = flightManager;
 
-            vehicle.BeginPlay(flightManager);
+            ornithopter.BeginPlay(flightManager);
         }
 
         void EndPlay(void)
@@ -87,17 +81,12 @@ class Dragonfly {
 
         void Tick(float DeltaSeconds)
         {
-            vehicle.Tick(DeltaSeconds);
+            ornithopter.Tick(DeltaSeconds);
         }
 
         void addCamera(Camera * camera)
         {
-            vehicle.addCamera(camera);
-        }
-
-        void addWing(int8_t dx, int8_t dy, float angle)
-        {
-            vehicle.addProp(WingStatics.mesh.Get(), dx*0.12, dy*0.12, angle);
+            ornithopter.addCamera(camera);
         }
 
 }; // class Dragonfly 
