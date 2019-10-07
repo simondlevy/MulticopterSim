@@ -26,7 +26,7 @@ class Ornithopter : public Vehicle {
         void addWing(UStaticMesh * wingMesh, UStaticMesh * hingeMesh, float hingeX, float hingeY, float wingY, float angle)
         {
             // Use a tiny hinge as the "propeller" for this wing
-            UStaticMeshComponent* hingeMeshComponent = Vehicle::makeProp(hingeMesh, hingeX, hingeY, angle);
+            UStaticMeshComponent* hingeMeshComponent = Vehicle::addProp(hingeMesh, hingeX, hingeY, angle);
 
             // Add the actual wing to the hinge
             UStaticMeshComponent* wingMeshComponent =
@@ -34,10 +34,6 @@ class Ornithopter : public Vehicle {
             wingMeshComponent->SetStaticMesh(wingMesh);
             wingMeshComponent->SetupAttachment(hingeMeshComponent, USpringArmComponent::SocketName);
             wingMeshComponent->AddRelativeLocation(FVector(+.025, wingY, -.05) * 100); // m => cm
-            //wingMeshComponent->SetRelativeRotation(FRotator(0, angle, 0));
-            wingMeshComponent->SetRelativeRotation(FRotator(0, 0, 0));
-           
-            _propCount++;
         }
 
         virtual void setPropRotation(uint8_t index, float angle) override
