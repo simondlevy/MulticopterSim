@@ -58,7 +58,8 @@ class Dragonfly {
         {
             ornithopter.buildFull(pawn, BodyStatics.mesh.Get(), 1.5, 0.5);
 
-            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), +0.125, +0.05, 90);
+            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), +0.125, +0.05, +0.3, 0);
+            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), +0.125, -0.05, -0.3, 180);
 
             _flightManager = NULL;
         }
