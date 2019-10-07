@@ -37,7 +37,7 @@ class Ornithopter : public Vehicle {
                 _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Wing", _propCount, "Mesh"));
             wingMeshComponent->SetStaticMesh(wingMesh);
             wingMeshComponent->SetupAttachment(hingeMeshComponent, USpringArmComponent::SocketName);
-            wingMeshComponent->AddRelativeLocation(FVector(0, +0.2, 0) * 100); // m => cm
+            wingMeshComponent->AddRelativeLocation(FVector(0, +0.3, -.05) * 100); // m => cm
   
             _propCount++;
         }
