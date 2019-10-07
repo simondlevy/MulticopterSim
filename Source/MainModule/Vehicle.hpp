@@ -284,7 +284,7 @@ class Vehicle {
         }
 
         // z is set in editor
-        UStaticMeshComponent * addProp(UStaticMesh* propMesh, float x, float y, float angle)
+        UStaticMeshComponent * makeProp(UStaticMesh* propMesh, float x, float y, float angle)
         {
             UStaticMeshComponent* propMeshComponent =
                 _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", _propCount, "Mesh"));
@@ -293,13 +293,18 @@ class Vehicle {
             propMeshComponent->AddRelativeLocation(FVector(x, y, 0) * 100); // m => cm
             _propellerMeshComponents[_propCount] = propMeshComponent;
             setPropRotation(_propCount, angle);
-            _propCount++;
             return propMeshComponent;
         }
 
-        UStaticMeshComponent * addProp(UStaticMesh* propMesh, float x, float y)
+        void addProp(UStaticMesh* propMesh, float x, float y, float angle)
         {
-            return addProp(propMesh, x, y, propStartAngle(x,y));
+            makeProp(propMesh, x, y, angle);
+            _propCount++;
+        }
+
+        void addProp(UStaticMesh* propMesh, float x, float y)
+        {
+            addProp(propMesh, x, y, propStartAngle(x,y));
         }
 
         float propStartAngle(float propX, float propY)

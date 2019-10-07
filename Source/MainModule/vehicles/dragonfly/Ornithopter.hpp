@@ -25,13 +25,7 @@ class Ornithopter : public Vehicle {
 
         void addWing(UStaticMesh * wingMesh, UStaticMesh * hingeMesh, float x, float y, float angle)
         {
-            UStaticMeshComponent* hingeMeshComponent =
-                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Hinge", _propCount, "Mesh"));
-            hingeMeshComponent->SetStaticMesh(hingeMesh);
-            hingeMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
-            hingeMeshComponent->AddRelativeLocation(FVector(x, y, 0) * 100); // m => cm
-            _propellerMeshComponents[_propCount] = hingeMeshComponent;
-            setPropRotation(_propCount, angle);
+            UStaticMeshComponent* hingeMeshComponent = Vehicle::makeProp(hingeMesh, x, y, angle);
 
             UStaticMeshComponent* wingMeshComponent =
                 _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Wing", _propCount, "Mesh"));
