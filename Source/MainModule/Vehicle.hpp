@@ -55,10 +55,8 @@ class Vehicle {
         static constexpr float SETTLING_TIME = 1.0;
 
         // UE4 objects that must be built statically
-        APawn* _pawn = NULL;
         UStaticMesh* _frameMesh = NULL;
         UStaticMesh* _motorMesh = NULL;
-        UStaticMeshComponent* _frameMeshComponent = NULL;
         USoundCue* _soundCue = NULL;
         UAudioComponent* _audioComponent = NULL;
         USpringArmComponent* _gimbalSpringArm = NULL;
@@ -72,9 +70,6 @@ class Vehicle {
 
         // PlayerController for getting keyboard events
         APlayerController * _playerController = NULL;
-
-        // Starts at zero and increases each time we call addProp()
-        uint8_t _propCount;
 
         // Cameras
         Camera* _cameras[Camera::MAX_CAMERAS];
@@ -213,7 +208,15 @@ class Vehicle {
 
     protected:
 
+        APawn* _pawn = NULL;
+
+        UStaticMeshComponent* _frameMeshComponent = NULL;
+
 	    UStaticMeshComponent* _propellerMeshComponents[FFlightManager::MAX_MOTORS] = {};
+
+        // Starts at zero and increases each time we call addProp()
+        uint8_t _propCount;
+
 
     public:
 
@@ -281,21 +284,22 @@ class Vehicle {
         }
 
         // z is set in editor
-        void addProp(UStaticMesh* propMesh, float x, float y, float angle)
+        UStaticMeshComponent * addProp(UStaticMesh* propMesh, float x, float y, float angle)
         {
-            UStaticMeshComponent* pMeshComponent =
+            UStaticMeshComponent* propMeshComponent =
                 _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", _propCount, "Mesh"));
-            pMeshComponent->SetStaticMesh(propMesh);
-            pMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
-            pMeshComponent->AddRelativeLocation(FVector(x, y, 0) * 100); // m => cm
-            _propellerMeshComponents[_propCount] = pMeshComponent;
+            propMeshComponent->SetStaticMesh(propMesh);
+            propMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
+            propMeshComponent->AddRelativeLocation(FVector(x, y, 0) * 100); // m => cm
+            _propellerMeshComponents[_propCount] = propMeshComponent;
             setPropRotation(_propCount, angle);
             _propCount++;
+            return propMeshComponent;
         }
 
-        void addProp(UStaticMesh* propMesh, float x, float y)
+        UStaticMeshComponent * addProp(UStaticMesh* propMesh, float x, float y)
         {
-            addProp(propMesh, x, y, propStartAngle(x,y));
+            return addProp(propMesh, x, y, propStartAngle(x,y));
         }
 
         float propStartAngle(float propX, float propY)

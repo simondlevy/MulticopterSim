@@ -18,6 +18,7 @@
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FBodyStatics, "Dragonfly/Body.Body", BodyStatics)
 DECLARE_STATIC_MESH(FWingStatics, "Dragonfly/Wing.Wing", WingStatics)
+DECLARE_STATIC_MESH(FHingeStatics, "Dragonfly/Hinge.Hinge", HingeStatics)
 
 class Dragonfly {
 
@@ -57,7 +58,7 @@ class Dragonfly {
         {
             ornithopter.buildFull(pawn, BodyStatics.mesh.Get(), 1.5, 0.5);
 
-            ornithopter.addWing(WingStatics.mesh.Get(), +0.05, +0.25, 22);
+            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), +0.125, +0.125, 90);
 
             _flightManager = NULL;
         }
