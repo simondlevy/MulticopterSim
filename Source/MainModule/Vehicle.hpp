@@ -214,9 +214,8 @@ class Vehicle {
 
 	    UStaticMeshComponent* _propellerMeshComponents[FFlightManager::MAX_MOTORS] = {};
 
-        // Starts at zero and increases each time we call addProp()
+        // Starts at zero and increases each time we add a propeller
         uint8_t _propCount;
-
 
     public:
 
@@ -291,28 +290,21 @@ class Vehicle {
             propMeshComponent->SetStaticMesh(propMesh);
             propMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
             propMeshComponent->AddRelativeLocation(FVector(x, y, 0) * 100); // m => cm
+            propMeshComponent->SetRelativeRotation(FRotator(0, angle, 0));
             _propellerMeshComponents[_propCount] = propMeshComponent;
-            setPropRotation(_propCount, angle);
             return propMeshComponent;
-        }
-
-        void addProp(UStaticMesh* propMesh, float x, float y, float angle)
-        {
-            makeProp(propMesh, x, y, angle);
-            _propCount++;
         }
 
         void addProp(UStaticMesh* propMesh, float x, float y)
         {
-            addProp(propMesh, x, y, propStartAngle(x,y));
+            UStaticMeshComponent * propMeshComponent = makeProp(propMesh, x, y, propStartAngle(x,y));
+            _propCount++;
         }
 
         float propStartAngle(float propX, float propY)
         {
             FVector vehicleCenter = _pawn->GetActorLocation();
-
             double theta = -atan2((propY - vehicleCenter.Y), (propX - vehicleCenter.X));
-
             return FMath::RadiansToDegrees(3.14159 / 2 - theta) + 57.5;
         }
 
