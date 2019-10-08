@@ -206,6 +206,22 @@ class Vehicle {
             if (_groundCamera) _playerController->SetViewTargetWithBlend(_groundCamera);
         }
 
+        float propStartAngle(float propX, float propY)
+        {
+            FVector vehicleCenter = _pawn->GetActorLocation();
+            double theta = -atan2((propY - vehicleCenter.Y), (propX - vehicleCenter.X));
+            return FMath::RadiansToDegrees(3.14159 / 2 - theta) + 57.5;
+        }
+
+        void rotateProps(int8_t* motorDirections, uint8_t motorCount)
+        {
+            static float rotation;
+            for (uint8_t i = 0; i < motorCount; ++i) {
+                setPropRotation(i, rotation * motorDirections[i] * 200);
+            }
+            rotation++;
+        }
+
     protected:
 
         APawn* _pawn = NULL;
@@ -301,25 +317,9 @@ class Vehicle {
             addProp(propMesh, x, y, propStartAngle(x,y));
         }
 
-        float propStartAngle(float propX, float propY)
-        {
-            FVector vehicleCenter = _pawn->GetActorLocation();
-            double theta = -atan2((propY - vehicleCenter.Y), (propX - vehicleCenter.X));
-            return FMath::RadiansToDegrees(3.14159 / 2 - theta) + 57.5;
-        }
-
         virtual void setPropRotation(uint8_t index, float angle)
         {
             _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, angle, 0));
-        }
-
-        void rotateProps(int8_t* motorDirections, uint8_t motorCount)
-        {
-            static float rotation;
-            for (uint8_t i = 0; i < motorCount; ++i) {
-                setPropRotation(i, rotation * motorDirections[i] * 200);
-            }
-            rotation++;
         }
 
         void addCamera(Camera* camera)
