@@ -10,7 +10,7 @@
 
 #include "Ornithopter.hpp"
 #include "../MainModule/Camera.hpp"
-#include "../MainModule/dynamics/QuadXAP.hpp"
+#include "../MainModule/dynamics/DragonflyDynamics.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -43,7 +43,7 @@ class Dragonfly {
 
     public:
 
-        QuadXAPDynamics dynamics = QuadXAPDynamics(&params);
+        DragonflyDynamics dynamics = DragonflyDynamics(&params);
 
         Ornithopter ornithopter = Ornithopter(&dynamics);
 
@@ -52,16 +52,21 @@ class Dragonfly {
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
+        void addWing(float hingeX, float hingeY, float angle)
+        {
+            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), hingeX, hingeY, +0.3, angle);
+        }
+
     public:
 
         void build(APawn * pawn)
         {
             ornithopter.buildFull(pawn, BodyStatics.mesh.Get(), 1.5, 0.5);
 
-            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), +0.10, +0.05, +0.3, +20);
-            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), +0.20, +0.05, +0.3, -20);
-            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), +0.15, -0.05, +0.3, +160);
-            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), +0.25, -0.05, +0.3, -160);
+            addWing(+0.20, +0.05, -20);
+            addWing(+0.15, -0.05, +160);
+            addWing(+0.25, -0.05, -160);
+            addWing(+0.10, +0.05, +20);
 
             _flightManager = NULL;
         }

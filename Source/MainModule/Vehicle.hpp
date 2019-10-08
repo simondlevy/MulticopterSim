@@ -78,9 +78,6 @@ class Vehicle {
         // Set in constructor
         MultirotorDynamics* _dynamics = NULL;
 
-        // Also set in constructor, but purely for visual effect
-        int8_t _motorDirections[FFlightManager::MAX_MOTORS] = {};
-
         // Threaded worker for running flight control
         class FFlightManager* _flightManager = NULL;
 
@@ -232,6 +229,9 @@ class Vehicle {
 
         // Starts at zero and increases each time we add a propeller
         uint8_t _propCount;
+
+        // Also set in constructor, but purely for visual effect
+        int8_t _motorDirections[FFlightManager::MAX_MOTORS] = {};
 
     public:
 
