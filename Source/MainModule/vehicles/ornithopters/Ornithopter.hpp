@@ -23,11 +23,11 @@ class Ornithopter : public Vehicle {
         {
         }
 
-        void addWing(UStaticMesh * wingMesh, UStaticMesh * hingeMesh, float hingeX, float hingeY, float wingY, float startAngle, float relativeAngle, bool flipped)
+        void addWing(UStaticMesh * wingMesh, UStaticMesh * hingeMesh, float hingeX, float hingeY, float wingY, float startAngle, float relativeAngle)
         {
             // Add a new wing structure for animation
             _wings[_propCount].relativeAngle = relativeAngle;
-            _wings[_propCount].flipped = flipped;
+            _wings[_propCount].relativeOffset = (startAngle==relativeAngle) ? 0 : 180;
 
             // Use a tiny hinge as the "propeller" for this wing
             UStaticMeshComponent* hingeMeshComponent = Vehicle::addProp(hingeMesh, hingeX, hingeY, startAngle);
@@ -44,7 +44,7 @@ class Ornithopter : public Vehicle {
         {
             wing_t wing = _wings[index];
 
-            _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, wing.relativeAngle, (wing.flipped ? 180 : 0) + 45*sin(angle/10000)));
+            _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, wing.relativeAngle, wing.relativeOffset + 45*sin(angle/10000)));
         }
 
     private:
@@ -52,7 +52,7 @@ class Ornithopter : public Vehicle {
         typedef struct {
 
             float relativeAngle;
-            bool flipped;
+            float relativeOffset;
 
         } wing_t;
 
