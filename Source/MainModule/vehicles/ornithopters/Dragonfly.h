@@ -41,14 +41,6 @@ class Dragonfly {
                 38E-04, // Jr
                 15000); // maxrpm
 
-    public:
-
-        DragonflyDynamics dynamics = DragonflyDynamics(&params);
-
-        Ornithopter ornithopter = Ornithopter(&dynamics);
-
-    private:
-
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
@@ -58,6 +50,10 @@ class Dragonfly {
         }
 
     public:
+
+        DragonflyDynamics dynamics = DragonflyDynamics(&params);
+
+        Ornithopter ornithopter = Ornithopter(&dynamics);
 
         void build(APawn * pawn)
         {
