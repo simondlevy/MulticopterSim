@@ -38,10 +38,10 @@ class Ornithopter : public Vehicle {
 
         virtual void setPropRotation(uint8_t index, float angle) override
         {
-            if (index+1==1) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, 0,   0 + 45*sin(angle/10000)));
-            if (index+1==2) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, 0, 180 + 45*sin(angle/10000)));
-            if (index+1==3) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, 0, 180 + 45*sin(angle/10000)));
-            if (index+1==4) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, 0,   0 + 45*sin(angle/10000)));
+            if (index+1==1) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, -20,  0 + 45*sin(angle/10000)));
+            if (index+1==2) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, -20, 180 + 45*sin(angle/10000)));
+            if (index+1==3) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, +20, 180 + 45*sin(angle/10000)));
+            if (index+1==4) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, +20,  0 + 45*sin(angle/10000)));
         }
 
 
