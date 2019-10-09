@@ -288,14 +288,14 @@ class Vehicle {
             meshComponent->SetRelativeScale3D(scale);
         }
 
-        void addMesh(UStaticMesh* mesh, const char* name, const FVector& location, const FRotator rotation, const float scale)
+        void addMesh(UStaticMesh* mesh, const char* name, const FVector& location, const FRotator rotation)
         {
-            addMesh(mesh, name, location, rotation, FVector(1, 1, 1) * scale);
+            addMesh(mesh, name, location, rotation, FVector(1, 1, 1));
         }
 
         void addMesh(UStaticMesh* mesh, const char* name)
         {
-            addMesh(mesh, name, FVector(0, 0, 0), FRotator(0, 0, 0), FVector(1, 1, 1));
+            addMesh(mesh, name, FVector(0, 0, 0), FRotator(0, 0, 0));
         }
 
         // z is set in editor

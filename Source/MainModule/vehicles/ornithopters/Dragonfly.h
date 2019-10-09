@@ -19,6 +19,7 @@
 DECLARE_STATIC_MESH(FBodyStatics, "Dragonfly/Body.Body", BodyStatics)
 DECLARE_STATIC_MESH(FWingStatics, "Dragonfly/Wing.Wing", WingStatics)
 DECLARE_STATIC_MESH(FHingeStatics, "Dragonfly/Hinge.Hinge", HingeStatics)
+DECLARE_STATIC_MESH(FEyeStatics, "Dragonfly/Eye.Eye", EyeStatics)
 
 class Dragonfly {
 
@@ -63,6 +64,8 @@ class Dragonfly {
             addWing(+0.15, -0.05, +160, -20);
             addWing(+0.25, -0.05, -160, +20);
             addWing(+0.10, +0.05, +20,  +20);
+
+            ornithopter.addMesh(EyeStatics.mesh.Get(), "Eye1", FVector(1,0,0), FRotator(0,0,0));
 
             _flightManager = NULL;
         }
