@@ -193,7 +193,7 @@ class Vehicle {
         {
             _playerController->SetViewTargetWithBlend(_pawn);
             _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-            _playerCameraSpringArm->TargetArmLength = 0;
+            _playerCameraSpringArm->TargetArmLength = -30; // empircally determined to be far enough ahead of vehicle
 
             _bodyHorizontalSpringArm->bInheritYaw = true;
         }
@@ -420,7 +420,7 @@ class Vehicle {
 
                 // Use 1/2 keys to switch player-camera view
                 setPlayerCameraView();
-                
+
                 updateKinematics();
 
                 grabImages();
@@ -435,7 +435,7 @@ class Vehicle {
         {
             if (_groundCamera) {
                 _groundCamera->SetActorRotation(
-                    UKismetMathLibrary::FindLookAtRotation(_groundCamera->GetActorLocation(), _pawn->GetActorLocation()));
+                        UKismetMathLibrary::FindLookAtRotation(_groundCamera->GetActorLocation(), _pawn->GetActorLocation()));
             }
 
             if (hitKey(EKeys::One)   || hitKey(EKeys::NumPadOne))   playerCameraSetFrontView();
