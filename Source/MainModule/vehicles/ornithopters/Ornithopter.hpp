@@ -12,6 +12,20 @@
 
 class Ornithopter : public Vehicle {
 
+    private:
+
+        static constexpr float MAX_FLAP_DEGREES   = 45;
+        static constexpr float FLAP_ANGLE_DIVISOR = 100; // bigger = slower
+
+        typedef struct {
+
+            float yawRelative;
+            float rollRelative;
+
+        } wing_t;
+
+        wing_t _wings[FFlightManager::MAX_MOTORS] = {};
+
     public:
 
         Ornithopter(MultirotorDynamics* dynamics)
@@ -23,14 +37,14 @@ class Ornithopter : public Vehicle {
         {
         }
 
-        void addWing(UStaticMesh * wingMesh, UStaticMesh * hingeMesh, float hingeX, float hingeY, float wingY, float startAngle, float relativeAngle)
+        void addWing(UStaticMesh * wingMesh, UStaticMesh * hingeMesh, float hingeX, float hingeY, float wingY, float yawStart, float yawRelative)
         {
             // Add a new wing structure for animation
-            _wings[_propCount].relativeAngle = relativeAngle;
-            _wings[_propCount].relativeOffset = (startAngle==relativeAngle) ? 0 : 180;
+            _wings[_propCount].yawRelative = yawRelative;
+            _wings[_propCount].rollRelative = (yawStart==yawRelative) ? 0 : 180;
 
             // Use a tiny hinge as the "propeller" for this wing
-            UStaticMeshComponent* hingeMeshComponent = Vehicle::addProp(hingeMesh, hingeX, hingeY, startAngle);
+            UStaticMeshComponent* hingeMeshComponent = Vehicle::addProp(hingeMesh, hingeX, hingeY, yawStart);
 
             // Add the actual wing to the hinge
             UStaticMeshComponent* wingMeshComponent =
@@ -44,18 +58,8 @@ class Ornithopter : public Vehicle {
         {
             wing_t wing = _wings[index];
 
-            _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, wing.relativeAngle, wing.relativeOffset + 45*sin(angle/10000)));
+            // Flap wing via sine of angle
+            _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, wing.yawRelative, wing.rollRelative + MAX_FLAP_DEGREES*sin(angle/FLAP_ANGLE_DIVISOR)));
         }
-
-    private:
-
-        typedef struct {
-
-            float relativeAngle;
-            float relativeOffset;
-
-        } wing_t;
-
-        wing_t _wings[FFlightManager::MAX_MOTORS] = {};
 
 };  // class Ornithopter
