@@ -52,9 +52,9 @@ class Dragonfly {
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
-        void addWing(float hingeX, float hingeY, float angle)
+        void addWing(float hingeX, float hingeY, float startAngle, float relativeAngle, bool flipped)
         {
-            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), hingeX, hingeY, +0.3, angle);
+            ornithopter.addWing(WingStatics.mesh.Get(), HingeStatics.mesh.Get(), hingeX, hingeY, +0.3, startAngle, relativeAngle, flipped);
         }
 
     public:
@@ -63,10 +63,10 @@ class Dragonfly {
         {
             ornithopter.buildFull(pawn, BodyStatics.mesh.Get(), 1.5, 0.5);
 
-            addWing(+0.20, +0.05, -20);
-            addWing(+0.15, -0.05, +160);
-            addWing(+0.25, -0.05, -160);
-            addWing(+0.10, +0.05, +20);
+            addWing(+0.20, +0.05, -20,  -20, false);
+            addWing(+0.15, -0.05, +160, -20, true);
+            addWing(+0.25, -0.05, -160, +20, true);
+            addWing(+0.10, +0.05, +20,  +20, false);
 
             _flightManager = NULL;
         }

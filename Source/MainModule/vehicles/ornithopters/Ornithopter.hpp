@@ -23,10 +23,14 @@ class Ornithopter : public Vehicle {
         {
         }
 
-        void addWing(UStaticMesh * wingMesh, UStaticMesh * hingeMesh, float hingeX, float hingeY, float wingY, float angle)
+        void addWing(UStaticMesh * wingMesh, UStaticMesh * hingeMesh, float hingeX, float hingeY, float wingY, float startAngle, float relativeAngle, bool flipped)
         {
+            // Add a new wing structure for animation
+            _wings[_propCount].relativeAngle = relativeAngle;
+            _wings[_propCount].flipped = flipped;
+
             // Use a tiny hinge as the "propeller" for this wing
-            UStaticMeshComponent* hingeMeshComponent = Vehicle::addProp(hingeMesh, hingeX, hingeY, angle);
+            UStaticMeshComponent* hingeMeshComponent = Vehicle::addProp(hingeMesh, hingeX, hingeY, startAngle);
 
             // Add the actual wing to the hinge
             UStaticMeshComponent* wingMeshComponent =
@@ -38,11 +42,20 @@ class Ornithopter : public Vehicle {
 
         virtual void setPropRotation(uint8_t index, float angle) override
         {
-            if (index+1==1) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, -20,  0 + 45*sin(angle/10000)));
-            if (index+1==2) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, -20, 180 + 45*sin(angle/10000)));
-            if (index+1==3) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, +20, 180 + 45*sin(angle/10000)));
-            if (index+1==4) _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, +20,  0 + 45*sin(angle/10000)));
+            wing_t wing = _wings[index];
+
+            _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, wing.relativeAngle, (wing.flipped ? 180 : 0) + 45*sin(angle/10000)));
         }
 
+    private:
+
+        typedef struct {
+
+            float relativeAngle;
+            bool flipped;
+
+        } wing_t;
+
+        wing_t _wings[FFlightManager::MAX_MOTORS] = {};
 
 };  // class Ornithopter
