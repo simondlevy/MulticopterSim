@@ -53,7 +53,7 @@ you like, it easiest to get started with the
 [Hackflight](https://github.com/simondlevy/Hackflight) software. So to get started, you should 
 do the following:
 
-1. Clone the master branch of this repostitory (MulticopterSim) into your
+1. Clone the master branch of this repository (MulticopterSim) into your
 <b>Documents/Unreal Projects</b> folder, first creating that folder if it
 doesn't exist.
    
@@ -79,7 +79,7 @@ file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln
 you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
 to build the project.
 
-3. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+3. In VisualStudio, hit the `F5` key to build the project and launch UnrealEditor.
 
 ## Linux
 
@@ -94,7 +94,7 @@ to build the project.
 In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Then in
 <b>Content/C++ Classes</b>, open the <b>FlightModule</b> folder and drag the
 vehicle pawn into the map. Click the play button and you're ready to begin.
-You can use the  1,2,3 keys to switch your point-of-view.
+You can use the 1,2,3 keys to switch your point-of-view.
 
 # Design principles
 
