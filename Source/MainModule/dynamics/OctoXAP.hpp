@@ -1,5 +1,5 @@
 /*
-* Dynamics class for quad-X frames using ArduPilot motor layout:
+* Dynamics class for octo-X frames using ArduPilot motor layout:
 *
 *        5CCW   1CW
 *                  
