@@ -5,6 +5,7 @@ Saved/
 Content/StarterContent/
 Source/FlightModule/
 MulticopterSim.sln
+*.csv
 *.swp
 *.VC.db
 *.suo

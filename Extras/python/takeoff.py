@@ -22,10 +22,6 @@ VEL_P = 1.0
 VEL_I = 0
 VEL_D = 0
 
-def report(msg):
-    stdout.write(msg)
-    stdout.flush()
-
 if __name__ == '__main__':
 
     # initial conditions
@@ -44,7 +40,11 @@ if __name__ == '__main__':
     # Start the simulation
     copter.start()
 
-    report('Hit the start button ... ')
+    # Open a log file
+    fp = open('ardupid.csv', 'w')
+
+    print('Hit the start button ... ')
+    stdout.flush()
 
     # Loop until user hits the stop button
     while True:
@@ -65,10 +65,13 @@ if __name__ == '__main__':
         # to PID controller.
         z = -telem[9]
 
-        report('%+3.3f\n' % z)
-
         # Compute vertical climb rate as first difference of altitude over time
         if t > tprev:
+
+            # Write time and altitude to log file
+            if t <= 20.0:
+                fp.write('%2.2f,%+3.3f\n' % (t, z))
+                fp.flush()
 
             # Use temporal first difference to compute vertical velocity
             dt = t - tprev

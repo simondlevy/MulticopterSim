@@ -41,7 +41,6 @@ class Multicopter(object):
         self.thread = Thread(target=self._run)
         self.thread.daemon = True
 
-
         self.motorVals = np.zeros(motorCount)
         self.state = np.zeros(11)
 
