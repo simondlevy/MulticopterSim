@@ -65,8 +65,7 @@ of the repository onto your desktop, rename it <b>FlightModule</b>, and drag the
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
 where MulticopterSim 
-[looks for](https://github.com/simondlevy/MulticopterSim/blob/HackflightModule/Source/FlightModule/FlightModule.Build.cs#L23)
-the Hackflight software.)
+looks for the Hackflight software.)
 
 4. Follow the next steps to complete the build on your OS.
 
