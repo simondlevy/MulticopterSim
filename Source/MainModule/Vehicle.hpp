@@ -158,7 +158,7 @@ class Vehicle {
             _bodyHorizontalSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
             _bodyHorizontalSpringArm->TargetArmLength = 0;
             _bodyHorizontalSpringArm->bEnableCameraLag = false;
-            _bodyHorizontalSpringArm->bAbsoluteRotation = false;
+            //_bodyHorizontalSpringArm->bAbsoluteRotation = false; // XXX if needed, use _bodyHorizontalSpringArm->SetAbsolute()
             _bodyHorizontalSpringArm->bInheritPitch = false;
             _bodyHorizontalSpringArm->bInheritRoll = false;
 
@@ -169,7 +169,7 @@ class Vehicle {
             _playerCameraSpringArm->SetupAttachment(_bodyHorizontalSpringArm);
 
             _playerCameraSpringArm->bEnableCameraLag = false;
-            _playerCameraSpringArm->bAbsoluteRotation = false;
+            //_playerCameraSpringArm->bAbsoluteRotation = false; // XXX if needed, use _playerCameraSpringArm->SetAbsolute()
             _playerCameraSpringArm->bInheritYaw = true;
             _playerCameraSpringArm->bInheritPitch = false;
             _playerCameraSpringArm->bInheritRoll = false;
