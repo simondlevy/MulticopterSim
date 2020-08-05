@@ -413,7 +413,9 @@ class Vehicle {
         void Tick(float DeltaSeconds)
         {
             // Quit on ESCape key
-            if (hitKey(EKeys::Escape)) GIsRequestingExit = true;
+            if (hitKey(EKeys::Escape)) {
+                RequestEngineExit("User hit ESC");
+            }
 
             // Run the game if a map has been selected
             if (_mapSelected) {
