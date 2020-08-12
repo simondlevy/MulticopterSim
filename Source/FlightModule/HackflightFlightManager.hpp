@@ -1,5 +1,5 @@
 /*
-   MulticopterSim FlightManager class implementation using a stub
+   MulticopterSim FlightManager class using Hackflight
 
    Just spins propellers
 
