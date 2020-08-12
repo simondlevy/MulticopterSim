@@ -3,7 +3,6 @@ Binaries/
 Intermediate/
 Saved/
 Content/StarterContent/
-Source/FlightModule/
 MulticopterSim.sln
 *.csv
 *.swp
