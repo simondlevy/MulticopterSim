@@ -32,6 +32,7 @@ controller or R/C transmitter.  MulticopterSim currently supports the following 
 through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/FlightModule/joystick/Joystick.h) class:
 
 * PS4 controller
+* XBox One controller
 * XBox 360 controller
 * XBox 360 controller clone
 * PS3 controller clone
