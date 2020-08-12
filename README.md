@@ -29,7 +29,7 @@ for the minimum requirements recommended by Unreal Engine.
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
-through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/joystick/Joystick.h) class:
+through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/FlightModule/joystick/Joystick.h) class:
 
 * PS4 controller
 * XBox 360 controller
@@ -53,21 +53,17 @@ you like, it easiest to get started with the
 [Hackflight](https://github.com/simondlevy/Hackflight) software. So to get started, you should 
 do the following:
 
-1. Clone the master branch of this repostitory (MulticopterSim) into your
+1. Clone this repostitory (MulticopterSim) into your
 <b>Documents/Unreal Projects</b> folder, first creating that folder if it
 doesn't exist.
    
-2. Clone the  [HackflightModule](https://github.com/simondlevy/MulticopterSim/tree/HackflightModule) branch
-of the repository onto your desktop, rename it <b>FlightModule</b>, and drag the
-<b>FlightModule</b> folder into the <b>MulticopterSim/Source</b> folder.
-
-3. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
+2. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) repository into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
 where MulticopterSim 
 looks for the Hackflight software.)
 
-4. Follow the next steps to complete the build on your OS.
+3. Follow the next steps to complete the build on your OS.
 
 ## Windows
 
