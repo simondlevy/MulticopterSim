@@ -59,7 +59,16 @@ Joystick::Joystick(const char * devname)
 
         _productId = joycaps.wPid;
 
-        _isGameController = !(_productId==PRODUCT_TARANIS || _productId==PRODUCT_SPEKTRUM);
+        switch (_productId) {
+            case PRODUCT_TARANIS_QX7:
+            case PRODUCT_TARANIS_X9D:
+            case PRODUCT_SPEKTRUM:
+                _isGameController = false;
+                break;
+            default: 
+                _isGameController = true;
+        }
+
     }
 }
 
@@ -99,7 +108,8 @@ uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
             getAxes5(axes, naxes, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwXpos, joyState.dwUpos);
             break;
 
-        case PRODUCT_TARANIS:
+        case PRODUCT_TARANIS_QX7:
+        case PRODUCT_TARANIS_X9D:
             getAxes5(axes, naxes, joyState.dwXpos, joyState.dwYpos, joyState.dwZpos, joyState.dwVpos, joyState.dwRpos);
             break;
 
@@ -112,9 +122,11 @@ uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
             getAxes4(axes, joyState.dwYpos, joyState.dwZpos, joyState.dwRpos, joyState.dwXpos);
             break;
 
-        case PRODUCT_XBOX360:  
+        case PRODUCT_XBOX_ONE:
+        case PRODUCT_XBOX360:
         case PRODUCT_XBOX360_CLONE:
         case PRODUCT_XBOX360_CLONE2:
+        case PRODUCT_XBOX360_WIRELESS:
             getAxes4(axes, joyState.dwYpos, joyState.dwUpos, joyState.dwRpos, joyState.dwXpos);
             break;
 
@@ -124,7 +136,7 @@ uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 
         case PRODUCT_INTERLINK:
             getAxes4(axes, joyState.dwZpos, joyState.dwXpos, joyState.dwYpos, joyState.dwRpos);
-			getAuxInterlink(axes, (uint8_t)joyState.dwButtons, AX_AU1, AX_AU2, AUX1_MID);
+            getAuxInterlink(axes, (uint8_t)joyState.dwButtons, AX_AU1, AX_AU2, AUX1_MID);
             break;
 
         default:
@@ -143,7 +155,7 @@ uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 
     buttons = (uint8_t)joyState.dwButtons;
 
-	return 0x0000; // no error
+    return 0x0000; // no error
 }
 
 #endif

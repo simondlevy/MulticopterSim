@@ -16,17 +16,19 @@ class Joystick {
 
 private:
 
-	static const uint16_t PRODUCT_PS3_CLONE        = 0x0003;
+	static const uint16_t PRODUCT_XBOX_ONE         = 0x02ff;
 	static const uint16_t PRODUCT_XBOX360          = 0x02a1;
+	static const uint16_t PRODUCT_XBOX360_CLONE    = 0xfafe;
 	static const uint16_t PRODUCT_XBOX360_CLONE2   = 0x028e;
 	static const uint16_t PRODUCT_XBOX360_WIRELESS = 0x0719;
+	static const uint16_t PRODUCT_TARANIS_QX7      = 0x5720;
+	static const uint16_t PRODUCT_TARANIS_X9D      = 0x5710;
+	static const uint16_t PRODUCT_PS3_CLONE        = 0x0003;
 	static const uint16_t PRODUCT_INTERLINK        = 0x0e56;
-	static const uint16_t PRODUCT_TARANIS          = 0x5710;
 	static const uint16_t PRODUCT_SPEKTRUM         = 0x572b;
 	static const uint16_t PRODUCT_EXTREMEPRO3D     = 0xc215;
 	static const uint16_t PRODUCT_F310             = 0xc216;
 	static const uint16_t PRODUCT_PS4              = 0x09cc;
-	static const uint16_t PRODUCT_XBOX360_CLONE    = 0xfafe;
 
 	static constexpr float AUX1_MID = 0.3f; // positve but less than 0.5
 
@@ -107,8 +109,11 @@ public:
                 buttonsToAxes(buttons, 8, 4, 2, 1, axes);
                 break;
 
+            case PRODUCT_XBOX_ONE:
             case PRODUCT_XBOX360:
-			case PRODUCT_XBOX360_CLONE2:
+            case PRODUCT_XBOX360_CLONE:
+            case PRODUCT_XBOX360_CLONE2:
+            case PRODUCT_XBOX360_WIRELESS:
                 buttonsToAxes(buttons, 8, 2, 1, 4, axes);
         }
 
