@@ -14,25 +14,31 @@ class SimMotor : public hf::Motor {
 
     private:
 
-        float _value = 0;
+        float * _values = NULL;
 
     public:
 
-        SimMotor(void)
-            : Motor(0)
+        SimMotor(uint8_t count)
+            : Motor(count)
         {
+            _values = new float[count];
         }
 
-        float getValue(void)
+        virtual ~SimMotor()
         {
-            return _value;
+            delete _values;
+        }
+
+        float getValue(uint8_t index)
+        {
+            return _values[index];
         }
 
     protected:
 
-        virtual void write(float value) override
+        virtual void write(uint8_t index, float value) override
         {
-            _value = value;
+            _values[index] = value;
         }
 
 }; // class SimMotor

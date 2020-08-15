@@ -73,8 +73,8 @@ class FHackflightFlightManager : public FFlightManager {
         SimSensors * _sensors = NULL;
 
         // "Motors" just store their current value
-        SimMotor ** _motors = NULL;
-        uint8_t     _nmotors = 0;
+        SimMotor * _motors = NULL;
+        uint8_t    _nmotors = 0;
 
     public:
 
@@ -84,13 +84,10 @@ class FHackflightFlightManager : public FFlightManager {
         {
             // Create simulated motors
             _nmotors = dynamics->motorCount();
-            _motors = new SimMotor * [_nmotors];
-            for (uint8_t i=0; i<_nmotors; ++i) {
-                _motors[i] = new SimMotor();
-            }
+            _motors = new SimMotor(_nmotors);
 
             // Start Hackflight firmware, indicating already armed
-            _hackflight.init(&_board, &_imu, &_receiver, &_mixer, (hf::Motor **)_motors, true);
+            _hackflight.init(&_board, &_imu, &_receiver, &_mixer, (hf::Motor *)_motors, true);
 
             // Add simulated sensor suite
             _sensors = new SimSensors(_dynamics);
@@ -107,10 +104,6 @@ class FHackflightFlightManager : public FFlightManager {
 
         virtual ~FHackflightFlightManager(void)
         {
-            for (uint8_t i=0; i<_nmotors; ++i) {
-                delete _motors[i];
-            }
-
             delete _motors;
         }
 
@@ -130,7 +123,7 @@ class FHackflightFlightManager : public FFlightManager {
 
                     // Get motor values
                     for (uint8_t i=0; i < _nmotors; ++i) {
-                        motorvals[i] = _motors[i]->getValue();
+                        motorvals[i] = _motors->getValue(i);
                     }
 
                     break;
