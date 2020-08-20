@@ -1,13 +1,7 @@
 /*
-* Dynamics class for quad-X frames using ArduPilot motor layout:
+* Dynamics class for thrust vectoring
 *
-*    3cw   1ccw
-*       \ /
-*        ^
-*       / \
-*    2ccw  4cw
-*
-* Copyright (C) 2019 Simon D. Levy, Daniel Katzav
+* Copyright (C) 2020 Simon D. Levy
 *
 * MIT License
 */
@@ -16,11 +10,11 @@
 
 #include "MultirotorDynamics.hpp"
 
-class QuadXAPDynamics : public MultirotorDynamics {
+class ThrustVectorDynamics : public MultirotorDynamics {
 
     public:	
 
-		QuadXAPDynamics(Parameters * params) : MultirotorDynamics(params, 4)
+		ThrustVectorDynamics(Parameters * params) : MultirotorDynamics(params, 4)
         {
         }
 
@@ -53,4 +47,4 @@ class QuadXAPDynamics : public MultirotorDynamics {
             return dir[i];
         }
 
-}; // class QuadXAP
+}; // class ThrustVector

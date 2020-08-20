@@ -43,7 +43,7 @@ class Rocket {
 
     public:
 
-        QuadXAPDynamics dynamics = QuadXAPDynamics(&params);
+        ThrustVectorDynamics dynamics = ThrustVectorDynamics(&params);
 
         Vehicle vehicle = Vehicle(&dynamics);
 
