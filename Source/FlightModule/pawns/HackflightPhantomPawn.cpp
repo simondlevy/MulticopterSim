@@ -23,7 +23,7 @@ void AHackflightPhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AHackflightPhantomPawn::BeginPlay()
 {
-    _phantom.BeginPlay(new FHackflightFlightManager(&_phantom.dynamics));
+    _phantom.BeginPlay(new FHackflightFlightManager(NULL, &_phantom.dynamics));
 
     Super::BeginPlay();
 }
