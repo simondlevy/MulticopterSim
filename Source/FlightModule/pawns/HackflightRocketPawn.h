@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <actuators/mixers/quadxap.hpp>
+
 #include "../../MainModule/vehicles/Rocket.h"
 
 #include "../HackflightFlightManager.hpp"

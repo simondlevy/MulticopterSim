@@ -18,9 +18,6 @@
 #include <pidcontrollers/althold.hpp>
 #include <pidcontrollers/flowhold.hpp>
 
-// Mixer
-#include <actuators/mixers/quadxap.hpp>
-
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
 #include "SimImu.hpp"
