@@ -73,7 +73,7 @@ class FHackflightFlightManager : public FFlightManager {
     public:
 
         // Constructor
-        FHackflightFlightManager(hf::Mixer * mixer, MultirotorDynamics * dynamics) 
+        FHackflightFlightManager(hf::Mixer * mixer, Dynamics * dynamics) 
             : FFlightManager(dynamics) 
         {
             // Create simulated motors
@@ -101,7 +101,7 @@ class FHackflightFlightManager : public FFlightManager {
             delete _motors;
         }
 
-        virtual void getMotors(const double time, const MultirotorDynamics::state_t & state, double * motorvals) override
+        virtual void getMotors(const double time, const Dynamics::state_t & state, double * motorvals) override
         {
             uint16_t joystickError = _receiver.update();
 

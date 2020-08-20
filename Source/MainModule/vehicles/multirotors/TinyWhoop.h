@@ -34,7 +34,7 @@ class TinyWhoop {
 
     private:
 
-        MultirotorDynamics::Parameters params = MultirotorDynamics::Parameters(
+        Dynamics::Parameters params = Dynamics::Parameters(
                 // Estimated
                 5.E-06, // b force constatnt [F=b*w^2]
                 2.E-06, // d torque constant [T=d*w^2]

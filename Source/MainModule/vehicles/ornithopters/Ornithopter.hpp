@@ -28,7 +28,7 @@ class Ornithopter : public Vehicle {
 
     public:
 
-        Ornithopter(MultirotorDynamics* dynamics)
+        Ornithopter(Dynamics* dynamics)
             : Vehicle(dynamics)
         {
         }

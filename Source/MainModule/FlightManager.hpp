@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "dynamics/MultirotorDynamics.hpp"
+#include "dynamics/Dynamics.hpp"
 #include "ThreadedManager.hpp"
 
 class FFlightManager : public FThreadedManager {
@@ -32,18 +32,18 @@ class FFlightManager : public FThreadedManager {
          * @param motorvals motor values returned by your controller (output)
          *
          */
-        virtual void getMotors(const double time, const MultirotorDynamics::state_t & state, double * motorvals)  = 0;
+        virtual void getMotors(const double time, const Dynamics::state_t & state, double * motorvals)  = 0;
         
     protected:
 
         uint8_t _motorCount = 0;
 
-        MultirotorDynamics * _dynamics = NULL;
+        Dynamics * _dynamics = NULL;
 
-        MultirotorDynamics::state_t _state = {};
+        Dynamics::state_t _state = {};
 
         // Constructor, called main thread
-        FFlightManager(MultirotorDynamics * dynamics) 
+        FFlightManager(Dynamics * dynamics) 
             : FThreadedManager()
         {
             // Allocate array for motor values

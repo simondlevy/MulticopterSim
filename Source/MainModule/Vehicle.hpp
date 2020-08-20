@@ -17,7 +17,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "Utils.hpp"
-#include "dynamics/MultirotorDynamics.hpp"
+#include "dynamics/Dynamics.hpp"
 #include "FlightManager.hpp"
 #include "Camera.hpp"
 #include "Landscape.h"
@@ -76,7 +76,7 @@ class Vehicle {
         uint8_t  _cameraCount;
 
         // Set in constructor
-        MultirotorDynamics* _dynamics = NULL;
+        Dynamics* _dynamics = NULL;
 
         // Threaded worker for running flight control
         class FFlightManager* _flightManager = NULL;
@@ -104,7 +104,7 @@ class Vehicle {
         void updateKinematics(void)
         {
             // Get vehicle pose from dynamics
-            MultirotorDynamics::pose_t pose = _dynamics->getPose();
+            Dynamics::pose_t pose = _dynamics->getPose();
 
             // Set vehicle pose in animation
             _pawn->SetActorLocation(_startLocation +
@@ -337,7 +337,7 @@ class Vehicle {
             _flightManager = NULL;
         }
 
-        Vehicle(MultirotorDynamics* dynamics)
+        Vehicle(Dynamics* dynamics)
         {
             _dynamics = dynamics;
 

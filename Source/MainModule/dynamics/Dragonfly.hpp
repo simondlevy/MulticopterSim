@@ -14,19 +14,19 @@
 
 #pragma once
 
-#include "MultirotorDynamics.hpp"
+#include "Dynamics.hpp"
 
-class DragonflyDynamics : public MultirotorDynamics {
+class DragonflyDynamics : public Dynamics {
 
     public:	
 
-		DragonflyDynamics(Parameters * params) : MultirotorDynamics(params, 4)
+		DragonflyDynamics(Parameters * params) : Dynamics(params, 4)
         {
         }
 
     protected:
 
-        // MultirotorDynamics method overrides
+        // Dynamics method overrides
 
         // roll right
         virtual double u2(double * o) override

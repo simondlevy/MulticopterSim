@@ -14,7 +14,7 @@ class MultirotorVehicle : public Vehicle {
 
     public:
 
-        MultirotorVehicle(MultirotorDynamics* dynamics) 
+        MultirotorVehicle(Dynamics* dynamics) 
             : Vehicle(dynamics)
         {
         }

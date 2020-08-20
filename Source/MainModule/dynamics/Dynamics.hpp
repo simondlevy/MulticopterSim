@@ -1,5 +1,5 @@
 /*
- * Header-only code for platform-independent multirotor dynamics
+ * Header-only code for platform-independent flight dynamics
  *
  * Should work for any simulator, vehicle, or operating system
  *
@@ -35,7 +35,7 @@
 
 #include "../Utils.hpp"
 
-class MultirotorDynamics {
+class Dynamics {
 
 public:
 
@@ -62,7 +62,7 @@ public:
 	 */
 	class Parameters {
 
-		friend class MultirotorDynamics;
+		friend class Dynamics;
 
 	public:
 
@@ -205,7 +205,7 @@ protected:
 	/**
 	 *  Constructor
 	 */
-	MultirotorDynamics(Parameters* params, const uint8_t motorCount)
+	Dynamics(Parameters* params, const uint8_t motorCount)
 	{
 		_p = params;
 		_motorCount = motorCount;
@@ -264,7 +264,7 @@ public:
 	/**
 	 *  Destructor
 	 */
-	virtual ~MultirotorDynamics(void)
+	virtual ~Dynamics(void)
 	{
 		delete _omegas;
 		delete _omegas2;
@@ -549,4 +549,4 @@ public:
 		return _motorCount;
 	}
 
-}; // class MultirotorDynamics
+}; // class Dynamics

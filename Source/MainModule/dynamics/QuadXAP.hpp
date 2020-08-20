@@ -14,19 +14,19 @@
 
 #pragma once
 
-#include "MultirotorDynamics.hpp"
+#include "Dynamics.hpp"
 
-class QuadXAPDynamics : public MultirotorDynamics {
+class QuadXAPDynamics : public Dynamics {
 
     public:	
 
-		QuadXAPDynamics(Parameters * params) : MultirotorDynamics(params, 4)
+		QuadXAPDynamics(Parameters * params) : Dynamics(params, 4)
         {
         }
 
     protected:
 
-        // MultirotorDynamics method overrides
+        // Dynamics method overrides
 
         // roll right
         virtual double u2(double * o) override

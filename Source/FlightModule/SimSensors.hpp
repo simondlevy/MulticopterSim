@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../MainModule/dynamics/MultirotorDynamics.hpp"
+#include "../MainModule/dynamics/Dynamics.hpp"
 
 #include <sensor.hpp>
 #include <datatypes.hpp>
@@ -23,7 +23,7 @@ class SimSensors : public hf::Sensor {
         {
             double di[3] = {inertial[0], inertial[1], inertial[2]};
             double bi[3] = {0};
-            MultirotorDynamics::inertialToBody(di, rotation, bi);
+            Dynamics::inertialToBody(di, rotation, bi);
             body[0] = bi[0];
             body[1] = bi[1];
             body[2] = bi[2];
@@ -32,7 +32,7 @@ class SimSensors : public hf::Sensor {
     protected:
 
         // We do all dynamcics => state conversion; subclasses just return sensor values
-        MultirotorDynamics * _dynamics;
+        Dynamics * _dynamics;
 
         virtual bool ready(float time) override
         {
@@ -45,7 +45,7 @@ class SimSensors : public hf::Sensor {
             (void)time;
 
             // Get vehicle state from dynamics
-            MultirotorDynamics::state_t dynamicsState = _dynamics->getState();
+            Dynamics::state_t dynamicsState = _dynamics->getState();
 
             // Use vehicle state to modify Hackflight state values
             for (uint8_t k=0; k<3; ++k) {
@@ -63,7 +63,7 @@ class SimSensors : public hf::Sensor {
 
     public:
 
-        SimSensors(MultirotorDynamics * dynamics)
+        SimSensors(Dynamics * dynamics)
         {
             _dynamics = dynamics;
         }
