@@ -7,7 +7,7 @@
 
 #pragma once 
 
-#include "../MainModule/Vehicle.hpp" 
+#include "../Multirotor.hpp"
 #include "../MainModule/dynamics/QuadXAP.hpp"
 
 #include "CoreMinimal.h"
@@ -56,7 +56,7 @@ class TinyWhoop {
 
         QuadXAPDynamics dynamics = QuadXAPDynamics(&params);
 
-        Vehicle vehicle = Vehicle(&dynamics);
+        MultirotorVehicle vehicle = MultirotorVehicle(&dynamics);
 
     private:
 

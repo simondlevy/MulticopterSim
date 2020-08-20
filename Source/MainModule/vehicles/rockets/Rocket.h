@@ -8,8 +8,7 @@
 
 #pragma once
 
-#include "../MainModule/Vehicle.hpp"
-#include "../MainModule/Camera.hpp"
+#include "../Rocket.hpp"
 #include "../MainModule/dynamics/ThrustVector.hpp"
 
 #include "CoreMinimal.h"
@@ -45,7 +44,7 @@ class Rocket {
 
         ThrustVectorDynamics dynamics = ThrustVectorDynamics(&params);
 
-        Vehicle vehicle = Vehicle(&dynamics);
+        RocketVehicle vehicle = RocketVehicle(&dynamics);
 
     private:
 
