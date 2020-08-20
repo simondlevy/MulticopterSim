@@ -16,7 +16,6 @@
 
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "Rocket/Frame.Frame", FrameStatics)
-DECLARE_STATIC_MESH(FPropStatics, "Rocket/Prop.Prop", PropStatics)
 
 class Rocket {
 
@@ -57,12 +56,6 @@ class Rocket {
         {
             vehicle.buildFull(pawn, FrameStatics.mesh.Get(), 1.5, 0.5);
 
-            // Add propellers
-            addProp(+1, +1);
-            addProp(-1, -1);
-            addProp(+1, -1);
-            addProp(-1, +1);
-
             _flightManager = NULL;
         }
 
@@ -93,9 +86,5 @@ class Rocket {
             vehicle.addCamera(camera);
         }
 
-        void addProp(int8_t dx, int8_t dy)
-        {
-            vehicle.addProp(PropStatics.mesh.Get(), dx*0.12, dy*0.12);
-        }
 
 }; // class Rocket 

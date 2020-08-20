@@ -19,5 +19,10 @@ class RocketVehicle : public Vehicle {
         {
         }
 
+    protected:
+
+        virtual void animateActuators(void) override
+        {
+        }
 
 }; // class RocketVehicle
