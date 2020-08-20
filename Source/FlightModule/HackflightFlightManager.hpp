@@ -66,9 +66,6 @@ class FHackflightFlightManager : public FFlightManager {
         // "Receiver" (joystick/gamepad)
         SimReceiver _receiver;
 
-        // Mixer
-        hf::MixerQuadXAP _mixer;
-
         // "Sensors" (get values from dynamics)
         SimSensors * _sensors = NULL;
 
@@ -87,7 +84,7 @@ class FHackflightFlightManager : public FFlightManager {
             _motors = new SimMotor(_nmotors);
 
             // Start Hackflight firmware, indicating already armed
-            _hackflight.init(&_board, &_imu, &_receiver, &_mixer, (hf::Motor *)_motors, true);
+            _hackflight.init(&_board, &_imu, &_receiver, mixer, (hf::Motor *)_motors, true);
 
             // Add simulated sensor suite
             _sensors = new SimSensors(_dynamics);
