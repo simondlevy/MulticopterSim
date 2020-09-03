@@ -10,7 +10,6 @@
 
 #include <board.hpp>
 
-#include "../MainModule/OSD.hpp"
 
 class SimBoard : public hf::Board {
 
@@ -24,6 +23,8 @@ class SimBoard : public hf::Board {
         {
             return _currentTime;
         }
+
+
 
     public:
 
@@ -41,3 +42,4 @@ class SimBoard : public hf::Board {
         }
 
 }; // class Simboard
+

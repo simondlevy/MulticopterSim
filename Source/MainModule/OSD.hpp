@@ -15,7 +15,7 @@ static float _min(float a, float b)
     return a < b ? a : b;
 }
 
-static void osd(char * buf, bool err, bool overwrite=false)
+static void osd(char * buf, bool err=false, bool overwrite=false)
 {
     if (GEngine && GEngine->GameViewport) {
 
