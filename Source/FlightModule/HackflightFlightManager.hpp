@@ -87,9 +87,9 @@ class FHackflightFlightManager : public FFlightManager {
             _sensors = new SimSensors(_dynamics);
             _hackflight.addSensor(_sensors);
 
-			// Add altitude-hold and position-hold PID controllers in switch position 1
-			//_hackflight.addPidController(&althold, 1);
-			//_hackflight.addPidController(&flowhold, 1);
+			// Add altitude-hold and position-hold PID controllers in switch position 1 or greater
+			_hackflight.addPidController(&althold, 1);
+			_hackflight.addPidController(&flowhold, 1);
 
 			// Add rate and level PID controllers for all aux switch positions
 			_hackflight.addPidController(&levelPid);
