@@ -33,13 +33,12 @@ class SimReceiver : public hf::Receiver {
 
 		uint8_t getAux1State(void) 
 		{
-			return Receiver::getAux1State();
+			return 1; // Always armed
 		}
 
 		uint8_t getAux2State(void)
 		{
-			// Always armed!
-			return 1;
+			return Receiver::getAux1State();  // With only five channels, we use Aux1 for Aux2
 		}
 
     public:

@@ -10,6 +10,7 @@
 #ifdef _WIN32
 
 #include "Joystick.h"
+#include "../../MainModule/Utils.hpp"
 
 #define WIN32_LEAN_AND_MEAN
 
