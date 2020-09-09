@@ -15,7 +15,7 @@
 #include "GameFramework/Pawn.h"
 
 // Structures to hold static mesh initializations
-DECLARE_STATIC_MESH(FFrameStatics, "Rocket/Frame.Frame", FrameStatics)
+DECLARE_STATIC_MESH(FFrameStatics, "Rocket/Body.Body", FrameStatics)
 
 class Rocket {
 
