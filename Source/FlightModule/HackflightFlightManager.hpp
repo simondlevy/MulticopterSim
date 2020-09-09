@@ -49,7 +49,7 @@ class FHackflightFlightManager : public FFlightManager {
                 0.10f); // altHoldVelD
 
         // Pos-hold (via simulated optical flow)
-        hf::FlowHoldPid flowhold = hf::FlowHoldPid(0.05, 0.05);
+        hf::FlowHoldPid flowhold = hf::FlowHoldPid(0.1, 0);
 
         // Main firmware
         hf::Hackflight _hackflight;

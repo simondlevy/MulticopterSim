@@ -1,0 +1,2 @@
+Unable to load material library
+Unable to read material "color_11909273" in .mtl file
