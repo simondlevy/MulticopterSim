@@ -59,7 +59,7 @@ class MultirotorVehicle : public Vehicle {
 
             // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
             if (motorsum > 0) {
-                rotateProps(_motorDirections, _dynamics->motorCount());
+                rotateProps(_motorDirections);
             }
 
             // Add mean to circular buffer for moving average
@@ -87,7 +87,7 @@ class MultirotorVehicle : public Vehicle {
             return FMath::RadiansToDegrees(3.14159 / 2 - theta) + 57.5;
         }
 
-        void rotateProps(int8_t* motorDirections, uint8_t motorCount)
+        void rotateProps(int8_t* motorDirections)
         {
             static float rotation;
             for (uint8_t i = 0; i < _propCount; ++i) {
