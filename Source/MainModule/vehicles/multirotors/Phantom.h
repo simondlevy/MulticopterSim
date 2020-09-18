@@ -61,8 +61,8 @@ class Phantom {
             // Add propellers
             addProp(+1, +1);
             addProp(-1, -1);
-            addProp(+1, -1);
-            addProp(-1, +1);
+            //addProp(+1, -1);
+            //addProp(-1, +1);
 
             _flightManager = NULL;
         }

@@ -90,7 +90,7 @@ class MultirotorVehicle : public Vehicle {
         void rotateProps(int8_t* motorDirections, uint8_t motorCount)
         {
             static float rotation;
-            for (uint8_t i = 0; i < motorCount; ++i) {
+            for (uint8_t i = 0; i < _propCount; ++i) {
                 setPropRotation(i, rotation * motorDirections[i] * 200);
             }
             rotation++;
