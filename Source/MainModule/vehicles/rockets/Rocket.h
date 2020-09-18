@@ -16,6 +16,8 @@
 
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "Rocket/Body.Body", FrameStatics)
+DECLARE_STATIC_MESH(FRotor1Statics, "Rocket/Rotor1.Rotor1", Rotor1Statics)
+DECLARE_STATIC_MESH(FRotor2Statics, "Rocket/Rotor2.Rotor2", Rotor2Statics)
 
 class Rocket {
 
@@ -55,6 +57,9 @@ class Rocket {
         void build(APawn * pawn)
         {
             vehicle.buildFull(pawn, FrameStatics.mesh.Get(), 1.5, 0.5);
+
+            // Add rotors
+            vehicle.addProp(Rotor1Statics.mesh.Get(), 0.1, 0.1);
 
             _flightManager = NULL;
         }
