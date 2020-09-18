@@ -71,6 +71,11 @@ class TinyWhoop {
             vehicle.addMesh(motorMesh, meshName);
         }
 
+        void addProp(float x, float y)
+        {
+            vehicle.addProp(PropCCWStatics.mesh.Get(), x, y, 0.04);
+        }
+
     public:
 
         void build(APawn * pawn)
@@ -80,10 +85,10 @@ class TinyWhoop {
 
             // Add propellers
             float x13 = -.0470, x24 = +.0430, y14 = -.020, y23 = +.070;
-            vehicle.addProp(PropCCWStatics.mesh.Get(), x13, y14);
-            vehicle.addProp(PropCCWStatics.mesh.Get(), x24, y23);
-            vehicle.addProp(PropCCWStatics.mesh.Get(), x13, y23);
-            vehicle.addProp(PropCCWStatics.mesh.Get(), x24, y14);
+            addProp(x13, y14);
+            addProp(x24, y23);
+            addProp(x13, y23);
+            addProp(x24, y14);
 
             // Add motor barrels
             addMotor(Motor1Statics.mesh.Get(), 1);

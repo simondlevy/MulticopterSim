@@ -96,7 +96,7 @@ class Phantom {
 
         void addProp(int8_t dx, int8_t dy)
         {
-            vehicle.addProp(PropStatics.mesh.Get(), dx*0.12, dy*0.12);
+            vehicle.addProp(PropStatics.mesh.Get(), dx*0.12, dy*0.12, 0.17);
         }
 
 }; // class Phantom 

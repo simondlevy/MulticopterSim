@@ -19,23 +19,22 @@ class MultirotorVehicle : public Vehicle {
         {
         }
 
-        // Z is set in Mesh / Import Settings in UE4 editor
-        UStaticMeshComponent * addProp(UStaticMesh* propMesh, float x, float y, float angle)
+        UStaticMeshComponent * addProp(UStaticMesh* propMesh, float x, float y, float z, float angle)
         {
             UStaticMeshComponent* propMeshComponent =
                 _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", _propCount, "Mesh"));
             propMeshComponent->SetStaticMesh(propMesh);
             propMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
-            propMeshComponent->AddRelativeLocation(FVector(x, y, 0) * 100); // m => cm
+            propMeshComponent->AddRelativeLocation(FVector(x, y, z) * 100); // m => cm
             propMeshComponent->SetRelativeRotation(FRotator(0, angle, 0));
             _propellerMeshComponents[_propCount] = propMeshComponent;
             _propCount++;
             return propMeshComponent;
         }
 
-        void addProp(UStaticMesh* propMesh, float x, float y)
+        void addProp(UStaticMesh* propMesh, float x, float y, float z)
         {
-            addProp(propMesh, x, y, propStartAngle(x,y));
+            addProp(propMesh, x, y, z, propStartAngle(x,y));
         }
 
         virtual void setPropRotation(uint8_t index, float angle)
