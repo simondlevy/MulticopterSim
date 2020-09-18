@@ -19,7 +19,7 @@ class MultirotorVehicle : public Vehicle {
         {
         }
 
-        // z is set in editor
+        // Z is set in Mesh / Import Settings in UE4 editor
         UStaticMeshComponent * addProp(UStaticMesh* propMesh, float x, float y, float angle)
         {
             UStaticMeshComponent* propMeshComponent =

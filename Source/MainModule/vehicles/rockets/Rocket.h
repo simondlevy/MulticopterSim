@@ -59,7 +59,7 @@ class Rocket {
             vehicle.buildFull(pawn, FrameStatics.mesh.Get(), 1.5, 0.5);
 
             // Add rotors
-            vehicle.addProp(Rotor1Statics.mesh.Get(), 0.1, 0.1);
+            vehicle.addProp(Rotor1Statics.mesh.Get(), 0, 0);
 
             _flightManager = NULL;
         }
