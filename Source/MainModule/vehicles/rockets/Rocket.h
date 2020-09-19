@@ -52,6 +52,12 @@ class Rocket {
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
+
+        void addRotor(UStaticMesh* mesh, float z)
+        {
+            vehicle.addProp(mesh, 0, 0, z);
+        }
+
     public:
 
         void build(APawn * pawn)
@@ -59,7 +65,8 @@ class Rocket {
             vehicle.buildFull(pawn, FrameStatics.mesh.Get(), 1.5, 0.5);
 
             // Add rotors
-            vehicle.addProp(Rotor1Statics.mesh.Get(), 0, 0, 0.5);
+            addRotor(Rotor1Statics.mesh.Get(), 0.2);
+            addRotor(Rotor2Statics.mesh.Get(), 0.3);
 
             _flightManager = NULL;
         }
