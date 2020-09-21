@@ -46,7 +46,7 @@ class ThrustVectorDynamics : public Dynamics {
                 _U1 += _p->b * _omegas2[i];
             }
 
-            debugline("%f  %f", motorvals[2], motorvals[3]);
+            debugline("%+3.3f  %+3.3f  %+3.3f  %+3.3f", motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
 
             // Use the squared Omegas to implement the rest of Eqn. 6
             _U2 = 0;//_p->l * _p->b * u2(_omegas2);

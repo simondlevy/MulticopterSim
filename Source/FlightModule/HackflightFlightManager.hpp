@@ -73,7 +73,7 @@ class FHackflightFlightManager : public FFlightManager {
     public:
 
         // Constructor
-        FHackflightFlightManager(hf::Mixer * mixer, Dynamics * dynamics, bool pidsEnabled=false) 
+        FHackflightFlightManager(hf::Mixer * mixer, Dynamics * dynamics, bool pidsEnabled=true) 
             : FFlightManager(dynamics) 
         {
             // Create simulated motors
