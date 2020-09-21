@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "Dynamics.hpp"
+#include "../Dynamics.hpp"
 
 class ThrustVectorDynamics : public Dynamics {
 

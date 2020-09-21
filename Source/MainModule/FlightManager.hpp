@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "dynamics/Dynamics.hpp"
+#include "Dynamics.hpp"
 #include "ThreadedManager.hpp"
 
 class FFlightManager : public FThreadedManager {

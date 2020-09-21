@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "Dynamics.hpp"
+#include "../Dynamics.hpp"
 
 class QuadXAPDynamics : public Dynamics {
 

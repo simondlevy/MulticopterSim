@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "Dynamics.hpp"
+#include "../Dynamics.hpp"
 
 class OctoXAPDynamics : public Dynamics {
 

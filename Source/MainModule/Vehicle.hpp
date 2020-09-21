@@ -17,7 +17,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "Utils.hpp"
-#include "dynamics/Dynamics.hpp"
+#include "Dynamics.hpp"
 #include "FlightManager.hpp"
 #include "Camera.hpp"
 #include "Landscape.h"

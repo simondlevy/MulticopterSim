@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../MainModule/dynamics/Dynamics.hpp"
+#include "../MainModule/Dynamics.hpp"
 
 #include <sensor.hpp>
 #include <datatypes.hpp>
