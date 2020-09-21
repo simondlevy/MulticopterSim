@@ -1,5 +1,5 @@
 /*
-* Dynamics class for thrust vectoring
+* Dynamics class for multirotors
 *
 * Copyright (C) 2020 Simon D. Levy
 *
