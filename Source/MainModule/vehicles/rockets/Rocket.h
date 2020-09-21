@@ -67,8 +67,8 @@ class Rocket {
             vehicle.buildFull(pawn, BarrelStaticss.mesh.Get(), 1.5, 0.5);
 
             // Add rotors
-            addRotor(Rotor1Statics.mesh.Get(), 0.2);
-            addRotor(Rotor2Statics.mesh.Get(), 0.3);
+            addRotor(Rotor1Statics.mesh.Get(), 0.3);
+            addRotor(Rotor2Statics.mesh.Get(), 0.4);
 
             // Add nozzle
             _nozzleMeshComponent = vehicle.addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, 0, 0);
