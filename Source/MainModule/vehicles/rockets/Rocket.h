@@ -15,7 +15,7 @@
 #include "GameFramework/Pawn.h"
 
 // Structures to hold static mesh initializations
-DECLARE_STATIC_MESH(FFrameStatics, "Rocket/Body.Body", FrameStatics)
+DECLARE_STATIC_MESH(FBarrelStaticss, "Rocket/Barrel.Barrel", BarrelStaticss)
 DECLARE_STATIC_MESH(FRotor1Statics, "Rocket/Rotor1.Rotor1", Rotor1Statics)
 DECLARE_STATIC_MESH(FRotor2Statics, "Rocket/Rotor2.Rotor2", Rotor2Statics)
 
@@ -62,7 +62,7 @@ class Rocket {
 
         void build(APawn * pawn)
         {
-            vehicle.buildFull(pawn, FrameStatics.mesh.Get(), 1.5, 0.5);
+            vehicle.buildFull(pawn, BarrelStaticss.mesh.Get(), 1.5, 0.5);
 
             // Add rotors
             addRotor(Rotor1Statics.mesh.Get(), 0.2);
