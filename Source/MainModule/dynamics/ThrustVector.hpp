@@ -46,9 +46,13 @@ class ThrustVectorDynamics : public Dynamics {
     public:	
 
         ThrustVectorDynamics(Parameters * params) 
-            : Dynamics(params, 4)
+            : Dynamics(4)
         {
-        }
+            _p = params;
+
+            _omegas = new double[4]();
+            _omegas2 = new double[4]();
+         }
 
         /**
          * Uses motor values to implement Equation 6.

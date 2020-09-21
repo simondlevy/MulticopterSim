@@ -46,8 +46,12 @@ class MultirotorDynamics : public Dynamics {
     public:
 
         MultirotorDynamics(Parameters * params, const uint8_t motorCount) 
-            : Dynamics(params, motorCount)
+            : Dynamics(motorCount)
         {
+            _p = params;
+
+            _omegas = new double[motorCount]();
+            _omegas2 = new double[motorCount]();
         }
 
         /**

@@ -204,13 +204,8 @@ protected:
 	/**
 	 *  Constructor
 	 */
-	Dynamics(Parameters* params, const uint8_t motorCount)
+	Dynamics(const uint8_t motorCount)
 	{
-		_p = params;
-
-		_omegas = new double[motorCount]();
-		_omegas2 = new double[motorCount]();
-
 		_motorCount = motorCount;
 
 		for (uint8_t i = 0; i < 12; ++i) {
