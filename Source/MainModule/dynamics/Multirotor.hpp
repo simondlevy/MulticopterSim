@@ -168,14 +168,4 @@ class MultirotorDynamics : public Dynamics {
                 _U4 = _p->d * u4(_omegas2);
             }
 
-	/**
-	 * Computes motor speed base on motor value
-	 * @param motorval motor value in [0,1]
-	 * @return motor speed in rad/s
-	 */
-	virtual double computeMotorSpeed(double motorval) override
-	{
-		return motorval * _p->maxrpm * 3.14159 / 30;
-	}
-
 }; // class MultirotorDynamics

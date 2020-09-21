@@ -217,7 +217,15 @@ protected:
 
 	virtual void computeStateDerivative(double accelNED[3], double netz) = 0;
 
-	virtual double computeMotorSpeed(double motorval) = 0;
+	/**
+	 * Computes motor speed base on motor value
+	 * @param motorval motor value in [0,1]
+	 * @return motor speed in rad/s
+	 */
+	virtual double computeMotorSpeed(double motorval)
+	{
+		return motorval * _p->maxrpm * 3.14159 / 30;
+	}
 
 public:
 

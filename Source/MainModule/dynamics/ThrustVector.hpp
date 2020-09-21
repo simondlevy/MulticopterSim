@@ -1,10 +1,10 @@
 /*
-* Dynamics class for thrust vectoring
-*
-* Copyright (C) 2020 Simon D. Levy
-*
-* MIT License
-*/
+ * Dynamics class for thrust vectoring
+ *
+ * Copyright (C) 2020 Simon D. Levy
+ *
+ * MIT License
+ */
 
 #pragma once
 
@@ -52,7 +52,7 @@ class ThrustVectorDynamics : public Dynamics {
 
             _omegas = new double[4]();
             _omegas2 = new double[4]();
-         }
+        }
 
         /**
          * Uses motor values to implement Equation 6.
@@ -169,16 +169,6 @@ class ThrustVectorDynamics : public Dynamics {
             } // update
 
 
-            /**
-             * Computes motor speed base on motor value
-             * @param motorval motor value in [0,1]
-             * @return motor speed in rad/s
-             */
-            virtual double computeMotorSpeed(double motorval) override
-            {
-                return motorval * _p->maxrpm * 3.14159 / 30;
-            }
-
             protected:
 
             // Dynamics method overrides
@@ -208,4 +198,4 @@ class ThrustVectorDynamics : public Dynamics {
                 return dir[i];
             }
 
-        }; // class ThrustVector
+}; // class ThrustVector
