@@ -18,6 +18,7 @@
 DECLARE_STATIC_MESH(FBarrelStaticss, "Rocket/Barrel.Barrel", BarrelStaticss)
 DECLARE_STATIC_MESH(FRotor1Statics, "Rocket/Rotor1.Rotor1", Rotor1Statics)
 DECLARE_STATIC_MESH(FRotor2Statics, "Rocket/Rotor2.Rotor2", Rotor2Statics)
+DECLARE_STATIC_MESH(FNozzleStatics, "Rocket/Nozzle.Nozzle", NozzleStatics)
 
 class Rocket {
 
@@ -52,6 +53,7 @@ class Rocket {
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
+        UStaticMeshComponent * _nozzleMeshComponent = NULL;
 
         void addRotor(UStaticMesh* mesh, float z)
         {
@@ -67,6 +69,9 @@ class Rocket {
             // Add rotors
             addRotor(Rotor1Statics.mesh.Get(), 0.2);
             addRotor(Rotor2Statics.mesh.Get(), 0.3);
+
+            // Add nozzle
+            _nozzleMeshComponent = vehicle.addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, 0, 0);
 
             _flightManager = NULL;
         }

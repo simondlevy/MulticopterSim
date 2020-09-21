@@ -19,14 +19,19 @@ class MultirotorVehicle : public Vehicle {
         {
         }
 
+        UStaticMeshComponent * addComponent(UStaticMesh * mesh, FName name, float x, float y, float z, float angle)
+        {
+            UStaticMeshComponent* meshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(name);
+            meshComponent->SetStaticMesh(mesh);
+            meshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
+            meshComponent->AddRelativeLocation(FVector(x, y, z) * 100); // m => cm
+            meshComponent->SetRelativeRotation(FRotator(0, angle, 0));
+            return meshComponent;
+        }
+
         UStaticMeshComponent * addProp(UStaticMesh* propMesh, float x, float y, float z, float angle)
         {
-            UStaticMeshComponent* propMeshComponent =
-                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(makeName("Prop", _propCount, "Mesh"));
-            propMeshComponent->SetStaticMesh(propMesh);
-            propMeshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
-            propMeshComponent->AddRelativeLocation(FVector(x, y, z) * 100); // m => cm
-            propMeshComponent->SetRelativeRotation(FRotator(0, angle, 0));
+            UStaticMeshComponent * propMeshComponent = addComponent(propMesh, makeName("Prop", _propCount, "Mesh"), x, y, z, angle);
             _propellerMeshComponents[_propCount] = propMeshComponent;
             _propCount++;
             return propMeshComponent;
