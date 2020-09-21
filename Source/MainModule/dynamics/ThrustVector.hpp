@@ -43,7 +43,7 @@ class ThrustVectorDynamics : public Dynamics {
         // motor direction for animation
         virtual int8_t motorDirection(uint8_t i) override
         {
-            const int8_t dir[4] = {-1, -1, +1, +1};
+            const int8_t dir[2] = {+1, -1};
             return dir[i];
         }
 
