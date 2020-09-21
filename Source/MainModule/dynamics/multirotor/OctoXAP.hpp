@@ -18,13 +18,13 @@
 
 #pragma once
 
-#include "../Dynamics.hpp"
+#include "../Multirotor.hpp"
 
-class OctoXAPDynamics : public Dynamics {
+class OctoXAPDynamics : public MultirotorDynamics {
 
     public:	
 
-		OctoXAPDynamics(Parameters * params) : Dynamics(params, 8)
+		OctoXAPDynamics(Parameters * params) : MultirotorDynamics(params, 8)
         {
         }
 

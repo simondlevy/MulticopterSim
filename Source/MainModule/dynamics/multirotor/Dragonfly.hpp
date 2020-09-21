@@ -14,13 +14,13 @@
 
 #pragma once
 
-#include "../Dynamics.hpp"
+#include "../Multirotor.hpp"
 
-class DragonflyDynamics : public Dynamics {
+class DragonflyDynamics : public MultirotorDynamics {
 
     public:	
 
-		DragonflyDynamics(Parameters * params) : Dynamics(params, 4)
+		DragonflyDynamics(Parameters * params) : MultirotorDynamics(params, 4)
         {
         }
 

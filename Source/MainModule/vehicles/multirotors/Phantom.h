@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../Multirotor.hpp"
-#include "../MainModule/dynamics/QuadXAP.hpp"
+#include "../MainModule/dynamics/multirotor/QuadXAP.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"

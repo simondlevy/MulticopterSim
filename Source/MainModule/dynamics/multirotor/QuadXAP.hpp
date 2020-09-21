@@ -14,13 +14,13 @@
 
 #pragma once
 
-#include "../Dynamics.hpp"
+#include "../Multirotor.hpp"
 
-class QuadXAPDynamics : public Dynamics {
+class QuadXAPDynamics : public MultirotorDynamics {
 
     public:	
 
-		QuadXAPDynamics(Parameters * params) : Dynamics(params, 4)
+		QuadXAPDynamics(Parameters * params) : MultirotorDynamics(params, 4)
         {
         }
 
