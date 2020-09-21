@@ -32,7 +32,7 @@ class ThrustVectorDynamics : public Dynamics {
         virtual void setMotors(double* motorvals, double dt) override
         {
             // Convert the  motor values to radians per second
-            for (unsigned int i = 0; i < _motorCount; ++i) {
+            for (unsigned int i = 0; i < 2; ++i) {
                 _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
             }
 
@@ -47,9 +47,9 @@ class ThrustVectorDynamics : public Dynamics {
             }
 
             // Use the squared Omegas to implement the rest of Eqn. 6
-            _U2 = _p->l * _p->b * u2(_omegas2);
-            _U3 = _p->l * _p->b * u3(_omegas2);
-            _U4 = _p->d * u4(_omegas2);
+            _U2 = 0;//_p->l * _p->b * u2(_omegas2);
+            _U3 = 0;//_p->l * _p->b * u3(_omegas2);
+            _U4 = 0;//_p->d * u4(_omegas2);
         }
 
     protected:
