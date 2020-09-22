@@ -31,8 +31,6 @@ class MultirotorDynamics : public Dynamics {
          */
         virtual void setMotors(double* motorvals, double dt) override
         {
-            debugline("%+3.3f  %+3.3f  %+3.3f  %+3.3f", motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
-
             // Convert the  motor values to radians per second
             for (unsigned int i = 0; i < _motorCount; ++i) {
                 _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s

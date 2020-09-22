@@ -24,6 +24,24 @@ class Rocket {
 
     private:
 
+        // A private class to support animating the nozzle
+        class NozzleVehicle : public MultirotorVehicle {
+
+            friend class Rocket;
+
+            NozzleVehicle(Dynamics* dynamics) 
+                : MultirotorVehicle(dynamics)
+            {
+            }
+
+            virtual void animateActuators(void) override
+            {
+                MultirotorVehicle::animateActuators();
+
+                debugline("%+3.3f  %+3.3f", _motorvals[2], _motorvals[3]);
+            }
+        };
+
         Dynamics::Parameters params = Dynamics::Parameters(
 
                 // Estimated
@@ -46,7 +64,7 @@ class Rocket {
 
         ThrustVectorDynamics dynamics = ThrustVectorDynamics(&params);
 
-        MultirotorVehicle vehicle = MultirotorVehicle(&dynamics);
+        NozzleVehicle vehicle = NozzleVehicle(&dynamics);
 
     private:
 
