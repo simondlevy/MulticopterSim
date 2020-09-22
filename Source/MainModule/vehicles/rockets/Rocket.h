@@ -89,7 +89,7 @@ class Rocket {
             addRotor(Rotor2Statics.mesh.Get(), 0.4);
 
             // Add nozzle
-            vehicle.nozzleMeshComponent = vehicle.addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, 0, 0);
+            vehicle.nozzleMeshComponent = vehicle.addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, 0.2, 0);
 
             _flightManager = NULL;
         }
