@@ -20,7 +20,17 @@ class QuadXAPDynamics : public MultirotorDynamics {
 
     public:	
 
-		QuadXAPDynamics(Parameters * params) : MultirotorDynamics(params, 4)
+        QuadXAPDynamics(
+                const double b, 
+                const double d, 
+                const double m, 
+                const double Ix, 
+                const double Iy, 
+                const double Iz, 
+                const double Jr, 
+                uint16_t maxrpm, 
+                const double l) 
+            : MultirotorDynamics(4, b, d, m, Ix, Iy, Iz, Jr, maxrpm, l)
         {
         }
 

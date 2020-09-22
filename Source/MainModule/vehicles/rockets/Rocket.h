@@ -24,6 +24,23 @@ class Rocket {
 
     private:
 
+        // Estimated
+        static constexpr double b = 5.E-06; // force constexpratnt [F=b*w^2]
+        static constexpr double d = 2.E-06; // torque constexprant [T=d*w^2]
+
+        // https://www.dji.com/phantom-4/info
+        static constexpr double m = 1.380;  // mass [kg]
+
+        // Estimated
+        static constexpr double Ix = 2;      // [kg*m^2] 
+        static constexpr double Iy = 2;      // [kg*m^2] 
+        static constexpr double Iz = 3;      // [kg*m^2] 
+        static constexpr double Jr = 38E-04; // prop inertial [kg*m^2] 
+
+        static const uint16_t maxrpm = 15000; // maxrpm
+
+        static constexpr double l = 0.350;  // arm length [m]
+
         // A private class to support animating the nozzle
         class NozzleVehicle : public MultirotorVehicle {
 
@@ -44,27 +61,10 @@ class Rocket {
             }
         };
 
-        Dynamics::Parameters params = Dynamics::Parameters(
-
-                // Estimated
-                5.E-06, // b force constatnt [F=b*w^2]
-                2.E-06, // d torque constant [T=d*w^2]
-
-                // https://www.dji.com/phantom-4/info
-                1.380,  //  m mass [kg]
-                0.350,  //  l arm length [m]
-
-                // Estimated
-                2,      // Ix [kg*m^2] 
-                2,      // Iy [kg*m^2] 
-                3,      // Iz [kg*m^2] 
-                38E-04, // Jr prop inertial [kg*m^2] 
-
-                15000); // maxrpm
 
     public:
 
-        ThrustVectorDynamics dynamics = ThrustVectorDynamics(&params);
+        ThrustVectorDynamics dynamics = ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, l);
 
         NozzleVehicle vehicle = NozzleVehicle(&dynamics);
 

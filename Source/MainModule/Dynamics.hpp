@@ -82,42 +82,6 @@ class Dynamics {
         } state_t;
 
         /**
-         * Class for parameters from the table below Equation 3
-         */
-        class Parameters {
-
-            friend class Dynamics;
-
-            public:
-
-            double b;
-            double d;
-            double m;
-            double l;
-            double Ix;
-            double Iy;
-            double Iz;
-            double Jr;
-
-            uint16_t maxrpm;
-
-            Parameters(double b, double d, double m, double l, double Ix, double Iy, double Iz, double Jr, uint16_t maxrpm)
-            {
-                this->b = b;
-                this->d = d;
-                this->m = m;
-                this->l = l;
-                this->Ix = Ix;
-                this->Iy = Iy;
-                this->Iz = Iz;
-                this->Jr = Jr;
-
-                this->maxrpm = maxrpm;
-            }
-        };
-
-
-        /**
          * Updates state.
          *
          * @param dt time in seconds since previous update
@@ -128,7 +92,7 @@ class Dynamics {
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
             double accelNED[3] = {};
-            bodyZToInertial(-_U1 / _p->m, euler, accelNED);
+            bodyZToInertial(-_U1 / _m, euler, accelNED);
 
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + g;
@@ -205,6 +169,49 @@ class Dynamics {
 
     protected:
 
+            // Parameters
+            double _b;
+            double _d;
+            double _m;
+            double _Ix;
+            double _Iy;
+            double _Iz;
+            double _Jr;
+
+            double _maxrpm;
+
+            double _l;
+
+            Dynamics(uint8_t motorCount,
+                    const double b, 
+                    const double d, 
+                    const double m, 
+                    const double Ix, 
+                    const double Iy, 
+                    const double Iz, 
+                    const double Jr, 
+                    uint16_t maxrpm, 
+                    const double l)
+            {
+                _motorCount = motorCount;
+
+                _b = b;
+                _d = d;
+                _m = m;
+                _Ix = Ix;
+                _Iy = Iy;
+                _Iz = Iz;
+                _Jr = Jr;
+
+                _maxrpm = maxrpm;
+
+                _l = l;
+
+                for (uint8_t i = 0; i < 12; ++i) {
+                    _x[i] = 0;
+                }
+            }
+
             // Data structure for returning state
             state_t _state = {};
 
@@ -266,9 +273,6 @@ class Dynamics {
             double _U4 = 0;     // yaw thrust clockwise
             double _Omega = 0;  // torque clockwise
 
-            // parameter block
-            Parameters* _p = NULL;
-
             // roll right
             virtual double u2(double* o) = 0;
 
@@ -285,18 +289,6 @@ class Dynamics {
             // quad, hexa, octo, etc.
             uint8_t _motorCount = 0;
 
-
-            /**
-             *  Constructor
-             */
-            Dynamics(const uint8_t motorCount)
-            {
-                _motorCount = motorCount;
-
-                for (uint8_t i = 0; i < 12; ++i) {
-                    _x[i] = 0;
-                }
-            }
 
             virtual void updateGimbalDynamics(double dt) {}
 
@@ -322,11 +314,11 @@ class Dynamics {
                 _dxdt[4] = _x[STATE_Z_DOT];                                                              // z'
                 _dxdt[5] = netz;                                                                         // z''
                 _dxdt[6] = phidot;                                                                       // phi'
-                _dxdt[7] = psidot * thedot * (_p->Iy - _p->Iz) / _p->Ix - _p->Jr / _p->Ix * thedot * _Omega + _U2 / _p->Ix;    // phi''
+                _dxdt[7] = psidot * thedot * (_Iy - _Iz) / _Ix - _Jr / _Ix * thedot * _Omega + _U2 / _Ix;    // phi''
                 _dxdt[8] = thedot;                                                                       // theta'
-                _dxdt[9] = -(psidot * phidot * (_p->Iz - _p->Ix) / _p->Iy + _p->Jr / _p->Iy * phidot * _Omega + _U3 / _p->Iy); // theta''
+                _dxdt[9] = -(psidot * phidot * (_Iz - _Ix) / _Iy + _Jr / _Iy * phidot * _Omega + _U3 / _Iy); // theta''
                 _dxdt[10] = psidot;                                                                        // psi'
-                _dxdt[11] = thedot * phidot * (_p->Ix - _p->Iy) / _p->Iz + _U4 / _p->Iz;                               // psi''
+                _dxdt[11] = thedot * phidot * (_Ix - _Iy) / _Iz + _U4 / _Iz;                               // psi''
             }
 
 
@@ -337,7 +329,7 @@ class Dynamics {
              */
             virtual double computeMotorSpeed(double motorval)
             {
-                return motorval * _p->maxrpm * 3.14159 / 30;
+                return motorval * _maxrpm * 3.14159 / 30;
             }
 
     public:

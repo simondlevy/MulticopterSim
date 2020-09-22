@@ -26,22 +26,23 @@ class Dragonfly {
 
     private:
 
-        Dynamics::Parameters params = Dynamics::Parameters(
-                // Estimated
-                5.E-06, // b force constatnt [F=b*w^2]
-                2.E-06, // d torque constant [T=d*w^2]
+        // Estimated
+        static constexpr float b = 5.E-06; // force constatnt [F=b*w^2]
+        static constexpr float d = 2.E-06; // torque constant [T=d*w^2]
 
-                // https://www.dji.com/phantom-4/info
-                1.380,  //  m mass [kg]
-                0.350,  //  l arm length [m]
+        // https://www.dji.com/phantom-4/info
+        static constexpr float m = 1.380;  // mass [kg]
 
-                // Estimated
-                2,      // Ix [kg*m^2] 
-                2,      // Iy [kg*m^2] 
-                3,      // Iz [kg*m^2] 
-                38E-04, // Jr prop inertial [kg*m^2] 
+        // Estimated
+        static constexpr float Ix = 2;      // [kg*m^2] 
+        static constexpr float Iy = 2;      // [kg*m^2] 
+        static constexpr float Iz = 3;      // [kg*m^2] 
+        static constexpr float Jr = 38E-04; // prop inertial [kg*m^2] 
 
-                15000); // maxrpm
+        static const uint16_t maxrpm = 15000; // maxrpm
+
+        static constexpr float l = 0.350;  // arm length [m]
+
 
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
@@ -53,7 +54,7 @@ class Dragonfly {
 
     public:
 
-        DragonflyDynamics dynamics = DragonflyDynamics(&params);
+        DragonflyDynamics dynamics = DragonflyDynamics(b, d, m, Ix, Iy, Iz, maxrpm, l);
 
         Ornithopter ornithopter = Ornithopter(&dynamics);
 

@@ -20,7 +20,8 @@ class DragonflyDynamics : public MultirotorDynamics {
 
     public:	
 
-		DragonflyDynamics(Parameters * params) : MultirotorDynamics(params, 4)
+		DragonflyDynamics(double b, double d, double m, double Ix, double Iy, double Iz, double Jr, uint16_t maxrpm, double l) 
+            : MultirotorDynamics(4, b, d, m, Ix, Iy, Iz, Jr, maxrpm, l)
         {
         }
 

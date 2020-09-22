@@ -14,11 +14,18 @@ class ThrustVectorDynamics : public Dynamics {
 
     public:	
 
-        ThrustVectorDynamics(Parameters * params) 
-            : Dynamics(4)
+        ThrustVectorDynamics(
+                const double b,
+                const double d,
+                const double m,
+                const double Ix,
+                const double Iy,
+                const double Iz,
+                const double Jr,
+                uint16_t maxrpm,
+                const double l)
+            : Dynamics(4, b, d, m, Ix, Iy, Iz, Jr, maxrpm, l)
         {
-            _p = params;
-
             _omegas = new double[4]();
             _omegas2 = new double[4]();
         }
@@ -43,15 +50,15 @@ class ThrustVectorDynamics : public Dynamics {
             _U1 = 0;
             for (unsigned int i = 0; i < _motorCount; ++i) {
                 _omegas2[i] = _omegas[i] * _omegas[i];
-                _U1 += _p->b * _omegas2[i];
+                _U1 += _b * _omegas2[i];
             }
 
             //debugline("%+3.3f  %+3.3f  %+3.3f  %+3.3f", motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
 
             // Use the squared Omegas to implement the rest of Eqn. 6
-            _U2 = 0;//_p->l * _p->b * u2(_omegas2);
-            _U3 = 0;//_p->l * _p->b * u3(_omegas2);
-            _U4 = 0;//_p->d * u4(_omegas2);
+            _U2 = 0;//_l * _b * u2(_omegas2);
+            _U3 = 0;//_l * _b * u3(_omegas2);
+            _U4 = 0;//_d * u4(_omegas2);
         }
 
     protected:

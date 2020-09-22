@@ -24,7 +24,8 @@ class OctoXAPDynamics : public MultirotorDynamics {
 
     public:	
 
-		OctoXAPDynamics(Parameters * params) : MultirotorDynamics(params, 8)
+		OctoXAPDynamics(8, double b, double d, double m, double Ix, double Iy, double Iz, double Jr, uint16_t maxrpm, double l) 
+            : MultirotorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, l)
         {
         }
 

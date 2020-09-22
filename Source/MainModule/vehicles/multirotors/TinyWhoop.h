@@ -34,27 +34,26 @@ class TinyWhoop {
 
     private:
 
-        Dynamics::Parameters params = Dynamics::Parameters(
-                // Estimated
-                5.E-06, // b force constatnt [F=b*w^2]
-                2.E-06, // d torque constant [T=d*w^2]
+        // Estimated
+        static constexpr double b = 5.E-06; // force constatnt [F=b*w^2]
+        static constexpr double d = 2.E-06; // torque constant [T=d*w^2]
 
-                // https://www.dji.com/phantom-4/info
-                1.380,  //  m mass [kg]
-                0.350,  //  l arm length [m]
+        // https://www.dji.com/phantom-4/info
+        static constexpr double m = 1.380;  // mass [kg]
 
-                // Estimated
-                2,      // Ix [kg*m^2] 
-                2,      // Iy [kg*m^2] 
-                3,      // Iz [kg*m^2] 
-                38E-04, // Jr prop inertial [kg*m^2] 
+        // Estimated
+        static constexpr double Ix = 2;      // [kg*m^2] 
+        static constexpr double Iy = 2;      // [kg*m^2] 
+        static constexpr double Iz = 3;      // [kg*m^2] 
+        static constexpr double Jr = 38E-04; // prop inertial [kg*m^2] 
 
-                15000); // maxrpm
+        static const uint16_t maxrpm = 15000; // maxrpm
 
+        static constexpr double l = 0.350;  // arm length [m]
 
     public:
 
-        QuadXAPDynamics dynamics = QuadXAPDynamics(&params);
+        QuadXAPDynamics dynamics = QuadXAPDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, l);
 
         MultirotorVehicle vehicle = MultirotorVehicle(&dynamics);
 
