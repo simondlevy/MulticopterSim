@@ -177,10 +177,7 @@ class Dynamics {
             double _Iy;
             double _Iz;
             double _Jr;
-
             double _maxrpm;
-
-            double _l;
 
             Dynamics(uint8_t motorCount,
                     const double b, 
@@ -190,8 +187,7 @@ class Dynamics {
                     const double Iy, 
                     const double Iz, 
                     const double Jr, 
-                    uint16_t maxrpm, 
-                    const double l)
+                    uint16_t maxrpm)
             {
                 _motorCount = motorCount;
 
@@ -204,8 +200,6 @@ class Dynamics {
                 _Jr = Jr;
 
                 _maxrpm = maxrpm;
-
-                _l = l;
 
                 for (uint8_t i = 0; i < 12; ++i) {
                     _x[i] = 0;

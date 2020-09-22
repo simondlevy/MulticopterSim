@@ -12,6 +12,10 @@
 
 class MultirotorDynamics : public Dynamics {
 
+    private:
+
+        double _l = 0; // arm length [m]
+
     public:
 
         MultirotorDynamics(
@@ -25,8 +29,10 @@ class MultirotorDynamics : public Dynamics {
                 const double Jr,
                 uint16_t maxrpm,
                 const double l)
-            : Dynamics(motorCount, b, d, m, Ix, Iy, Iz, Jr, maxrpm, l)
+            : Dynamics(motorCount, b, d, m, Ix, Iy, Iz, Jr, maxrpm)
         {
+            _l = l;
+
             _omegas = new double[motorCount]();
             _omegas2 = new double[motorCount]();
         }

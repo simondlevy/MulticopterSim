@@ -39,8 +39,6 @@ class Rocket {
 
         static const uint16_t maxrpm = 15000; // maxrpm
 
-        static constexpr double l = 0.350;  // arm length [m]
-
         // A private class to support animating the nozzle
         class NozzleVehicle : public MultirotorVehicle {
 
@@ -64,7 +62,7 @@ class Rocket {
 
     public:
 
-        ThrustVectorDynamics dynamics = ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, l);
+        ThrustVectorDynamics dynamics = ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm);
 
         NozzleVehicle vehicle = NozzleVehicle(&dynamics);
 

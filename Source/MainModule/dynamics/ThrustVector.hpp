@@ -22,9 +22,8 @@ class ThrustVectorDynamics : public Dynamics {
                 const double Iy,
                 const double Iz,
                 const double Jr,
-                uint16_t maxrpm,
-                const double l)
-            : Dynamics(4, b, d, m, Ix, Iy, Iz, Jr, maxrpm, l)
+                uint16_t maxrpm)
+            : Dynamics(4, b, d, m, Ix, Iy, Iz, Jr, maxrpm)
         {
             _omegas = new double[4]();
             _omegas2 = new double[4]();
