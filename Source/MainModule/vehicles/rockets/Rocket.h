@@ -40,7 +40,7 @@ class Rocket {
             {
                 MultirotorVehicle::animateActuators();
 
-                debugline("%p  %+3.3f  %+3.3f", nozzleMeshComponent, _motorvals[2], _motorvals[3]);
+                nozzleMeshComponent->SetRelativeRotation(FRotator(-_motorvals[3]*90, 0, -_motorvals[2]*90));
             }
         };
 
