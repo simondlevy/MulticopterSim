@@ -29,6 +29,8 @@ class Rocket {
 
             friend class Rocket;
 
+            UStaticMeshComponent * nozzleMeshComponent = NULL;
+
             NozzleVehicle(Dynamics* dynamics) 
                 : MultirotorVehicle(dynamics)
             {
@@ -38,7 +40,7 @@ class Rocket {
             {
                 MultirotorVehicle::animateActuators();
 
-                debugline("%+3.3f  %+3.3f", _motorvals[2], _motorvals[3]);
+                debugline("%p  %+3.3f  %+3.3f", nozzleMeshComponent, _motorvals[2], _motorvals[3]);
             }
         };
 
@@ -71,8 +73,6 @@ class Rocket {
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
-        UStaticMeshComponent * _nozzleMeshComponent = NULL;
-
         void addRotor(UStaticMesh* mesh, float z)
         {
             vehicle.addProp(mesh, 0, 0, z);
@@ -89,7 +89,7 @@ class Rocket {
             addRotor(Rotor2Statics.mesh.Get(), 0.4);
 
             // Add nozzle
-            _nozzleMeshComponent = vehicle.addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, 0, 0);
+            vehicle.nozzleMeshComponent = vehicle.addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, 0, 0);
 
             _flightManager = NULL;
         }
