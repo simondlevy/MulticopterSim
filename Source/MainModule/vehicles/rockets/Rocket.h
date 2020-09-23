@@ -67,11 +67,11 @@ class Rocket {
             _vehicle->addProp(mesh, 0, 0, z);
         }
 
-        float meshHeight(UStaticMesh * mesh) 
+        float meshHeightMeters(UStaticMesh * mesh) 
         {
             FBox box = mesh->GetBoundingBox();
 
-            return box.Max.Z - box.Min.Z;
+            return (box.Max.Z - box.Min.Z) / 100; // cm => m
         }
 
         NozzleVehicle * _vehicle = NULL;
@@ -80,13 +80,11 @@ class Rocket {
 
         ThrustVectorDynamics * dynamics = NULL;
 
-    public:
-
         void build(APawn * pawn)
         {
             // Get height of barrel and nozzle for dynamics
-            float barrelHeight = meshHeight(BarrelStatics.mesh.Get());
-            float nozzleHeight = meshHeight(NozzleStatics.mesh.Get());
+            float barrelHeight = meshHeightMeters(BarrelStatics.mesh.Get());
+            float nozzleHeight = meshHeightMeters(NozzleStatics.mesh.Get());
 
             // Create dynamics
             dynamics = new ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, barrelHeight, nozzleHeight);
