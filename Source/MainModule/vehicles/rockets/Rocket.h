@@ -59,15 +59,6 @@ class Rocket {
             }
         };
 
-
-    public:
-
-        ThrustVectorDynamics dynamics = ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm);
-
-        NozzleVehicle vehicle = NozzleVehicle(&dynamics);
-
-    private:
-
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
@@ -77,6 +68,10 @@ class Rocket {
         }
 
     public:
+
+        ThrustVectorDynamics dynamics = ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm);
+
+        NozzleVehicle vehicle = NozzleVehicle(&dynamics);
 
         void build(APawn * pawn)
         {
