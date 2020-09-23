@@ -39,6 +39,9 @@ class Rocket {
 
         static const uint16_t maxrpm = 15000; // maxrpm
 
+        // Arbitrary
+        static constexpr double NOZZLE_OFFSET = 0.2;
+
         // A private class to support animating the nozzle
         class NozzleVehicle : public MultirotorVehicle {
 
@@ -87,20 +90,20 @@ class Rocket {
             float nozzleHeight = meshHeightMeters(NozzleStatics.mesh.Get());
 
             // Create dynamics
-            dynamics = new ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, barrelHeight, nozzleHeight);
+            dynamics = new ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, barrelHeight, nozzleHeight, NOZZLE_OFFSET);
 
             // Create vehicle object from dynamics
             _vehicle = new NozzleVehicle(dynamics);
 
             // Add barrel mesh to vehicle
-            _vehicle->buildFull(pawn, BarrelStatics.mesh.Get(), 1.5, 0.5);
+            _vehicle->buildFull(pawn, BarrelStatics.mesh.Get());
 
             // Add rotors
             addRotor(Rotor1Statics.mesh.Get(), 0.3);
             addRotor(Rotor2Statics.mesh.Get(), 0.4);
 
             // Add nozzle
-            _vehicle->nozzleMeshComponent = _vehicle->addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, 0.2, 0);
+            _vehicle->nozzleMeshComponent = _vehicle->addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, NOZZLE_OFFSET, 0);
 
             _flightManager = NULL;
         }

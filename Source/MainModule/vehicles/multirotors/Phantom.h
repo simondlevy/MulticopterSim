@@ -55,7 +55,7 @@ class Phantom {
 
         void build(APawn * pawn)
         {
-            vehicle.buildFull(pawn, FrameStatics.mesh.Get(), 1.5, 0.5);
+            vehicle.buildFull(pawn, FrameStatics.mesh.Get());
 
             // Add propellers
             addProp(+1, +1);

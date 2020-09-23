@@ -60,7 +60,7 @@ class Dragonfly {
 
         void build(APawn * pawn)
         {
-            ornithopter.buildFull(pawn, BodyStatics.mesh.Get(), 1.5, 0.5);
+            ornithopter.buildFull(pawn, BodyStatics.mesh.Get());
 
             addWing(+0.20, +0.05, -20,  -20);
             addWing(+0.15, -0.05, +160, -20);

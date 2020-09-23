@@ -204,7 +204,7 @@ class Vehicle {
             _propCount = 0;
         }
 
-        void buildFull(APawn* pawn, UStaticMesh* frameMesh, float chaseCameraDistanceMeters, float chaseCameraElevationMeters)
+        void buildFull(APawn* pawn, UStaticMesh* frameMesh, float chaseCameraDistanceMeters=1.5, float chaseCameraElevationMeters=0.5)
         {
             build(pawn, frameMesh);
 
