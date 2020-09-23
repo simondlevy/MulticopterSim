@@ -15,7 +15,7 @@
 #include "GameFramework/Pawn.h"
 
 // Structures to hold static mesh initializations
-DECLARE_STATIC_MESH(FBarrelStaticss, "Rocket/Barrel.Barrel", BarrelStaticss)
+DECLARE_STATIC_MESH(FBarrelStatics, "Rocket/Barrel.Barrel", BarrelStatics)
 DECLARE_STATIC_MESH(FRotor1Statics, "Rocket/Rotor1.Rotor1", Rotor1Statics)
 DECLARE_STATIC_MESH(FRotor2Statics, "Rocket/Rotor2.Rotor2", Rotor2Statics)
 DECLARE_STATIC_MESH(FNozzleStatics, "Rocket/Nozzle.Nozzle", NozzleStatics)
@@ -64,39 +64,59 @@ class Rocket {
 
         void addRotor(UStaticMesh* mesh, float z)
         {
-            vehicle.addProp(mesh, 0, 0, z);
+            _vehicle->addProp(mesh, 0, 0, z);
         }
+
+        float meshHeight(UStaticMesh * mesh) 
+        {
+            FBox box = mesh->GetBoundingBox();
+
+            return box.Max.Z - box.Min.Z;
+        }
+
+        NozzleVehicle * _vehicle = NULL;
 
     public:
 
-        ThrustVectorDynamics dynamics = ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm);
+        ThrustVectorDynamics * dynamics = NULL;
 
-        NozzleVehicle vehicle = NozzleVehicle(&dynamics);
+    public:
 
         void build(APawn * pawn)
         {
-            vehicle.buildFull(pawn, BarrelStaticss.mesh.Get(), 1.5, 0.5);
+            // Get height of barrel and nozzle for dynamics
+            float barrelHeight = meshHeight(BarrelStatics.mesh.Get());
+            float nozzleHeight = meshHeight(NozzleStatics.mesh.Get());
+
+            // Create dynamics
+            dynamics = new ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, barrelHeight, nozzleHeight);
+
+            // Create vehicle object from dynamics
+            _vehicle = new NozzleVehicle(dynamics);
+
+            // Add barrel mesh to vehicle
+            _vehicle->buildFull(pawn, BarrelStatics.mesh.Get(), 1.5, 0.5);
 
             // Add rotors
             addRotor(Rotor1Statics.mesh.Get(), 0.3);
             addRotor(Rotor2Statics.mesh.Get(), 0.4);
 
             // Add nozzle
-            vehicle.nozzleMeshComponent = vehicle.addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, 0.2, 0);
+            _vehicle->nozzleMeshComponent = _vehicle->addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, 0.2, 0);
 
             _flightManager = NULL;
         }
 
         void PostInitializeComponents()
         {
-            vehicle.PostInitializeComponents();
+            _vehicle->PostInitializeComponents();
         }
 
         void BeginPlay(FFlightManager * flightManager)
         {
             _flightManager = flightManager;
 
-            vehicle.BeginPlay(flightManager);
+            _vehicle->BeginPlay(flightManager);
         }
 
         void EndPlay(void)
@@ -106,12 +126,12 @@ class Rocket {
 
         void Tick(float DeltaSeconds)
         {
-            vehicle.Tick(DeltaSeconds);
+            _vehicle->Tick(DeltaSeconds);
         }
 
         void addCamera(Camera * camera)
         {
-            vehicle.addCamera(camera);
+            _vehicle->addCamera(camera);
         }
 
 

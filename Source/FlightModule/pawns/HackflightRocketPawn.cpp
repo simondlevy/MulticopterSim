@@ -23,7 +23,7 @@ void AHackflightRocketPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AHackflightRocketPawn::BeginPlay()
 {
-    _rocket.BeginPlay(new FHackflightFlightManager(new hf::MixerThrustVector(), &_rocket.dynamics, false)); // disable PIDs for now
+    _rocket.BeginPlay(new FHackflightFlightManager(new hf::MixerThrustVector(), _rocket.dynamics, false)); // disable PIDs for now
 
     Super::BeginPlay();
 }
