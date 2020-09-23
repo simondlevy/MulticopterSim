@@ -69,19 +69,19 @@ class ThrustVectorDynamics : public Dynamics {
         // roll right
         virtual double u2(double * o) override
         {
-            return (o[1] + o[2]) - (o[0] + o[3]);
+            return 0;
         }
 
         // pitch forward
         virtual double u3(double * o) override
         {
-            return (o[1] + o[3]) - (o[0] + o[2]);
+            return 0;
         }
 
         // yaw cw
         virtual double u4(double * o) override
         {
-            return (o[0] + o[1]) - (o[2] + o[3]);
+            return (o[0] - o[1]);
         }
 
         // motor direction for animation
