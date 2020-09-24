@@ -1,7 +1,7 @@
 /*
  * Dynamics class for thrust vectoring
  *
- * Copyright (C) 2020 Simon D. Levy
+ * Copyright (C) 2020 Simon D. Levy, Noah Ghosh
  *
  * MIT License
  */
@@ -11,6 +11,12 @@
 #include "../Dynamics.hpp"
 
 class ThrustVectorDynamics : public Dynamics {
+
+    private:
+
+        // constants a, b from Noah's calculations
+        double A = 0;
+        double B = 0;
 
     public:	
 
@@ -25,11 +31,14 @@ class ThrustVectorDynamics : public Dynamics {
                 uint16_t maxrpm,
                 const double barrelHeight,
                 const double nozzleHeight,
-                const double barrelOffset)
+                const double nozzleOffset)
             : Dynamics(4, b, d, m, Ix, Iy, Iz, Jr, maxrpm)
         {
             _omegas = new double[4]();
             _omegas2 = new double[4]();
+
+            A = nozzleHeight - nozzleOffset;
+            B = barrelHeight - nozzleOffset;
         }
 
         /**
@@ -55,6 +64,7 @@ class ThrustVectorDynamics : public Dynamics {
                 _U1 += _b * _omegas2[i];
             }
 
+            debugline("A: %f  B: %f", A, B);
             //debugline("%+3.3f  %+3.3f  %+3.3f  %+3.3f", motorvals[0], motorvals[1], motorvals[2], motorvals[3]);
 
             // Use the squared Omegas to implement the rest of Eqn. 6
