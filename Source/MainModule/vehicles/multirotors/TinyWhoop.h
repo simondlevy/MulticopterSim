@@ -47,13 +47,13 @@ class TinyWhoop {
         static constexpr double Iz = 3;      // [kg*m^2] 
         static constexpr double Jr = 38E-04; // prop inertial [kg*m^2] 
 
-        static const uint16_t maxrpm = 15000; // maxrpm
-
         static constexpr double l = 0.350;  // arm length [m]
+
+        static const uint16_t maxrpm = 15000; // maxrpm
 
     public:
 
-        QuadXAPDynamics dynamics = QuadXAPDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, l);
+        QuadXAPDynamics dynamics = QuadXAPDynamics(b, d, m, Ix, Iy, Iz, Jr, l, maxrpm);
 
         MultirotorVehicle vehicle = MultirotorVehicle(&dynamics);
 

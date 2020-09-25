@@ -184,7 +184,7 @@ class Vehicle {
         uint8_t _propCount;
 
         // Also set in constructor, but purely for visual effect
-        int8_t _motorDirections[FFlightManager::MAX_MOTORS] = {};
+        int8_t _rotorDirections[FFlightManager::MAX_MOTORS] = {};
 
         virtual void animateActuators(void) = 0;
 
@@ -272,8 +272,8 @@ class Vehicle {
         {
             _dynamics = dynamics;
 
-            for (uint8_t i = 0; i < dynamics->motorCount(); ++i) {
-                _motorDirections[i] = dynamics->motorDirection(i);
+            for (uint8_t i = 0; i < dynamics->rotorCount(); ++i) {
+                _rotorDirections[i] = dynamics->rotorDirection(i);
             }
 
             _flightManager = NULL;

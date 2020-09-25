@@ -14,14 +14,14 @@
 
 #pragma once
 
-#include "../Multirotor.hpp"
+#include "../../Dynamics.hpp"
 
-class DragonflyDynamics : public MultirotorDynamics {
+class DragonflyDynamics : public Dynamics {
 
     public:	
 
-		DragonflyDynamics(double b, double d, double m, double Ix, double Iy, double Iz, double Jr, uint16_t maxrpm, double l) 
-            : MultirotorDynamics(4, b, d, m, Ix, Iy, Iz, Jr, maxrpm, l)
+		DragonflyDynamics(double b, double d, double m, double Ix, double Iy, double Iz, double Jr, double l, uint16_t maxrpm) 
+            : Dynamics(4, b, d, m, Ix, Iy, Iz, Jr, l, maxrpm)
         {
         }
 
@@ -47,8 +47,8 @@ class DragonflyDynamics : public MultirotorDynamics {
             return (o[0] + o[1]) - (o[2] + o[3]);
         }
 
-        // motor direction for animation
-        virtual int8_t motorDirection(uint8_t i) override
+        // rotor direction for animation
+        virtual int8_t rotorDirection(uint8_t i) override
         {
             const int8_t dir[4] = {+1, -1, -1, +1};
             return dir[i];

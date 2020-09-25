@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "../Multirotor.hpp"
+#include "../../Dynamics.hpp"
 
-class QuadXAPDynamics : public MultirotorDynamics {
+class QuadXAPDynamics : public Dynamics {
 
     public:	
 
@@ -28,9 +28,9 @@ class QuadXAPDynamics : public MultirotorDynamics {
                 const double Iy, 
                 const double Iz, 
                 const double Jr, 
-                uint16_t maxrpm, 
-                const double l) 
-            : MultirotorDynamics(4, b, d, m, Ix, Iy, Iz, Jr, maxrpm, l)
+                const double l,
+                uint16_t maxrpm) 
+            : Dynamics(4, b, d, m, Ix, Iy, Iz, Jr, l, maxrpm)
         {
         }
 
@@ -56,8 +56,8 @@ class QuadXAPDynamics : public MultirotorDynamics {
             return (o[0] + o[1]) - (o[2] + o[3]);
         }
 
-        // motor direction for animation
-        virtual int8_t motorDirection(uint8_t i) override
+        // rotor direction for animation
+        virtual int8_t rotorDirection(uint8_t i) override
         {
             const int8_t dir[4] = {-1, -1, +1, +1};
             return dir[i];

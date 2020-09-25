@@ -177,7 +177,8 @@ class Dynamics {
             double _Iy;
             double _Iz;
             double _Jr;
-            double _maxrpm;
+            double _l;
+            uint16_t _maxrpm;
 
             Dynamics(uint8_t motorCount,
                     const double b, 
@@ -187,9 +188,11 @@ class Dynamics {
                     const double Iy, 
                     const double Iz, 
                     const double Jr, 
+                    const double l,
                     uint16_t maxrpm)
             {
                 _motorCount = motorCount;
+                _rotorCount = motorCount; // can be overridden for thrust-vectoring
 
                 _b = b;
                 _d = d;
@@ -198,12 +201,15 @@ class Dynamics {
                 _Iy = Iy;
                 _Iz = Iz;
                 _Jr = Jr;
-
+                _l = l;
                 _maxrpm = maxrpm;
 
                 for (uint8_t i = 0; i < 12; ++i) {
                     _x[i] = 0;
                 }
+
+                _omegas = new double[motorCount]();
+                _omegas2 = new double[motorCount]();
             }
 
             // Data structure for returning state
@@ -280,7 +286,12 @@ class Dynamics {
             double* _omegas = NULL;
             double* _omegas2 = NULL;
 
+
             // quad, hexa, octo, etc.
+            uint8_t _rotorCount = 0;
+
+            // For thrust vectoring, we can have four motors: two rotors and two servos.  For multirotors,
+            // rotorCount = motorCount
             uint8_t _motorCount = 0;
 
 
@@ -370,6 +381,38 @@ class Dynamics {
                 _airborne = airborne;
             }
 
+            /**
+             * Uses motor values to implement Equation 6.
+             *
+             * @param motorvals in interval [0,1]
+             * @param dt time constant in seconds
+             */
+            void setMotors(double* motorvals, double dt)
+            {
+                // Convert the  motor values to radians per second
+                for (unsigned int i = 0; i < _rotorCount; ++i) {
+                    _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
+                }
+
+                debugline("%f", _maxrpm);
+
+                // Compute overall torque from omegas before squaring
+                _Omega = u4(_omegas);
+
+                // Overall thrust is sum of squared omegas
+                _U1 = 0;
+                for (unsigned int i = 0; i < _rotorCount; ++i) {
+                    _omegas2[i] = _omegas[i] * _omegas[i];
+                    _U1 += _b * _omegas2[i];
+                }
+
+                // Use the squared Omegas to implement the rest of Eqn. 6
+                _U2 = _l * _b * u2(_omegas2);
+                _U3 = _l * _b * u3(_omegas2);
+                _U4 = _d * u4(_omegas2);
+            }
+
+
 
             /**
              * Returns state structure.
@@ -388,8 +431,6 @@ class Dynamics {
             {
                 return _x;
             }
-
-            virtual void setMotors(double* motorvals, double dt) = 0;
 
             /**
              *  Gets current pose
@@ -418,8 +459,8 @@ class Dynamics {
                 _agl = agl;
             }
 
-            // Motor direction for animation
-            virtual int8_t motorDirection(uint8_t i) { (void)i; return 0; }
+            // Rotor direction for animation
+            virtual int8_t rotorDirection(uint8_t i) { (void)i; return 0; }
 
             /**
              *  Frame-of-reference conversion routines.
@@ -503,6 +544,15 @@ class Dynamics {
             uint8_t motorCount(void)
             {
                 return _motorCount;
+            }
+
+            /**
+             * Gets rotor count set by constructor.
+             * @return rotor count
+             */
+            uint8_t rotorCount(void)
+            {
+                return _rotorCount;
             }
 
 }; // class Dynamics

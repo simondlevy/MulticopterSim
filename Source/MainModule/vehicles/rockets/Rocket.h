@@ -85,12 +85,11 @@ class Rocket {
 
         void build(APawn * pawn)
         {
-            // Get height of barrel and nozzle for dynamics
+            // Get height of barrel for dynamics
             float barrelHeight = meshHeightMeters(BarrelStatics.mesh.Get());
-            float nozzleHeight = meshHeightMeters(NozzleStatics.mesh.Get());
 
             // Create dynamics
-            dynamics = new ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, barrelHeight, nozzleHeight, NOZZLE_OFFSET);
+            dynamics = new ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, barrelHeight, NOZZLE_OFFSET);
 
             // Create vehicle object from dynamics
             _vehicle = new NozzleVehicle(dynamics);
