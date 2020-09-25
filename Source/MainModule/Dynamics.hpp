@@ -374,7 +374,7 @@ class Dynamics {
             /**
              * Uses motor values to implement Equation 6.
              *
-             * @param motorvals in interval [0,1]
+             * @param motorvals in interval [0,1] (rotors) or [-0.5,+0.5] (servos)
              */
             void setMotors(double* motorvals)
             {
