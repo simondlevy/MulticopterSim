@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "../../Dynamics.hpp"
+#include "../Dynamics.hpp"
 
 class DragonflyDynamics : public Dynamics {
 
@@ -30,14 +30,18 @@ class DragonflyDynamics : public Dynamics {
         // Dynamics method overrides
 
         // roll right
-        virtual double u2(double * o) override
+        virtual double u2(double * motorvals) override
         {
+            (void)motorvals;
+            double * o = _omegas2;
             return (o[1] + o[2]) - (o[0] + o[3]);
         }
 
         // pitch forward
-        virtual double u3(double * o) override
+        virtual double u3(double * motorvals) override
         {
+            (void)motorvals;
+            double * o = _omegas2;
             return (o[1] + o[3]) - (o[0] + o[2]);
         }
 

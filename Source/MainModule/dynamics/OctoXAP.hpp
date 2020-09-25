@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "../../Dynamics.hpp"
+#include "../Dynamics.hpp"
 
 class OctoXAPDynamics : public Dynamics {
 
@@ -34,15 +34,21 @@ class OctoXAPDynamics : public Dynamics {
         // Dynamics method overrides
 		
 		// roll right
-		virtual double u2(double * o) override
+		static virtual double u2(double * motorvals) override
 		{
+            (void)motorvals;
+            double * o = _omegas2;
+
 			//       [2         5         6         7]     - [  1         3         4         8]
 			return (C1*o[1] + C1*o[4] + C2*o[5] + C2*o[6]) - (C1*o[0] + C2*o[2] + C1*o[3] + C2*o[7]);
 		}
 
 		// pitch forward
-		virtual double u3(double * o) override
+		virtual double u3(double * motorvals) override
 		{
+            (void)motorvals;
+            double * o = _omegas2;
+
 			//       [ 2        4         6         8]   -   [  1         3         5         7]
 			return (C2*o[1] + C2*o[3] + C1*o[5] + C1*o[7]) - (C2*o[0] + C1*o[2] + C2*o[4] + C1*o[6]);
 		}

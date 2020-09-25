@@ -274,10 +274,10 @@ class Dynamics {
             double _Omega = 0;  // torque clockwise
 
             // roll right
-            virtual double u2(double* o) = 0;
+            virtual double u2(double * motorvals) = 0;
 
             // pitch forward
-            virtual double u3(double* o) = 0;
+            virtual double u3(double * motorvals) = 0;
 
             // yaw cw
             virtual double u4(double* o) = 0;
@@ -393,17 +393,19 @@ class Dynamics {
                 // Compute overall torque from omegas before squaring
                 _Omega = u4(_omegas);
 
-                // Overall thrust is sum of squared omegas
+                // Overall thrust U1 is sum of squared omegas
                 _U1 = 0;
                 for (unsigned int i = 0; i < _rotorCount; ++i) {
                     _omegas2[i] = _omegas[i] * _omegas[i];
                     _U1 += _b * _omegas2[i];
                 }
 
-                // Use the squared Omegas to implement the rest of Eqn. 6
-                _U2 = _l * _b * u2(_omegas2);
-                _U3 = _l * _b * u3(_omegas2);
+                // Yaw force U4 can be computed from squared omegas
                 _U4 = _d * u4(_omegas2);
+
+                // Roll and pitch U2,U3 may require servo info 
+                _U2 = _l * _b * u2(motorvals);
+                _U3 = _l * _b * u3(motorvals);
             }
 
 

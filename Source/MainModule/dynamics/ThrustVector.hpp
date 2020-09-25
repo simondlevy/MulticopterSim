@@ -35,13 +35,13 @@ class ThrustVectorDynamics : public Dynamics {
         // Dynamics method overrides
 
         // roll right
-        virtual double u2(double * o) override
+        virtual double u2(double * motorvals) override
         {
             return 0;
         }
 
         // pitch forward
-        virtual double u3(double * o) override
+        virtual double u3(double * motorvals) override
         {
             return 0;
         }
