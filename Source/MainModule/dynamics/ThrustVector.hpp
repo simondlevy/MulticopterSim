@@ -35,7 +35,7 @@ class ThrustVectorDynamics : public Dynamics {
             u3 = thrust * sin(motorvals[3] * _nozzleMaxAngle);
 
             // yaw clockwise
-            u4 = (o[0] - o[1]);
+            u4 = (o[1] - o[0]);
         }
 
         // motor direction for animation
