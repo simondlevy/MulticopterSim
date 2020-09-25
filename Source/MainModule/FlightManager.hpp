@@ -69,8 +69,8 @@ class FFlightManager : public FThreadedManager {
             // Compute time deltay in seconds
 			double dt = currentTime - _previousTime;
 
-            // Send current motor values and time delay to dynamics
-            _dynamics->setMotors(_motorvals, dt);
+            // Send current motor values to dynamics
+            _dynamics->setMotors(_motorvals);
 
             // Update dynamics
             _dynamics->update(dt);

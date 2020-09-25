@@ -302,9 +302,6 @@ class Dynamics {
              * Should fill _dxdx[0..11] with appropriate values.
              * @param accelNED acceleration in NED inertial frame
              * @param netz accelNED[2] with gravitational constant added in
-             * @param phidot rotational acceleration in roll axis
-             * @param thedot rotational acceleration in pitch axis
-             * @param psidot rotational acceleration in yaw axis
              */
             void computeStateDerivative(double accelNED[3], double netz)
             {
@@ -385,16 +382,13 @@ class Dynamics {
              * Uses motor values to implement Equation 6.
              *
              * @param motorvals in interval [0,1]
-             * @param dt time constant in seconds
              */
-            void setMotors(double* motorvals, double dt)
+            void setMotors(double* motorvals)
             {
                 // Convert the  motor values to radians per second
                 for (unsigned int i = 0; i < _rotorCount; ++i) {
                     _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
                 }
-
-                debugline("%f", _maxrpm);
 
                 // Compute overall torque from omegas before squaring
                 _Omega = u4(_omegas);
