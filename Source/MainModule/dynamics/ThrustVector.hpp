@@ -34,22 +34,19 @@ class ThrustVectorDynamics : public Dynamics {
 
         // Dynamics method overrides
 
-        // roll right
-        virtual double u2(double * motorvals) override
+        virtual void computeTorques(double * motorvals, double & u2, double & u3, double & u4) override
         {
-            return 0;
-        }
+            // shorthand
+            double * o = _omegas2;
 
-        // pitch forward
-        virtual double u3(double * motorvals) override
-        {
-            return 0;
-        }
+            // roll right
+            u2 = 0;
 
-        // yaw cw
-        virtual double u4(double * o) override
-        {
-            return (o[0] - o[1]);
+            // pitch forward
+            u3 = 0;
+
+            // yaw clockwise
+            u4 = (o[0] - o[1]);
         }
 
         // motor direction for animation

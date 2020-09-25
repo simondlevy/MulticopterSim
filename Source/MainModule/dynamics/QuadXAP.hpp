@@ -38,26 +38,22 @@ class QuadXAPDynamics : public Dynamics {
 
         // Dynamics method overrides
 
-        // roll right
-        virtual double u2(double * motorvals) override
+        virtual void computeTorques(double * motorvals, double & u2, double & u3, double & u4) override
         {
+            // motor values are needed only for thrust vectoring
             (void)motorvals;
-            double * o = _omegas2;
-            return (o[1] + o[2]) - (o[0] + o[3]);
-        }
 
-        // pitch forward
-        virtual double u3(double * motorvals) override
-        {
-            (void)motorvals;
+            // shorthand
             double * o = _omegas2;
-            return (o[1] + o[3]) - (o[0] + o[2]);
-        }
 
-        // yaw cw
-        virtual double u4(double * o) override
-        {
-            return (o[0] + o[1]) - (o[2] + o[3]);
+            // roll right
+            u2 = (o[1] + o[2]) - (o[0] + o[3]);
+
+            // pitch forward
+            u3 = (o[1] + o[3]) - (o[0] + o[2]);
+
+            // yaw clockwise
+            u4 = (o[0] + o[1]) - (o[2] + o[3]);
         }
 
         // rotor direction for animation

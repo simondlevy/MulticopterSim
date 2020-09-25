@@ -273,19 +273,12 @@ class Dynamics {
             double _U4 = 0;     // yaw thrust clockwise
             double _Omega = 0;  // torque clockwise
 
-            // roll right
-            virtual double u2(double * motorvals) = 0;
-
-            // pitch forward
-            virtual double u3(double * motorvals) = 0;
-
-            // yaw cw
-            virtual double u4(double* o) = 0;
+            // Torques about Euler angles.  We need motorvals for thrust vectoring.
+            virtual void computeTorques(double * motorvals, double & u2, double & u3, double & u4) = 0;
 
             // radians per second for each motor, and their squared values
             double* _omegas = NULL;
             double* _omegas2 = NULL;
-
 
             // quad, hexa, octo, etc.
             uint8_t _rotorCount = 0;
@@ -390,9 +383,6 @@ class Dynamics {
                     _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
                 }
 
-                // Compute overall torque from omegas before squaring
-                _Omega = u4(_omegas);
-
                 // Overall thrust U1 is sum of squared omegas
                 _U1 = 0;
                 for (unsigned int i = 0; i < _rotorCount; ++i) {
@@ -400,15 +390,14 @@ class Dynamics {
                     _U1 += _b * _omegas2[i];
                 }
 
-                // Yaw force U4 can be computed from squared omegas
-                _U4 = _d * u4(_omegas2);
+                // Torque forces are computed differently for each vehicle configuration
+                double u2=0, u3=0, u4=0;
+                computeTorques(motorvals, u2, u3, u4);
 
-                // Roll and pitch U2,U3 may require servo info 
-                _U2 = _l * _b * u2(motorvals);
-                _U3 = _l * _b * u3(motorvals);
+                _U2 = _l * _b * u2;
+                _U3 = _l * _b * u3;
+                _U4 = _b * u4;
             }
-
-
 
             /**
              * Returns state structure.
