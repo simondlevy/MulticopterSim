@@ -1,7 +1,7 @@
 /*
  * Dynamics class for thrust vectoring
  *
- * Copyright (C) 2020 Simon D. Levy, Noah Ghosh
+ * Copyright (C) 2020 Simon D. Levy, 
  *
  * MIT License
  */
@@ -26,15 +26,16 @@ class ThrustVectorDynamics : public Dynamics {
             // shorthand
             double * o = _omegas2;
 
+            // thrust in direction of barrel is sum of rotor rotations
             double thrust = o[0] + o[1];
 
-            // roll right 
+            // roll right is thrust time sine of nozzle angle along right/left axis
             u2 = thrust * sin(motorvals[2] * _nozzleMaxAngle);
 
-            // pitch forward
+            // pitch forward is thrust time sine of nozzle angle along forward/backward axis
             u3 = thrust * sin(motorvals[3] * _nozzleMaxAngle);
 
-            // yaw clockwise
+            // yaw clockwise is difference between rotor rotations
             u4 = (o[1] - o[0]);
         }
 
