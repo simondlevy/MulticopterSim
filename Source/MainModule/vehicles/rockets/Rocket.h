@@ -16,6 +16,7 @@
 
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FBarrelStatics, "Rocket/Barrel.Barrel", BarrelStatics)
+DECLARE_STATIC_MESH(FLegStatics,    "Rocket/Leg.Leg",       LegStatics)
 DECLARE_STATIC_MESH(FRotor1Statics, "Rocket/Rotor1.Rotor1", Rotor1Statics)
 DECLARE_STATIC_MESH(FRotor2Statics, "Rocket/Rotor2.Rotor2", Rotor2Statics)
 DECLARE_STATIC_MESH(FNozzleStatics, "Rocket/Nozzle.Nozzle", NozzleStatics)
@@ -99,8 +100,8 @@ class Rocket {
             _vehicle->buildFull(pawn, BarrelStatics.mesh.Get());
 
             // Add rotors
-            addRotor(Rotor1Statics.mesh.Get(), 0.3);
-            addRotor(Rotor2Statics.mesh.Get(), 0.4);
+            addRotor(Rotor1Statics.mesh.Get(), 0.4);
+            addRotor(Rotor2Statics.mesh.Get(), 0.5);
 
             // Add nozzle
             _vehicle->nozzleMeshComponent = _vehicle->addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, NOZZLE_OFFSET, 0);
