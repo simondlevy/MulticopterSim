@@ -1,7 +1,7 @@
 /*
  * Dynamics class for thrust vectoring
  *
- * Copyright (C) 2020 Simon D. Levy, 
+ * Copyright (C) 2020 Simon D. Levy, Noah Ghosh
  *
  * MIT License
  */
