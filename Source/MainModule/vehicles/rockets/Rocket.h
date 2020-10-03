@@ -39,11 +39,13 @@ class Rocket {
 
         static const uint16_t maxrpm = 15000; // maxrpm
 
-        // Arbitrary
-        static constexpr double NOZZLE_Z         =  0.05;
+        // Affects dynamics
         static constexpr double NOZZLE_MAX_ANGLE =  45;
-        static constexpr double ROTOR1_Z         =  0.55;
-        static constexpr double ROTOR2_Z         =  0.65;
+        static constexpr double NOZZLE_Z         =  0.15;
+
+        // For appearance only
+        static constexpr double ROTOR1_Z  =  0.60;
+        static constexpr double ROTOR2_Z  =  0.70;
 
         // A private class to support animating the nozzle
         class NozzleVehicle : public MultirotorVehicle {
@@ -106,9 +108,6 @@ class Rocket {
 
             // Add nozzle
             _vehicle->nozzleMeshComponent = _vehicle->addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, NOZZLE_Z, 0);
-
-            // Add legs
-            //_vehicle->addComponent(LegStatics.mesh.Get(), FName("Leg1"), 0.10, -0.15, LEG_Z, 0);
 
             _flightManager = NULL;
         }
