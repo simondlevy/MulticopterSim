@@ -41,10 +41,11 @@ class Rocket {
         static const uint16_t maxrpm = 15000; // maxrpm
 
         // Arbitrary
-        static constexpr double NOZZLE_OFFSET    = 0.05;
-        static constexpr double NOZZLE_MAX_ANGLE = 45;
-        static constexpr double ROTOR1_OFFSET    = 0.55;
-        static constexpr double ROTOR2_OFFSET    = 0.65;
+        static constexpr double NOZZLE_Z         =  0.05;
+        static constexpr double NOZZLE_MAX_ANGLE =  45;
+        static constexpr double ROTOR1_Z         =  0.55;
+        static constexpr double ROTOR2_Z         =  0.65;
+        static constexpr double LEG_Z            = -0.45;
 
         // A private class to support animating the nozzle
         class NozzleVehicle : public MultirotorVehicle {
@@ -93,7 +94,7 @@ class Rocket {
             float barrelHeight = meshHeightMeters(BarrelStatics.mesh.Get());
 
             // Create dynamics
-            dynamics = new ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, barrelHeight, NOZZLE_OFFSET, NOZZLE_MAX_ANGLE);
+            dynamics = new ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, barrelHeight, NOZZLE_Z, NOZZLE_MAX_ANGLE);
 
             // Create vehicle object from dynamics
             _vehicle = new NozzleVehicle(dynamics);
@@ -102,11 +103,14 @@ class Rocket {
             _vehicle->buildFull(pawn, BarrelStatics.mesh.Get());
 
             // Add rotors
-            addRotor(Rotor1Statics.mesh.Get(), ROTOR1_OFFSET);
-            addRotor(Rotor2Statics.mesh.Get(), ROTOR2_OFFSET);
+            addRotor(Rotor1Statics.mesh.Get(), ROTOR1_Z);
+            addRotor(Rotor2Statics.mesh.Get(), ROTOR2_Z);
 
             // Add nozzle
-            _vehicle->nozzleMeshComponent = _vehicle->addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, NOZZLE_OFFSET, 0);
+            _vehicle->nozzleMeshComponent = _vehicle->addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, NOZZLE_Z, 0);
+
+            // Add legs
+            _vehicle->addComponent(LegStatics.mesh.Get(), FName("Leg1"), 0.10, -0.15, LEG_Z, 0);
 
             _flightManager = NULL;
         }
