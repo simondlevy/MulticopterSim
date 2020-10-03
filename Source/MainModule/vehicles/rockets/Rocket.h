@@ -43,6 +43,8 @@ class Rocket {
         // Arbitrary
         static constexpr double NOZZLE_OFFSET    = 0.2;
         static constexpr double NOZZLE_MAX_ANGLE = 45;
+        static constexpr double ROTOR1_OFFSET    = 0.4;
+        static constexpr double ROTOR2_OFFSET    = 0.5;
 
         // A private class to support animating the nozzle
         class NozzleVehicle : public MultirotorVehicle {
@@ -100,8 +102,8 @@ class Rocket {
             _vehicle->buildFull(pawn, BarrelStatics.mesh.Get());
 
             // Add rotors
-            addRotor(Rotor1Statics.mesh.Get(), 0.4);
-            addRotor(Rotor2Statics.mesh.Get(), 0.5);
+            addRotor(Rotor1Statics.mesh.Get(), ROTOR1_OFFSET);
+            addRotor(Rotor2Statics.mesh.Get(), ROTOR2_OFFSET);
 
             // Add nozzle
             _vehicle->nozzleMeshComponent = _vehicle->addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, NOZZLE_OFFSET, 0);
