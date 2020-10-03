@@ -15,8 +15,7 @@
 #include "GameFramework/Pawn.h"
 
 // Structures to hold static mesh initializations
-DECLARE_STATIC_MESH(FBarrelStatics, "Rocket/Barrel.Barrel", BarrelStatics)
-DECLARE_STATIC_MESH(FLegStatics,    "Rocket/Leg.Leg",       LegStatics)
+DECLARE_STATIC_MESH(FBodyStatics,   "Rocket/Body.Body",     BodyStatics)
 DECLARE_STATIC_MESH(FRotor1Statics, "Rocket/Rotor1.Rotor1", Rotor1Statics)
 DECLARE_STATIC_MESH(FRotor2Statics, "Rocket/Rotor2.Rotor2", Rotor2Statics)
 DECLARE_STATIC_MESH(FNozzleStatics, "Rocket/Nozzle.Nozzle", NozzleStatics)
@@ -45,7 +44,6 @@ class Rocket {
         static constexpr double NOZZLE_MAX_ANGLE =  45;
         static constexpr double ROTOR1_Z         =  0.55;
         static constexpr double ROTOR2_Z         =  0.65;
-        static constexpr double LEG_Z            = -0.45;
 
         // A private class to support animating the nozzle
         class NozzleVehicle : public MultirotorVehicle {
@@ -91,7 +89,7 @@ class Rocket {
         void build(APawn * pawn)
         {
             // Get height of barrel for dynamics
-            float barrelHeight = meshHeightMeters(BarrelStatics.mesh.Get());
+            float barrelHeight = meshHeightMeters(BodyStatics.mesh.Get());
 
             // Create dynamics
             dynamics = new ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, barrelHeight, NOZZLE_Z, NOZZLE_MAX_ANGLE);
@@ -100,7 +98,7 @@ class Rocket {
             _vehicle = new NozzleVehicle(dynamics);
 
             // Add barrel mesh to vehicle
-            _vehicle->buildFull(pawn, BarrelStatics.mesh.Get());
+            _vehicle->buildFull(pawn, BodyStatics.mesh.Get());
 
             // Add rotors
             addRotor(Rotor1Statics.mesh.Get(), ROTOR1_Z);
@@ -110,7 +108,7 @@ class Rocket {
             _vehicle->nozzleMeshComponent = _vehicle->addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, NOZZLE_Z, 0);
 
             // Add legs
-            _vehicle->addComponent(LegStatics.mesh.Get(), FName("Leg1"), 0.10, -0.15, LEG_Z, 0);
+            //_vehicle->addComponent(LegStatics.mesh.Get(), FName("Leg1"), 0.10, -0.15, LEG_Z, 0);
 
             _flightManager = NULL;
         }
