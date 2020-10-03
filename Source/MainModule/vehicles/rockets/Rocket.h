@@ -41,10 +41,10 @@ class Rocket {
         static const uint16_t maxrpm = 15000; // maxrpm
 
         // Arbitrary
-        static constexpr double NOZZLE_OFFSET    = 0.2;
+        static constexpr double NOZZLE_OFFSET    = 0.05;
         static constexpr double NOZZLE_MAX_ANGLE = 45;
-        static constexpr double ROTOR1_OFFSET    = 0.4;
-        static constexpr double ROTOR2_OFFSET    = 0.5;
+        static constexpr double ROTOR1_OFFSET    = 0.55;
+        static constexpr double ROTOR2_OFFSET    = 0.65;
 
         // A private class to support animating the nozzle
         class NozzleVehicle : public MultirotorVehicle {
