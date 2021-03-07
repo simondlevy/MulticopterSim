@@ -45,7 +45,7 @@ through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/
 ## Toolchain
 
 You will need Unreal Engine 4 (UE4). I am attempting to use the latest version, which as of the time of this
-writing is UE4.25.3. To install UE4, follow these [instructions](https://docs.unrealengine.com/en-US/GettingStarted/Installation/index.html).
+writing is UE4.26.1. To install UE4, follow these [instructions](https://docs.unrealengine.com/en-US/GettingStarted/Installation/index.html).
 
 # Build
 
