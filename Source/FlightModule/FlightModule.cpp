@@ -6,5 +6,6 @@ IMPLEMENT_MODULE(FDefaultModuleImpl, FlightModule)
 
 void hf::Board::outbuf(char* msg)
 {
-	osd(msg);
+	// false = no error; true = overwrite
+	osd(msg, false, true);
 }
