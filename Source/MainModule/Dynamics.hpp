@@ -54,7 +54,8 @@ class Dynamics {
             STATE_THETA,
             STATE_THETA_DOT,
             STATE_PSI,
-            STATE_PSI_DOT
+            STATE_PSI_DOT,
+            STATE_SIZE
         };
 
         /**

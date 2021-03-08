@@ -48,9 +48,8 @@ class SimSensors : public hf::Sensor {
             Dynamics::state_t dynamicsState = _dynamics->getState();
 
             // Use vehicle state to modify Hackflight state values
-            for (uint8_t k=0; k<3; ++k) {
-                vehicleState.x[hf::STATE_X+2*k] = dynamicsState.pose.location[k]; 
-                vehicleState.x[hf::STATE_DX+2*k] = dynamicsState.inertialVel[k]; 
+            for (uint8_t k=0; k<Dynamics::STATE_SIZE; ++k) {
+                vehicleState.x[k] = _dynamics->x(k);
             }
 
             // Negate for NED => ENU conversion
