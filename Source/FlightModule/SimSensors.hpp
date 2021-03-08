@@ -49,12 +49,12 @@ class SimSensors : public hf::Sensor {
 
             // Use vehicle state to modify Hackflight state values
             for (uint8_t k=0; k<3; ++k) {
-                vehicleState.location[k]    = dynamicsState.pose.location[k]; 
+                vehicleState.x[hf::STATE_X+k] = dynamicsState.pose.location[k]; 
                 vehicleState.inertialVel[k] = dynamicsState.inertialVel[k];
             }
 
             // Negate for NED => ENU conversion
-            vehicleState.location[2]    *= -1;
+            vehicleState.x[hf::STATE_Z] *= -1;
             vehicleState.inertialVel[2] *= -1;
 
             // Rotate inertial velocity into body frame for simulating optical flow
