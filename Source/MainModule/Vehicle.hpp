@@ -94,7 +94,9 @@ class Vehicle {
 
             // Set vehicle pose in animation
             _pawn->SetActorLocation(_startLocation +
-                FVector(pose.location[0], pose.location[1], -pose.location[2]) * 100);  // NED => ENU
+                100 * FVector(_dynamics->x(Dynamics::STATE_X), 
+                              _dynamics->x(Dynamics::STATE_Y),
+                              -_dynamics->x(Dynamics::STATE_Z))); // Negate Z for NED
             _pawn->SetActorRotation(FMath::RadiansToDegrees(FRotator(pose.rotation[1], pose.rotation[2], pose.rotation[0])));
         }
 

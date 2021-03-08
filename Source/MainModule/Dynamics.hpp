@@ -166,6 +166,11 @@ class Dynamics {
 
             } // update
 
+            // State-vector accessor
+            double x(uint8_t k)
+            {
+                return _x[k];
+            }
 
     protected:
 
