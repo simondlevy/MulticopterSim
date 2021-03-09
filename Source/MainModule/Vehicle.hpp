@@ -89,15 +89,15 @@ class Vehicle {
         // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
         void updateKinematics(void)
         {
-            // Get vehicle pose from dynamics
-            Dynamics::pose_t pose = _dynamics->getPose();
-
             // Set vehicle pose in animation
             _pawn->SetActorLocation(_startLocation +
                 100 * FVector(_dynamics->x(Dynamics::STATE_X), 
                               _dynamics->x(Dynamics::STATE_Y),
                               -_dynamics->x(Dynamics::STATE_Z))); // Negate Z for NED
-            _pawn->SetActorRotation(FMath::RadiansToDegrees(FRotator(pose.rotation[1], pose.rotation[2], pose.rotation[0])));
+            _pawn->SetActorRotation(
+                    FMath::RadiansToDegrees(FRotator(_dynamics->x(Dynamics::STATE_THETA),
+                                                     _dynamics->x(Dynamics::STATE_PSI),
+                                                     _dynamics->x(Dynamics::STATE_PHI))));
         }
 
         void grabImages(void)

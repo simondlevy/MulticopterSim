@@ -65,7 +65,6 @@ class Dynamics {
         // Kinematics
         typedef struct {
 
-            double location[3];
             double rotation[3];
 
         } pose_t;
@@ -156,7 +155,6 @@ class Dynamics {
                     _state.angularVel[i] = _x[STATE_PHI_DOT + ii];
                     _state.inertialVel[i] = _x[STATE_X_DOT + ii];
                     _state.pose.rotation[i] = _x[STATE_PHI + ii];
-                    _state.pose.location[i] = _x[STATE_X + ii];
                 }
 
                 // Convert inertial acceleration and velocity to body frame
@@ -421,24 +419,6 @@ class Dynamics {
             double* getStateVector(void)
             {
                 return _x;
-            }
-
-            /**
-             *  Gets current pose
-             *
-             *  @return data structure containing pose
-             */
-            pose_t getPose(void)
-            {
-                pose_t pose = {};
-
-                for (uint8_t i = 0; i < 3; ++i) {
-                    uint8_t ii = 2 * i;
-                    pose.rotation[i] = _x[STATE_PHI + ii];
-                    pose.location[i] = _x[STATE_X + ii];
-                }
-
-                return pose;
             }
 
             /**
