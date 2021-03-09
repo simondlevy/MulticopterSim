@@ -59,25 +59,14 @@ class Dynamics {
         };
 
         /**
-         * Exported state representations
+         * Exported state representation
          */
-
-        // Kinematics
-        typedef struct {
-
-            double rotation[3];
-
-        } pose_t;
-
-        // Dynamics
         typedef struct {
 
             double angularVel[3];
             double bodyAccel[3];
             double inertialVel[3];
             double quaternion[4];
-
-            pose_t pose;
 
         } state_t;
 
@@ -154,14 +143,15 @@ class Dynamics {
                     uint8_t ii = 2 * i;
                     _state.angularVel[i] = _x[STATE_PHI_DOT + ii];
                     _state.inertialVel[i] = _x[STATE_X_DOT + ii];
-                    _state.pose.rotation[i] = _x[STATE_PHI + ii];
                 }
 
+                double rotation[3] = {_x[STATE_PHI], _x[STATE_THETA], _x[STATE_PSI]};
+
                 // Convert inertial acceleration and velocity to body frame
-                inertialToBody(_inertialAccel, _state.pose.rotation, _state.bodyAccel);
+                inertialToBody(_inertialAccel, rotation, _state.bodyAccel);
 
                 // Convert Euler angles to quaternion
-                eulerToQuaternion(_state.pose.rotation, _state.quaternion);
+                eulerToQuaternion(rotation, _state.quaternion);
 
             } // update
 
