@@ -9,6 +9,7 @@
 #pragma once
 
 #include "../MainModule/Dynamics.hpp"
+#include "../MainModule/Transforms.hpp"
 
 #include <sensor.hpp>
 #include <datatypes.hpp>
@@ -23,7 +24,7 @@ class SimSensors : public hf::Sensor {
         {
             double di[3] = {inertial[0], inertial[1], inertial[2]};
             double bi[3] = {0};
-            Dynamics::inertialToBody(di, rotation, bi);
+            Transforms::inertialToBody(di, rotation, bi);
             body[0] = bi[0];
             body[1] = bi[1];
             body[2] = bi[2];
@@ -43,9 +44,6 @@ class SimSensors : public hf::Sensor {
         virtual void modifyState(hf::state_t & vehicleState, float time)
         {
             (void)time;
-
-            // Get vehicle state from dynamics
-            Dynamics::state_t dynamicsState = _dynamics->getState();
 
             // Use vehicle state to modify Hackflight state values
             for (uint8_t k=0; k<Dynamics::STATE_SIZE; ++k) {

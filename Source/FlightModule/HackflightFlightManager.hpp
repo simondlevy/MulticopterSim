@@ -9,6 +9,8 @@
 */
 
 #include "../MainModule/FlightManager.hpp"
+#include "../MainModule/Dynamics.hpp"
+#include "../MainModule/Transforms.hpp"
 
 #include <hackflight.hpp>
 
@@ -104,9 +106,24 @@ class FHackflightFlightManager : public FFlightManager {
             delete _motors;
         }
 
-        virtual void getMotors(const double time, const Dynamics::state_t & state, double * motorvals) override
+        virtual void getMotors(const double time, double * motorvals) override
         {
             uint16_t joystickError = _receiver.update();
+
+            double angularVel[3] = {
+                _dynamics->x(Dynamics::STATE_PHI_DOT),
+                _dynamics->x(Dynamics::STATE_THETA_DOT),
+                _dynamics->x(Dynamics::STATE_PSI_DOT) 
+            };
+
+            double eulerAngles[3] = {
+                _dynamics->x(Dynamics::STATE_PHI),
+                _dynamics->x(Dynamics::STATE_THETA),
+                _dynamics->x(Dynamics::STATE_PSI) 
+            };
+
+            double quaternion[4] = {};
+            Transforms::eulerToQuaternion(eulerAngles, quaternion);
 
             switch (joystickError) {
 
@@ -116,7 +133,7 @@ class FHackflightFlightManager : public FFlightManager {
 
                     _board.set(time);
 
-                    _imu.set(state.quaternion, state.angularVel);
+                    _imu.set(quaternion, angularVel);
 
                     // Get motor values
                     for (uint8_t i=0; i < _nmotors; ++i) {

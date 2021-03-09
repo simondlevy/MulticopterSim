@@ -34,6 +34,7 @@
 #include <math.h>
 
 #include "../Utils.hpp"
+#include "../Transforms.hpp"
 
 class Dynamics {
 
@@ -58,17 +59,6 @@ class Dynamics {
             STATE_SIZE
         };
 
-        /**
-         * Exported state representation
-         */
-        typedef struct {
-
-            double angularVel[3];
-            double bodyAccel[3];
-            double inertialVel[3];
-            double quaternion[4];
-
-        } state_t;
 
         /**
          * Updates state.
@@ -81,7 +71,7 @@ class Dynamics {
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
             double accelNED[3] = {};
-            bodyZToInertial(-_U1 / _m, euler, accelNED);
+            Transforms::bodyZToInertial(-_U1 / _m, euler, accelNED);
 
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + g;
@@ -138,21 +128,6 @@ class Dynamics {
 
                 updateGimbalDynamics(dt);
 
-                // Get most values directly from state vector
-                for (uint8_t i = 0; i < 3; ++i) {
-                    uint8_t ii = 2 * i;
-                    _state.angularVel[i] = _x[STATE_PHI_DOT + ii];
-                    _state.inertialVel[i] = _x[STATE_X_DOT + ii];
-                }
-
-                double rotation[3] = {_x[STATE_PHI], _x[STATE_THETA], _x[STATE_PSI]};
-
-                // Convert inertial acceleration and velocity to body frame
-                inertialToBody(_inertialAccel, rotation, _state.bodyAccel);
-
-                // Convert Euler angles to quaternion
-                eulerToQuaternion(rotation, _state.quaternion);
-
             } // update
 
             // State-vector accessor
@@ -205,9 +180,6 @@ class Dynamics {
                 _omegas = new double[motorCount]();
                 _omegas2 = new double[motorCount]();
             }
-
-            // Data structure for returning state
-            state_t _state = {};
 
             // Flag for whether we're airborne and can update dynamics
             bool _airborne = false;
@@ -394,15 +366,6 @@ class Dynamics {
             }
 
             /**
-             * Returns state structure.
-             * @return state structure
-             */
-            state_t getState(void)
-            {
-                return _state;
-            }
-
-            /**
              * Returns "raw" state vector.
              * @return state vector
              */
@@ -423,82 +386,7 @@ class Dynamics {
             // Rotor direction for animation
             virtual int8_t rotorDirection(uint8_t i) { (void)i; return 0; }
 
-            /**
-             *  Frame-of-reference conversion routines.
-             *
-             *  See Section 5 of http://www.chrobotics.com/library/understanding-euler-angles
-             */
-
-            static void bodyToInertial(double body[3], const double rotation[3], double inertial[3])
-            {
-                double phi = rotation[0];
-                double theta = rotation[1];
-                double psi = rotation[2];
-
-                double cph = cos(phi);
-                double sph = sin(phi);
-                double cth = cos(theta);
-                double sth = sin(theta);
-                double cps = cos(psi);
-                double sps = sin(psi);
-
-                double R[3][3] = { {cps * cth,  cps * sph * sth - cph * sps,  sph * sps + cph * cps * sth},
-                    {cth * sps,  cph * cps + sph * sps * sth,  cph * sps * sth - cps * sph},
-                    {-sth,     cth * sph,                cph * cth} };
-
-                dot(R, body, inertial);
-            }
-
-            static void inertialToBody(double inertial[3], const double rotation[3], double body[3])
-            {
-                double phi = rotation[0];
-                double theta = rotation[1];
-                double psi = rotation[2];
-
-                double cph = cos(phi);
-                double sph = sin(phi);
-                double cth = cos(theta);
-                double sth = sin(theta);
-                double cps = cos(psi);
-                double sps = sin(psi);
-
-                double R[3][3] = { {cps * cth,                cth * sps,                   -sth},
-                    {cps * sph * sth - cph * sps,  cph * cps + sph * sps * sth,  cth * sph},
-                    {sph * sps + cph * cps * sth,  cph * sps * sth - cps * sph,  cph * cth} };
-
-                dot(R, inertial, body);
-            }
-
-            /**
-             * Converts Euler angles to quaterion.
-             *
-             * @param eulerAngles input
-             * @param quaternion output
-             */
-
-            static void eulerToQuaternion(const double eulerAngles[3], double quaternion[4])
-            {
-                // Convenient renaming
-                double phi = eulerAngles[0] / 2;
-                double the = eulerAngles[1] / 2;
-                double psi = eulerAngles[2] / 2;
-
-                // Pre-computation
-                double cph = cos(phi);
-                double cth = cos(the);
-                double cps = cos(psi);
-                double sph = sin(phi);
-                double sth = sin(the);
-                double sps = sin(psi);
-
-                // Conversion
-                quaternion[0] = cph * cth * cps + sph * sth * sps;
-                quaternion[1] = cph * sth * sps - sph * cth * cps;
-                quaternion[2] = -cph * sth * cps - sph * cth * sps;
-                quaternion[3] = cph * cth * sps - sph * sth * cps;
-            }
-
-            /**
+           /**
              * Gets motor count set by constructor.
              * @return motor count
              */
