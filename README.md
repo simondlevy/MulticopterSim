@@ -60,7 +60,7 @@ doesn't exist.
    
 2. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
 and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit) 
-and repositories into your 
+repositories into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
 where MulticopterSim looks for the Hackflight firmware.)
