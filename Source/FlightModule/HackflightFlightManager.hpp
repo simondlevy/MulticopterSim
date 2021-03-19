@@ -18,13 +18,9 @@
 #include <pidcontrollers/level.hpp>
 #include <pidcontrollers/rate.hpp>
 #include <pidcontrollers/althold.hpp>
-#include <pidcontrollers/flowhold.hpp>
 
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
-#include "SimImu.hpp"
-#include "SimMotor.hpp"
-#include "SimSensors.hpp"
 
 class FHackflightFlightManager : public FFlightManager {
 
@@ -50,27 +46,14 @@ class FHackflightFlightManager : public FFlightManager {
                 0.01f,  // altHoldVelI
                 0.10f); // altHoldVelD
 
-        // Pos-hold (via simulated optical flow)
-        hf::FlowHoldPid flowhold = hf::FlowHoldPid(0.1, 0);
-
-        // Main firmware
-        hf::Hackflight _hackflight;
-
         // Flight-controller board
         SimBoard _board;
-
-        // "IMU"
-        SimIMU _imu;
 
         // "Receiver" (joystick/gamepad)
         SimReceiver _receiver;
 
-        // "Sensors" (get values from dynamics)
-        SimSensors * _sensors = NULL;
-
-        // "Motors" just store their current value
-        SimMotor * _motors = NULL;
-        uint8_t    _nmotors = 0;
+        // Main firmware
+        hf::Hackflight * _hackflight = NULL;
 
     public:
 
@@ -80,20 +63,20 @@ class FHackflightFlightManager : public FFlightManager {
         {
             // Create simulated motors
             _nmotors = dynamics->motorCount();
-            _motors = new SimMotor(_nmotors);
+
+            hf::Hackflight _hackflight(&_board, &_receiver, _mixer);
 
             // Start Hackflight firmware, indicating already armed
-            _hackflight.init(&_board, &_imu, &_receiver, mixer, (hf::Motor *)_motors, true);
+            _hackflight.begin(true);
 
             // Add simulated sensor suite
-            _sensors = new SimSensors(_dynamics);
-            _hackflight.addSensor(_sensors);
+            //_sensors = new SimSensors(_dynamics);
+            //_hackflight.addSensor(_sensors);
 
             if (pidsEnabled) {
 
-                // Add altitude-hold and position-hold PID controllers in switch position 1 or greater
+                // Add altitude-hold PID controller in switch position 1 or greater
                 _hackflight.addPidController(&althold, 1);
-                _hackflight.addPidController(&flowhold, 1);
 
                 // Add rate and level PID controllers for all aux switch positions
                 _hackflight.addPidController(&levelPid);

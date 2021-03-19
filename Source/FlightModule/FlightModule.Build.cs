@@ -13,8 +13,8 @@ using System.IO;
 
 public class FlightModule : ModuleRules
 {
-    // Change this to agree with your Hackflight install location
-    private static string PATH = "D:\\Users\\levys\\Documents\\Arduino\\libraries\\Hackflight\\src";
+    // Change this to agree with your Arduino libraries install location
+    private static string ARDUINO_PATH = "D:\\Users\\levys\\Documents\\Arduino\\libraries\\";
 
     public FlightModule(ReadOnlyTargetRules Target) : base(Target)
     {
@@ -22,6 +22,7 @@ public class FlightModule : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
-        PrivateIncludePaths.Add(PATH);
+        PrivateIncludePaths.Add(PATH + "Hackflight\\src");
+        PrivateIncludePaths.Add(PATH + "RoboFirmwareToolkit\\src");
     }
 }
