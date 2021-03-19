@@ -60,7 +60,7 @@ doesn't exist.
    
 2. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
 and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit) 
-repositories into your 
+(RFT) repositories into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
 where MulticopterSim looks for the Hackflight firmware.)
@@ -76,13 +76,14 @@ file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln
 you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
 to build the project.
 
-3. In Visual Studio, edit the file [MulticopterSim/Source/FlightModule/FlightModule.Build.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source//FlightModule/FlightModule.Build.cs#L16-L17) to reflect where you installed Hackflight.
+3. In Visual Studio, edit the file [MulticopterSim/Source/FlightModule/FlightModule.Build.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source//FlightModule/FlightModule.Build.cs#L16-L17) to reflect where you installed
+Hackflight / RFT.
 
 4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
 ## Linux
 
-1. Edit [FlightModule.Build.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/FlightModule/FlightModule.Build.cs) to reflect where you installed Hackflight.
+1. Edit [FlightModule.Build.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/FlightModule/FlightModule.Build.cs) to reflect where you installed Hackflight / RFT.
 
 2. Then:
 ```
