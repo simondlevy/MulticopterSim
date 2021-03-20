@@ -62,12 +62,12 @@ class FHackflightFlightManager : public FFlightManager {
             : FFlightManager(dynamics) 
         {
             // Create simulated motors
-            _nmotors = dynamics->motorCount();
+            //_nmotors = dynamics->motorCount();
 
-            hf::Hackflight _hackflight(&_board, &_receiver, _mixer);
+            //hf::Hackflight _hackflight(&_board, &_receiver, _mixer);
 
             // Start Hackflight firmware, indicating already armed
-            _hackflight.begin(true);
+            //_hackflight.begin(true);
 
             // Add simulated sensor suite
             //_sensors = new SimSensors(_dynamics);
@@ -76,17 +76,17 @@ class FHackflightFlightManager : public FFlightManager {
             if (pidsEnabled) {
 
                 // Add altitude-hold PID controller in switch position 1 or greater
-                _hackflight.addPidController(&althold, 1);
+                //_hackflight.addPidController(&althold, 1);
 
                 // Add rate and level PID controllers for all aux switch positions
-                _hackflight.addPidController(&levelPid);
-                _hackflight.addPidController(&ratePid);
+                //_hackflight.addPidController(&levelPid);
+                //_hackflight.addPidController(&ratePid);
             }
         }
 
         virtual ~FHackflightFlightManager(void)
         {
-            delete _motors;
+            // delete _motors; // XXX
         }
 
         virtual void getMotors(const double time, double * motorvals) override
@@ -112,16 +112,16 @@ class FHackflightFlightManager : public FFlightManager {
 
                 case 0:
 
-                    _hackflight.update();
+                    //_hackflight.update();
 
                     _board.set(time);
 
-                    _imu.set(quaternion, angularVel);
+                    // _imu.set(quaternion, angularVel);
 
-                    // Get motor values
-                    for (uint8_t i=0; i < _nmotors; ++i) {
-                        motorvals[i] = _motors->getValue(i);
-                    }
+                    // XXX Get motor values
+                    //for (uint8_t i=0; i < _nmotors; ++i) {
+                    //    motorvals[i] = _motors->getValue(i);
+                    //}
 
                     break;
 

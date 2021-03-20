@@ -31,14 +31,14 @@ class SimReceiver : public hf::Receiver {
 
     protected:
 
-		uint8_t getAux1State(void) 
+		virtual bool inArmedState(void) override
 		{
-			return 1; // Always armed
+			return true; // Always armed
 		}
 
-		uint8_t getAux2State(void)
+		virtual uint8_t getModeIndex(void) override
 		{
-			return Receiver::getAux1State();  // With only five channels, we use Aux1 for Aux2
+			return 0; // XXX Receiver::getAux1State();  // With only five channels, we use Aux1 for Aux2
 		}
 
     public:

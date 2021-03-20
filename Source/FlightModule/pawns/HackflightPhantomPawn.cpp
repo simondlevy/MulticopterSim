@@ -23,9 +23,7 @@ void AHackflightPhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AHackflightPhantomPawn::BeginPlay()
 {
-    //_phantom.BeginPlay(new FHackflightFlightManager(&_mixer, &_phantom.dynamics));
-    
-    _phantom.BeginPlay(new FHackflightFlightManager(new hf::MixerQuadXAP(), &_phantom.dynamics));
+    // _phantom.BeginPlay(new FHackflightFlightManager(new hf::MixerQuadXAP(), &_phantom.dynamics));
 
     Super::BeginPlay();
 }

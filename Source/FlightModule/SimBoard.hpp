@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <board.hpp>
+#include <RFT_board.hpp>
 
 
-class SimBoard : public hf::Board {
+class SimBoard : public rft::Board {
 
     private:
    

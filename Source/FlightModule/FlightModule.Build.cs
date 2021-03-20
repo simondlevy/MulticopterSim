@@ -22,7 +22,7 @@ public class FlightModule : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
-        PrivateIncludePaths.Add(PATH + "Hackflight\\src");
-        PrivateIncludePaths.Add(PATH + "RoboFirmwareToolkit\\src");
+        PrivateIncludePaths.Add(ARDUINO_PATH + "Hackflight\\src");
+        PrivateIncludePaths.Add(ARDUINO_PATH + "RoboFirmwareToolkit\\src");
     }
 }
