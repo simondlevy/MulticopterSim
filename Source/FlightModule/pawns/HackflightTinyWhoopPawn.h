@@ -14,6 +14,8 @@
 
 #include "../HackflightFlightManager.hpp"
 
+#include "SimMotor.hpp"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
@@ -28,6 +30,10 @@ class FLIGHTMODULE_API AHackflightTinyWhoopPawn : public APawn {
 
         // Helper class
         TinyWhoop _tinyWhoop;
+
+        SimMotor _motors = SimMotor(4);
+
+        hf::MixerQuadXAP  _mixer = hf::MixerQuadXAP(&_motors);
 
     protected:
 
