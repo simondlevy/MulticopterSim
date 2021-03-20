@@ -69,10 +69,7 @@ class FHackflightFlightManager : public FFlightManager {
             _motors = motors;
             _nmotors = nmotors;
 
-            //hf::Hackflight _hackflight(&_board, &_receiver, _mixer);
-
-            // Start Hackflight firmware, indicating already armed
-            //_hackflight.begin(true);
+            _hackflight = new hf::Hackflight(&_board, &_receiver, mixer);
 
             // Add simulated sensor suite
             //_sensors = new SimSensors(_dynamics);
@@ -87,10 +84,14 @@ class FHackflightFlightManager : public FFlightManager {
                 //_hackflight.addPidController(&levelPid);
                 //_hackflight.addPidController(&ratePid);
             }
+
+            // Start Hackflight firmware, indicating already armed
+            _hackflight->begin(true);
         }
 
         virtual ~FHackflightFlightManager(void)
         {
+            delete _hackflight;
         }
 
         virtual void getMotors(const double time, double * motorvals) override
@@ -116,16 +117,16 @@ class FHackflightFlightManager : public FFlightManager {
 
                 case 0:
 
-                    //_hackflight.update();
+                    _hackflight->update();
 
                     _board.set(time);
 
                     // _imu.set(quaternion, angularVel);
 
-                    // XXX Get motor values
-                    //for (uint8_t i=0; i < _nmotors; ++i) {
-                    //    motorvals[i] = _motors->getValue(i);
-                    //}
+                    //  Get motor values
+                    for (uint8_t i=0; i < _nmotors; ++i) {
+                        motorvals[i] = _motors->getValue(i);
+                    }
 
                     break;
 
