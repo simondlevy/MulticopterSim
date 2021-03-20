@@ -29,6 +29,10 @@ class FLIGHTMODULE_API AHackflightRocketPawn : public APawn {
         // Helper class
         Rocket _rocket;
 
+        SimMotor _motors = SimMotor(4);
+
+        hf::MixerThrustVector  _mixer = hf::MixerThrustVector(&_motors);
+
     protected:
 
         // AActor overrides
