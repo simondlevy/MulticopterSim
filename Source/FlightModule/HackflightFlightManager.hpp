@@ -85,7 +85,7 @@ class FHackflightFlightManager : public FFlightManager {
                 //_hackflight->addClosedLoopController(&althold, 1);
 
                 // Add rate and level PID controllers for all aux switch positions
-                //_hackflight->addClosedLoopController(&levelPid);
+                _hackflight->addClosedLoopController(&levelPid);
                 _hackflight->addClosedLoopController(&ratePid);
             }
 
