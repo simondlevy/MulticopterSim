@@ -12,8 +12,6 @@
 
 #include <receiver.hpp>
 
-#include <RFT_debugger.hpp>
-
 #include "../joystick/Joystick.h"
 
 class SimReceiver : public hf::Receiver {
@@ -74,8 +72,6 @@ class SimReceiver : public hf::Receiver {
 
 		void readRawvals(void)
 		{
-			// Negate pitch so that forward is negative
-			rawvals[CHANNEL_PITCH] *= -1;
 		}
 
 		uint16_t update(void)

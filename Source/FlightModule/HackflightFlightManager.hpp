@@ -22,6 +22,7 @@
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
 #include "SimMotor.hpp"
+#include "SimSensors.hpp"
 
 class FHackflightFlightManager : public FFlightManager {
 
@@ -53,6 +54,9 @@ class FHackflightFlightManager : public FFlightManager {
         // "Receiver" (joystick/gamepad)
         SimReceiver _receiver;
 
+        // Sensors"
+        SimSensors* _sensors = NULL;
+
         // Helps us access individual motors
         SimMotor* _motors = NULL;
         uint8_t _nmotors = 0;
@@ -72,17 +76,17 @@ class FHackflightFlightManager : public FFlightManager {
             _hackflight = new hf::Hackflight(&_board, &_receiver, mixer);
 
             // Add simulated sensor suite
-            //_sensors = new SimSensors(_dynamics);
-            //_hackflight.addSensor(_sensors);
+            _sensors = new SimSensors(_dynamics);
+            _hackflight->addSensor(_sensors);
 
             if (pidsEnabled) {
 
                 // Add altitude-hold PID controller in switch position 1 or greater
-                //_hackflight.addPidController(&althold, 1);
+                //_hackflight->addClosedLoopController(&althold, 1);
 
                 // Add rate and level PID controllers for all aux switch positions
-                //_hackflight.addPidController(&levelPid);
-                //_hackflight.addPidController(&ratePid);
+                //_hackflight->addClosedLoopController(&levelPid);
+                _hackflight->addClosedLoopController(&ratePid);
             }
 
             // Start Hackflight firmware, indicating already armed

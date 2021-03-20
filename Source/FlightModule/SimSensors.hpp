@@ -11,11 +11,13 @@
 #include "../MainModule/Dynamics.hpp"
 #include "../MainModule/Transforms.hpp"
 
-#include <sensor.hpp>
-#include <datatypes.hpp>
-#include <debugger.hpp>
+#include <state.hpp>
 
-class SimSensors : public hf::Sensor {
+#include <RFT_sensor.hpp>
+#include <RFT_state.hpp>
+#include <RFT_debugger.hpp>
+
+class SimSensors : public rft::Sensor {
 
     private:
 
@@ -41,18 +43,20 @@ class SimSensors : public hf::Sensor {
             return true;
         }
 
-        virtual void modifyState(hf::state_t & vehicleState, float time)
+        virtual void modifyState(rft::State * state, float time)
         {
             (void)time;
 
+            hf::State* vehicleState = (hf::State*)state;
+
             // Use vehicle state to modify Hackflight state values
             for (uint8_t k=0; k<Dynamics::STATE_SIZE; ++k) {
-                vehicleState.x[k] = _dynamics->x(k);
+                vehicleState->x[k] = _dynamics->x(k);
             }
 
             // Negate for NED => ENU conversion
-            vehicleState.x[hf::STATE_Z] *= -1;
-            vehicleState.x[hf::STATE_DZ] *= -1;
+            vehicleState->x[hf::State::STATE_Z] *= -1;
+            vehicleState->x[hf::State::STATE_DZ] *= -1;
 
             // Rotate inertial velocity into body frame for simulating optical flow
             //inertialToBody(vehicleState.inertialVel, dynamicsState.pose.rotation, vehicleState.bodyVel);
