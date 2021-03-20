@@ -21,6 +21,7 @@
 
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
+#include "SimMotor.hpp"
 
 class FHackflightFlightManager : public FFlightManager {
 
@@ -52,17 +53,21 @@ class FHackflightFlightManager : public FFlightManager {
         // "Receiver" (joystick/gamepad)
         SimReceiver _receiver;
 
+        // Helps us access individual motors
+        SimMotor* _motors = NULL;
+        uint8_t _nmotors = 0;
+
         // Main firmware
         hf::Hackflight * _hackflight = NULL;
 
     public:
 
         // Constructor
-        FHackflightFlightManager(hf::Mixer * mixer, Dynamics * dynamics, bool pidsEnabled=true) 
-            : FFlightManager(dynamics) 
+        FHackflightFlightManager(hf::Mixer * mixer, SimMotor * motors, int nmotors, Dynamics * dynamics, bool pidsEnabled=true) 
+            : FFlightManager(dynamics, nmotors) 
         {
-            // Create simulated motors
-            //_nmotors = dynamics->motorCount();
+            _motors = motors;
+            _nmotors = nmotors;
 
             //hf::Hackflight _hackflight(&_board, &_receiver, _mixer);
 
@@ -86,7 +91,6 @@ class FHackflightFlightManager : public FFlightManager {
 
         virtual ~FHackflightFlightManager(void)
         {
-            // delete _motors; // XXX
         }
 
         virtual void getMotors(const double time, double * motorvals) override

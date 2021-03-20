@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <motor.hpp>
+#include <RFT_motor.hpp>
 
-class SimMotor : public hf::Motor {
+class SimMotor : public rft::Motor {
 
     private:
 

@@ -55,7 +55,7 @@ class TinyWhoop {
 
         QuadXAPDynamics dynamics = QuadXAPDynamics(b, d, m, Ix, Iy, Iz, Jr, l, maxrpm);
 
-        MultirotorVehicle vehicle = MultirotorVehicle(&dynamics);
+        MultirotorVehicle vehicle = MultirotorVehicle(&dynamics, 4);
 
     private:
 

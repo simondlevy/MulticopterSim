@@ -35,22 +35,22 @@ class FFlightManager : public FThreadedManager {
         
     protected:
 
-        uint8_t _motorCount = 0;
+        uint8_t _nmotors = 0;
 
         Dynamics * _dynamics = NULL;
 
         // Constructor, called main thread
-        FFlightManager(Dynamics * dynamics) 
+        FFlightManager(Dynamics * dynamics, uint8_t nmotors) 
             : FThreadedManager()
         {
             // Allocate array for motor values
-            _motorvals = new double[dynamics->motorCount()]();
+            _motorvals = new double[nmotors];
 
             // Store dynamics for performTask()
             _dynamics = dynamics;
 
             // Constant
-            _motorCount = dynamics->motorCount();
+            _nmotors = nmotors;
 
             // For periodic update
             _previousTime = 0;
@@ -98,7 +98,7 @@ class FFlightManager : public FThreadedManager {
         void getMotorValues(float * motorvals)
         {
             // Get motor values for propeller animation / motor sound
-            for (uint8_t j=0; j<_motorCount; ++j) {
+            for (uint8_t j=0; j<_nmotors; ++j) {
                 motorvals[j] = _motorvals[j];
             }
         }

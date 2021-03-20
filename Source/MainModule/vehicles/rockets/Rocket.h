@@ -55,7 +55,7 @@ class Rocket {
             UStaticMeshComponent * nozzleMeshComponent = NULL;
 
             NozzleVehicle(Dynamics* dynamics) 
-                : MultirotorVehicle(dynamics)
+                : MultirotorVehicle(dynamics, 4)
             {
             }
 

@@ -14,9 +14,10 @@ class MultirotorVehicle : public Vehicle {
 
     public:
 
-        MultirotorVehicle(Dynamics* dynamics) 
+        MultirotorVehicle(Dynamics* dynamics, uint8_t nmotors) 
             : Vehicle(dynamics)
         {
+            _nmotors = nmotors;
         }
 
         UStaticMeshComponent * addComponent(UStaticMesh * mesh, FName name, float x, float y, float z, float angle)
@@ -57,7 +58,7 @@ class MultirotorVehicle : public Vehicle {
 
             // Compute the sum of the motor values
             float motorsum = 0;
-            for (uint8_t j = 0; j < _dynamics->motorCount(); ++j) {
+            for (uint8_t j = 0; j < _nmotors; ++j) {
                 motorsum += _motorvals[j];
             }
 
@@ -68,7 +69,7 @@ class MultirotorVehicle : public Vehicle {
 
             // Add mean to circular buffer for moving average
             _bufferIndex = _motorBuffer->GetNextIndex(_bufferIndex);
-            (*_motorBuffer)[_bufferIndex] = motorsum / _dynamics->motorCount();
+            (*_motorBuffer)[_bufferIndex] = motorsum / _nmotors;
 
             // Compute the mean motor value over the buffer frames
             float smoothedMotorMean = 0;
@@ -83,6 +84,8 @@ class MultirotorVehicle : public Vehicle {
         }
 
     private:
+
+        uint8_t _nmotors = 0;
 
         float propStartAngle(float propX, float propY)
         {
