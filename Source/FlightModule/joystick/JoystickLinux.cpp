@@ -8,7 +8,7 @@
 
 #ifdef __linux__
 
-#include "Joystick.h"
+#include "Joystick.hpp"
 
 #include <sys/types.h>
 #include <sys/stat.h>

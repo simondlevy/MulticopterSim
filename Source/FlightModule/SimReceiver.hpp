@@ -12,7 +12,7 @@
 
 #include <receiver.hpp>
 
-#include "../joystick/Joystick.h"
+#include "../joystick/Joystick.hpp"
 
 class SimReceiver : public hf::Receiver {
 
