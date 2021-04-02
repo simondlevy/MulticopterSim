@@ -11,6 +11,7 @@
 #pragma once
 
 #include <receiver.hpp>
+#include <RFT_debugger.hpp>
 
 #include "../joystick/Joystick.hpp"
 
@@ -77,7 +78,13 @@ class SimReceiver : public hf::Receiver {
 		uint16_t update(void)
 		{
 			// Joystick::poll() returns zero (okay) or a postive value (error)
-			return _joystick->poll(rawvals);
+			uint16_t result = _joystick->poll(rawvals);
+
+            if (result == 0) {
+                return 0;
+            }
+
+            return 0; //result;
 		}
 
 }; // class SimReceiver

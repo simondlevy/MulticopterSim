@@ -7,6 +7,8 @@
  * MIT License
  */
 
+#include <RFT_debugger.hpp>
+
 #ifdef _WIN32
 
 #include "Joystick.hpp"
@@ -92,6 +94,11 @@ static void getAuxInterlink(float * axes, uint8_t buttons, uint8_t aux1, uint8_t
 	}
 }
 
+bool Joystick::gotKeypad(uint8_t numericalCode, uint8_t nonNumericalCode)
+{
+    return ((GetKeyState(numericalCode) | GetKeyState(nonNumericalCode)) & 0x80) == 0x80;
+}
+
 uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 {   
     JOYINFOEX joyState;
@@ -141,6 +148,16 @@ uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
             break;
 
         default:
+
+            // Default to keypad
+
+            if (gotKeypad(VK_RIGHT, VK_NUMPAD6)) {
+                rft::Debugger::printf("RIGHT");
+            }
+
+            if (gotKeypad(VK_LEFT, VK_NUMPAD4)) {
+                rft::Debugger::printf("LEFT");
+            }
 
             return _productId ? _productId : 0x0001;
     }
