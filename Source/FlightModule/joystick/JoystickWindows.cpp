@@ -99,6 +99,45 @@ bool Joystick::gotKeypad(uint8_t numericalCode, uint8_t nonNumericalCode)
     return ((GetKeyState(numericalCode) | GetKeyState(nonNumericalCode)) & 0x80) == 0x80;
 }
 
+void Joystick::keypadToAxes(float axes[6])
+{
+    for (uint8_t k=0; k<256; ++k) {
+        if (GetAsyncKeyState(k)) {
+            rft::Debugger::printf("%x", k);
+        }
+    }
+
+
+    /*
+    if (gotKeypad(VK_RIGHT, VK_NUMPAD6)) {
+        rft::Debugger::printf("ROLL RIGHT");
+    }
+
+    if (gotKeypad(VK_LEFT, VK_NUMPAD4)) {
+        rft::Debugger::printf("ROLL LEFT");
+    }
+
+    if (gotKeypad(0x35, VK_NUMPAD5)) {
+        rft::Debugger::printf("ROLL CENTER");
+    }
+
+    if (gotKeypad(VK_UP, VK_NUMPAD8)) {
+        rft::Debugger::printf("PITCH FORWARD");
+    }
+
+    if (gotKeypad(VK_DOWN, VK_NUMPAD2)) {
+        rft::Debugger::printf("PITCH BACK");
+    }
+
+    if (gotKeypad(VK_PRIOR, VK_NUMPAD9)) {
+        rft::Debugger::printf("THROTTLE UP");
+    }
+
+    if (gotKeypad(VK_NEXT, VK_NUMPAD3)) {
+        rft::Debugger::printf("THROTTLE DOWN");
+    }*/
+}
+
 uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 {   
     JOYINFOEX joyState;
@@ -150,14 +189,8 @@ uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
         default:
 
             // Default to keypad
+            keypadToAxes(axes);
 
-            if (gotKeypad(VK_RIGHT, VK_NUMPAD6)) {
-                rft::Debugger::printf("RIGHT");
-            }
-
-            if (gotKeypad(VK_LEFT, VK_NUMPAD4)) {
-                rft::Debugger::printf("LEFT");
-            }
 
             return _productId ? _productId : 0x0001;
     }

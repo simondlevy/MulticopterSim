@@ -373,9 +373,9 @@ class Vehicle {
                         UKismetMathLibrary::FindLookAtRotation(_groundCamera->GetActorLocation(), _pawn->GetActorLocation()));
             }
 
-            if (hitKey(EKeys::One)   || hitKey(EKeys::NumPadOne))   playerCameraSetFrontView();
-            if (hitKey(EKeys::Two)   || hitKey(EKeys::NumPadTwo))   playerCameraSetChaseView();
-            if (hitKey(EKeys::Three) || hitKey(EKeys::NumPadThree)) playerCameraSetGroundView();
+            if (hitKey(EKeys::One)) playerCameraSetFrontView();
+            if (hitKey(EKeys::Two)) playerCameraSetChaseView();
+            if (hitKey(EKeys::Three)) playerCameraSetGroundView();
         }
 
         bool hitKey(const FKey key)
