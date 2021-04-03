@@ -52,7 +52,7 @@ class FHackflightFlightManager : public FFlightManager {
         SimBoard _board;
 
         // "Receiver" (joystick/gamepad)
-        SimReceiver _receiver;
+        SimReceiver * _receiver = NULL;
 
         // Sensors"
         SimSensors* _sensors = NULL;
@@ -64,8 +64,6 @@ class FHackflightFlightManager : public FFlightManager {
         // Main firmware
         hf::Hackflight * _hackflight = NULL;
 
-        APlayerController * _playerController = NULL;
-
     public:
 
         // Constructor
@@ -76,10 +74,10 @@ class FHackflightFlightManager : public FFlightManager {
             _motors = motors;
             _nmotors = nmotors;
 
-            // PlayerController to receiver constructor in case we have no joystick / game-controller
-            _playerController = UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0);
+            // Pass PlayerController to receiver constructor in case we have no joystick / game-controller
+            _receiver = new SimReceiver(UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0));
 
-            _hackflight = new hf::Hackflight(&_board, &_receiver, mixer);
+            _hackflight = new hf::Hackflight(&_board, _receiver, mixer);
 
             // Add simulated sensor suite
             _sensors = new SimSensors(_dynamics);
@@ -107,7 +105,7 @@ class FHackflightFlightManager : public FFlightManager {
         virtual void getMotors(const double time, double * motorvals) override
         {
             // Zero on success, nonzero otherwise
-            uint16_t joystickError = _receiver.update();
+            uint16_t joystickError = _receiver->update();
 
             double angularVel[3] = {
                 _dynamics->x(Dynamics::STATE_PHI_DOT),
@@ -138,66 +136,11 @@ class FHackflightFlightManager : public FFlightManager {
             for (uint8_t i=0; i < _nmotors; ++i) {
                 motorvals[i] = _motors->getValue(i);
             }
-
-        }
-
-        bool hitEitherKey(const FKey key1, const FKey key2)
-        {
-            return hitKey(key1) || hitKey(key2);
-        }
-
-        bool hitKey(const FKey key)
-        {
-            return _playerController->IsInputKeyDown(key);
-        }
-
-        static const float max(float a, float b)
-        {
-            return a > b ? a : b;
-        }
-
-        static const float min(float a, float b)
-        {
-            return a < b ? a : b;
         }
 
         void tick(void)
         {
-            if (hitEitherKey(EKeys::Nine, EKeys::NumPadNine)) {
-                rft::Debugger::printf("THROTTLE UP");
-            }
-
-            if (hitEitherKey(EKeys::Three, EKeys::NumPadThree)) {
-                rft::Debugger::printf("THROTTLE DOWN");
-            }
-
-            if (hitEitherKey(EKeys::Six, EKeys::NumPadSix)) {
-                rft::Debugger::printf("ROLL RIGHT");
-            }
-
-            if (hitEitherKey(EKeys::Four, EKeys::NumPadFour)) {
-                rft::Debugger::printf("ROLL LEFT");
-            }
-
-            if (hitEitherKey(EKeys::Eight, EKeys::NumPadEight)) {
-                rft::Debugger::printf("PITCH FORWARD");
-            }
-
-            if (hitEitherKey(EKeys::Two, EKeys::NumPadTwo)) {
-                rft::Debugger::printf("PITCH BACK");
-            }
-
-            if (hitKey(EKeys::Enter)) {
-                rft::Debugger::printf("YAW RIGHT");
-            }
-
-            if (hitEitherKey(EKeys::Zero, EKeys::NumPadZero)) {
-                rft::Debugger::printf("YAW LEFT");
-            }
-
-            if (hitEitherKey(EKeys::Five, EKeys::NumPadFive)) {
-                rft::Debugger::printf("CENTER ALL");
-            }
+            _receiver->tick();
         }
 
 }; // HackflightFlightManager
