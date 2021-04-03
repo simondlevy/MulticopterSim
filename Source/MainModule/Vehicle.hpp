@@ -385,27 +385,27 @@ class Vehicle {
 
         void checkKeypadKey(void)
         {
-            if (hitKey(EKeys::Nine) || hitKey(EKeys::NumPadNine)) {
+            if (hitEitherKey(EKeys::Nine, EKeys::NumPadNine)) {
                 rft::Debugger::printf("THROTTLE UP");
             }
 
-            if (hitKey(EKeys::Three) || hitKey(EKeys::NumPadThree)) {
+            if (hitEitherKey(EKeys::Three, EKeys::NumPadThree)) {
                 rft::Debugger::printf("THROTTLE DOWN");
             }
 
-            if (hitKey(EKeys::Six) || hitKey(EKeys::NumPadSix)) {
+            if (hitEitherKey(EKeys::Six, EKeys::NumPadSix)) {
                 rft::Debugger::printf("ROLL RIGHT");
             }
 
-            if (hitKey(EKeys::Four) || hitKey(EKeys::NumPadFour)) {
+            if (hitEitherKey(EKeys::Four, EKeys::NumPadFour)) {
                 rft::Debugger::printf("ROLL LEFT");
             }
 
-            if (hitKey(EKeys::Eight) || hitKey(EKeys::NumPadEight)) {
+            if (hitEitherKey(EKeys::Eight, EKeys::NumPadEight)) {
                 rft::Debugger::printf("PITCH FORWARD");
             }
 
-            if (hitKey(EKeys::Two) || hitKey(EKeys::NumPadTwo)) {
+            if (hitEitherKey(EKeys::Two, EKeys::NumPadTwo)) {
                 rft::Debugger::printf("PITCH BACK");
             }
 
@@ -413,15 +413,24 @@ class Vehicle {
                 rft::Debugger::printf("YAW RIGHT");
             }
 
-            if (hitKey(EKeys::Zero) || hitKey(EKeys::NumPadZero)) {
+            if (hitEitherKey(EKeys::Zero, EKeys::NumPadZero)) {
                 rft::Debugger::printf("YAW LEFT");
             }
 
-            if (hitKey(EKeys::Five) || hitKey(EKeys::NumPadFive)) {
+            if (hitEitherKey(EKeys::Five, EKeys::NumPadFive)) {
                 rft::Debugger::printf("CENTER ALL");
             }
         }
 
+        bool hitEitherKey(const FKey key1, const FKey key2)
+        {
+            return hitKey(key1) || hitKey(key2);
+        }
+
+        bool hitKey(const FKey key)
+        {
+            return _playerController->IsInputKeyDown(key);
+        }
 
         void setPlayerCameraView(void)
         {
@@ -445,10 +454,6 @@ class Vehicle {
             }
         }
 
-        bool hitKey(const FKey key)
-        {
-            return _playerController->IsInputKeyDown(key);
-        }
 
         // Returns AGL when vehicle is level above ground, "infinity" otherwise
         float agl(void)
