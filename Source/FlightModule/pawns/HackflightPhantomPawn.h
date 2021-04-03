@@ -31,6 +31,8 @@ class FLIGHTMODULE_API AHackflightPhantomPawn : public APawn {
         // Helper class
         Phantom _phantom;
 
+        FHackflightFlightManager * _flightManager = NULL;
+
         SimMotor _motors = SimMotor(4);
 
         hf::MixerQuadXAP  _mixer = hf::MixerQuadXAP(&_motors);

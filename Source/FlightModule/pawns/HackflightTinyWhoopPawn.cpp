@@ -24,7 +24,9 @@ void AHackflightTinyWhoopPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AHackflightTinyWhoopPawn::BeginPlay()
 {
-    _tinyWhoop.BeginPlay(new FHackflightFlightManager(this, &_mixer, &_motors, 4, &_tinyWhoop.dynamics));
+    _flightManager = new FHackflightFlightManager(this, &_mixer, &_motors, 4, &_tinyWhoop.dynamics);
+
+    _tinyWhoop.BeginPlay(_flightManager);
 
     Super::BeginPlay();
 }
@@ -40,6 +42,8 @@ void AHackflightTinyWhoopPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AHackflightTinyWhoopPawn::Tick(float DeltaSeconds)
 {
     _tinyWhoop.Tick(DeltaSeconds);
+
+    _flightManager->tick();
 
     Super::Tick(DeltaSeconds);
 }

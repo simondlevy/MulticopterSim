@@ -24,7 +24,9 @@ void AHackflightIngenuityPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AHackflightIngenuityPawn::BeginPlay()
 {
-    _ingenuity.BeginPlay(new FHackflightFlightManager(this, &_mixer, &_motors, 4, &_ingenuity.dynamics));
+    _flightManager = new FHackflightFlightManager(this, &_mixer, &_motors, 4, &_ingenuity.dynamics);
+
+    _ingenuity.BeginPlay(_flightManager);
 
     Super::BeginPlay();
 }
@@ -40,6 +42,8 @@ void AHackflightIngenuityPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AHackflightIngenuityPawn::Tick(float DeltaSeconds)
 {
     _ingenuity.Tick(DeltaSeconds);
+
+    _flightManager->tick();
 
     Super::Tick(DeltaSeconds);
 }

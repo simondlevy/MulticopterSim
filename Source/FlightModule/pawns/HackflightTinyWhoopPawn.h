@@ -31,6 +31,8 @@ class FLIGHTMODULE_API AHackflightTinyWhoopPawn : public APawn {
         // Helper class
         TinyWhoop _tinyWhoop;
 
+        FHackflightFlightManager * _flightManager = NULL;
+
         SimMotor _motors = SimMotor(4);
 
         hf::MixerQuadXAP  _mixer = hf::MixerQuadXAP(&_motors);

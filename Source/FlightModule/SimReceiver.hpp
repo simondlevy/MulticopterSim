@@ -26,60 +26,10 @@ class SimReceiver : public hf::Receiver {
 
 		Joystick * _joystick = NULL;
 
-        APlayerController * _playerController = NULL;
-
 		// Helps mock up periodic availability of new data frame (output data rate; ODR)
 		double _deltaT;
 		double _previousTime;
 
-        void checkKeypadKey(void)
-        {
-            if (hitEitherKey(EKeys::Nine, EKeys::NumPadNine)) {
-                rft::Debugger::printf("THROTTLE UP");
-            }
-
-            if (hitEitherKey(EKeys::Three, EKeys::NumPadThree)) {
-                rft::Debugger::printf("THROTTLE DOWN");
-            }
-
-            if (hitEitherKey(EKeys::Six, EKeys::NumPadSix)) {
-                rft::Debugger::printf("ROLL RIGHT");
-            }
-
-            if (hitEitherKey(EKeys::Four, EKeys::NumPadFour)) {
-                rft::Debugger::printf("ROLL LEFT");
-            }
-
-            if (hitEitherKey(EKeys::Eight, EKeys::NumPadEight)) {
-                rft::Debugger::printf("PITCH FORWARD");
-            }
-
-            if (hitEitherKey(EKeys::Two, EKeys::NumPadTwo)) {
-                rft::Debugger::printf("PITCH BACK");
-            }
-
-            if (hitKey(EKeys::Enter)) {
-                rft::Debugger::printf("YAW RIGHT");
-            }
-
-            if (hitEitherKey(EKeys::Zero, EKeys::NumPadZero)) {
-                rft::Debugger::printf("YAW LEFT");
-            }
-
-            if (hitEitherKey(EKeys::Five, EKeys::NumPadFive)) {
-                rft::Debugger::printf("CENTER ALL");
-            }
-        }
-
-        bool hitEitherKey(const FKey key1, const FKey key2)
-        {
-            return hitKey(key1) || hitKey(key2);
-        }
-
-        bool hitKey(const FKey key)
-        {
-            return _playerController->IsInputKeyDown(key);
-        }
 
     protected:
 
@@ -95,11 +45,9 @@ class SimReceiver : public hf::Receiver {
 
     public:
 
-		SimReceiver(APlayerController * playerController, uint16_t updateFrequency=50)
+		SimReceiver(uint16_t updateFrequency=50)
 			: Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
 		{
-            _playerController = playerController;
-
 			_joystick = new Joystick();
 
 			_deltaT = 1./updateFrequency;
@@ -128,12 +76,11 @@ class SimReceiver : public hf::Receiver {
 		{
 		}
 
-		void update(void)
+		uint16_t update(void)
 		{
 			// Joystick::poll() returns zero (okay) or a postive value (error)
-			if (!_joystick->poll(rawvals)) return;
+			return _joystick->poll(rawvals);
 
-            checkKeypadKey();
-		}
+ 		}
 
 }; // class SimReceiver
