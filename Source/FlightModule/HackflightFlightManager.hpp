@@ -52,7 +52,7 @@ class FHackflightFlightManager : public FFlightManager {
         SimBoard _board;
 
         // "Receiver" (joystick/gamepad)
-        SimReceiver _receiver;
+        SimReceiver * _receiver = NULL;
 
         // Sensors"
         SimSensors* _sensors = NULL;
@@ -67,13 +67,17 @@ class FHackflightFlightManager : public FFlightManager {
     public:
 
         // Constructor
-        FHackflightFlightManager(hf::Mixer * mixer, SimMotor * motors, int nmotors, Dynamics * dynamics, bool pidsEnabled=true) 
+        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, SimMotor * motors, int nmotors,
+                Dynamics * dynamics, bool pidsEnabled=true) 
             : FFlightManager(dynamics, nmotors) 
         {
             _motors = motors;
             _nmotors = nmotors;
 
-            _hackflight = new hf::Hackflight(&_board, &_receiver, mixer);
+            // Pass PlayerController to receiver constructor in case we have no joystick / game-controller
+            _receiver = new SimReceiver(UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0));
+
+            _hackflight = new hf::Hackflight(&_board, _receiver, mixer);
 
             // Add simulated sensor suite
             _sensors = new SimSensors(_dynamics);
@@ -100,7 +104,7 @@ class FHackflightFlightManager : public FFlightManager {
 
         virtual void getMotors(const double time, double * motorvals) override
         {
-            uint16_t joystickError = _receiver.update();
+            uint16_t joystickError = _receiver->update();
 
             double angularVel[3] = {
                 _dynamics->x(Dynamics::STATE_PHI_DOT),

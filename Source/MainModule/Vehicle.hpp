@@ -376,7 +376,7 @@ class Vehicle {
                 setPlayerCameraView();
 
                 // Check for keypad presses
-                checkKeypadKey();
+                //checkKeypadKey();
 
                 updateKinematics();
 
