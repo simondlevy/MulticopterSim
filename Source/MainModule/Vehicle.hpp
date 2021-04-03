@@ -389,41 +389,37 @@ class Vehicle {
                 rft::Debugger::printf("THROTTLE UP");
             }
 
-            /*
-
-            if (gotKeypad(VK_NEXT, VK_NUMPAD3)) {
+            if (hitKey(EKeys::Three)) {
                 rft::Debugger::printf("THROTTLE DOWN");
             }
 
-            if (gotKeypad(VK_RIGHT, VK_NUMPAD6)) {
+            if (hitKey(EKeys::Six)) {
                 rft::Debugger::printf("ROLL RIGHT");
             }
 
-            if (gotKeypad(VK_LEFT, VK_NUMPAD4)) {
+            if (hitKey(EKeys::Four)) {
                 rft::Debugger::printf("ROLL LEFT");
             }
 
-            if (gotKeypad(VK_UP, VK_NUMPAD8)) {
+            if (hitKey(EKeys::Eight)) {
                 rft::Debugger::printf("PITCH FORWARD");
             }
 
-            if (gotKeypad(VK_DOWN, VK_NUMPAD2)) {
+            if (hitKey(EKeys::Two)) {
                 rft::Debugger::printf("PITCH BACK");
             }
 
-            if (gotKeypad(VK_RETURN, VK_RETURN)) {
+            if (hitKey(EKeys::Enter)) {
                 rft::Debugger::printf("YAW RIGHT");
             }
 
-            if (gotKeypad(VK_INSERT, VK_NUMPAD0)) {
+            if (hitKey(EKeys::Zero)) {
                 rft::Debugger::printf("YAW LEFT");
             }
 
-            if (gotKeypad(VK_CLEAR, VK_NUMPAD5)) {
+            if (hitKey(EKeys::Five)) {
                 rft::Debugger::printf("CENTER ALL");
             }
-            */
-
         }
 
 
