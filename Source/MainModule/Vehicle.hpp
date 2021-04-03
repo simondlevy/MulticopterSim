@@ -385,27 +385,27 @@ class Vehicle {
 
         void checkKeypadKey(void)
         {
-            if (hitKey(EKeys::Nine)) {
+            if (hitKey(EKeys::Nine) || hitKey(EKeys::NumPadNine)) {
                 rft::Debugger::printf("THROTTLE UP");
             }
 
-            if (hitKey(EKeys::Three)) {
+            if (hitKey(EKeys::Three) || hitKey(EKeys::NumPadThree)) {
                 rft::Debugger::printf("THROTTLE DOWN");
             }
 
-            if (hitKey(EKeys::Six)) {
+            if (hitKey(EKeys::Six) || hitKey(EKeys::NumPadSix)) {
                 rft::Debugger::printf("ROLL RIGHT");
             }
 
-            if (hitKey(EKeys::Four)) {
+            if (hitKey(EKeys::Four) || hitKey(EKeys::NumPadFour)) {
                 rft::Debugger::printf("ROLL LEFT");
             }
 
-            if (hitKey(EKeys::Eight)) {
+            if (hitKey(EKeys::Eight) || hitKey(EKeys::NumPadEight)) {
                 rft::Debugger::printf("PITCH FORWARD");
             }
 
-            if (hitKey(EKeys::Two)) {
+            if (hitKey(EKeys::Two) || hitKey(EKeys::NumPadTwo)) {
                 rft::Debugger::printf("PITCH BACK");
             }
 
@@ -413,11 +413,11 @@ class Vehicle {
                 rft::Debugger::printf("YAW RIGHT");
             }
 
-            if (hitKey(EKeys::Zero)) {
+            if (hitKey(EKeys::Zero) || hitKey(EKeys::NumPadZero)) {
                 rft::Debugger::printf("YAW LEFT");
             }
 
-            if (hitKey(EKeys::Five)) {
+            if (hitKey(EKeys::Five) || hitKey(EKeys::NumPadFive)) {
                 rft::Debugger::printf("CENTER ALL");
             }
         }
