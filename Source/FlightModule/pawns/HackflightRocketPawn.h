@@ -10,7 +10,7 @@
 
 #include <mixers/thrustvec.hpp>
 
-#include "../../MainModule/vehicles/rockets/Rocket.h"
+#include "../../MainModule/vehicles/rockets/Rocket.hpp"
 
 #include "../HackflightFlightManager.hpp"
 

@@ -10,7 +10,7 @@
 
 #include <mixers/quadxap.hpp>
 
-#include "../../MainModule/vehicles/multirotors/Phantom.h"
+#include "../../MainModule/vehicles/multirotors/Phantom.hpp"
 
 #include "../HackflightFlightManager.hpp"
 

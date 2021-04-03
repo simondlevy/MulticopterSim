@@ -7,6 +7,8 @@
  *
  * (2) Provides basic support for displaying vehicle kinematics
  *
+ * (3) Handles numeric keypad events for flying without a controller
+ *
  * Copyright (C) 2019 Simon D. Levy, Daniel Katzav
  *
  * MIT License
@@ -48,6 +50,7 @@ class Vehicle {
 
     private:
 
+        // Support cycling through views by hitting spacebar
         enum {
 
             VIEW_CHASE,
@@ -56,9 +59,9 @@ class Vehicle {
             VIEW_COUNT
 
         };
-
         uint8_t _view = VIEW_CHASE;
 
+        // Special camera for ground view
         ACameraActor* _groundCamera = NULL;
 
         // Useful approximation to infinity for tracing rays
@@ -164,7 +167,8 @@ class Vehicle {
                 break;
             default:
                 _playerController->SetViewTargetWithBlend(_pawn);
-                _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector(-_playerCameraFollowMeters, 0, _playerCameraElevationMeters) * 100,
+                _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector(-_playerCameraFollowMeters, 0, 
+                            _playerCameraElevationMeters) * 100,
                     FRotator::ZeroRotator);;
                 _playerCameraSpringArm->TargetArmLength = _playerCameraFollowMeters * 100;
 
@@ -219,7 +223,8 @@ class Vehicle {
             _propCount = 0;
         }
 
-        void buildFull(APawn* pawn, UStaticMesh* frameMesh, float chaseCameraDistanceMeters=1.5, float chaseCameraElevationMeters=0.5)
+        void buildFull(APawn* pawn, UStaticMesh* frameMesh, float chaseCameraDistanceMeters=1.5, 
+                float chaseCameraElevationMeters=0.5)
         {
             build(pawn, frameMesh);
 

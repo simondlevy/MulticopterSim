@@ -10,7 +10,7 @@
 
 #include <mixers/quadxap.hpp>
 
-#include "../../MainModule/vehicles/multirotors/TinyWhoop.h"
+#include "../../MainModule/vehicles/multirotors/TinyWhoop.hpp"
 
 #include "../HackflightFlightManager.hpp"
 
