@@ -38,10 +38,6 @@ class Joystick {
 
         bool _isGameController = false;
 
-        static bool gotKeypad(uint8_t numericalCode, uint8_t nonNumericalCode);
-
-        static void keypadToAxes(float axes[6]);
-
     protected:
 
         enum {

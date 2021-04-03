@@ -26,6 +26,8 @@
 
 #include <stdio.h>
 
+#include <RFT_Debugger.hpp>
+
  // Windows/Linux compatibility 
 #ifdef _WIN32
 #define SPRINTF sprintf_s
@@ -45,6 +47,17 @@
 class Vehicle {
 
     private:
+
+        enum {
+
+            VIEW_CHASE,
+            VIEW_FRONT, 
+            VIEW_GROUND,
+            VIEW_COUNT
+
+        };
+
+        uint8_t _view = VIEW_CHASE;
 
         ACameraActor* _groundCamera = NULL;
 
@@ -135,28 +148,28 @@ class Vehicle {
             _playerCamera->SetupAttachment(_playerCameraSpringArm, USpringArmComponent::SocketName);
         }
 
-        void playerCameraSetChaseView()
+
+        void setView()
         {
-            _playerController->SetViewTargetWithBlend(_pawn);
-            _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector(-_playerCameraFollowMeters, 0, _playerCameraElevationMeters)*100,
+            switch (_view) {
+            case VIEW_FRONT:
+                _playerController->SetViewTargetWithBlend(_pawn);
+                _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+                _playerCameraSpringArm->TargetArmLength = -30; // empircally determined to be far enough ahead of vehicle
+
+                _bodyHorizontalSpringArm->bInheritYaw = true;
+                break;
+            case VIEW_GROUND:
+                if (_groundCamera) _playerController->SetViewTargetWithBlend(_groundCamera);
+                break;
+            default:
+                _playerController->SetViewTargetWithBlend(_pawn);
+                _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector(-_playerCameraFollowMeters, 0, _playerCameraElevationMeters) * 100,
                     FRotator::ZeroRotator);;
-            _playerCameraSpringArm->TargetArmLength = _playerCameraFollowMeters*100;
+                _playerCameraSpringArm->TargetArmLength = _playerCameraFollowMeters * 100;
 
-            _bodyHorizontalSpringArm->bInheritYaw = false ;
-        }
-
-        void playerCameraSetFrontView()
-        {
-            _playerController->SetViewTargetWithBlend(_pawn);
-            _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-            _playerCameraSpringArm->TargetArmLength = -30; // empircally determined to be far enough ahead of vehicle
-
-            _bodyHorizontalSpringArm->bInheritYaw = true;
-        }
-
-        void playerCameraSetGroundView()
-        {
-            if (_groundCamera) _playerController->SetViewTargetWithBlend(_groundCamera);
+                _bodyHorizontalSpringArm->bInheritYaw = false;
+            }
         }
 
     protected:
@@ -340,7 +353,8 @@ class Vehicle {
                 }
             }
 
-            playerCameraSetChaseView();
+            _view = VIEW_CHASE;
+            setView();
         }
 
         void Tick(float DeltaSeconds)
@@ -353,8 +367,11 @@ class Vehicle {
             // Run the game if a map has been selected
             if (_mapSelected) {
 
-                // Use 1/2 keys to switch player-camera view
+                // Use 1/2/3 keys to switch player-camera view
                 setPlayerCameraView();
+
+                // Check for keypad presses
+                checkKeypadKey();
 
                 updateKinematics();
 
@@ -366,6 +383,50 @@ class Vehicle {
             }
         }
 
+        void checkKeypadKey(void)
+        {
+            if (hitKey(EKeys::Nine)) {
+                rft::Debugger::printf("THROTTLE UP");
+            }
+
+            /*
+
+            if (gotKeypad(VK_NEXT, VK_NUMPAD3)) {
+                rft::Debugger::printf("THROTTLE DOWN");
+            }
+
+            if (gotKeypad(VK_RIGHT, VK_NUMPAD6)) {
+                rft::Debugger::printf("ROLL RIGHT");
+            }
+
+            if (gotKeypad(VK_LEFT, VK_NUMPAD4)) {
+                rft::Debugger::printf("ROLL LEFT");
+            }
+
+            if (gotKeypad(VK_UP, VK_NUMPAD8)) {
+                rft::Debugger::printf("PITCH FORWARD");
+            }
+
+            if (gotKeypad(VK_DOWN, VK_NUMPAD2)) {
+                rft::Debugger::printf("PITCH BACK");
+            }
+
+            if (gotKeypad(VK_RETURN, VK_RETURN)) {
+                rft::Debugger::printf("YAW RIGHT");
+            }
+
+            if (gotKeypad(VK_INSERT, VK_NUMPAD0)) {
+                rft::Debugger::printf("YAW LEFT");
+            }
+
+            if (gotKeypad(VK_CLEAR, VK_NUMPAD5)) {
+                rft::Debugger::printf("CENTER ALL");
+            }
+            */
+
+        }
+
+
         void setPlayerCameraView(void)
         {
             if (_groundCamera) {
@@ -373,9 +434,19 @@ class Vehicle {
                         UKismetMathLibrary::FindLookAtRotation(_groundCamera->GetActorLocation(), _pawn->GetActorLocation()));
             }
 
-            if (hitKey(EKeys::One)) playerCameraSetFrontView();
-            if (hitKey(EKeys::Two)) playerCameraSetChaseView();
-            if (hitKey(EKeys::Three)) playerCameraSetGroundView();
+            // avoid registering multiple spacebar presses
+            static bool didhit;
+
+            if (hitKey(EKeys::SpaceBar)) {
+                if (!didhit) {
+                    _view = (_view + 1) % VIEW_COUNT;
+                    setView();
+                }
+                didhit = true;
+            }
+            else {
+                didhit = false;
+            }
         }
 
         bool hitKey(const FKey key)

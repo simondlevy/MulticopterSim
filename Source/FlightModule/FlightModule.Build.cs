@@ -14,7 +14,7 @@ using System.IO;
 public class FlightModule : ModuleRules
 {
     // Change this to agree with your Arduino libraries install location
-    private static string ARDUINO_PATH = "D:\\Users\\levys\\Documents\\Arduino\\libraries\\";
+    private static string ARDUINO_PATH = "C:\\Users\\Administrator\\Documents\\Arduino\\libraries\\";
 
     public FlightModule(ReadOnlyTargetRules Target) : base(Target)
     {

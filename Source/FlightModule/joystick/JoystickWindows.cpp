@@ -94,50 +94,6 @@ static void getAuxInterlink(float * axes, uint8_t buttons, uint8_t aux1, uint8_t
 	}
 }
 
-bool Joystick::gotKeypad(uint8_t numericalCode, uint8_t nonNumericalCode)
-{
-    return GetAsyncKeyState(numericalCode) || GetAsyncKeyState(nonNumericalCode);
-}
-
-void Joystick::keypadToAxes(float axes[6])
-{
-    if (gotKeypad(VK_PRIOR, VK_NUMPAD9)) {
-        rft::Debugger::printf("THROTTLE UP");
-    }
-
-    if (gotKeypad(VK_NEXT, VK_NUMPAD3)) {
-        rft::Debugger::printf("THROTTLE DOWN");
-    }
-
-    if (gotKeypad(VK_RIGHT, VK_NUMPAD6)) {
-        rft::Debugger::printf("ROLL RIGHT");
-    }
-
-    if (gotKeypad(VK_LEFT, VK_NUMPAD4)) {
-        rft::Debugger::printf("ROLL LEFT");
-    }
-
-    if (gotKeypad(VK_UP, VK_NUMPAD8)) {
-        rft::Debugger::printf("PITCH FORWARD");
-    }
-
-    if (gotKeypad(VK_DOWN, VK_NUMPAD2)) {
-        rft::Debugger::printf("PITCH BACK");
-    }
-
-    if (gotKeypad(VK_RETURN, VK_RETURN)) {
-        rft::Debugger::printf("YAW RIGHT");
-    }
-
-    if (gotKeypad(VK_INSERT, VK_NUMPAD0)) {
-        rft::Debugger::printf("YAW LEFT");
-    }
-
-    if (gotKeypad(VK_CLEAR, VK_NUMPAD5)) {
-        rft::Debugger::printf("CENTER ALL");
-    }
-
-}
 
 uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
 {   
@@ -188,11 +144,6 @@ uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
             break;
 
         default:
-
-            // Default to keypad
-            keypadToAxes(axes);
-
-
             return _productId ? _productId : 0x0001;
     }
 
