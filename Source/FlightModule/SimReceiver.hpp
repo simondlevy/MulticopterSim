@@ -128,18 +128,12 @@ class SimReceiver : public hf::Receiver {
 		{
 		}
 
-		uint16_t update(void)
+		void update(void)
 		{
 			// Joystick::poll() returns zero (okay) or a postive value (error)
-			uint16_t result = _joystick->poll(rawvals);
-
-            if (result == 0) {
-                return 0;
-            }
+			if (!_joystick->poll(rawvals)) return;
 
             checkKeypadKey();
-
-            return 0; //result;
 		}
 
 }; // class SimReceiver

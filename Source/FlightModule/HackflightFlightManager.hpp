@@ -104,7 +104,7 @@ class FHackflightFlightManager : public FFlightManager {
 
         virtual void getMotors(const double time, double * motorvals) override
         {
-            uint16_t joystickError = _receiver->update();
+            _receiver->update();
 
             double angularVel[3] = {
                 _dynamics->x(Dynamics::STATE_PHI_DOT),
@@ -121,32 +121,17 @@ class FHackflightFlightManager : public FFlightManager {
             double quaternion[4] = {};
             Transforms::eulerToQuaternion(eulerAngles, quaternion);
 
-            switch (joystickError) {
+            _hackflight->update();
 
-                case 0:
+            _board.set(time);
 
-                    _hackflight->update();
+            // _imu.set(quaternion, angularVel);
 
-                    _board.set(time);
-
-                    // _imu.set(quaternion, angularVel);
-
-                    //  Get motor values
-                    for (uint8_t i=0; i < _nmotors; ++i) {
-                        motorvals[i] = _motors->getValue(i);
-                    }
-
-                    break;
-
-                case 1:
-                    debug("*** NO JOYSTICK DETECTED ***");
-                    break;
-
-                default:
-                    debug("*** JOYSTICK 0x%04X NOT RECOGNIZED ***", joystickError);
-                    break;
-
+            //  Get motor values
+            for (uint8_t i=0; i < _nmotors; ++i) {
+                motorvals[i] = _motors->getValue(i);
             }
+
         }
 
 }; // HackflightFlightManager
