@@ -24,8 +24,12 @@ class SimReceiver : public hf::Receiver {
 		static constexpr uint8_t DEFAULT_CHANNEL_MAP[6] = { 0, 1, 2, 3, 4, 5 };
 		static constexpr float DEMAND_SCALE = 1.0f;
 
+        static constexpr float KEY_STEP = .001;
+
+        // We use a joystick (game controller) if one is available
 		Joystick * _joystick = NULL;
 
+        // Otherwise, use use the numeric keypad
         APlayerController * _playerController = NULL;
 
 		// Helps mock up periodic availability of new data frame (output data rate; ODR)
@@ -107,42 +111,52 @@ class SimReceiver : public hf::Receiver {
 
  		}
 
+        static void constrain(float & value, int8_t inc)
+        {
+            value += inc * KEY_STEP;
+
+            value = value > +1 ? +1 : (value < -1 ? -1 : value);
+        }
+
         void tick(void)
         {
             if (hitEitherKey(EKeys::Nine, EKeys::NumPadNine)) {
-                rft::Debugger::printf("THROTTLE UP");
+                constrain(rawvals[0], +1);
             }
 
             if (hitEitherKey(EKeys::Three, EKeys::NumPadThree)) {
-                rft::Debugger::printf("THROTTLE DOWN");
+                constrain(rawvals[0], -1);
             }
 
             if (hitEitherKey(EKeys::Six, EKeys::NumPadSix)) {
-                rft::Debugger::printf("ROLL RIGHT");
+                constrain(rawvals[1], +1);
             }
 
             if (hitEitherKey(EKeys::Four, EKeys::NumPadFour)) {
-                rft::Debugger::printf("ROLL LEFT");
+                constrain(rawvals[1], -1);
             }
 
             if (hitEitherKey(EKeys::Eight, EKeys::NumPadEight)) {
-                rft::Debugger::printf("PITCH FORWARD");
+                constrain(rawvals[2], +1);
             }
 
             if (hitEitherKey(EKeys::Two, EKeys::NumPadTwo)) {
-                rft::Debugger::printf("PITCH BACK");
+                constrain(rawvals[2], -1);
             }
 
             if (hitKey(EKeys::Enter)) {
-                rft::Debugger::printf("YAW RIGHT");
+                constrain(rawvals[3], +1);
             }
 
             if (hitEitherKey(EKeys::Zero, EKeys::NumPadZero)) {
-                rft::Debugger::printf("YAW LEFT");
+                constrain(rawvals[3], -1);
             }
 
             if (hitEitherKey(EKeys::Five, EKeys::NumPadFive)) {
-                rft::Debugger::printf("CENTER ALL");
+                rawvals[0] = 0;
+                rawvals[1] = 0;
+                rawvals[2] = 0;
+                rawvals[3] = 0;
             }
         }
 

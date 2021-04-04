@@ -42,6 +42,9 @@ through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/
 * Spektrum transmitter with WS1000 wireless simulator dongle
 * Great Planes RealFlight Interlink
 
+If you don't have a controller, MulticopterSim will use input from the numeric keypad on your keyboard.
+The key mappings are based on those used in [Microsoft Flight Simulator](https://www.flightsimbooks.com/flightsimhandbook/keyboardcontrols.php#:~:text=Microsoft%20Flight%20Simulator%20Handbook%20%20%20Control%20,%20Keypad%202%20%2043%20more%20rows%20i).
+
 ## Toolchain
 
 You will need Unreal Engine 4 (UE4). I am attempting to use the latest version, which as of the time of this

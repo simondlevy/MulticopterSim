@@ -7,8 +7,6 @@
  *
  * (2) Provides basic support for displaying vehicle kinematics
  *
- * (3) Handles numeric keypad events for flying without a controller
- *
  * Copyright (C) 2019 Simon D. Levy, Daniel Katzav
  *
  * MIT License
