@@ -1,4 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+ * Windows support for joysticks and other game controllers
+ *
+ * Copyright (C) 2021 Simon D. Levy
+ *
+ * MIT License
+ */
 
 
 #ifdef _WIN32
