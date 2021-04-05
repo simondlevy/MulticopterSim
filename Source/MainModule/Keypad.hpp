@@ -50,6 +50,11 @@ class Keypad {
 
     public:
 
+		Keypad(APlayerController * playerController)
+		{
+            _playerController = playerController;
+        }
+
         void tick(void)
         {
             if (hitEitherKey(EKeys::Nine, EKeys::NumPadNine)) {
