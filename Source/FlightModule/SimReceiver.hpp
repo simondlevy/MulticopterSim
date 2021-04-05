@@ -13,7 +13,7 @@
 #include <receiver.hpp>
 #include <RFT_debugger.hpp>
 
-#include "../joystick/Joystick.hpp"
+#include "../MainModule/joystick/Joystick.h"
 
 class SimReceiver : public hf::Receiver {
 
@@ -27,7 +27,7 @@ class SimReceiver : public hf::Receiver {
         static constexpr float KEY_STEP = .001;
 
         // We use a joystick (game controller) if one is available
-		Joystick * _joystick = NULL;
+		IJoystick * _joystick = NULL;
 
         // Otherwise, use use the numeric keypad
         APlayerController * _playerController = NULL;
@@ -74,7 +74,7 @@ class SimReceiver : public hf::Receiver {
 		SimReceiver(APlayerController * playerController, uint16_t updateFrequency=50)
 			: Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
 		{
-			_joystick = new Joystick();
+			_joystick = new IJoystick();
 
             _playerController = playerController;
 

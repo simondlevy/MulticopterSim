@@ -1,18 +1,10 @@
+// Fill out your copyright notice in the Description page of Project Settings.
 
-/*
- * Windows implementation of joystick/gamepad support for flight controllers
- *
- * Copyright (C) 2018 Simon D. Levy
- *
- * MIT License
- */
-
-#include <RFT_debugger.hpp>
 
 #ifdef _WIN32
 
-#include "Joystick.hpp"
-#include "../../MainModule/Utils.hpp"
+#include "Joystick.h"
+#include "../Utils.hpp"
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -35,7 +27,6 @@ static void getAxes5(float axes[6], uint8_t & naxes, DWORD axis0, DWORD axis1, D
     axes[4] = (float)axis4;
 }
 
-#include <stdio.h>
 // XXX Should use a separate calibration program
 static void adjustAxesInterlink(float * axes)
 {
@@ -45,8 +36,11 @@ static void adjustAxesInterlink(float * axes)
     axes[3] /= 0.65f;
 }
 
-Joystick::Joystick(const char * devname)
+
+IJoystick::IJoystick(const char * devname)
 {
+    (void)devname;
+
     JOYCAPS joycaps = {};
 
     _productId = 0;
@@ -95,7 +89,7 @@ static void getAuxInterlink(float * axes, uint8_t buttons, uint8_t aux1, uint8_t
 }
 
 
-uint16_t Joystick::pollProduct(float axes[6], uint8_t & buttons)
+uint16_t IJoystick::pollProduct(float axes[6], uint8_t & buttons)
 {   
     JOYINFOEX joyState;
     joyState.dwSize=sizeof(joyState);

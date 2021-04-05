@@ -1,18 +1,24 @@
-/*
- * Joystick/gamepad support for flight simulators
- *
- * Copyright (C) 2018 Simon D. Levy
- *
- * MIT License
- */
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdio.h>
+#include "CoreMinimal.h"
+#include "UObject/Interface.h"
+#include "Joystick.generated.h"
 
-class Joystick {
+// This class does not need to be modified.
+UINTERFACE(MinimalAPI)
+class UJoystick : public UInterface
+{
+	GENERATED_BODY()
+};
+
+/**
+ * 
+ */
+class MAINMODULE_API IJoystick
+{
+	GENERATED_BODY()
 
     private:
 
@@ -87,9 +93,9 @@ class Joystick {
         // Returns 0 for no error, 1 for missing, product ID if not recognized
         uint16_t pollProduct(float axes[6], uint8_t & buttons);
 
-    public:
+public:
 
-        Joystick(const char * devname = "/dev/input/js0"); // ignored by Windows
+        IJoystick(const char * devname = "/dev/input/js0"); // ignored by Windows
 
         uint16_t poll(float axes[6])
         {
