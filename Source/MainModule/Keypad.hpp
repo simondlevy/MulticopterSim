@@ -1,6 +1,8 @@
 /*
    Numeric keypad control for flight axes
 
+   Maintains floating-point values in [-1,+1]
+
    Copyright(C) 2021 Simon D.Levy
 
    MIT License
@@ -16,7 +18,9 @@ class Keypad {
 
         static constexpr float STEP = .001;
 
-        float rawvals[4] = {};
+        static const uint8_t AXES = 4;
+
+        float _rawvals[AXES] = {};
 
         APlayerController * _playerController = NULL;
 
@@ -55,45 +59,48 @@ class Keypad {
             _playerController = playerController;
         }
 
-        void tick(void)
+        void tick(float * rawvals)
         {
             if (hitEitherKey(EKeys::Nine, EKeys::NumPadNine)) {
-                constrain(rawvals[0], +1);
+                constrain(_rawvals[0], +1);
             }
 
             if (hitEitherKey(EKeys::Three, EKeys::NumPadThree)) {
-                constrain(rawvals[0], -1);
+                constrain(_rawvals[0], -1);
             }
 
             if (hitEitherKey(EKeys::Six, EKeys::NumPadSix)) {
-                constrain(rawvals[1], +1);
+                constrain(_rawvals[1], +1);
             }
 
             if (hitEitherKey(EKeys::Four, EKeys::NumPadFour)) {
-                constrain(rawvals[1], -1);
+                constrain(_rawvals[1], -1);
             }
 
             if (hitEitherKey(EKeys::Eight, EKeys::NumPadEight)) {
-                constrain(rawvals[2], +1);
+                constrain(_rawvals[2], +1);
             }
 
             if (hitEitherKey(EKeys::Two, EKeys::NumPadTwo)) {
-                constrain(rawvals[2], -1);
+                constrain(_rawvals[2], -1);
             }
 
             if (hitKey(EKeys::Enter)) {
-                constrain(rawvals[3], +1);
+                constrain(_rawvals[3], +1);
             }
 
             if (hitEitherKey(EKeys::Zero, EKeys::NumPadZero)) {
-                constrain(rawvals[3], -1);
+                constrain(_rawvals[3], -1);
             }
 
             if (hitEitherKey(EKeys::Five, EKeys::NumPadFive)) {
-                rawvals[0] = 0;
-                rawvals[1] = 0;
-                rawvals[2] = 0;
-                rawvals[3] = 0;
+                for (uint8_t i=0; i<AXES; ++i) {
+                    _rawvals[i] = 0;
+                }
+            }
+
+            for (uint8_t i=0; i<AXES; ++i) {
+                rawvals[i] = _rawvals[i];
             }
         }
 

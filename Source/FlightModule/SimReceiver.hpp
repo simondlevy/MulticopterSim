@@ -25,38 +25,15 @@ class SimReceiver : public hf::Receiver {
 		static constexpr uint8_t DEFAULT_CHANNEL_MAP[6] = { 0, 1, 2, 3, 4, 5 };
 		static constexpr float DEMAND_SCALE = 1.0f;
 
-        static constexpr float KEY_STEP = .001;
-
         // We use a joystick (game controller) if one is available
 		IJoystick * _joystick = NULL;
 
         // Otherwise, use use the numeric keypad
-        APlayerController * _playerController = NULL;
+        Keypad * _keypad = NULL;
 
 		// Helps mock up periodic availability of new data frame (output data rate; ODR)
 		double _deltaT;
 		double _previousTime;
-
-        bool hitEitherKey(const FKey key1, const FKey key2)
-        {
-            return hitKey(key1) || hitKey(key2);
-        }
-
-        bool hitKey(const FKey key)
-        {
-            return _playerController->IsInputKeyDown(key);
-        }
-
-        static const float max(float a, float b)
-        {
-            return a > b ? a : b;
-        }
-
-        static const float min(float a, float b)
-        {
-            return a < b ? a : b;
-        }
-
 
     protected:
 
@@ -77,7 +54,7 @@ class SimReceiver : public hf::Receiver {
 		{
 			_joystick = new IJoystick();
 
-            _playerController = playerController;
+            _keypad = new Keypad(playerController);
 
 			_deltaT = 1./updateFrequency;
 			_previousTime = 0;
@@ -112,53 +89,9 @@ class SimReceiver : public hf::Receiver {
 
  		}
 
-        static void constrain(float & value, int8_t inc)
-        {
-            value += inc * KEY_STEP;
-
-            value = value > +1 ? +1 : (value < -1 ? -1 : value);
-        }
-
         void tick(void)
         {
-            if (hitEitherKey(EKeys::Nine, EKeys::NumPadNine)) {
-                constrain(rawvals[0], +1);
-            }
-
-            if (hitEitherKey(EKeys::Three, EKeys::NumPadThree)) {
-                constrain(rawvals[0], -1);
-            }
-
-            if (hitEitherKey(EKeys::Six, EKeys::NumPadSix)) {
-                constrain(rawvals[1], +1);
-            }
-
-            if (hitEitherKey(EKeys::Four, EKeys::NumPadFour)) {
-                constrain(rawvals[1], -1);
-            }
-
-            if (hitEitherKey(EKeys::Eight, EKeys::NumPadEight)) {
-                constrain(rawvals[2], +1);
-            }
-
-            if (hitEitherKey(EKeys::Two, EKeys::NumPadTwo)) {
-                constrain(rawvals[2], -1);
-            }
-
-            if (hitKey(EKeys::Enter)) {
-                constrain(rawvals[3], +1);
-            }
-
-            if (hitEitherKey(EKeys::Zero, EKeys::NumPadZero)) {
-                constrain(rawvals[3], -1);
-            }
-
-            if (hitEitherKey(EKeys::Five, EKeys::NumPadFive)) {
-                rawvals[0] = 0;
-                rawvals[1] = 0;
-                rawvals[2] = 0;
-                rawvals[3] = 0;
-            }
+            _keypad->tick(rawvals);
         }
 
 }; // class SimReceiver
