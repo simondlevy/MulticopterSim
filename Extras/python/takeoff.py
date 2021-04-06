@@ -66,7 +66,7 @@ if __name__ == '__main__':
 
         # Extract altitude from state.  Altitude is in NED coordinates, so we
         # negate it to use as input to PID controller.
-        z = -telem[9]
+        z = -telem[5]
 
         # Compute vertical climb rate as first difference of altitude/time
         if t > tprev:
