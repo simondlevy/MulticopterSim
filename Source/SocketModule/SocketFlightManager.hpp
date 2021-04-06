@@ -24,13 +24,6 @@ class FSocketFlightManager : public FFlightManager {
 
         bool _running = false;
 
-        static void copy(double * dst, uint8_t pos, const double * src, uint8_t n)
-        {
-            for (uint8_t i=0; i<n; ++i) {
-                dst[pos+i] = src[i];
-            }
-        }
-
     public:
 
         FSocketFlightManager(Dynamics * dynamics, int nmotors) : 
@@ -59,15 +52,13 @@ class FSocketFlightManager : public FFlightManager {
                 return;
             }
 
-            // Time Gyro, Quat, Location
-            double telemetry[10] = {0};
+            double telemetry[13] = {};
 
             telemetry[0] = time;
 
-            // XXX Replace state.* with _dynamics->x(Dynamics::STATE_*)
-            // copy(telemetry, 1, state.angularVel, 3);
-            // copy(telemetry, 4, state.bodyAccel, 3);
-            // copy(telemetry, 7, state.pose.location, 3);
+            for (uint8_t k=0; k<12; ++k) {
+                telemetry[k+1] = _dynamics->x(k);
+            }
 
 			_twoWayUdp->send(telemetry, sizeof(telemetry));
 
