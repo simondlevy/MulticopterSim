@@ -12,8 +12,14 @@
 				"Engine"
 			]
 		},
+
 		{
 			"Name": "HackflightModule",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "SocketModule",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}

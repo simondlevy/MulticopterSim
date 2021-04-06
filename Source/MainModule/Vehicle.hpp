@@ -25,9 +25,7 @@
 
 #include <stdio.h>
 
-#include <RFT_Debugger.hpp>
-
- // Windows/Linux compatibility 
+// Windows/Linux compatibility 
 #ifdef _WIN32
 #define SPRINTF sprintf_s
 #else
