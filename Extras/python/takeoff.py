@@ -13,7 +13,7 @@ import numpy as np
 from pidcontroller import AltitudePidController
 from multicopter_sim import Multicopter
 
-# Target 
+# Target
 ALTITUDE_TARGET = 10
 
 # PID params
@@ -21,6 +21,7 @@ ALT_P = 1.0
 VEL_P = 1.0
 VEL_I = 0
 VEL_D = 0
+
 
 if __name__ == '__main__':
 
@@ -32,7 +33,7 @@ if __name__ == '__main__':
     u = 0
 
     # Create PID controller
-    pid  = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
+    pid = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
 
     # Create a multicopter simulation
     copter = Multicopter()
@@ -50,22 +51,24 @@ if __name__ == '__main__':
     while True:
 
         # Wait until simulator starts up
-        if not copter.isReady(): continue
+        if not copter.isReady():
+            continue
 
         # Get vehicle state from sim
         telem = copter.getState()
 
         # Extract time from state
-        t =  telem[0]
+        t = telem[0]
 
         # Negative time means user hit stop button
-        if t < 0: break
+        if t < 0:
+            break
 
-        # Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
-        # to PID controller.
+        # Extract altitude from state.  Altitude is in NED coordinates, so we
+        # negate it to use as input to PID controller.
         z = -telem[9]
 
-        # Compute vertical climb rate as first difference of altitude over time
+        # Compute vertical climb rate as first difference of altitude/time
         if t > tprev:
 
             # Write time and altitude to log file
@@ -82,7 +85,7 @@ if __name__ == '__main__':
 
             # Constrain correction to [0,1] to represent motor value
             u = max(0, min(1, u))
-     
+
         # Set motor values in sim
         copter.setMotors(u*np.ones(4))
 
