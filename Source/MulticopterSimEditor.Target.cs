@@ -16,6 +16,6 @@ public class MulticopterSimEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 
-		ExtraModuleNames.AddRange( new string[] { "MainModule", "FlightModule" } );
+		ExtraModuleNames.AddRange( new string[] { "MainModule", "HackflightModule" } );
 	}
 }

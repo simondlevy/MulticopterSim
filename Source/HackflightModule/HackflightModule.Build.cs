@@ -1,5 +1,5 @@
 /*
- * Build script for FlightModule
+ * Build script for HackflightModule
  *
  * Copyright (C) 2018 Simon D. Levy
  *
@@ -11,13 +11,13 @@ using UnrealBuildTool;
 using System;
 using System.IO;
 
-public class FlightModule : ModuleRules
+public class HackflightModule : ModuleRules
 {
     // Change this to agree with your Arduino libraries install location
     // private static string ARDUINO_PATH = "C:\\Users\\Administrator\\Documents\\Arduino\\libraries\\";
     private static string ARDUINO_PATH = "D:\\Users\\levys\\Documents\\Arduino\\libraries\\";
 
-    public FlightModule(ReadOnlyTargetRules Target) : base(Target)
+    public HackflightModule(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 

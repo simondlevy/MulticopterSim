@@ -1,5 +1,5 @@
 #include "ModuleManager.h"
-IMPLEMENT_MODULE(FDefaultModuleImpl, FlightModule)
+IMPLEMENT_MODULE(FDefaultModuleImpl, HackflightModule)
 
 #include <RoboFirmwareToolkit.hpp>
 #include <RFT_board.hpp>

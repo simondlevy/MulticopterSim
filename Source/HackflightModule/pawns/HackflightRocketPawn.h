@@ -8,34 +8,32 @@
 
 #pragma once
 
-#include <mixers/quadxap.hpp>
+#include <mixers/thrustvec.hpp>
 
-#include "../../MainModule/vehicles/multirotors/TinyWhoop.hpp"
+#include "../../MainModule/vehicles/rockets/Rocket.hpp"
 
 #include "../HackflightFlightManager.hpp"
-
-#include "SimMotor.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
-#include "HackflightTinyWhoopPawn.generated.h"
+#include "HackflightRocketPawn.generated.h"
 
 UCLASS(Config=Game)
-class FLIGHTMODULE_API AHackflightTinyWhoopPawn : public APawn {
+class HACKFLIGHTMODULE_API AHackflightRocketPawn : public APawn {
 
     private:
 
         GENERATED_BODY()
 
         // Helper class
-        TinyWhoop _tinyWhoop;
+        Rocket _rocket;
 
         FHackflightFlightManager * _flightManager = NULL;
 
         SimMotor _motors = SimMotor(4);
 
-        hf::MixerQuadXAP  _mixer = hf::MixerQuadXAP(&_motors);
+        hf::MixerThrustVector  _mixer = hf::MixerThrustVector(&_motors);
 
     protected:
 
@@ -53,6 +51,6 @@ class FLIGHTMODULE_API AHackflightTinyWhoopPawn : public APawn {
 
     public:	
 
-        AHackflightTinyWhoopPawn();
+        AHackflightRocketPawn();
 
-}; // AHackflightTinyWhoopPawn
+}; // AHackflightRocketPawn

@@ -1,7 +1,7 @@
 /*
 * Class declaration for pawn class using Hackflight flight manager
 *
-* Copyright (C) 2019 Simon D. Levy
+* Copyright (C) 2021 Simon D. Levy
 *
 * MIT License
 */
@@ -10,7 +10,7 @@
 
 #include <mixers/quadxap.hpp>
 
-#include "../../MainModule/vehicles/multirotors/Phantom.hpp"
+#include "../../MainModule/vehicles/swashplates/Ingenuity.hpp"
 
 #include "../HackflightFlightManager.hpp"
 
@@ -19,17 +19,17 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
-#include "HackflightPhantomPawn.generated.h"
+#include "HackflightIngenuityPawn.generated.h"
 
 UCLASS(Config=Game)
-class FLIGHTMODULE_API AHackflightPhantomPawn : public APawn {
+class HACKFLIGHTMODULE_API AHackflightIngenuityPawn : public APawn {
 
     private:
 
         GENERATED_BODY()
 
         // Helper class
-        Phantom _phantom;
+        Ingenuity _ingenuity;
 
         FHackflightFlightManager * _flightManager = NULL;
 
@@ -53,6 +53,6 @@ class FLIGHTMODULE_API AHackflightPhantomPawn : public APawn {
 
     public:	
 
-        AHackflightPhantomPawn();
+        AHackflightIngenuityPawn();
 
-}; // AHackflightPhantomPawn
+}; // AHackflightIngenuityPawn
