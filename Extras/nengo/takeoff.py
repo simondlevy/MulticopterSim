@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     model, pid = buildpid()
 
-    sim = nengo.Simulator(model, progress_bar=False)  
+    sim = nengo.Simulator(model, progress_bar=False)
 
     copter = startcopter()
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         stdout.flush()
 
         # Loop until user hits the stop button
-        while  True:
+        while True:
 
             # Run the PID controller
             runpid(copter, pid)
@@ -48,10 +48,10 @@ if __name__ == '__main__':
             telem = copter.getState()
 
             # Extract time from state
-            t =  telem[0]
+            t = telem[0]
 
-            # Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
-            # to PID controller.
+            # Extract altitude from state.  Altitude is in NED coordinates,
+            # so we negate it to use as input to PID controller.
             z = -telem[9]
 
             # Write time and altitude to log file

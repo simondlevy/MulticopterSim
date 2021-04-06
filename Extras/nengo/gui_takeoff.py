@@ -14,14 +14,13 @@ with model:
 
     pass
 
+
 def on_step(sim):
-    
+
     if not hasattr(on_step, 'copter'):
 
         on_step.copter = startcopter()
-        
+
     if on_step.copter.isReady():
 
         runpid(on_step.copter, pid)
-
-

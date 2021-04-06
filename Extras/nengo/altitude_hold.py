@@ -10,15 +10,15 @@ import nengo
 import numpy as np
 from nengo_pid_controller import NengoPidController
 from multicopter_sim import Multicopter
-from sys import stdout
 
-# Target 
+# Target
 ALTITUDE_TARGET = 10
 
 # PID params
 KP = 0.4
 KD = 10.0
 KI = 0.03
+
 
 def buildpid():
 
@@ -30,6 +30,7 @@ def buildpid():
 
     return model, pid
 
+
 def startcopter():
 
     # Create a multicopter simulation
@@ -40,14 +41,15 @@ def startcopter():
 
     return copter
 
+
 def runpid(copter, pid):
 
     # Get vehicle state from sim
     telem = copter.getState()
 
-    # Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
-    # to PID controller.
-    z = -telem[9]
+    # Extract altitude from state.  Altitude is in NED coordinates, so we
+    # negate it to use as input to PID controller.
+    z = -telem[5]
 
     # Get correction from PID controller
     u = pid.getCorrection(ALTITUDE_TARGET, z)[0]
