@@ -8,8 +8,7 @@ module, you should take the following steps:
 
 1. Install Nengo.
 
-2. Follow the [directions](https://github.com/simondlevy/MulticopterSim#windows) for building MulticopterSim
-and choosing a vehicle.
+2. Follow the [directions](https://github.com/simondlevy/MulticopterSim#windows) for building MulticopterSim.
 
 3. Follow the [directions](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/python) 
 in <b>MulticopterSim/Extras/python</b> for installing the <b>multicopter_sim</b> Python library
