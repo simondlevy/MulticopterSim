@@ -42,7 +42,7 @@ class Multicopter(object):
         self.thread.daemon = True
 
         self.motorVals = np.zeros(motorCount)
-        self.state = np.zeros(11)
+        self.state = np.zeros(13) # Time, followed by 12-dimensional state vector (Bouabdallah 2004)
 
         self.ready = False
 
