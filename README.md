@@ -98,9 +98,9 @@ Hackflight / RFT.
 
 # Launch and fly!
 
-In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Then in
-<b>Content/C++ Classes/HackflightModule/pawns</b>, folder and drag the
-vehicle pawn into the map. Click the play button and you're ready to begin.
+In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Then open the
+<b>Content/C++ Classes/HackflightModule/pawns</b> folder and drag one of the
+vehicle pawns into the map. Click the play button and you're ready to begin.
 You can use the spacebar to switch your point-of-view.
 
 # Design principles

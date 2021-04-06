@@ -7,9 +7,8 @@ To run the example, you should:
 
 1. Build MulticopterSim as described [here](https://github.com/simondlevy/MulticopterSim#Windows).
 
-2. In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Then in
-<b>Content/C++ Classes/SocketModule/pawns</b>, folder and drag the
-vehicle pawn into the map. 
+2. In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Then open the
+<b>Content/C++ Classes/SocketModule/pawns</b> folder and drag one of the vehicles pawn into the map. 
 
 3. Run the <b>takeoff.py</b> script
 
