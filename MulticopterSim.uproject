@@ -22,6 +22,11 @@
 			"Name": "SocketModule",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "OpenCVModule",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	]
 }
