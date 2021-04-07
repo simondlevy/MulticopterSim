@@ -26,6 +26,11 @@ class FNullFlightManager : public FFlightManager {
 
         virtual void getMotors(const double time, double * motorvals) override
         {
+            float spin = 0.6;
+            motorvals[0] = spin;
+            motorvals[1] = spin;
+            motorvals[2] = spin;
+            motorvals[3] = spin;
         }
 
 }; // NullFlightManager
