@@ -10,7 +10,7 @@
 
 #include "../MainModule/Camera.hpp"
 
-// #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 class OpenCVCamera : public Camera {
 

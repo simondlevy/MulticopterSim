@@ -2,7 +2,7 @@
 
 # About
 
-MulticopterSim is a simple multicopter flight simulator using Unreal Engine 4.  It runs on Windows and Linux.
+MulticopterSim is a simple multicopter flight simulator using Unreal Engine 4.  It runs on Windows.
 
 I began this project using the [V-REP platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
 UnrealEngine after seeing the kinds of beautiful, real-time simulations that
@@ -84,17 +84,6 @@ to build the project.
 Hackflight / RFT.
 
 4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
-
-## Linux
-
-1. Edit [FlightModule.Build.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/FlightModule/FlightModule.Build.cs) to reflect where you installed Hackflight / RFT.
-
-2. Then:
-```
-% cd ~/Documents/Unreal\ Projects/MulticopterSim/
-% ./build.sh
-% ./run.sh
-```
 
 # Launch and fly!
 
