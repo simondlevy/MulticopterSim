@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../MainModule/vehicles/Phantom.h"
+#include "../../MainModule/vehicles/multirotors/Phantom.hpp"
 
 #include "NullFlightManager.hpp"
 
@@ -18,7 +18,7 @@
 #include "NullPhantomPawn.generated.h"
 
 UCLASS(Config=Game)
-class FLIGHTMODULE_API ANullPhantomPawn : public APawn {
+class NULLMODULE_API ANullPhantomPawn : public APawn {
 
     private:
 

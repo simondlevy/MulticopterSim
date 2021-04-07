@@ -18,6 +18,7 @@ public class MulticopterSimTarget : TargetRules
 		ExtraModuleNames.AddRange( new string[] { 
                 "MainModule", 
                 "HackflightModule", 
+                "NullModule", 
                 "OpenCVModule", 
                 "SocketModule" 
                 } );

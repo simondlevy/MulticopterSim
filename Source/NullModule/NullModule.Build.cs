@@ -1,5 +1,5 @@
 /*
- * Build script for FlightModule
+ * Build script for NullModule
  *
  * Copyright (C) 2018 Simon D. Levy
  *
@@ -11,9 +11,9 @@ using UnrealBuildTool;
 using System;
 using System.IO;
 
-public class FlightModule : ModuleRules
+public class NullModule : ModuleRules
 {
-    public FlightModule(ReadOnlyTargetRules Target) : base(Target)
+    public NullModule(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
