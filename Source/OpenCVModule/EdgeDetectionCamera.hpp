@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "../MainModule/OpenCVCamera.hpp"
+#include "OpenCVCamera.hpp"
 
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
+// #include <opencv2/highgui.hpp>
+// #include <opencv2/imgproc.hpp>
 
 class EdgeDetectionCamera : public OpenCVCamera {
 
@@ -28,6 +28,7 @@ class EdgeDetectionCamera : public OpenCVCamera {
 
     protected:
 
+        /*
         virtual void processImage(cv::Mat image) override
         {
             // Make a grayscale copy of the image
@@ -44,7 +45,7 @@ class EdgeDetectionCamera : public OpenCVCamera {
             // Display the edge-detected image
             cv::imshow("Edge Detection", edges);
             cv::waitKey(1);
-        }
+        }*/
 
     public:
 

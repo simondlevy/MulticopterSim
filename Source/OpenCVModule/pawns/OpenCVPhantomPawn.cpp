@@ -25,7 +25,7 @@ void AOpenCVPhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AOpenCVPhantomPawn::BeginPlay()
 {
-    _phantom.BeginPlay(new FNullFlightManager(&_phantom.dynamics));
+    _phantom.BeginPlay(new FNullFlightManager(&_phantom.dynamics, 4));
 
     Super::BeginPlay();
 }

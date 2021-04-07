@@ -1,2 +1,2 @@
 #include "ModuleManager.h"
-IMPLEMENT_MODULE(FDefaultModuleImpl, FlightModule)
+IMPLEMENT_MODULE(FDefaultModuleImpl, OpenCVModule)

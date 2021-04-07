@@ -20,6 +20,7 @@ public class OpenCVModule : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] 
                 { "Core", "CoreUObject", "Engine", "InputCore" });
     
+        /*
         // Create OpenCV Path
         string OpenCVPath = Path.Combine(ThirdPartyPath, "OpenCV");
 
@@ -38,6 +39,7 @@ public class OpenCVModule : ModuleRules
 
         PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING=1"));
         PublicDefinitions.Add("_USE_OPENCV");
+        */
     }
 
     private string ThirdPartyPath

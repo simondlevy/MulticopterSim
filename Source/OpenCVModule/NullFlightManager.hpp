@@ -12,35 +12,20 @@
 
 class FNullFlightManager : public FFlightManager {
 
-    private:
-
-        bool _running = false;
-
     public:
 
         // Constructor
-        FNullFlightManager(MultirotorDynamics * dynamics) 
-            : FFlightManager(dynamics) 
+        FNullFlightManager(Dynamics * dynamics, int nmotors) 
+            : FFlightManager(dynamics, nmotors) 
         {
-            _running = true;
         }
 
         virtual ~FNullFlightManager(void)
         {
         }
 
-        virtual void getMotors(const double time, const MultirotorDynamics::state_t & state, double * motorvals) override
+        virtual void getMotors(const double time, double * motorvals) override
         {
-            bool high = state.pose.location[2] < -3; // NED!
-
-            if (high) {
-                _running = false;
-            }
-
-            for (uint8_t i=0; i<_motorCount; ++i) {
-                //motorvals[i] = _running ? 0.6 : 0;
-                motorvals[i] = high ? 0 : 0.6;
-            }
         }
 
 }; // NullFlightManager

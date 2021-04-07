@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../MainModule/vehicles/Phantom.h"
+#include "../../MainModule/vehicles/multirotors/Phantom.hpp"
 
 #include "EdgeDetectionCamera.hpp"
 #include "NullFlightManager.hpp"
@@ -19,7 +19,7 @@
 #include "OpenCVPhantomPawn.generated.h"
 
 UCLASS(Config=Game)
-class FLIGHTMODULE_API AOpenCVPhantomPawn : public APawn {
+class OPENCVMODULE_API AOpenCVPhantomPawn : public APawn {
 
     private:
 

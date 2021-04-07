@@ -8,19 +8,19 @@
 
 #pragma once
 
-#include "Camera.hpp"
+#include "../MainModule/Camera.hpp"
 
-#include <opencv2/imgproc/imgproc.hpp>
+// #include <opencv2/imgproc/imgproc.hpp>
 
 class OpenCVCamera : public Camera {
 
     private:
 
         // RBGA image created from render target on main thread
-        cv::Mat _rbga_image;
+        // cv::Mat _rbga_image;
 
         // RGB image sent to subclass for processing
-        cv::Mat _image;
+        // cv::Mat _image;
 
     protected:
 
@@ -28,26 +28,26 @@ class OpenCVCamera : public Camera {
             : Camera(fov, res)
         {
             // Create a private RBGA image for acquiring render target on main thread
-            _rbga_image = cv::Mat::zeros(_rows, _cols, CV_8UC4);
+            // _rbga_image = cv::Mat::zeros(_rows, _cols, CV_8UC4);
 
             // Create a public OpenCV BGR image for uses by other classes
-            _image = cv::Mat::zeros(_rows, _cols, CV_8UC3);
+            // _image = cv::Mat::zeros(_rows, _cols, CV_8UC3);
 
         }
 
         virtual void processImageBytes(uint8_t * bytes) override
         { 
             // Copy the RBGA pixels to the private image
-            FMemory::Memcpy(_rbga_image.data, bytes, _rows*_cols*4);
+            // FMemory::Memcpy(_rbga_image.data, bytes, _rows*_cols*4);
 
             // Convert RGBA => RGB for public image
-            cv::cvtColor(_rbga_image, _image, CV_RGBA2RGB);
+            // cv::cvtColor(_rbga_image, _image, CV_RGBA2RGB);
 
             // Virtual method implemented in subclass
-            processImage(_image);
+            // processImage(_image);
         }
 
         // Override this method for your video application
-        virtual void processImage(cv::Mat image) = 0;
+        // virtual void processImage(cv::Mat image) = 0;
 
 }; // Class OpenCVCamera
