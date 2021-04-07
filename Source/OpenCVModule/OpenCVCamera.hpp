@@ -17,7 +17,7 @@ class OpenCVCamera : public Camera {
     private:
 
         // RBGA image created from render target on main thread
-        // cv::Mat _rbga_image;
+        cv::Mat _rbga_image;
 
         // RGB image sent to subclass for processing
         // cv::Mat _image;
