@@ -148,7 +148,7 @@ you can control MulticopterSim from a Python session running on your computer or
 
 ## OpenCV
 
-After you build the simulator, the <b>Content/C++ Classes/HackflightModule/pawns</b> folder will contain a
+After you build the simulator, the <b>Content/C++ Classes/OpenCVModule/pawns</b> folder will contain a
 pawn that will run OpenCV edge detection.  The flight controller for this pawn will simple run the motors
 fast enough to take off and continue flying upward.  By modifying the code in the 
 [Source/OpenCVModule](https://github.com/simondlevy/MulticopterSim/blob/master/Source/OpenCVModule/) 
