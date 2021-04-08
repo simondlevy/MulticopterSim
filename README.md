@@ -148,5 +148,5 @@ you can control MulticopterSim from a Python session running on your computer or
 
 ## OpenCV
 
-[This folder](https://github.com/simondlevy/MulticopterSim/Source/OpenCVModule/) contains instructions
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Source/OpenCVModule/) contains instructions
 on how to use OpenCV for machine vision in MulticopterSim.
