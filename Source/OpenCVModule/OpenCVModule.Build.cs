@@ -33,8 +33,8 @@ public class OpenCVModule : ModuleRules
         PublicLibraryPaths.Add(LibPath);
 
         //Add Libraries
-        PublicAdditionalLibraries.Add("opencv_world345.lib");
-        PublicDelayLoadDLLs.Add("opencv_world345.dll");
+        PublicAdditionalLibraries.Add("opencv_world452.lib");
+        PublicDelayLoadDLLs.Add("opencv_world452.dll");
 
         PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING=1"));
         PublicDefinitions.Add("_USE_OPENCV");
@@ -42,7 +42,7 @@ public class OpenCVModule : ModuleRules
 
     private string ThirdPartyPath
     {
-        get { return Path.GetFullPath(Path.Combine(ModuleDirectory, "ThirdParty/")); }
+        get { return Path.GetFullPath(Path.Combine(ModuleDirectory, "ThirdParty")); }
     }
 }
 
