@@ -43,10 +43,10 @@ class OpenCVCamera : public Camera {
             cv::cvtColor(_rbga_image, _image, cv::COLOR_RGBA2RGB);
 
             // Virtual method implemented in subclass
-            // processImage(_image);
+            processImage(_image);
         }
 
         // Override this method for your video application
-        // virtual void processImage(cv::Mat image) = 0;
+        virtual void processImage(cv::Mat image) = 0;
 
 }; // Class OpenCVCamera

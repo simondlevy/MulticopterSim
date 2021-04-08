@@ -10,8 +10,8 @@
 
 #include "OpenCVCamera.hpp"
 
-// #include <opencv2/highgui.hpp>
-// #include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 
 class EdgeDetectionCamera : public OpenCVCamera {
 
@@ -28,12 +28,11 @@ class EdgeDetectionCamera : public OpenCVCamera {
 
     protected:
 
-        /*
         virtual void processImage(cv::Mat image) override
         {
             // Make a grayscale copy of the image
             cv::Mat gray;
-            cv::cvtColor(image, gray, CV_BGR2GRAY);
+            cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
 
             /// Reduce noise with a 3x3 convolusion kernel
             cv::Mat edges;
@@ -45,7 +44,7 @@ class EdgeDetectionCamera : public OpenCVCamera {
             // Display the edge-detected image
             cv::imshow("Edge Detection", edges);
             cv::waitKey(1);
-        }*/
+        }
 
     public:
 
