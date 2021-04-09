@@ -59,7 +59,6 @@ class FHackflightFlightManager : public FFlightManager {
 
         // Helps us access individual motors
         SimMotor* _motors = NULL;
-        uint8_t _nmotors = 0;
 
         // Main firmware
         hf::Hackflight * _hackflight = NULL;
@@ -67,12 +66,11 @@ class FHackflightFlightManager : public FFlightManager {
     public:
 
         // Constructor
-        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, SimMotor * motors, int nmotors,
-                Dynamics * dynamics, bool pidsEnabled=true) 
-            : FFlightManager(dynamics, nmotors) 
+        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, SimMotor * motors, Dynamics * dynamics, 
+                bool pidsEnabled=true) 
+            : FFlightManager(dynamics) 
         {
             _motors = motors;
-            _nmotors = nmotors;
 
             // Pass PlayerController to receiver constructor in case we have no joystick / game-controller
             _receiver = new SimReceiver(UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0));

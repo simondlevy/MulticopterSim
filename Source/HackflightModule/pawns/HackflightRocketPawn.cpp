@@ -23,7 +23,7 @@ void AHackflightRocketPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AHackflightRocketPawn::BeginPlay()
 {
-    _flightManager = new FHackflightFlightManager(this, &_mixer, &_motors, 4, _rocket.dynamics);
+    _flightManager = new FHackflightFlightManager(this, &_mixer, &_motors, _rocket.dynamics);
 
     _rocket.BeginPlay(_flightManager);
 

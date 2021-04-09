@@ -23,7 +23,7 @@ void ASocketPhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void ASocketPhantomPawn::BeginPlay()
 {
-    _phantom.BeginPlay(new FSocketFlightManager(&_phantom.dynamics, 4));
+    _phantom.BeginPlay(new FSocketFlightManager(&_phantom.dynamics));
 
     Super::BeginPlay();
 }

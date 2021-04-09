@@ -15,8 +15,8 @@ class FNullFlightManager : public FFlightManager {
     public:
 
         // Constructor
-        FNullFlightManager(Dynamics * dynamics, int nmotors) 
-            : FFlightManager(dynamics, nmotors) 
+        FNullFlightManager(Dynamics * dynamics) 
+            : FFlightManager(dynamics) 
         {
         }
 

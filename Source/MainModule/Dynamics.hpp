@@ -379,6 +379,15 @@ class Dynamics {
             virtual int8_t rotorDirection(uint8_t i) { (void)i; return 0; }
 
             /**
+             * Gets motor count set by constructor.
+             * @return motor count
+             */
+            uint8_t motorCount(void)
+            {
+                return _motorCount;
+            }
+
+            /**
              * Gets rotor count set by constructor.
              * @return rotor count
              */

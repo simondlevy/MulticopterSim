@@ -40,17 +40,17 @@ class FFlightManager : public FThreadedManager {
         Dynamics * _dynamics = NULL;
 
         // Constructor, called main thread
-        FFlightManager(Dynamics * dynamics, uint8_t nmotors) 
+        FFlightManager(Dynamics * dynamics) 
             : FThreadedManager()
         {
+            // Constant
+            _nmotors = dynamics->motorCount();
+
             // Allocate array for motor values
-            _motorvals = new double[nmotors];
+            _motorvals = new double[_nmotors];
 
             // Store dynamics for performTask()
             _dynamics = dynamics;
-
-            // Constant
-            _nmotors = nmotors;
 
             // For periodic update
             _previousTime = 0;

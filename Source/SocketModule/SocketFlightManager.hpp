@@ -20,18 +20,15 @@ class FSocketFlightManager : public FFlightManager {
 
         TwoWayUdp * _twoWayUdp = NULL;
 
-        uint8_t _nmotors = 0;
-
         bool _running = false;
 
     public:
 
-        FSocketFlightManager(Dynamics * dynamics, int nmotors) : 
-            FFlightManager(dynamics, nmotors)
+        FSocketFlightManager(Dynamics * dynamics) : 
+            FFlightManager(dynamics)
         {
             _twoWayUdp = new TwoWayUdp(HOST, TELEM_PORT, MOTOR_PORT);
 
-            _nmotors = nmotors;
             _running = true;
         }
 		

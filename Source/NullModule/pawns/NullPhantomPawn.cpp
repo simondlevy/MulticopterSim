@@ -23,7 +23,7 @@ void ANullPhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void ANullPhantomPawn::BeginPlay()
 {
-    _phantom.BeginPlay(new FNullFlightManager(&_phantom.dynamics, 4));
+    _phantom.BeginPlay(new FNullFlightManager(&_phantom.dynamics));
 
     Super::BeginPlay();
 }

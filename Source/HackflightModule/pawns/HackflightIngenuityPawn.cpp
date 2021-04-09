@@ -24,7 +24,7 @@ void AHackflightIngenuityPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AHackflightIngenuityPawn::BeginPlay()
 {
-    _flightManager = new FHackflightFlightManager(this, &_mixer, &_motors, 4, &_ingenuity.dynamics);
+    _flightManager = new FHackflightFlightManager(this, &_mixer, &_motors, &_ingenuity.dynamics);
 
     _ingenuity.BeginPlay(_flightManager);
 

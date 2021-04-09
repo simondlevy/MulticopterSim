@@ -15,8 +15,8 @@ class FNullFlightManager : public FFlightManager {
     public:
 
         // Constructor
-        FNullFlightManager(Dynamics * dynamics, int nmotors) 
-            : FFlightManager(dynamics, nmotors) 
+        FNullFlightManager(Dynamics * dynamics) 
+            : FFlightManager(dynamics) 
         {
         }
 
@@ -26,11 +26,9 @@ class FNullFlightManager : public FFlightManager {
 
         virtual void getMotors(const double time, double * motorvals) override
         {
-            float spin = 0.6;
-            motorvals[0] = spin;
-            motorvals[1] = spin;
-            motorvals[2] = spin;
-            motorvals[3] = spin;
+            for (uint8_t k=0; k<_nmotors; ++k) {
+                motorvals[k] = 0.6;
+            }
         }
 
 }; // NullFlightManager

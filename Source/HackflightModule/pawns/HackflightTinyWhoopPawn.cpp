@@ -24,7 +24,7 @@ void AHackflightTinyWhoopPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AHackflightTinyWhoopPawn::BeginPlay()
 {
-    _flightManager = new FHackflightFlightManager(this, &_mixer, &_motors, 4, &_tinyWhoop.dynamics);
+    _flightManager = new FHackflightFlightManager(this, &_mixer, &_motors, &_tinyWhoop.dynamics);
 
     _tinyWhoop.BeginPlay(_flightManager);
 
