@@ -50,7 +50,7 @@ class Ingenuity {
         // Threaded worker for flight control
         FFlightManager * _flightManager = NULL;
 
-        void addProp(UStaticMesh* propMesh, float z)
+        void addRotor(UStaticMesh* propMesh, float z)
         {
             vehicle.addProp(propMesh, 0, 0, z);
         }
@@ -63,8 +63,8 @@ class Ingenuity {
             vehicle.buildFull(pawn, BodyStatics.mesh.Get());
 
             // Add propellers
-            addProp(Rotor_TopStatics.mesh.Get(), .175);
-            addProp(Rotor_BottomStatics.mesh.Get(), .125);
+            addRotor(Rotor_TopStatics.mesh.Get(), .175);
+            addRotor(Rotor_BottomStatics.mesh.Get(), .125);
 
 
 
