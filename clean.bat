@@ -9,4 +9,7 @@
 
 del /f /q *.txt Makefile *.sln *.pri *.kdev4 *.pro *.*workspace > NUL
 
-rmdir /q /s .vs Build Binaries DerivedDataCache Intermediate Saved > NUL
+del /f /q Binaries\Win64\MulticopterSimEditor.target > NUL
+del /f /q Binaries\Win64\UE4* > NUL
+
+rmdir /q /s .vs Build DerivedDataCache Intermediate Saved > NUL

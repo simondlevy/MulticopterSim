@@ -1,5 +1,6 @@
 DerivedDataCache/
-Binaries/
+Binaries/UE4*
+Binaries/MulticopterSimEditor.target
 Intermediate/
 Saved/
 Content/StarterContent/
