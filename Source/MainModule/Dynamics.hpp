@@ -365,14 +365,6 @@ class Dynamics {
                 _U4 = _b * u4;
             }
 
-            /**
-             * Returns "raw" state vector.
-             * @return state vector
-             */
-            double* getStateVector(void)
-            {
-                return _x;
-            }
 
             /**
              * Sets height above ground level (AGL).

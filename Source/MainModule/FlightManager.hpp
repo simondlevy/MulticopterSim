@@ -80,11 +80,6 @@ class FFlightManager : public FThreadedManager {
             _previousTime = currentTime;
         }
 
-        // Supports subclasses that might need direct access to dynamics state vector
-        double * getVehicleStateVector(void)
-        {
-            return _dynamics->getStateVector();
-        }
 
     public:
 
