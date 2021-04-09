@@ -173,7 +173,7 @@ class Vehicle {
 
     protected:
 
-        UAudioComponent* _audioComponent = NULL;
+        // XXX UAudioComponent* _audioComponent = NULL;
 
         // Set in constructor
         Dynamics* _dynamics = NULL;
@@ -224,7 +224,7 @@ class Vehicle {
             build(pawn, frameMesh);
 
             // Build the player-view cameras
-            buildPlayerCameras(chaseCameraDistanceMeters, chaseCameraElevationMeters);
+            // XXX buildPlayerCameras(chaseCameraDistanceMeters, chaseCameraElevationMeters);
 
             // Get sound cue from Contents
             static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/Flying/Audio/MotorSoundCue"));
@@ -233,6 +233,7 @@ class Vehicle {
             _soundCue = soundCue.Object;
 
             // Create an audio component, which wraps the sound cue, and allows us to ineract with it and its parameters from code
+            /* XXX
             _audioComponent = _pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
 
             // Set the audio component's volume to zero
@@ -240,7 +241,8 @@ class Vehicle {
 
             // Attach the sound to the pawn's root, the sound follows the pawn around
             _audioComponent->SetupAttachment(_pawn->GetRootComponent());
-            
+            */
+
             // Create a spring-arm for the gimbal
             _gimbalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("GimbalSpringArm"));
             _gimbalSpringArm->SetupAttachment(_pawn->GetRootComponent());
@@ -322,7 +324,7 @@ class Vehicle {
             // Start the audio for the propellers Note that because the
             // Cue Asset is set to loop the sound, once we start playing the sound, it
             // will play continiously...
-            _audioComponent->Play();
+            // XXX _audioComponent->Play();
 
             // Create circular queue for moving-average of motor values
             _motorBuffer = new TCircularBuffer<float>(20);
@@ -473,7 +475,7 @@ class Vehicle {
             _pawn->Tags.Add(FName("Vehicle"));
 
             if (_soundCue->IsValidLowLevelFast()) {
-                _audioComponent->SetSound(_soundCue);
+                //_audioComponent->SetSound(_soundCue);
             }
         }
 
