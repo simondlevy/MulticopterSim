@@ -70,6 +70,7 @@ class Ingenuity {
 
             // Add legs, mast, etc.
             vehicle.addMesh(LegStatics.mesh.Get(), "Leg1", FVector(+.09, +.09, -.06), FRotator(0, 0, 0));
+            vehicle.addMesh(LegStatics.mesh.Get(), "Leg2", FVector(-.09, -.09, -.06), FRotator(0, 180, 0));
 
             // Flight manager will be set in BeginPlay()
             _flightManager = NULL;
