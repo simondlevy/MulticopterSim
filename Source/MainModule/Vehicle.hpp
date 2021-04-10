@@ -149,6 +149,10 @@ class Vehicle {
 
         void setView()
         {
+            if (!_playerCameraSpringArm) {
+                return;
+            }
+
             switch (_view) {
             case VIEW_FRONT:
                 _playerController->SetViewTargetWithBlend(_pawn);
@@ -173,7 +177,7 @@ class Vehicle {
 
     protected:
 
-        // XXX UAudioComponent* _audioComponent = NULL;
+        UAudioComponent* _audioComponent = NULL;
 
         // Set in constructor
         Dynamics* _dynamics = NULL;
@@ -224,7 +228,7 @@ class Vehicle {
             build(pawn, frameMesh);
 
             // Build the player-view cameras
-            // XXX buildPlayerCameras(chaseCameraDistanceMeters, chaseCameraElevationMeters);
+            buildPlayerCameras(chaseCameraDistanceMeters, chaseCameraElevationMeters);
 
             // Get sound cue from Contents
             static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/Flying/Audio/MotorSoundCue"));
@@ -233,7 +237,6 @@ class Vehicle {
             _soundCue = soundCue.Object;
 
             // Create an audio component, which wraps the sound cue, and allows us to ineract with it and its parameters from code
-            /* XXX
             _audioComponent = _pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
 
             // Set the audio component's volume to zero
@@ -241,7 +244,6 @@ class Vehicle {
 
             // Attach the sound to the pawn's root, the sound follows the pawn around
             _audioComponent->SetupAttachment(_pawn->GetRootComponent());
-            */
 
             // Create a spring-arm for the gimbal
             _gimbalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("GimbalSpringArm"));
@@ -324,7 +326,9 @@ class Vehicle {
             // Start the audio for the propellers Note that because the
             // Cue Asset is set to loop the sound, once we start playing the sound, it
             // will play continiously...
-            // XXX _audioComponent->Play();
+            if (_audioComponent) {
+                _audioComponent->Play();
+            }
 
             // Create circular queue for moving-average of motor values
             _motorBuffer = new TCircularBuffer<float>(20);
