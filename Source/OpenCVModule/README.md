@@ -1,3 +1,5 @@
+<a href="https://www.youtube.com/watch?v=p_jRptn6hfg"><img src="../../Extras/media/edges.png" width=800></a>
+
 ## OpenCV for Machine Vision in MulticopterSim
 
 After you build the simulator, the <b>Content/C++ Classes/OpenCVModule/pawns</b> folder will contain a
