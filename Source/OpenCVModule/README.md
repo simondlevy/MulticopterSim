@@ -1,4 +1,4 @@
-<a href="https://www.youtube.com/watch?v=p_jRptn6hfg"><img src="../../Extras/media/edges.png" width=800></a>
+<a href="https://www.youtube.com/watch?v=p_jRptn6hfg"><img src="../../Extras/media/edges.png" width=500></a>
 
 ## OpenCV for Machine Vision in MulticopterSim
 
