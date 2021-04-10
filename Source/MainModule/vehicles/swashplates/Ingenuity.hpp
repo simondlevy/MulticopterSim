@@ -18,6 +18,7 @@ DECLARE_STATIC_MESH(FBodyStatics, "Ingenuity/Body.Body", BodyStatics)
 DECLARE_STATIC_MESH(FRotor_BottomStatics, "Ingenuity/Rotor_Bottom.Rotor_Bottom", Rotor_BottomStatics)
 DECLARE_STATIC_MESH(FRotor_TopStatics, "Ingenuity/Rotor_Top.Rotor_Top", Rotor_TopStatics)
 DECLARE_STATIC_MESH(FLegStatics, "Ingenuity/Leg.Leg", LegStatics)
+DECLARE_STATIC_MESH(FMastStatics, "Ingenuity/Mast.Mast", MastStatics)
 
 class Ingenuity {
 
@@ -65,12 +66,13 @@ class Ingenuity {
             vehicle.build(pawn, BodyStatics.mesh.Get());
 
             // Add propellers
-            addRotor(Rotor_TopStatics.mesh.Get(), .175);
-            addRotor(Rotor_BottomStatics.mesh.Get(), .125);
-
+            addRotor(Rotor_TopStatics.mesh.Get(), .130);
+            addRotor(Rotor_BottomStatics.mesh.Get(), .085);
+            
             // Add legs, mast, etc.
             vehicle.addMesh(LegStatics.mesh.Get(), "Leg1", FVector(+.09, +.09, -.06), FRotator(0, 0, 0));
             vehicle.addMesh(LegStatics.mesh.Get(), "Leg2", FVector(-.09, -.09, -.06), FRotator(0, 180, 0));
+            vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, 0.07), FRotator(0, 0, 0));
 
             // Flight manager will be set in BeginPlay()
             _flightManager = NULL;
