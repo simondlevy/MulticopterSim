@@ -478,8 +478,8 @@ class Vehicle {
             // Add "Vehicle" tag for use by level blueprint
             _pawn->Tags.Add(FName("Vehicle"));
 
-            if (_soundCue->IsValidLowLevelFast()) {
-                //_audioComponent->SetSound(_soundCue);
+            if (_audioComponent && _soundCue->IsValidLowLevelFast()) {
+                _audioComponent->SetSound(_soundCue);
             }
         }
 
