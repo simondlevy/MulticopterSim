@@ -32,12 +32,10 @@ class FHackflightFlightManager : public FFlightManager {
         // PID tuning
 
 		// Rate
-		hf::RatePid ratePid = hf::RatePid(
-			.01,	// Kp_roll_pitch
-			.01,	// Ki_roll_pitch
-			.01,	// Kd_roll_pitch
-			.025,	// Kp_yaw 
-			.01); 	// Ki_yaw
+		hf::RatePid ratePid = hf::RatePid(.01, .01, .01);	
+
+   		// Yaw 
+		hf::YawPid yawPid = hf::YawPid(.025, .01);
 
         // Level
         hf::LevelPid levelPid = hf::LevelPid(0.8);
@@ -89,6 +87,7 @@ class FHackflightFlightManager : public FFlightManager {
 
                 // Add rate and level PID controllers for all aux switch positions
                 _hackflight->addClosedLoopController(&levelPid);
+                _hackflight->addClosedLoopController(&yawPid);
                 _hackflight->addClosedLoopController(&ratePid);
             }
 
