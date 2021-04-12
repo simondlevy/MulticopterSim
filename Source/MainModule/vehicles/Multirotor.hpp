@@ -79,8 +79,10 @@ class MultirotorVehicle : public Vehicle {
             smoothedMotorMean /= _motorBuffer->Capacity();
 
             // Use the mean motor value to modulate the pitch and voume of the propeller sound
-            // XXX _audioComponent->SetFloatParameter(FName("pitch"), smoothedMotorMean);
-            // XXX _audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
+            if (_audioComponent) {
+                _audioComponent->SetFloatParameter(FName("pitch"), smoothedMotorMean);
+                _audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
+            }
         }
 
     private:

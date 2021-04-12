@@ -16,6 +16,7 @@
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
+#include <pidcontrollers/yaw.hpp>
 #include <pidcontrollers/rate.hpp>
 #include <pidcontrollers/althold.hpp>
 
@@ -31,15 +32,13 @@ class FHackflightFlightManager : public FFlightManager {
         // PID tuning
 
 		// Rate
-		hf::RatePid ratePid = hf::RatePid(
-			.01,	// Kp_roll_pitch
-			.01,	// Ki_roll_pitch
-			.01,	// Kd_roll_pitch
-			.025,	// Kp_yaw 
-			.01); 	// Ki_yaw
+		hf::RatePid ratePid = hf::RatePid(.01, .01, .01);	
+
+   		// Yaw 
+		hf::YawPid yawPid = hf::YawPid(.025, .01);
 
         // Level
-        hf::LevelPid levelPid = hf::LevelPid(0.8);
+        hf::LevelPid levelPid = hf::LevelPid(1.0);
 
         // Alt-hold
         hf::AltitudeHoldPid althold = hf::AltitudeHoldPid(
@@ -86,9 +85,10 @@ class FHackflightFlightManager : public FFlightManager {
                 // Add altitude-hold PID controller in switch position 1 or greater
                 //_hackflight->addClosedLoopController(&althold, 1);
 
-                // Add rate and level PID controllers for all aux switch positions
+                // Add yaw and level PID controllers for all aux switch positions
                 _hackflight->addClosedLoopController(&levelPid);
                 _hackflight->addClosedLoopController(&ratePid);
+                _hackflight->addClosedLoopController(&yawPid);
             }
 
             // Start Hackflight firmware, indicating already armed
