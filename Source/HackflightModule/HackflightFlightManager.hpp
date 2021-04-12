@@ -16,6 +16,7 @@
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
+#include <pidcontrollers/yaw.hpp>
 #include <pidcontrollers/rate.hpp>
 #include <pidcontrollers/althold.hpp>
 
