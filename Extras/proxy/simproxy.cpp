@@ -15,20 +15,22 @@ static const short  MOTOR_PORT     = 5000;
 static const short  TELEM_PORT     = 5001;
 static const double DELTA_T        = 0.001;
 
-/*
-static Dynamics::Parameters params = Dynamics::Parameters(
+// Estimated
+static constexpr float b = 5.E-06; // force constatnt [F=b*w^2]
+static constexpr float d = 2.E-06; // torque constant [T=d*w^2]
 
-        5.30216718361085E-05,   // b
-        2.23656692806239E-06,   // d
-        16.47,                  // m
-        0.6,                    // l
-        2,                      // Ix
-        2,                      // Iy
-        3,                      // Iz
-        3.08013E-04,            // Jr
-        15000                   // maxrpm
-        );
-*/
+// https://www.dji.com/phantom-4/info
+static constexpr float m = 1.380;  // mass [kg]
+
+// Estimated
+static constexpr float Ix = 2;      // [kg*m^2]
+static constexpr float Iy = 2;      // [kg*m^2]
+static constexpr float Iz = 3;      // [kg*m^2]
+static constexpr float Jr = 38E-04; // prop inertial [kg*m^2]
+
+static constexpr float l = 0.350;  // arm length [m]
+
+static const uint16_t maxrpm = 15000; // maxrpm
 
 int main(int argc, char ** argv)
 {
@@ -36,26 +38,24 @@ int main(int argc, char ** argv)
 
         TwoWayUdp twoWayUdp = TwoWayUdp(HOST, TELEM_PORT, MOTOR_PORT);
 
-        // QuadXAPDynamics quad = QuadXAPDynamics(&params);
+        QuadXAPDynamics dynamics = QuadXAPDynamics(b, d, m, Ix, Iy, Iz, Jr, l, maxrpm);
 
         double time = 0;
 
-        // Dynamics::pose_t pose = {};
+        double rotation[3] = {0,0,0};
 
-        // quad.init(pose);
+        dynamics.init(rotation);
 
         while (true) {
 
-            // Dynamics::state_t state = quad.getState();
-
-            // Time Gyro, Quat, Location
-            double telemetry[10] = {0};
+            // Time + 12D state vector (Bouabdallah 2004)
+            double telemetry[13] = {0};
 
             telemetry[0] = time;
 
-            // memcpy(&telemetry[1], &state.angularVel, 3*sizeof(double));
-            // memcpy(&telemetry[4], &state.bodyAccel, 3*sizeof(double));
-            // memcpy(&telemetry[7], &state.pose.location, 3*sizeof(double));
+            for (uint8_t k=0; k<12; ++k) {
+                telemetry[k+1] = dynamics.x(k);
+            }
 
             twoWayUdp.send(telemetry, sizeof(telemetry));
 
@@ -63,12 +63,12 @@ int main(int argc, char ** argv)
 
             twoWayUdp.receive(motorvals, sizeof(motorvals));
 
-            // printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
-            //         time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], state.pose.location[2]);
+            printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
+                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], dynamics.x(Dynamics::STATE_Z));
 
-            // quad.setMotors(motorvals);
+            dynamics.setMotors(motorvals);
 
-            // quad.update(DELTA_T);
+            dynamics.update(DELTA_T);
 
             time += DELTA_T;
         }
