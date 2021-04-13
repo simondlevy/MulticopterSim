@@ -15,7 +15,8 @@ static const short  MOTOR_PORT     = 5000;
 static const short  TELEM_PORT     = 5001;
 static const double DELTA_T        = 0.001;
 
-static MultirotorDynamics::Parameters params = MultirotorDynamics::Parameters(
+/*
+static Dynamics::Parameters params = Dynamics::Parameters(
 
         5.30216718361085E-05,   // b
         2.23656692806239E-06,   // d
@@ -27,7 +28,7 @@ static MultirotorDynamics::Parameters params = MultirotorDynamics::Parameters(
         3.08013E-04,            // Jr
         15000                   // maxrpm
         );
-
+*/
 
 int main(int argc, char ** argv)
 {
@@ -35,26 +36,26 @@ int main(int argc, char ** argv)
 
         TwoWayUdp twoWayUdp = TwoWayUdp(HOST, TELEM_PORT, MOTOR_PORT);
 
-        QuadXAPDynamics quad = QuadXAPDynamics(&params);
+        // QuadXAPDynamics quad = QuadXAPDynamics(&params);
 
         double time = 0;
 
-        MultirotorDynamics::pose_t pose = {};
+        // Dynamics::pose_t pose = {};
 
-        quad.init(pose);
+        // quad.init(pose);
 
         while (true) {
 
-            MultirotorDynamics::state_t state = quad.getState();
+            // Dynamics::state_t state = quad.getState();
 
             // Time Gyro, Quat, Location
             double telemetry[10] = {0};
 
             telemetry[0] = time;
 
-            memcpy(&telemetry[1], &state.angularVel, 3*sizeof(double));
-            memcpy(&telemetry[4], &state.bodyAccel, 3*sizeof(double));
-            memcpy(&telemetry[7], &state.pose.location, 3*sizeof(double));
+            // memcpy(&telemetry[1], &state.angularVel, 3*sizeof(double));
+            // memcpy(&telemetry[4], &state.bodyAccel, 3*sizeof(double));
+            // memcpy(&telemetry[7], &state.pose.location, 3*sizeof(double));
 
             twoWayUdp.send(telemetry, sizeof(telemetry));
 
@@ -62,12 +63,12 @@ int main(int argc, char ** argv)
 
             twoWayUdp.receive(motorvals, sizeof(motorvals));
 
-            printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
-                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], state.pose.location[2]);
+            // printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
+            //         time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], state.pose.location[2]);
 
-            quad.setMotors(motorvals);
+            // quad.setMotors(motorvals);
 
-            quad.update(DELTA_T);
+            // quad.update(DELTA_T);
 
             time += DELTA_T;
         }
