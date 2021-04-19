@@ -55,7 +55,7 @@ class Multicopter(object):
         self.telemSize = self.STATE_SIZE + 1
 
         self.motorVals = np.zeros(motorCount)
-        self.state = np.zeros(self.telemSize)
+        self.telem = np.zeros(self.telemSize)
 
         self.timeout = timeout
         self.ready = False
@@ -83,14 +83,14 @@ class Multicopter(object):
         Returns current time from sim
         '''
 
-        return self.state[0]
+        return self.telem[0]
 
     def getState(self):
         '''
         Returns current vehicle state from sim
         '''
 
-        return self.state[1:]
+        return self.telem[1:]
 
     def setMotors(self, motorVals):
         '''
@@ -111,11 +111,11 @@ class Multicopter(object):
                 self.done = True
                 break
 
-            self.state = np.frombuffer(data)
+            self.telem = np.frombuffer(data)
 
             self.ready = True
 
-            if self.state[0] < 0:
+            if self.telem[0] < 0:
                 self.motorSocket.close()
                 self.telemSocket.close()
                 break
