@@ -47,6 +47,8 @@ if __name__ == '__main__':
     print('Hit the start button ... ')
     stdout.flush()
 
+    running = False
+
     # Loop until user hits the stop button
     while True:
 
@@ -54,8 +56,13 @@ if __name__ == '__main__':
         if not copter.isReady():
             continue
 
+        if not running:
+            print('Running')
+            running = True
+
         # Quit after simulator quits
         if copter.isDone():
+            print('Done')
             break
 
         # Get vehicle state from sim
