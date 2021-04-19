@@ -1,4 +1,4 @@
-// http://book.realworldhaskell.org/read/sockets-and-syslog.html
+-- // http://book.realworldhaskell.org/read/sockets-and-syslog.html
 import Data.Bits
 import Network.Socket
 import Network.Socket.ByteString
@@ -10,7 +10,7 @@ type HandlerFunc = SockAddr -> IO ()
 main :: IO ()
 main = putStrLn "Hello, World!"
 
-serveLog :: String              -- ^ Port number or name; 514 is default
+serveLog :: String              -- ^ Port number or name
          -> HandlerFunc         -- ^ Function to handle incoming messages
          -> IO ()
 serveLog port handlerfunc = withSocketsDo $
@@ -35,7 +35,7 @@ serveLog port handlerfunc = withSocketsDo $
                  -- and save its content into msg and its source
                  -- IP and port into addr
                  -- (msg, _, addr) <- recvFrom sock 1024
-                 (msg, addr) <- Network.Socket.ByteString.recvFrom sock 1024
+                 (msg, addr) <- Network.Socket.ByteString.recvFrom sock 104
                  -- Handle it
                  handlerfunc addr
                  -- And process more messages
