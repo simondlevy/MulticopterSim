@@ -23,7 +23,7 @@ class Multicopter(object):
     STATE_SIZE = 13
 
     def __init__(self, host='127.0.0.1', motorPort=5000, telemetryPort=5001,
-                 motorCount=4):
+                 motorCount=4, timeout=.1):
         '''
         Creates a Multicopter object.
         host - name of host running MulticopterSim
@@ -54,7 +54,9 @@ class Multicopter(object):
         self.motorVals = np.zeros(motorCount)
         self.state = np.zeros(self.STATE_SIZE)
 
+        self.timeout = timeout
         self.ready = False
+        self.done = False
 
     def start(self):
         '''
@@ -65,7 +67,13 @@ class Multicopter(object):
 
     def isReady(self):
 
+        if self.ready:
+            self.telemSocket.settimeout(self.timeout)
         return self.ready
+
+    def isDone(self):
+
+        return self.done
 
     def getState(self):
         '''
@@ -83,9 +91,16 @@ class Multicopter(object):
 
     def _run(self):
 
+        self.done = False
+
         while True:
 
-            data, _ = self.telemSocket.recvfrom(8*self.STATE_SIZE)
+            try:
+                data, _ = self.telemSocket.recvfrom(8*self.STATE_SIZE)
+            except Exception:
+                self.done = True
+                break
+
             self.state = np.frombuffer(data)
 
             self.ready = True

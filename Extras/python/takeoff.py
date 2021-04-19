@@ -54,6 +54,10 @@ if __name__ == '__main__':
         if not copter.isReady():
             continue
 
+        # Quit after simulator quits
+        if copter.isDone():
+            break
+
         # Get vehicle state from sim
         telem = copter.getState()
 
