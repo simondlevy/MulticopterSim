@@ -4,8 +4,9 @@ import Network.Socket
 import Network.Socket.ByteString
 import Network.BSD
 import Data.List
+import Data.ByteString.Internal
 
-type HandlerFunc = SockAddr -> IO ()
+type HandlerFunc = SockAddr -> Data.ByteString.Internal.ByteString -> IO ()
 
 main :: IO ()
 -- main = putStrLn "Hello, World!"
@@ -38,11 +39,11 @@ serveLog port handlerfunc = withSocketsDo $
                  -- (msg, _, addr) <- recvFrom sock 1024
                  (msg, addr) <- Network.Socket.ByteString.recvFrom sock 104
                  -- Handle it
-                 handlerfunc addr
+                 handlerfunc addr msg
                  -- And process more messages
                  procMessages sock
 
 -- A simple handler that prints incoming packets
 plainHandler :: HandlerFunc
-plainHandler addr = 
+plainHandler addr msg = 
     putStrLn $ "From " ++ show addr ++ ": "
