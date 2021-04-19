@@ -8,7 +8,8 @@ import Data.List
 type HandlerFunc = SockAddr -> IO ()
 
 main :: IO ()
-main = putStrLn "Hello, World!"
+-- main = putStrLn "Hello, World!"
+main = serveLog "5001" plainHandler
 
 serveLog :: String              -- ^ Port number or name
          -> HandlerFunc         -- ^ Function to handle incoming messages
