@@ -19,8 +19,8 @@ class Multicopter(object):
     socket calls.
     '''
 
-    # Time, followed by 12-dimensional state vector (Bouabdallah 2004)
-    STATE_SIZE = 13
+    # 12-dimensional state vector (Bouabdallah 2004)
+    STATE_SIZE = 12
 
     def __init__(self, host='127.0.0.1', motorPort=5000, telemetryPort=5001,
                  motorCount=4, timeout=.1):
@@ -51,8 +51,11 @@ class Multicopter(object):
         self.thread = Thread(target=self._run)
         self.thread.daemon = True
 
+        # time + state
+        self.telemSize = self.STATE_SIZE + 1
+
         self.motorVals = np.zeros(motorCount)
-        self.state = np.zeros(self.STATE_SIZE)
+        self.state = np.zeros(self.telemSize)
 
         self.timeout = timeout
         self.ready = False
@@ -96,7 +99,7 @@ class Multicopter(object):
         while True:
 
             try:
-                data, _ = self.telemSocket.recvfrom(8*self.STATE_SIZE)
+                data, _ = self.telemSocket.recvfrom(8*self.telemSize)
             except Exception:
                 self.done = True
                 break
