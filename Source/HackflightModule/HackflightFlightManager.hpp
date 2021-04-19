@@ -18,7 +18,7 @@
 #include <pidcontrollers/level.hpp>
 #include <pidcontrollers/yaw.hpp>
 #include <pidcontrollers/rate.hpp>
-#include <pidcontrollers/althold.hpp>
+// #include <pidcontrollers/althold.hpp>
 
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
@@ -40,12 +40,14 @@ class FHackflightFlightManager : public FFlightManager {
         // Level
         hf::LevelPid levelPid = hf::LevelPid(1.0);
 
+        /*
         // Alt-hold
         hf::AltitudeHoldPid althold = hf::AltitudeHoldPid(
                 10.00f, // altHoldPosP
                 1.00f,  // altHoldVelP
                 0.01f,  // altHoldVelI
                 0.10f); // altHoldVelD
+                */
 
         // Flight-controller board
         SimBoard _board;
