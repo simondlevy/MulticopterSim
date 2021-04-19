@@ -57,6 +57,10 @@ int main(int argc, char ** argv)
                 telemetry[k+1] = dynamics.x(k);
             }
 
+            for (uint8_t k=0; k<13; ++k) {
+                telemetry[k] = 1;
+            }
+
             twoWayUdp.send(telemetry, sizeof(telemetry));
 
             double motorvals[4] = {};
