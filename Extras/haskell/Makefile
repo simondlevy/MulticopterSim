@@ -6,3 +6,6 @@ run: udpserver
 clean:
 	rm -rf udpserver *.hi *.o
 
+edit:
+	vim udpserver.hs
+
