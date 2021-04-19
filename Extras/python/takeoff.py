@@ -66,10 +66,7 @@ if __name__ == '__main__':
             break
 
         # Get vehicle state from sim
-        telem = copter.getState()
-
-        # Extract time from state
-        t = telem[0]
+        t, x = copter.getTime(), copter.getState()
 
         # Negative time means user hit stop button
         if t < 0:
@@ -77,7 +74,7 @@ if __name__ == '__main__':
 
         # Extract altitude from state.  Altitude is in NED coordinates, so we
         # negate it to use as input to PID controller.
-        z = -telem[5]
+        z = -x[4]
 
         # Compute vertical climb rate as first difference of altitude/time
         if t > tprev:

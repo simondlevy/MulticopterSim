@@ -78,12 +78,19 @@ class Multicopter(object):
 
         return self.done
 
-    def getState(self):
+    def getTime(self):
         '''
-        Returns current vehicle state
+        Returns current time from sim
         '''
 
-        return self.state
+        return self.state[0]
+
+    def getState(self):
+        '''
+        Returns current vehicle state from sim
+        '''
+
+        return self.state[1:]
 
     def setMotors(self, motorVals):
         '''
