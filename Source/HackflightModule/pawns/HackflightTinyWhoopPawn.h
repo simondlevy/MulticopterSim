@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <mixers/quadxap.hpp>
+#include <actuators/mixers/quadxap.hpp>
 
 #include "../../MainModule/vehicles/multirotors/TinyWhoop.hpp"
 
