@@ -67,7 +67,7 @@ class Ingenuity {
 
             // Add rotors
             addRotor(Rotor_TopStatics.mesh.Get(), .170);
-            // addRotor(Rotor_BottomStatics.mesh.Get(), .085);
+            addRotor(Rotor_BottomStatics.mesh.Get(), .130); // .160
             
             // Add mast, legs, etc.
             vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, 0.135), FRotator(0, 0, 0));
