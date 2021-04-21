@@ -66,7 +66,7 @@ class Ingenuity {
             vehicle.build(pawn, BodyStatics.mesh.Get());
 
             // Add rotors
-            // addRotor(Rotor_TopStatics.mesh.Get(), .130);
+            addRotor(Rotor_TopStatics.mesh.Get(), .170);
             // addRotor(Rotor_BottomStatics.mesh.Get(), .085);
             
             // Add mast, legs, etc.
