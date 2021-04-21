@@ -66,12 +66,12 @@ class Ingenuity {
             vehicle.build(pawn, BodyStatics.mesh.Get());
 
             // Add rotors
-            addRotor(Rotor_TopStatics.mesh.Get(), .130);
-            addRotor(Rotor_BottomStatics.mesh.Get(), .085);
+            // addRotor(Rotor_TopStatics.mesh.Get(), .130);
+            // addRotor(Rotor_BottomStatics.mesh.Get(), .085);
             
-            // Add legs, mast, etc.
+            // Add mast, legs, etc.
+            vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, 0.135), FRotator(0, 0, 0));
             // vehicle.addMesh(LegBottomStatics.mesh.Get(), "LegBottom1", FVector(+.09, +.09, -.06), FRotator(0, 0, 0));
-            // vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, 0.07), FRotator(0, 0, 0));
 
             // Flight manager will be set in BeginPlay()
             _flightManager = NULL;
