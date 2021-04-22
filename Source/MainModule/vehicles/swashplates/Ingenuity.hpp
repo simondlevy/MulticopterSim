@@ -19,6 +19,7 @@ DECLARE_STATIC_MESH(FRotor_BottomStatics, "Ingenuity/Rotor_Bottom.Rotor_Bottom",
 DECLARE_STATIC_MESH(FRotor_TopStatics, "Ingenuity/Rotor_Top.Rotor_Top", Rotor_TopStatics)
 DECLARE_STATIC_MESH(FLegBottomStatics, "Ingenuity/Leg_Bottom.Leg_Bottom", LegBottomStatics)
 DECLARE_STATIC_MESH(FMastStatics, "Ingenuity/Mast.Mast", MastStatics)
+DECLARE_STATIC_MESH(FLeg_BracketStatics, "Ingenuity/Leg_Bracket.Leg_Bracket", Leg_BracketStatics)
 
 class Ingenuity {
 
@@ -57,21 +58,31 @@ class Ingenuity {
             vehicle.addProp(propMesh, 0, 0, z);
         }
 
+        void addLeg(UStaticMesh* bracketMesh, uint8_t index, float x, float y, float angle)
+        {
+            vehicle.addComponent(Leg_BracketStatics.mesh.Get(), makeName("Bracket", index, "Mesh"), x, y, .110, angle);
+        }
+
     public:
 
         void build(APawn * pawn)
         {
             // Build the frame
-            //vehicle.buildFull(pawn, BodyStatics.mesh.Get());
+            //vehicle.buildFull(pawn, BodyStatics.mesh.Get()); // Restore for cameras, audio
             vehicle.build(pawn, BodyStatics.mesh.Get());
 
             // Add rotors
             addRotor(Rotor_TopStatics.mesh.Get(), .170);
-            addRotor(Rotor_BottomStatics.mesh.Get(), .130); // .160
+            addRotor(Rotor_BottomStatics.mesh.Get(), .130);
             
             // Add mast, legs, etc.
-            vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, 0.135), FRotator(0, 0, 0));
+            vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, .135), FRotator(0, 0, 0));
             // vehicle.addMesh(LegBottomStatics.mesh.Get(), "LegBottom1", FVector(+.09, +.09, -.06), FRotator(0, 0, 0));
+            addLeg(Leg_BracketStatics.mesh.Get(), 1, +.09, +.09, 135); 
+            addLeg(Leg_BracketStatics.mesh.Get(), 2, +.09, -.09, 45); 
+            addLeg(Leg_BracketStatics.mesh.Get(), 3, -.09, -.09, -45); 
+            addLeg(Leg_BracketStatics.mesh.Get(), 4, -.09, +.09, 225); 
+
 
             // Flight manager will be set in BeginPlay()
             _flightManager = NULL;
