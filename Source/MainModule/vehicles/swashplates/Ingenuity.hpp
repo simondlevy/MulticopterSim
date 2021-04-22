@@ -58,9 +58,17 @@ class Ingenuity {
             vehicle.addProp(propMesh, 0, 0, z);
         }
 
-        void addLeg(UStaticMesh* bracketMesh, uint8_t index, float x, float y, float angle)
+        void addLeg(UStaticMesh* bracketMesh, uint8_t index, int8_t dx, int8_t dy, float angle)
         {
-            vehicle.addComponent(Leg_BracketStatics.mesh.Get(), makeName("Bracket", index, "Mesh"), x, y, .110, angle);
+            static constexpr float pos = .09;
+            
+            vehicle.addComponent(
+                    Leg_BracketStatics.mesh.Get(), 
+                    makeName("Bracket", index, "Mesh"), 
+                    dx * pos,
+                    dy * pos,
+                    .110, 
+                    angle);
         }
 
     public:
@@ -78,10 +86,10 @@ class Ingenuity {
             // Add mast, legs, etc.
             vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, .135), FRotator(0, 0, 0));
             // vehicle.addMesh(LegBottomStatics.mesh.Get(), "LegBottom1", FVector(+.09, +.09, -.06), FRotator(0, 0, 0));
-            addLeg(Leg_BracketStatics.mesh.Get(), 1, +.09, +.09, 135); 
-            addLeg(Leg_BracketStatics.mesh.Get(), 2, +.09, -.09, 45); 
-            addLeg(Leg_BracketStatics.mesh.Get(), 3, -.09, -.09, -45); 
-            addLeg(Leg_BracketStatics.mesh.Get(), 4, -.09, +.09, 225); 
+            addLeg(Leg_BracketStatics.mesh.Get(), 1, +1, +1, 135); 
+            addLeg(Leg_BracketStatics.mesh.Get(), 2, +1, -1, 45); 
+            addLeg(Leg_BracketStatics.mesh.Get(), 3, -1, -1, -45); 
+            addLeg(Leg_BracketStatics.mesh.Get(), 4, -1, +1, 225); 
 
 
             // Flight manager will be set in BeginPlay()
