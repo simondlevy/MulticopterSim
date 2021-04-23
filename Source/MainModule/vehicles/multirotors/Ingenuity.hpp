@@ -17,11 +17,12 @@
 
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FBodyStatics, "Ingenuity/Body.Body", BodyStatics)
-DECLARE_STATIC_MESH(FRotor_BottomStatics, "Ingenuity/Rotor_Bottom.Rotor_Bottom", Rotor_BottomStatics)
-DECLARE_STATIC_MESH(FRotor_TopStatics, "Ingenuity/Rotor_Top.Rotor_Top", Rotor_TopStatics)
+DECLARE_STATIC_MESH(FRotorBottomStatics, "Ingenuity/Rotor_Bottom.Rotor_Bottom", RotorBottomStatics)
+DECLARE_STATIC_MESH(FRotorTopStatics, "Ingenuity/Rotor_Top.Rotor_Top", RotorTopStatics)
 DECLARE_STATIC_MESH(FLegBottomStatics, "Ingenuity/Leg_Bottom.Leg_Bottom", LegBottomStatics)
+DECLARE_STATIC_MESH(FLegBracketStatics, "Ingenuity/Leg_Bracket.Leg_Bracket", LegBracketStatics)
+DECLARE_STATIC_MESH(FLegTopStatics, "Ingenuity/Leg_Top.Leg_Top", LegTopStatics)
 DECLARE_STATIC_MESH(FMastStatics, "Ingenuity/Mast.Mast", MastStatics)
-DECLARE_STATIC_MESH(FLeg_BracketStatics, "Ingenuity/Leg_Bracket.Leg_Bracket", Leg_BracketStatics)
 
 class Ingenuity {
 
@@ -60,27 +61,25 @@ class Ingenuity {
             vehicle.addProp(propMesh, 0, 0, z);
         }
 
+        void addLegComponent(
+                UStaticMesh * mesh, 
+                const char * name, 
+                float xypos, 
+                float zpos, 
+                float angle,
+                uint8_t index, 
+                int8_t dx, 
+                int8_t dy)
+        {
+            vehicle.addComponent(mesh, makeName(name, index, "Mesh"), dx * xypos, dy * xypos, zpos, (index-1)*90 + angle);
+        }
+
+
         void addLeg(uint8_t index, int8_t dx, int8_t dy)
         {
-            static constexpr float bracket_pos = .090;
-            
-            vehicle.addComponent(
-                    Leg_BracketStatics.mesh.Get(), 
-                    makeName("Bracket", index, "Mesh"), 
-                    dx * bracket_pos,
-                    dy * bracket_pos,
-                    +.110, 
-                    (index-1)*90 + 45);
-
-            static constexpr float bottom_pos = .225;
-
-            vehicle.addComponent(
-                    LegBottomStatics.mesh.Get(), 
-                    makeName("LegBottom", index, "Mesh"), 
-                    dx * bottom_pos,
-                    dy * bottom_pos,
-                    -.100,
-                    (index-1)*90 + 270);
+            addLegComponent(LegBracketStatics.mesh.Get(), "LegBracket", .090, +.110, +45, index, dx, dy);
+            addLegComponent(LegTopStatics.mesh.Get(),     "LegTop",     .120, +.098, -45, index, dx, dy);
+            // addLegComponent(LegBottomStatics.mesh.Get(),  "LegBottom",  .240, -.110, +270, index, dx, dy);
         }
 
     public:
@@ -92,8 +91,8 @@ class Ingenuity {
             vehicle.build(pawn, BodyStatics.mesh.Get());
 
             // Add rotors
-            addRotor(Rotor_TopStatics.mesh.Get(), .170);
-            addRotor(Rotor_BottomStatics.mesh.Get(), .130);
+            addRotor(RotorTopStatics.mesh.Get(), .170);
+            addRotor(RotorBottomStatics.mesh.Get(), .130);
             
             // Add mast, legs, etc.
             vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, .135), FRotator(0, 0, 0));
@@ -102,6 +101,37 @@ class Ingenuity {
             addLeg(3, -1, +1); 
             addLeg(4, -1, -1); 
 
+            vehicle.addComponent(
+                    LegBottomStatics.mesh.Get(),
+                    makeName("LegBottom", 1, "Mesh"),
+                    +.216,  // x
+                    -.225,  // y
+                    -.112,  // z
+                    -90);
+
+            vehicle.addComponent(
+                    LegBottomStatics.mesh.Get(),
+                    makeName("LegBottom", 2, "Mesh"),
+                    +.225,  // x
+                    +.216,  // y
+                    -.112,  // z
+                    0);
+
+            vehicle.addComponent(
+                    LegBottomStatics.mesh.Get(),
+                    makeName("LegBottom", 3, "Mesh"),
+                    -.216,  // x
+                    +.225,  // y
+                    -.112,  // z
+                    +90);
+
+            vehicle.addComponent(
+                    LegBottomStatics.mesh.Get(),
+                    makeName("LegBottom", 4, "Mesh"),
+                    -.225,  // x
+                    -.216,  // y
+                    -.112,  // z
+                    +180);
 
             // Flight manager will be set in BeginPlay()
             _flightManager = NULL;
