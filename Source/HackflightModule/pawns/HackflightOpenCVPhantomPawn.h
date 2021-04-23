@@ -1,7 +1,8 @@
 /*
-* Class declaration for pawn class using stubbed flight manager and OpenCV camera display
+* Class declaration for pawn class Hackflight flight manager and OpenCV camera display 
+* with edge detection
 *
-* Copyright (C) 2019 Simon D. Levy
+* Copyright (C) 2021 Simon D. Levy
 *
 * MIT License
 */
@@ -16,10 +17,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
-#include "OpenCVPhantomPawn.generated.h"
+#include "HackflightOpenCVPhantomPawn.generated.h"
 
 UCLASS(Config=Game)
-class HACKFLIGHTMODULE_API AOpenCVPhantomPawn : public APawn {
+class HACKFLIGHTMODULE_API AHackflightOpenCVPhantomPawn : public APawn {
 
     private:
 
@@ -46,6 +47,6 @@ class HACKFLIGHTMODULE_API AOpenCVPhantomPawn : public APawn {
 
     public:	
 
-        AOpenCVPhantomPawn();
+        AHackflightOpenCVPhantomPawn();
 
-}; // AOpenCVPhantomPawn
+}; // AHackflightOpenCVPhantomPawn

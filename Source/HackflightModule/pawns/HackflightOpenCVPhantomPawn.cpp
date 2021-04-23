@@ -6,16 +6,16 @@
 * MIT License
 */
 
-#include "OpenCVPhantomPawn.h"
+#include "HackflightOpenCVPhantomPawn.h"
 
-AOpenCVPhantomPawn::AOpenCVPhantomPawn()
+AHackflightOpenCVPhantomPawn::AHackflightOpenCVPhantomPawn()
 {
     _phantom.build(this);
 
     _phantom.addCamera(&_camera);
 }
 
-void AOpenCVPhantomPawn::PostInitializeComponents()
+void AHackflightOpenCVPhantomPawn::PostInitializeComponents()
 {
     _phantom.PostInitializeComponents();
 
@@ -23,14 +23,14 @@ void AOpenCVPhantomPawn::PostInitializeComponents()
 }
 
 // Called when the game starts or when spawned
-void AOpenCVPhantomPawn::BeginPlay()
+void AHackflightOpenCVPhantomPawn::BeginPlay()
 {
     _phantom.BeginPlay(new FNullFlightManager(&_phantom.dynamics));
 
     Super::BeginPlay();
 }
 
-void AOpenCVPhantomPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AHackflightOpenCVPhantomPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     _phantom.EndPlay();
 
@@ -38,7 +38,7 @@ void AOpenCVPhantomPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 // Called automatically on main thread
-void AOpenCVPhantomPawn::Tick(float DeltaSeconds)
+void AHackflightOpenCVPhantomPawn::Tick(float DeltaSeconds)
 {
     _phantom.Tick(DeltaSeconds);
 
