@@ -20,6 +20,9 @@
 #include <pidcontrollers/rate.hpp>
 // #include <pidcontrollers/althold.hpp>
 
+#include <rft_closedloops/passthru.hpp>
+
+
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
 #include "SimMotor.hpp"
@@ -39,6 +42,8 @@ class FHackflightFlightManager : public FFlightManager {
 
         // Level
         hf::LevelPid levelPid = hf::LevelPid(1.0);
+
+        rft::PassthruController passthru;
 
         /*
         // Alt-hold
@@ -92,6 +97,8 @@ class FHackflightFlightManager : public FFlightManager {
                 _hackflight->addClosedLoopController(&ratePid);
                 _hackflight->addClosedLoopController(&yawPid);
             }
+
+            // _hackflight->addClosedLoopController(&passthru);
 
             // Start Hackflight firmware, indicating already armed
             _hackflight->begin(true);

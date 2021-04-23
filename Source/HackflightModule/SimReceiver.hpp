@@ -60,10 +60,6 @@ class SimReceiver : public hf::Receiver {
 			_previousTime = 0;
 		}
 
-		void begin(void)
-		{
-		}
-
 		bool gotNewFrame(void)
 		{
 			// Get a high-fidelity current time value from the OS
@@ -76,10 +72,6 @@ class SimReceiver : public hf::Receiver {
 			}
 
 			return false;
-		}
-
-		void readRawvals(void)
-		{
 		}
 
 		uint16_t update(void)
