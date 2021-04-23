@@ -60,7 +60,7 @@ class Ingenuity {
             vehicle.addProp(propMesh, 0, 0, z);
         }
 
-        void addLeg(UStaticMesh* bracketMesh, uint8_t index, int8_t dx, int8_t dy)
+        void addLeg(uint8_t index, int8_t dx, int8_t dy)
         {
             static constexpr float pos = .09;
             
@@ -95,10 +95,10 @@ class Ingenuity {
             
             // Add mast, legs, etc.
             vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, .135), FRotator(0, 0, 0));
-            addLeg(Leg_BracketStatics.mesh.Get(), 1, +1, -1); 
-            //addLeg(Leg_BracketStatics.mesh.Get(), 2, +1, +1); 
-            //addLeg(Leg_BracketStatics.mesh.Get(), 3, -1, +1); 
-            //addLeg(Leg_BracketStatics.mesh.Get(), 4, -1, -1); 
+            addLeg(1, +1, -1); 
+            //addLeg(2, +1, +1); 
+            //addLeg(3, -1, +1); 
+            //addLeg(4, -1, -1); 
 
 
             // Flight manager will be set in BeginPlay()
