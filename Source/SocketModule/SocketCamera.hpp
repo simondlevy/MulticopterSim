@@ -29,6 +29,7 @@ class SocketCamera : public Camera {
 
         virtual void processImageBytes(uint8_t * bytes) override
         { 
+            debug("Process image bytes");
         }
 
 }; // Class SocketCamera
