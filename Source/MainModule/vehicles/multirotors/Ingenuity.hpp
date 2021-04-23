@@ -7,8 +7,10 @@
 
 #pragma once 
 
+
 #include "../Multirotor.hpp"
-#include "../MainModule/dynamics/QuadXAP.hpp"
+
+#include "../../dynamics/QuadXAP.hpp" // XXX use quadrotor dynamics for now
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../MainModule/Vehicle.hpp"
+#include "../Vehicle.hpp"
 
 class Ornithopter : public Vehicle {
 

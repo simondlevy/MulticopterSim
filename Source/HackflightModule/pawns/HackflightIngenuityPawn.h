@@ -10,7 +10,7 @@
 
 #include <actuators/mixers/quadxap.hpp>
 
-#include "../../MainModule/vehicles/swashplates/Ingenuity.hpp"
+#include "../../MainModule/vehicles/multirotors/Ingenuity.hpp"
 
 #include "../HackflightFlightManager.hpp"
 

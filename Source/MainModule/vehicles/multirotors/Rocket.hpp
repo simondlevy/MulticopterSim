@@ -9,7 +9,8 @@
 #pragma once
 
 #include "../Multirotor.hpp"
-#include "../MainModule/dynamics/ThrustVector.hpp"
+
+#include "../../MainModule/dynamics/ThrustVector.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
