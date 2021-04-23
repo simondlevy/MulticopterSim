@@ -22,6 +22,9 @@ VEL_P = 1.0
 VEL_I = 0
 VEL_D = 0
 
+def dump(msg):
+    print(msg)
+    stdout.flush()
 
 if __name__ == '__main__':
 
@@ -44,8 +47,7 @@ if __name__ == '__main__':
     # Open a log file
     fp = open('ardupid.csv', 'w')
 
-    print('Hit the start button ... ')
-    stdout.flush()
+    dump('Hit the start button ... ')
 
     running = False
 
@@ -57,12 +59,11 @@ if __name__ == '__main__':
             continue
 
         if not running:
-            print('Running')
+            dump('Running')
             running = True
 
         # Quit after simulator quits
         if copter.isDone():
-            print('Done')
             break
 
         # Get vehicle state from sim

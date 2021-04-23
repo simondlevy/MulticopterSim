@@ -27,6 +27,9 @@ class SOCKETMODULE_API ASocketPhantomPawn : public APawn {
         // Helper class
         Phantom _phantom;
 
+        // Camera
+        SocketCamera _camera;
+
     protected:
 
         // AActor overrides

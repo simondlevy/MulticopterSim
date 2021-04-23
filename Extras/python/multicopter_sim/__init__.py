@@ -70,8 +70,13 @@ class Multicopter(object):
 
     def isReady(self):
 
-        if self.ready:
-            self.telemSocket.settimeout(self.timeout)
+        try:
+            if self.ready:
+                self.telemSocket.settimeout(self.timeout)
+            return self.ready
+        except Exception:
+            self.done = True
+
         return self.ready
 
     def isDone(self):

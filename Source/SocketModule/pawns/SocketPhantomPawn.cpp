@@ -11,6 +11,8 @@
 ASocketPhantomPawn::ASocketPhantomPawn()
 {
     _phantom.build(this);
+
+    _phantom.addCamera(&_camera);
 }
 
 void ASocketPhantomPawn::PostInitializeComponents()
