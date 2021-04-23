@@ -25,7 +25,9 @@ void AHackflightOpenCVPhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AHackflightOpenCVPhantomPawn::BeginPlay()
 {
-    _phantom.BeginPlay(new FNullFlightManager(&_phantom.dynamics));
+    _flightManager = new FHackflightFlightManager(this, &_mixer, &_motors, &_phantom.dynamics);
+
+    _phantom.BeginPlay(_flightManager);
 
     Super::BeginPlay();
 }
@@ -41,6 +43,8 @@ void AHackflightOpenCVPhantomPawn::EndPlay(const EEndPlayReason::Type EndPlayRea
 void AHackflightOpenCVPhantomPawn::Tick(float DeltaSeconds)
 {
     _phantom.Tick(DeltaSeconds);
+
+    _flightManager->tick();
 
     Super::Tick(DeltaSeconds);
 }

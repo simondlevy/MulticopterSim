@@ -9,10 +9,12 @@
 
 #pragma once
 
+#include <actuators/mixers/quadxap.hpp>
+
 #include "../../MainModule/vehicles/multirotors/Phantom.hpp"
 
+#include "../HackflightFlightManager.hpp"
 #include "EdgeDetectionCamera.hpp"
-#include "NullFlightManager.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -28,6 +30,12 @@ class HACKFLIGHTMODULE_API AHackflightOpenCVPhantomPawn : public APawn {
 
         // Helper class
         Phantom _phantom;
+
+        FHackflightFlightManager * _flightManager = NULL;
+
+        SimMotor _motors = SimMotor(4);
+
+        hf::MixerQuadXAP  _mixer = hf::MixerQuadXAP(&_motors);
 
         EdgeDetectionCamera  _camera;
 
