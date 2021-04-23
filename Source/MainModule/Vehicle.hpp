@@ -37,7 +37,7 @@
 #define DECLARE_STATIC_MESH(structname, assetstr, objname)   \
     struct structname {                                             \
         ConstructorHelpers::FObjectFinderOptional<UStaticMesh> mesh;   \
-        structname() : mesh(TEXT("/Game/Flying/Meshes/" assetstr)) { } \
+        structname() : mesh(TEXT("/Game/MulticopterSim/Meshes/" assetstr)) { } \
     };                                                                     \
     static structname objname;
 
@@ -231,7 +231,7 @@ class Vehicle {
             buildPlayerCameras(chaseCameraDistanceMeters, chaseCameraElevationMeters);
 
             // Get sound cue from Contents
-            static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/Flying/Audio/MotorSoundCue"));
+            static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/MulticopterSim/Audio/MotorSoundCue"));
 
             // Store a reference to the Cue asset - we'll need it later.
             _soundCue = soundCue.Object;

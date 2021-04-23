@@ -5,4 +5,4 @@
 
 IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, MainModule, "MainModule" );
 
-DEFINE_LOG_CATEGORY(LogFlying)
+DEFINE_LOG_CATEGORY(LogMulticopterSim)
