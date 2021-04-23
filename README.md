@@ -144,5 +144,8 @@ you can control MulticopterSim from a Python session running on your computer or
 
 ## OpenCV
 
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Source/OpenCVModule/) contains instructions
-on how to use OpenCV for machine vision in MulticopterSim.
+After you build the simulator, the <b>Content/C++ Classes/Hackflight/pawns</b> folder will contain a
+pawn that will run OpenCV edge detection.  By sub-classing the
+[OpenCVCamera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/HackflightModule/OpenCVCamera.hpp)
+class you can run different
+kinds of machine-vision algorithms.
