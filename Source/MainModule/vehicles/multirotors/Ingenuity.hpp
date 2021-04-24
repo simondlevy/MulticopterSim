@@ -19,10 +19,24 @@
 DECLARE_STATIC_MESH(FBodyStatics, "Ingenuity/Body.Body", BodyStatics)
 DECLARE_STATIC_MESH(FRotorBottomStatics, "Ingenuity/Rotor_Bottom.Rotor_Bottom", RotorBottomStatics)
 DECLARE_STATIC_MESH(FRotorTopStatics, "Ingenuity/Rotor_Top.Rotor_Top", RotorTopStatics)
-DECLARE_STATIC_MESH(FLegBottomStatics, "Ingenuity/Leg_Bottom.Leg_Bottom", LegBottomStatics)
-DECLARE_STATIC_MESH(FLegBracketStatics, "Ingenuity/Leg_Bracket.Leg_Bracket", LegBracketStatics)
-DECLARE_STATIC_MESH(FLegTopStatics, "Ingenuity/Leg_Top.Leg_Top", LegTopStatics)
 DECLARE_STATIC_MESH(FMastStatics, "Ingenuity/Mast.Mast", MastStatics)
+
+DECLARE_STATIC_MESH(FLeg1BottomStatics, "Ingenuity/Leg1_Bottom.Leg1_Bottom", Leg1BottomStatics)
+DECLARE_STATIC_MESH(FLeg1BracketStatics, "Ingenuity/Leg1_Bracket.Leg1_Bracket", Leg1BracketStatics)
+DECLARE_STATIC_MESH(FLeg1TopStatics, "Ingenuity/Leg1_Top.Leg1_Top", Leg1TopStatics)
+
+DECLARE_STATIC_MESH(FLeg2BottomStatics, "Ingenuity/Leg2_Bottom.Leg2_Bottom", Leg2BottomStatics)
+DECLARE_STATIC_MESH(FLeg2BracketStatics, "Ingenuity/Leg2_Bracket.Leg2_Bracket", Leg2BracketStatics)
+DECLARE_STATIC_MESH(FLeg2TopStatics, "Ingenuity/Leg2_Top.Leg2_Top", Leg2TopStatics)
+
+DECLARE_STATIC_MESH(FLeg3BottomStatics, "Ingenuity/Leg3_Bottom.Leg3_Bottom", Leg3BottomStatics)
+DECLARE_STATIC_MESH(FLeg3BracketStatics, "Ingenuity/Leg3_Bracket.Leg3_Bracket", Leg3BracketStatics)
+DECLARE_STATIC_MESH(FLeg3TopStatics, "Ingenuity/Leg3_Top.Leg3_Top", Leg3TopStatics)
+
+DECLARE_STATIC_MESH(FLeg4BottomStatics, "Ingenuity/Leg4_Bottom.Leg4_Bottom", Leg4BottomStatics)
+DECLARE_STATIC_MESH(FLeg4BracketStatics, "Ingenuity/Leg4_Bracket.Leg4_Bracket", Leg4BracketStatics)
+DECLARE_STATIC_MESH(FLeg4TopStatics, "Ingenuity/Leg4_Top.Leg4_Top", Leg4TopStatics)
+
 
 class Ingenuity {
 
@@ -61,25 +75,12 @@ class Ingenuity {
             vehicle.addProp(propMesh, 0, 0, z);
         }
 
-        void addLegComponent(
-                UStaticMesh * mesh, 
-                const char * name, 
-                float xypos, 
-                float zpos, 
-                float angle,
-                uint8_t index, 
-                int8_t dx, 
-                int8_t dy)
+        void addLeg(uint8_t index, UStaticMesh * bracketMesh, UStaticMesh * topMesh, UStaticMesh * bottomMesh)
         {
-            vehicle.addComponent(mesh, makeName(name, index, "Mesh"), dx * xypos, dy * xypos, zpos, (index-1)*90 + angle);
-        }
 
-
-        void addLeg(uint8_t index, int8_t dx, int8_t dy)
-        {
-            addLegComponent(LegBracketStatics.mesh.Get(), "LegBracket", .090, +.110, +45, index, dx, dy);
-            addLegComponent(LegTopStatics.mesh.Get(),     "LegTop",     .120, +.098, -45, index, dx, dy);
-            // addLegComponent(LegBottomStatics.mesh.Get(),  "LegBottom",  .240, -.110, +270, index, dx, dy);
+            vehicle.addComponent(bracketMesh, makeName("LegBracket", index, "Mesh"));
+            vehicle.addComponent(topMesh,     makeName("LegTop", index, "Mesh"));
+            vehicle.addComponent(bottomMesh,  makeName("LegBottom", index, "Mesh"));
         }
 
     public:
@@ -94,44 +95,14 @@ class Ingenuity {
             addRotor(RotorTopStatics.mesh.Get(), .170);
             addRotor(RotorBottomStatics.mesh.Get(), .130);
             
-            // Add mast, legs, etc.
+            // Add mast
             vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, .135), FRotator(0, 0, 0));
-            addLeg(1, +1, -1); 
-            addLeg(2, +1, +1); 
-            addLeg(3, -1, +1); 
-            addLeg(4, -1, -1); 
 
-            vehicle.addComponent(
-                    LegBottomStatics.mesh.Get(),
-                    makeName("LegBottom", 1, "Mesh"),
-                    +.216,  // x
-                    -.225,  // y
-                    -.112,  // z
-                    -90);
-
-            vehicle.addComponent(
-                    LegBottomStatics.mesh.Get(),
-                    makeName("LegBottom", 2, "Mesh"),
-                    +.225,  // x
-                    +.216,  // y
-                    -.112,  // z
-                    0);
-
-            vehicle.addComponent(
-                    LegBottomStatics.mesh.Get(),
-                    makeName("LegBottom", 3, "Mesh"),
-                    -.216,  // x
-                    +.225,  // y
-                    -.112,  // z
-                    +90);
-
-            vehicle.addComponent(
-                    LegBottomStatics.mesh.Get(),
-                    makeName("LegBottom", 4, "Mesh"),
-                    -.225,  // x
-                    -.216,  // y
-                    -.112,  // z
-                    +180);
+            // Add legs
+            addLeg(1, Leg1BracketStatics.mesh.Get(), Leg1TopStatics.mesh.Get(), Leg1BottomStatics.mesh.Get());
+            addLeg(2, Leg2BracketStatics.mesh.Get(), Leg2TopStatics.mesh.Get(), Leg2BottomStatics.mesh.Get());
+            addLeg(3, Leg3BracketStatics.mesh.Get(), Leg3TopStatics.mesh.Get(), Leg3BottomStatics.mesh.Get());
+            addLeg(4, Leg4BracketStatics.mesh.Get(), Leg4TopStatics.mesh.Get(), Leg4BottomStatics.mesh.Get());
 
             // Flight manager will be set in BeginPlay()
             _flightManager = NULL;

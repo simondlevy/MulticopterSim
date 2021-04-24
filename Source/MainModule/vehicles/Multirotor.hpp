@@ -20,7 +20,7 @@ class MultirotorVehicle : public Vehicle {
             _nmotors = nmotors;
         }
 
-        UStaticMeshComponent * addComponent(UStaticMesh * mesh, FName name, float x, float y, float z, float yaw_angle)
+        UStaticMeshComponent * addComponent(UStaticMesh * mesh, FName name, float x=0, float y=0, float z=0, float yaw_angle=0)
         {
             UStaticMeshComponent* meshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(name);
             meshComponent->SetStaticMesh(mesh);
