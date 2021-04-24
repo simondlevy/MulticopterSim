@@ -22,6 +22,7 @@ DECLARE_STATIC_MESH(FRotorBottomStatics, "Ingenuity/Rotor_Bottom.Rotor_Bottom", 
 DECLARE_STATIC_MESH(FRotorTopStatics, "Ingenuity/Rotor_Top.Rotor_Top", RotorTopStatics)
 DECLARE_STATIC_MESH(FMastStatics, "Ingenuity/Mast.Mast", MastStatics)
 DECLARE_STATIC_MESH(FSolar_PanelStatics, "Ingenuity/Solar_Panel.Solar_Panel", SolarPanelStatics)
+DECLARE_STATIC_MESH(FAntennaStatics, "Ingenuity/Antenna.Antenna", AntennaStatics)
 
 DECLARE_STATIC_MESH(FLeg1BottomStatics, "Ingenuity/Leg1_Bottom.Leg1_Bottom", Leg1BottomStatics)
 DECLARE_STATIC_MESH(FLeg1BracketStatics, "Ingenuity/Leg1_Bracket.Leg1_Bracket", Leg1BracketStatics)
@@ -97,11 +98,10 @@ class Ingenuity {
             addRotor(RotorTopStatics.mesh.Get(), .250);
             addRotor(RotorBottomStatics.mesh.Get(), .170);
             
-            // Add mast
+            // Add mast, solar panel, antenna
             vehicle.addComponent(MastStatics.mesh.Get(), makeName("Mast", 1, "Mesh"));
-
-            // Add solar panel
-            // vehicle.addMesh(SolarPanelStatics.mesh.Get(), "SolarPanel", FVector(0, 0, .250), FRotator(0, 0, 0));
+            vehicle.addComponent(SolarPanelStatics.mesh.Get(), makeName("SolarPanel", 1, "Mesh"));
+            vehicle.addComponent(AntennaStatics.mesh.Get(), makeName("Antenna", 1, "Mesh"));
 
             // Add legs
             addLeg(1, Leg1BracketStatics.mesh.Get(), Leg1TopStatics.mesh.Get(), Leg1BottomStatics.mesh.Get());
