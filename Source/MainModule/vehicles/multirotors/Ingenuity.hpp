@@ -16,10 +16,12 @@
 #include "GameFramework/Pawn.h"
 
 // Structures to hold static mesh initializations
+
 DECLARE_STATIC_MESH(FBodyStatics, "Ingenuity/Body.Body", BodyStatics)
 DECLARE_STATIC_MESH(FRotorBottomStatics, "Ingenuity/Rotor_Bottom.Rotor_Bottom", RotorBottomStatics)
 DECLARE_STATIC_MESH(FRotorTopStatics, "Ingenuity/Rotor_Top.Rotor_Top", RotorTopStatics)
 DECLARE_STATIC_MESH(FMastStatics, "Ingenuity/Mast.Mast", MastStatics)
+DECLARE_STATIC_MESH(FSolar_PanelStatics, "Ingenuity/Solar_Panel.Solar_Panel", SolarPanelStatics)
 
 DECLARE_STATIC_MESH(FLeg1BottomStatics, "Ingenuity/Leg1_Bottom.Leg1_Bottom", Leg1BottomStatics)
 DECLARE_STATIC_MESH(FLeg1BracketStatics, "Ingenuity/Leg1_Bracket.Leg1_Bracket", Leg1BracketStatics)
@@ -92,11 +94,14 @@ class Ingenuity {
             vehicle.build(pawn, BodyStatics.mesh.Get());
 
             // Add rotors
-            addRotor(RotorTopStatics.mesh.Get(), .170);
-            addRotor(RotorBottomStatics.mesh.Get(), .130);
+            addRotor(RotorTopStatics.mesh.Get(), .250);
+            addRotor(RotorBottomStatics.mesh.Get(), .170);
             
             // Add mast
-            vehicle.addMesh(MastStatics.mesh.Get(), "Mast", FVector(0, 0, .135), FRotator(0, 0, 0));
+            vehicle.addComponent(MastStatics.mesh.Get(), makeName("Mast", 1, "Mesh"));
+
+            // Add solar panel
+            // vehicle.addMesh(SolarPanelStatics.mesh.Get(), "SolarPanel", FVector(0, 0, .250), FRotator(0, 0, 0));
 
             // Add legs
             addLeg(1, Leg1BracketStatics.mesh.Get(), Leg1TopStatics.mesh.Get(), Leg1BottomStatics.mesh.Get());
