@@ -27,7 +27,7 @@ class Multicopter(object):
     IMAGE_COLS = 640
 
     def __init__(self, host='127.0.0.1', motorPort=5000, telemetryPort=5001,
-                 motorCount=4, timeout=.1):
+                 imagePort=5002, motorCount=4, timeout=.1):
         '''
         Creates a Multicopter object.
         host - name of host running MulticopterSim
@@ -40,8 +40,10 @@ class Multicopter(object):
 
         self.motorSocket = Multicopter._make_socket()
         self.telemSocket = Multicopter._make_socket()
+        self.imageSocket = Multicopter._make_socket()
 
         self.telemSocket.bind((host, telemetryPort))
+        self.imageSocket.bind((host, imagePort))
 
         self.host = host
         self.motorPort = motorPort
