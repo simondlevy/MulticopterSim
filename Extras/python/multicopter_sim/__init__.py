@@ -22,6 +22,10 @@ class Multicopter(object):
     # 12-dimensional state vector (Bouabdallah 2004)
     STATE_SIZE = 12
 
+    # Image size
+    IMAGE_ROWS = 480
+    IMAGE_COLS = 640
+
     def __init__(self, host='127.0.0.1', motorPort=5000, telemetryPort=5001,
                  motorCount=4, timeout=.1):
         '''
@@ -34,13 +38,8 @@ class Multicopter(object):
         motorCount - number of motors in vehicle running in simulator on host
         '''
 
-        self.motorSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.motorSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,
-                                    True)
-
-        self.telemSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.telemSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,
-                                    True)
+        self.motorSocket = Multicopter._make_socket()
+        self.telemSocket = Multicopter._make_socket()
 
         self.telemSocket.bind((host, telemetryPort))
 
@@ -103,6 +102,14 @@ class Multicopter(object):
         '''
 
         self.motorVals = np.copy(motorVals)
+
+    @staticmethod
+    def _make_socket():
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
+
+        return sock
 
     def _run(self):
 
