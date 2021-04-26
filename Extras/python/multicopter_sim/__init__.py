@@ -23,8 +23,8 @@ class Multicopter(object):
     STATE_SIZE = 12
 
     # Image size
-    IMAGE_ROWS = 480
-    IMAGE_COLS = 640
+    IMAGE_ROWS = 1  # 480
+    IMAGE_COLS = 1  # 640
 
     def __init__(self, host='127.0.0.1', motorPort=5000, telemetryPort=5001,
                  imagePort=5002, motorCount=4, timeout=.1):
@@ -49,7 +49,8 @@ class Multicopter(object):
         self.motorPort = motorPort
         self.motorCount = motorCount
 
-        self.thread = Thread(target=self._run)
+        self.telemThread = Thread(target=self._telem_run)
+        self.imageThread = Thread(target=self._image_run)
 
         # time + state
         self.telemSize = self.STATE_SIZE + 1
@@ -66,13 +67,15 @@ class Multicopter(object):
         Begins communication with simulator running on host.
         '''
 
-        self.thread.start()
+        self.telemThread.start()
+        self.imageThread.start()
 
     def isReady(self):
 
         try:
             if self.ready:
                 self.telemSocket.settimeout(self.timeout)
+                self.imageSocket.settimeout(self.timeout)
             return self.ready
         except Exception:
             self.done = True
@@ -112,7 +115,7 @@ class Multicopter(object):
 
         return sock
 
-    def _run(self):
+    def _telem_run(self):
 
         self.done = False
 
@@ -131,7 +134,28 @@ class Multicopter(object):
             if self.telem[0] < 0:
                 self.motorSocket.close()
                 self.telemSocket.close()
+                self.done = True
                 break
 
             self.motorSocket.sendto(np.ndarray.tobytes(self.motorVals),
                                     (self.host, self.motorPort))
+
+    def _image_run(self):
+
+        count = 0
+
+        while True:
+
+            if self.done:
+                break
+
+            try:
+                data, _ = self.imageSocket.recvfrom(
+                         self.IMAGE_ROWS*self.IMAGE_COLS*4)
+
+                print('Got image %d' % count)
+
+                count += 1
+
+            except Exception:
+                pass
