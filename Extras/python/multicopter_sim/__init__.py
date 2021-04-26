@@ -53,6 +53,8 @@ class Multicopter(object):
         self.telemThread = Thread(target=self._telem_run)
         self.imageThread = Thread(target=self._image_run)
 
+        self.image = None
+
         # time + state
         self.telemSize = self.STATE_SIZE + 1
 
@@ -148,6 +150,8 @@ class Multicopter(object):
 
         while True:
 
+            data = None
+
             if self.done:
                 self.imageSocket.close()
                 break
@@ -160,5 +164,7 @@ class Multicopter(object):
                 pass
                 
             print('%d fps' % int(count/(time()-start)))
+            if data is not None:
+                self.image = np.frombuffer(data, 'uint8')
             count += 1
 
