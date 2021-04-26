@@ -50,7 +50,6 @@ class Multicopter(object):
         self.motorCount = motorCount
 
         self.thread = Thread(target=self._run)
-        self.thread.daemon = True
 
         # time + state
         self.telemSize = self.STATE_SIZE + 1
