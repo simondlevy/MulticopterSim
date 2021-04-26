@@ -165,6 +165,7 @@ class Multicopter(object):
                 
             print('%d fps' % int(count/(time()-start)))
             if data is not None:
-                self.image = np.frombuffer(data, 'uint8')
+                self.image = np.reshape(np.frombuffer(data, 'uint8'),
+                        (self.IMAGE_ROWS, self.IMAGE_COLS, 4))
             count += 1
 
