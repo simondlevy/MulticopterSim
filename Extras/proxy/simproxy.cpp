@@ -96,7 +96,7 @@ int main(int argc, char ** argv)
             time += DELTA_T;
         }
 
-    } while (true)
+    } // while (true)
 
     return 0;
 }
