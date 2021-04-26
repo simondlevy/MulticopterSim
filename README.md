@@ -76,7 +76,7 @@ file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln
 you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
 to build the project.
 
-5. In Visual Studio, edit the file [MulticopterSim/Source/FlightModule/FlightModule.Build.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source//FlightModule/FlightModule.Build.cs#L16-L17) to reflect where you installed
+5. In Visual Studio, edit the file [MulticopterSim/Source/FlightModule/FlightModule.Build.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source//HackflightModule/HackflightModule.Build.cs#L16-L17) to reflect where you installed
 Hackflight / RFT.
 
 6. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
