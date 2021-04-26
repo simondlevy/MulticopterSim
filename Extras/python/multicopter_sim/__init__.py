@@ -11,6 +11,7 @@
 from threading import Thread
 import socket
 import numpy as np
+from time import time
 
 
 class Multicopter(object):
@@ -143,19 +144,21 @@ class Multicopter(object):
     def _image_run(self):
 
         count = 0
+        start = time()
 
         while True:
 
             if self.done:
+                self.imageSocket.close()
                 break
 
             try:
                 data, _ = self.imageSocket.recvfrom(
                          self.IMAGE_ROWS*self.IMAGE_COLS*4)
 
-                print('Got image %d' % count)
-
-                count += 1
-
             except Exception:
                 pass
+                
+            print('%d fps' % int(count/(time()-start)))
+            count += 1
+
