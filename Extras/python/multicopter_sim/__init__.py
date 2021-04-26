@@ -103,6 +103,12 @@ class Multicopter(object):
 
         return self.telem[1:]
 
+    def getImage(self):
+        '''
+        Returns current image as an RxCx4 numpy array
+        '''
+        return self.image
+
     def setMotors(self, motorVals):
         '''
         Sets motor values between 0 and 1.
@@ -145,9 +151,6 @@ class Multicopter(object):
 
     def _image_run(self):
 
-        count = 0
-        start = time()
-
         while True:
 
             data = None
@@ -163,9 +166,6 @@ class Multicopter(object):
             except Exception:
                 pass
                 
-            print('%d fps' % int(count/(time()-start)))
             if data is not None:
                 self.image = np.reshape(np.frombuffer(data, 'uint8'),
                         (self.IMAGE_ROWS, self.IMAGE_COLS, 4))
-            count += 1
-
