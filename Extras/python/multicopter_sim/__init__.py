@@ -24,9 +24,8 @@ class Multicopter(object):
     STATE_SIZE = 12
 
     # Image size
-    IMAGE_ROWS = 480
-    IMAGE_COLS = 640
-    IMAGE_STRIP_HEIGHT = 20
+    IMAGE_ROWS = 48
+    IMAGE_COLS = 64
 
     def __init__(self, host='127.0.0.1', motorPort=5000, telemetryPort=5001,
                  imagePort=5002, motorCount=4, timeout=.1):
@@ -55,8 +54,6 @@ class Multicopter(object):
         self.imageThread = Thread(target=self._image_run)
 
         self.imgbytes = bytearray(self.IMAGE_ROWS*self.IMAGE_COLS*4)
-        self.strips = self.IMAGE_ROWS // self.IMAGE_STRIP_HEIGHT
-        self.stripsize = self.IMAGE_COLS * self.IMAGE_STRIP_HEIGHT * 4
         self.image = None
 
         # time + state
@@ -161,16 +158,12 @@ class Multicopter(object):
                 self.imageSocket.close()
                 break
 
-            for k in range(0, self.strips):
+            try:
+                self.imgbytes, _ = self.imageSocket.recvfrom(
+                        self.IMAGE_ROWS*self.IMAGE_COLS*4)
 
-                beg = k * self.stripsize
-                end = (k+1) * self.stripsize
-
-                try:
-                    self.imgbytes[beg:end], _ = self.imageSocket.recvfrom(self.stripsize)
-
-                except Exception:
-                    pass
+            except Exception:
+                pass
 
             rgba_image = np.reshape(np.frombuffer(self.imgbytes, 'uint8'),
                                     (self.IMAGE_ROWS, self.IMAGE_COLS, 4))

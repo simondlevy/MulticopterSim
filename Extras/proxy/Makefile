@@ -6,7 +6,7 @@
 # MIT License
 # 
 
-ALL = simproxy 
+ALL = simproxy
 
 all: $(ALL)
 
@@ -19,9 +19,6 @@ simproxy: simproxy.o
 
 simproxy.o: simproxy.cpp ../../Source/MainModule/Dynamics.hpp
 	g++ $(CFLAGS) -Isockets -I../../Source/MainModule -c simproxy.cpp
-
-test: simproxy
-	./simproxy
 
 run: simproxy
 	./simproxy

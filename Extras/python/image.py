@@ -7,10 +7,18 @@ Copyright (C) 2021 Simon D. Levy
 MIT License
 '''
 
-from time import sleep
 from sys import stdout
-from multicopter_sim import Multicopter
+import socket
+import numpy as np
 import cv2
+
+# Comms
+HOST = '127.0.0.1'
+PORT = 5002
+
+# Image size
+ROWS = 48
+COLS = 64
 
 
 def dump(msg):
@@ -20,36 +28,26 @@ def dump(msg):
 
 if __name__ == '__main__':
 
-    # Create a multicopter simulation
-    copter = Multicopter()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
+    sock.bind((HOST, PORT))
+    sock.settimeout(.01)
 
-    # Start the simulation
-    copter.start()
-
-    dump('Hit the start button ... ')
-
-    running = False
-
-    # Loop until user hits the stop button
     while True:
 
-        # Wait until simulator starts up
-        if not copter.isReady():
-            continue
+        imgbytes = None
 
-        if not running:
-            dump('Running')
-            running = True
+        try:
+            imgbytes, _ = sock.recvfrom(ROWS*COLS*4)
 
-        # Quit after simulator quits
-        if copter.isDone():
-            break
+        except Exception:
+            pass
 
-        image = copter.getImage()
+        if imgbytes is not None:
 
-        if image is not None:
+            rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'), (ROWS, COLS, 4))
+
+            image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2BGR)
+
             cv2.imshow('Image', image)
             cv2.waitKey(1)
-
-        # Yield to Multicopter thread
-        sleep(.001)
