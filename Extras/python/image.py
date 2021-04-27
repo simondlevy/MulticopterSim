@@ -17,8 +17,9 @@ HOST = '127.0.0.1'
 PORT = 5002
 
 # Image size
-ROWS = 48
-COLS = 64
+ROWS = 480
+COLS = 640
+STEP = 20
 
 
 def dump(msg):
@@ -31,23 +32,23 @@ if __name__ == '__main__':
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
     sock.bind((HOST, PORT))
-    sock.settimeout(.01)
+    # sock.settimeout(.01)
+
+    imgbytes = bytearray(ROWS*COLS*4)
 
     while True:
 
-        imgbytes = None
+        for k in range(0, ROWS*COLS*4, STEP*COLS*4):
 
-        try:
-            imgbytes, _ = sock.recvfrom(ROWS*COLS*4)
+            try:
+                imgbytes[k:(k+STEP*COLS*4)], _ = sock.recvfrom(STEP*COLS*4)
 
-        except Exception:
-            pass
+            except Exception:
+                pass
 
-        if imgbytes is not None:
+        rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'), (ROWS, COLS, 4))
 
-            rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'), (ROWS, COLS, 4))
+        image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2BGR)
 
-            image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2BGR)
-
-            cv2.imshow('Image', image)
-            cv2.waitKey(1)
+        cv2.imshow('Image', image)
+        cv2.waitKey(1)

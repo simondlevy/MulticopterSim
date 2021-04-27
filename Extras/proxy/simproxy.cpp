@@ -19,8 +19,8 @@ static const char * HOST = "127.0.0.1"; // localhost
 static uint16_t  PORT = 5002;
 
 // Image size
-static uint16_t ROWS = 48;
-static uint16_t COLS = 64;
+static uint16_t ROWS = 480;
+static uint16_t COLS = 640;
 static constexpr uint16_t STRIP_HEIGHT = 20;
 
 int main(int argc, char ** argv)
@@ -46,12 +46,9 @@ int main(int argc, char ** argv)
         // Loop forever, communicating with client
         while (true) {
 
-            imageUdp.sendData(&image, sizeof(image));
-
-            /*
             for (uint16_t row=0; row<ROWS; row+=STRIP_HEIGHT) {
-                imageUdp.sendData(&image[row*STRIP_HEIGHT*4], STRIP_HEIGHT*COLS*4);
-            }*/
+                imageUdp.sendData(&image[row*COLS*4], STRIP_HEIGHT*COLS*4);
+            }
          }
 
     } // while (true)
