@@ -50,6 +50,8 @@ if __name__ == '__main__':
         except Exception:  # likely a timeout
             break
 
+        dump(str(len(imgbytes)))
+
         if len(imgbytes) == ROWS*COLS*4:
 
             rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
