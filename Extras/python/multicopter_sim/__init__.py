@@ -24,8 +24,8 @@ class Multicopter(object):
     STATE_SIZE = 12
 
     # Image size
-    IMAGE_ROWS = 100  # 480
-    IMAGE_COLS = 100  # 640
+    IMAGE_ROWS = 10  # 480
+    IMAGE_COLS = 640
 
     def __init__(self, host='127.0.0.1', motorPort=5000, telemetryPort=5001,
                  imagePort=5002, motorCount=4, timeout=.1):
