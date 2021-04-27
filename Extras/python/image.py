@@ -11,14 +11,19 @@ import socket
 import numpy as np
 import cv2
 from time import sleep
+from sys import stdout
 
 # Comms
 HOST = '127.0.0.1'
-PORT = 5002
+PORT = 5003
 
 # Image size
 ROWS = 480
 COLS = 640
+
+def dump(msg):
+    print(msg)
+    stdout.flush()
 
 
 if __name__ == '__main__':
@@ -28,12 +33,12 @@ if __name__ == '__main__':
     sock.bind((HOST, PORT))
     sock.listen(1)
 
-    print('Server listening on %s:%d ... ' % (HOST, PORT))
+    dump('Server listening on %s:%d ... ' % (HOST, PORT))
 
     # This will block (wait) until a client connets
     conn, addr = sock.accept()
 
-    print('Got a connection!')
+    dump('Got a connection!')
 
     while True:
 
