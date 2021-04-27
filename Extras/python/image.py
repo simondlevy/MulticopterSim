@@ -10,16 +10,16 @@ MIT License
 import socket
 import numpy as np
 import cv2
-from time import sleep
 from sys import stdout
 
 # Comms
 HOST = '127.0.0.1'
-PORT = 5003
+PORT = 5002
 
 # Image size
 ROWS = 480
 COLS = 640
+
 
 def dump(msg):
     print(msg)
@@ -52,7 +52,8 @@ if __name__ == '__main__':
 
         if len(imgbytes) == ROWS*COLS*4:
 
-            rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'), (ROWS, COLS, 4))
+            rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
+                                    (ROWS, COLS, 4))
 
             image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2BGR)
 

@@ -18,7 +18,7 @@ class SocketCamera : public Camera {
 
         // Comms
         static constexpr char * HOST = "127.0.0.1"; // localhost
-        static constexpr uint16_t PORT = 5003;
+        static constexpr uint16_t PORT = 5002;
 
         // Camera params
         static constexpr Resolution_t RES = RES_640x480;
