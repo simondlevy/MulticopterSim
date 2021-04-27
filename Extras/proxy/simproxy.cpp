@@ -15,7 +15,7 @@
 
 // Comms
 static const char * HOST = "127.0.0.1"; // localhost
-static uint16_t  PORT = 5001;
+static uint16_t  PORT = 5002;
 
 // Image size
 static uint16_t ROWS = 480;
