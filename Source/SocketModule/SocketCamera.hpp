@@ -41,7 +41,7 @@ class SocketCamera : public Camera {
         virtual void processImageBytes(uint8_t * bytes) override
         { 
             // Send image data
-            imageSocket.sendData(bytes, 480*640*4);
+            imageSocket.sendData(bytes, _rows*_cols*4);
         }
 
 }; // Class SocketCamera
