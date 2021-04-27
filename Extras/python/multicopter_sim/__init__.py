@@ -11,7 +11,7 @@
 from threading import Thread
 import socket
 import numpy as np
-from time import time
+import cv2
 
 
 class Multicopter(object):
@@ -24,8 +24,9 @@ class Multicopter(object):
     STATE_SIZE = 12
 
     # Image size
-    IMAGE_ROWS = 20  # 480
+    IMAGE_ROWS = 480
     IMAGE_COLS = 640
+    IMAGE_STRIP_HEIGHT = 20
 
     def __init__(self, host='127.0.0.1', motorPort=5000, telemetryPort=5001,
                  imagePort=5002, motorCount=4, timeout=.1):
@@ -53,6 +54,9 @@ class Multicopter(object):
         self.telemThread = Thread(target=self._telem_run)
         self.imageThread = Thread(target=self._image_run)
 
+        self.imgbytes = bytearray(self.IMAGE_ROWS*self.IMAGE_COLS*4)
+        self.strips = self.IMAGE_ROWS // self.IMAGE_STRIP_HEIGHT
+        self.stripsize = self.IMAGE_COLS * self.IMAGE_STRIP_HEIGHT * 4
         self.image = None
 
         # time + state
@@ -107,7 +111,7 @@ class Multicopter(object):
         '''
         Returns current image as an RxCx4 numpy array
         '''
-        return self.image
+        return self.image if self.image_ready else None
 
     def setMotors(self, motorVals):
         '''
@@ -153,19 +157,24 @@ class Multicopter(object):
 
         while True:
 
-            data = None
-
             if self.done:
                 self.imageSocket.close()
                 break
 
-            try:
-                data, _ = self.imageSocket.recvfrom(
-                         self.IMAGE_ROWS*self.IMAGE_COLS*4)
+            for k in range(0, self.strips):
 
-            except Exception:
-                pass
-                
-            if data is not None:
-                self.image = np.reshape(np.frombuffer(data, 'uint8'),
-                        (self.IMAGE_ROWS, self.IMAGE_COLS, 4))
+                beg = k * self.stripsize
+                end = (k+1) * self.stripsize
+
+                try:
+                    self.imgbytes[beg:end], _ = self.imageSocket.recvfrom(self.stripsize)
+
+                except Exception:
+                    pass
+
+            rgba_image = np.reshape(np.frombuffer(self.imgbytes, 'uint8'),
+                                    (self.IMAGE_ROWS, self.IMAGE_COLS, 4))
+
+            self.image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
+
+            self.image_ready = True
