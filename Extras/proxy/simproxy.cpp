@@ -9,19 +9,17 @@
 #include <stdio.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 
-#include "../sockets/TwoWayUdp.hpp"
-
-#include <dynamics/QuadXAP.hpp>
+#include "../sockets/TcpClientSocket.hpp"
 
 // Comms
 static const char * HOST = "127.0.0.1"; // localhost
-static uint16_t  PORT = 5002;
+static uint16_t  PORT = 5001;
 
 // Image size
 static uint16_t ROWS = 480;
 static uint16_t COLS = 640;
-static constexpr uint16_t STRIP_HEIGHT = 20;
 
 int main(int argc, char ** argv)
 {
@@ -38,20 +36,16 @@ int main(int argc, char ** argv)
     }
 
     // Loop forever, waiting for clients
+    // Create one-way server for images out
+    TcpClientSocket imageSocket = TcpClientSocket(HOST, PORT);
+
+    imageSocket.openConnection();
+
+    // Loop forever, communicating with client
     while (true) {
 
-        // Create one-way server for images out
-        UdpClientSocket imageUdp = UdpClientSocket(HOST, PORT);
-
-        // Loop forever, communicating with client
-        while (true) {
-
-            for (uint16_t row=0; row<ROWS; row+=STRIP_HEIGHT) {
-                imageUdp.sendData(&image[row*COLS*4], STRIP_HEIGHT*COLS*4);
-            }
-         }
-
-    } // while (true)
+        imageSocket.sendData(image, sizeof(image));
+    }
 
     return 0;
 }
