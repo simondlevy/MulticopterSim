@@ -23,6 +23,9 @@ class SocketCamera : public Camera {
         // Camera params
         static constexpr Resolution_t RES = RES_640x480;
         static constexpr float FOV = 135;
+        static constexpr uint16_t ROWS = 480;
+        static constexpr uint16_t COLS = 640;
+        static constexpr uint16_t STRIP_HEIGHT = 20;
 
         // Create one-way server for images out
         UdpClientSocket imageUdp = UdpClientSocket(HOST, IMAGE_PORT);
@@ -39,7 +42,9 @@ class SocketCamera : public Camera {
         virtual void processImageBytes(uint8_t * bytes) override
         { 
             // Send image data
-            imageUdp.sendData(bytes, 640*10*4);
+            for (uint16_t row=0; row<ROWS; row+=STRIP_HEIGHT) {
+                imageUdp.sendData(&bytes[row*STRIP_HEIGHT*4], STRIP_HEIGHT*COLS*4);
+            }
         }
 
 }; // Class SocketCamera
