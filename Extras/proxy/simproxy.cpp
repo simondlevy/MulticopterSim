@@ -21,8 +21,9 @@ static uint16_t  TELEM_PORT = 5001;
 static uint16_t  IMAGE_PORT = 5002;
 
 // Image size
-static uint16_t IMAGE_ROWS = 100; // 480;
-static uint16_t IMAGE_COLS = 100; // 640;
+static uint16_t IMAGE_ROWS = 480;
+static uint16_t IMAGE_COLS = 640;
+static uint16_t IMAGE_STRIP_HEIGHT = 20;
 
 // Time constant
 static const double DELTA_T    = 0.001;
@@ -48,6 +49,9 @@ int main(int argc, char ** argv)
     uint8_t image[IMAGE_ROWS * IMAGE_COLS * 4];
 
     memset(image, 0, sizeof(image));
+
+    uint16_t strips = IMAGE_ROWS / IMAGE_STRIP_HEIGHT;
+    uint16_t stripsize = IMAGE_COLS * IMAGE_STRIP_HEIGHT * 4;
 
     // Loop forever, waiting for clients
     while (true) {
@@ -82,9 +86,11 @@ int main(int argc, char ** argv)
             twoWayUdp.send(telemetry, sizeof(telemetry));
 
             // Send image data
-            imageUdp.sendData(image, sizeof(image));
+            for (uint16_t k=0; k<strips; ++k) {
 
-            // Get incoming motor values
+                imageUdp.sendData(&image[k*stripsize], stripsize);
+            }
+             // Get incoming motor values
             double motorvals[4] = {};
             twoWayUdp.receive(motorvals, sizeof(motorvals));
 

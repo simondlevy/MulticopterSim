@@ -111,7 +111,7 @@ class Multicopter(object):
         '''
         Returns current image as an RxCx4 numpy array
         '''
-        return self.image if self.image_ready else None
+        return self.image
 
     def setMotors(self, motorVals):
         '''
