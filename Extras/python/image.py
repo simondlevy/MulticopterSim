@@ -50,14 +50,12 @@ if __name__ == '__main__':
         except Exception:  # likely a timeout
             break
 
-        dump(str(len(imgbytes)))
-
         if len(imgbytes) == ROWS*COLS*4:
 
             rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
                                     (ROWS, COLS, 4))
 
-            image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2BGR)
+            image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
 
             cv2.imshow('Image', image)
             cv2.waitKey(1)
