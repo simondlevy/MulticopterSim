@@ -38,11 +38,17 @@ if __name__ == '__main__':
     # This will block (wait) until a client connets
     conn, addr = sock.accept()
 
+    conn.settimeout(1)
+
     dump('Got a connection!')
 
     while True:
 
-        imgbytes = conn.recv(ROWS*COLS*4)
+        try:
+            imgbytes = conn.recv(ROWS*COLS*4)
+
+        except Exception:  # likely a timeout
+            break
 
         if len(imgbytes) == ROWS*COLS*4:
 
