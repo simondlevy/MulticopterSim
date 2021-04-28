@@ -43,20 +43,12 @@ if __name__ == '__main__':
     # Open a log file
     fp = open('ardupid.csv', 'w')
 
-    Multicopter.debug('Hit the start button ... ')
-
-    running = False
-
     # Loop until user hits the stop button
     while True:
 
         # Wait until simulator starts up
         if not copter.isReady():
             continue
-
-        if not running:
-            Multicopter.debug('Running')
-            running = True
 
         # Quit after simulator quits
         if copter.isDone():

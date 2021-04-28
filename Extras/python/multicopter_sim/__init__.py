@@ -24,9 +24,9 @@ class Multicopter(object):
     # 12-dimensional state vector (Bouabdallah 2004)
     STATE_SIZE = 12
 
-    # Image size
-    IMAGE_ROWS = 48
-    IMAGE_COLS = 64
+    # Image size: should match whatever is being sent by sim
+    IMAGE_ROWS = 480
+    IMAGE_COLS = 640
 
     def __init__(self, host='127.0.0.1', motorPort=5000, telemetryPort=5001,
                  imagePort=5002, motorCount=4, timeout=.1):
@@ -40,12 +40,10 @@ class Multicopter(object):
         motorCount - number of motors in vehicle running in simulator on host
         '''
 
-        self.motorSocket = Multicopter._make_socket()
-        self.telemSocket = Multicopter._make_socket()
-        self.imageSocket = Multicopter._make_socket()
+        self.motorSocket = Multicopter._make_udpsocket()
+        self.telemSocket = Multicopter._make_udpsocket()
 
         self.telemSocket.bind((host, telemetryPort))
-        self.imageSocket.bind((host, imagePort))
 
         self.host = host
         self.motorPort = motorPort
@@ -71,6 +69,8 @@ class Multicopter(object):
         Begins communication with simulator running on host.
         '''
 
+        Multicopter.debug('Hit the start button ... ')
+
         self.telemThread.start()
 
     def isReady(self):
@@ -78,7 +78,6 @@ class Multicopter(object):
         try:
             if self.ready:
                 self.telemSocket.settimeout(self.timeout)
-                self.imageSocket.settimeout(self.timeout)
             return self.ready
         except Exception:
             self.done = True
@@ -123,7 +122,7 @@ class Multicopter(object):
         stdout.flush()
 
     @staticmethod
-    def _make_socket():
+    def _make_udpsocket():
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
@@ -133,6 +132,7 @@ class Multicopter(object):
     def _telem_run(self):
 
         self.done = False
+        running = False
 
         while True:
 
@@ -145,6 +145,10 @@ class Multicopter(object):
             self.telem = np.frombuffer(data)
 
             self.ready = True
+
+            if not running:
+                Multicopter.debug('Running')
+                running = True
 
             if self.telem[0] < 0:
                 self.motorSocket.close()
