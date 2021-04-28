@@ -40,6 +40,7 @@ class Multicopter(object):
         motorCount - number of motors in vehicle running in simulator on host
         '''
 
+        # Telemetry in and motors out run on their own thread
         self.motorSocket = Multicopter._make_udpsocket()
         self.telemSocket = Multicopter._make_udpsocket()
 
@@ -50,9 +51,6 @@ class Multicopter(object):
         self.motorCount = motorCount
 
         self.telemThread = Thread(target=self._telem_run)
-
-        self.imgbytes = bytearray(self.IMAGE_ROWS*self.IMAGE_COLS*4)
-        self.image = None
 
         # time + state
         self.telemSize = self.STATE_SIZE + 1
