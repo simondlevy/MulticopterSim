@@ -52,7 +52,6 @@ class Multicopter(object):
         self.motorCount = motorCount
 
         self.telemThread = Thread(target=self._telem_run)
-        self.imageThread = Thread(target=self._image_run)
 
         self.imgbytes = bytearray(self.IMAGE_ROWS*self.IMAGE_COLS*4)
         self.image = None
@@ -73,7 +72,6 @@ class Multicopter(object):
         '''
 
         self.telemThread.start()
-        self.imageThread.start()
 
     def isReady(self):
 
@@ -156,25 +154,3 @@ class Multicopter(object):
 
             self.motorSocket.sendto(np.ndarray.tobytes(self.motorVals),
                                     (self.host, self.motorPort))
-
-    def _image_run(self):
-
-        while True:
-
-            if self.done:
-                self.imageSocket.close()
-                break
-
-            try:
-                self.imgbytes, _ = self.imageSocket.recvfrom(
-                        self.IMAGE_ROWS*self.IMAGE_COLS*4)
-
-            except Exception:
-                pass
-
-            rgba_image = np.reshape(np.frombuffer(self.imgbytes, 'uint8'),
-                                    (self.IMAGE_ROWS, self.IMAGE_COLS, 4))
-
-            self.image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
-
-            self.image_ready = True
