@@ -28,17 +28,27 @@ def dump(msg):
     stdout.flush()
 
 
+def make_udpsocket():
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
+
+    return sock
+
+
 if __name__ == '__main__':
 
-    # Serve a socket with a maximum of one client
-    imgsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    imgsock.bind((HOST, IMAGE_PORT))
-    imgsock.listen(1)
-
+    # Serve a socket for images, with a maximum of one client
+    image_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    image_server_socket.bind((HOST, IMAGE_PORT))
+    image_server_socket.listen(1)
     dump('Server listening on %s:%d ... ' % (HOST, IMAGE_PORT))
 
+    motor_client_socket = make_udpsocket()
+    telemetry_server_socket = make_udpsocket()
+
     # This will block (wait) until a client connets
-    imgconn, _ = imgsock.accept()
+    imgconn, _ = image_server_socket.accept()
 
     imgconn.settimeout(1)
 
