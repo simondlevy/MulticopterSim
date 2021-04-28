@@ -12,6 +12,7 @@ from threading import Thread
 import socket
 import numpy as np
 import cv2
+from sys import stdout
 
 
 class Multicopter(object):
@@ -116,6 +117,12 @@ class Multicopter(object):
         '''
 
         self.motorVals = np.copy(motorVals)
+
+    @staticmethod
+    def debug(msg):
+
+        print(msg)
+        stdout.flush()
 
     @staticmethod
     def _make_socket():

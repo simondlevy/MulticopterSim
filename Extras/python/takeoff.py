@@ -8,7 +8,6 @@ MIT License
 '''
 
 from time import sleep
-from sys import stdout
 import numpy as np
 from pidcontroller import AltitudePidController
 from multicopter_sim import Multicopter
@@ -21,11 +20,6 @@ ALT_P = 1.0
 VEL_P = 1.0
 VEL_I = 0
 VEL_D = 0
-
-
-def dump(msg):
-    print(msg)
-    stdout.flush()
 
 
 if __name__ == '__main__':
@@ -49,7 +43,7 @@ if __name__ == '__main__':
     # Open a log file
     fp = open('ardupid.csv', 'w')
 
-    dump('Hit the start button ... ')
+    Multicopter.debug('Hit the start button ... ')
 
     running = False
 
@@ -61,7 +55,7 @@ if __name__ == '__main__':
             continue
 
         if not running:
-            dump('Running')
+            Multicopter.debug('Running')
             running = True
 
         # Quit after simulator quits
