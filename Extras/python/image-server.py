@@ -11,6 +11,8 @@ import socket
 import numpy as np
 import cv2
 from sys import stdout
+from threading import Thread
+from time import sleep
 
 # Comms
 HOST = '127.0.0.1'
@@ -25,8 +27,7 @@ def dump(msg):
     print(msg)
     stdout.flush()
 
-
-if __name__ == '__main__':
+def run(done):
 
     # Serve a socket with a maximum of one client
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -47,7 +48,8 @@ if __name__ == '__main__':
         try:
             imgbytes = conn.recv(ROWS*COLS*4)
 
-        except Exception:  # likely a timeout
+        except Exception:  # likely a timeout from sim quitting
+            done[0] = True
             break
 
         if len(imgbytes) == ROWS*COLS*4:
@@ -59,3 +61,15 @@ if __name__ == '__main__':
 
             cv2.imshow('Image', image)
             cv2.waitKey(1)
+
+if __name__ == '__main__':
+
+    done = [False]
+
+    thread = Thread(target=run, args=(done,))
+    thread.start()
+
+    while not done[0]:
+        sleep(.001)
+
+

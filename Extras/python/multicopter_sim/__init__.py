@@ -13,6 +13,7 @@ import socket
 import numpy as np
 import cv2
 from sys import stdout
+import time
 
 
 class Multicopter(object):
@@ -54,6 +55,7 @@ class Multicopter(object):
         self.imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.imageServerSocket.bind((host, imagePort))
         self.imageServerClient = None
+        self.conn = None
 
         # Telemetry contains time value followed by state vector
         self.telemSize = self.STATE_SIZE + 1
@@ -75,6 +77,9 @@ class Multicopter(object):
         self.imageServerSocket.listen(1)
         conn, _ = self.imageServerSocket.accept()
         conn.settimeout(1)
+
+        while True:
+            time.sleep(.001)
 
     def isReady(self):
 
