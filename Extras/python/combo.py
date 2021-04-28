@@ -19,42 +19,43 @@ HOST = '127.0.0.1'
 IMAGE_PORT = 5002
 
 # Image size
-ROWS = 480
-COLS = 640
+IMAGE_ROWS = 480
+IMAGE_COLS = 640
 
 
 def dump(msg):
     print(msg)
     stdout.flush()
 
+
 if __name__ == '__main__':
 
     # Serve a socket with a maximum of one client
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((HOST, IMAGE_PORT))
-    sock.listen(1)
+    imgsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    imgsock.bind((HOST, IMAGE_PORT))
+    imgsock.listen(1)
 
     dump('Server listening on %s:%d ... ' % (HOST, IMAGE_PORT))
 
     # This will block (wait) until a client connets
-    conn, _ = sock.accept()
+    imgconn, _ = imgsock.accept()
 
-    conn.settimeout(1)
+    imgconn.settimeout(1)
 
     dump('Got a connection!')
 
     while True:
 
         try:
-            imgbytes = conn.recv(ROWS*COLS*4)
+            imgbytes = imgconn.recv(IMAGE_ROWS*IMAGE_COLS*4)
 
         except Exception:  # likely a timeout from sim quitting
             break
 
-        if len(imgbytes) == ROWS*COLS*4:
+        if len(imgbytes) == IMAGE_ROWS*IMAGE_COLS*4:
 
             rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
-                                    (ROWS, COLS, 4))
+                                    (IMAGE_ROWS, IMAGE_COLS, 4))
 
             image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
 
