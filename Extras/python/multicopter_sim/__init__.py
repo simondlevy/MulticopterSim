@@ -49,13 +49,13 @@ class Multicopter(object):
         self.motorClientSocket = Multicopter._make_udpsocket()
         self.telemetryServerSocket = Multicopter._make_udpsocket()
         self.telemetryServerSocket.bind((host, telemetryPort))
-        self.telemThread = Thread(target=self._telem_run)
+        self.telemetryThread = Thread(target=self._run_telemetry)
 
-        # Image in runs on main thread
+        # Imaging runs on its own thread
         self.imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.imageServerSocket.bind((host, imagePort))
         self.imageServerClient = None
-        self.conn = None
+        self.imageThread = Thread(target=self._run_imaging)
 
         # Telemetry contains time value followed by state vector
         self.telemSize = self.STATE_SIZE + 1
@@ -73,13 +73,8 @@ class Multicopter(object):
         '''
 
         Multicopter.debug('Hit the start button ... ')
-        self.telemThread.start()
-        self.imageServerSocket.listen(1)
-        conn, _ = self.imageServerSocket.accept()
-        conn.settimeout(1)
-
-        while True:
-            time.sleep(.001)
+        self.telemetryThread.start()
+        self.imageThread.start()
 
     def isReady(self):
 
@@ -137,7 +132,7 @@ class Multicopter(object):
 
         return sock
 
-    def _telem_run(self):
+    def _run_telemetry(self):
 
         self.done = False
         running = False
@@ -166,3 +161,18 @@ class Multicopter(object):
 
             self.motorClientSocket.sendto(np.ndarray.tobytes(self.motorVals),
                                     (self.host, self.motorPort))
+
+    def _run_imaging(self):
+
+        return
+        self.imageServerSocket.listen(1)
+        conn, _ = self.imageServerSocket.accept()
+        conn.settimeout(1)
+
+        while True:
+
+            try:
+                imgbytes = conn.recv(self.ROWS*self.COLS*4)
+
+            except Exception:  # likely a timeout from sim quitting
+                pass

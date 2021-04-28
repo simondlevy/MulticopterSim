@@ -37,7 +37,7 @@ def run(done):
     dump('Server listening on %s:%d ... ' % (HOST, PORT))
 
     # This will block (wait) until a client connets
-    conn, addr = sock.accept()
+    conn, _ = sock.accept()
 
     conn.settimeout(1)
 
