@@ -40,19 +40,17 @@ class Multicopter(object):
         motorCount - number of motors in vehicle running in simulator on host
         '''
 
-        # Telemetry in and motors out run on their own thread
-        self.motorSocket = Multicopter._make_udpsocket()
-        self.telemSocket = Multicopter._make_udpsocket()
-
-        self.telemSocket.bind((host, telemetryPort))
-
         self.host = host
         self.motorPort = motorPort
         self.motorCount = motorCount
 
+        # Telemetry in and motors out run on their own thread
+        self.motorClientSocket = Multicopter._make_udpsocket()
+        self.telemetryServerSocket = Multicopter._make_udpsocket()
+        self.telemetryServerSocket.bind((host, telemetryPort))
         self.telemThread = Thread(target=self._telem_run)
 
-        # time + state
+        # Telemetry contains time value followed by state vector
         self.telemSize = self.STATE_SIZE + 1
 
         self.motorVals = np.zeros(motorCount)
@@ -75,7 +73,7 @@ class Multicopter(object):
 
         try:
             if self.ready:
-                self.telemSocket.settimeout(self.timeout)
+                self.telemetryServerSocket.settimeout(self.timeout)
             return self.ready
         except Exception:
             self.done = True
@@ -135,7 +133,7 @@ class Multicopter(object):
         while True:
 
             try:
-                data, _ = self.telemSocket.recvfrom(8*self.telemSize)
+                data, _ = self.telemetryServerSocket.recvfrom(8*self.telemSize)
             except Exception:
                 self.done = True
                 break
@@ -149,10 +147,10 @@ class Multicopter(object):
                 running = True
 
             if self.telem[0] < 0:
-                self.motorSocket.close()
-                self.telemSocket.close()
+                self.motorClientSocket.close()
+                self.telemetryServerSocket.close()
                 self.done = True
                 break
 
-            self.motorSocket.sendto(np.ndarray.tobytes(self.motorVals),
+            self.motorClientSocket.sendto(np.ndarray.tobytes(self.motorVals),
                                     (self.host, self.motorPort))
