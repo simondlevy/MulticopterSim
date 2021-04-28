@@ -50,6 +50,11 @@ class Multicopter(object):
         self.telemetryServerSocket.bind((host, telemetryPort))
         self.telemThread = Thread(target=self._telem_run)
 
+        # Image in runs on main thread
+        self.imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.imageServerSocket.bind((host, imagePort))
+        self.imageServerClient = None
+
         # Telemetry contains time value followed by state vector
         self.telemSize = self.STATE_SIZE + 1
 
@@ -66,8 +71,10 @@ class Multicopter(object):
         '''
 
         Multicopter.debug('Hit the start button ... ')
-
         self.telemThread.start()
+        self.imageServerSocket.listen(1)
+        conn, _ = self.imageServerSocket.accept()
+        conn.settimeout(1)
 
     def isReady(self):
 
