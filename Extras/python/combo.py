@@ -36,6 +36,12 @@ def make_udpsocket():
     return sock
 
 
+def run_telemetry():
+
+    motor_client_socket = make_udpsocket()
+    telemetry_server_socket = make_udpsocket()
+
+
 if __name__ == '__main__':
 
     # Serve a socket for images, with a maximum of one client
@@ -44,8 +50,7 @@ if __name__ == '__main__':
     image_server_socket.listen(1)
     dump('Server listening on %s:%d ... ' % (HOST, IMAGE_PORT))
 
-    motor_client_socket = make_udpsocket()
-    telemetry_server_socket = make_udpsocket()
+    telemetry_thread = Thread(target=run_telemetry)
 
     # This will block (wait) until a client connets
     imgconn, _ = image_server_socket.accept()
@@ -53,6 +58,8 @@ if __name__ == '__main__':
     imgconn.settimeout(1)
 
     dump('Got a connection!')
+
+    telemetry_thread.start()
 
     while True:
 
