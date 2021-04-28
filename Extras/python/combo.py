@@ -36,10 +36,14 @@ def make_udpsocket():
     return sock
 
 
-def run_telemetry():
+def run_telemetry(done):
 
     motor_client_socket = make_udpsocket()
     telemetry_server_socket = make_udpsocket()
+
+    while not done[0]:
+
+        sleep(.001)
 
 
 if __name__ == '__main__':
@@ -50,7 +54,10 @@ if __name__ == '__main__':
     image_server_socket.listen(1)
     dump('Server listening on %s:%d ... ' % (HOST, IMAGE_PORT))
 
-    telemetry_thread = Thread(target=run_telemetry)
+    # Create a separate thread for telemetry and motors, using a flag for
+    # termination
+    done = [False]
+    telemetry_thread = Thread(target=run_telemetry, args=(done,))
 
     # This will block (wait) until a client connets
     imgconn, _ = image_server_socket.accept()
@@ -67,6 +74,7 @@ if __name__ == '__main__':
             imgbytes = imgconn.recv(IMAGE_ROWS*IMAGE_COLS*4)
 
         except Exception:  # likely a timeout from sim quitting
+            done[0] = True
             break
 
         if len(imgbytes) == IMAGE_ROWS*IMAGE_COLS*4:
