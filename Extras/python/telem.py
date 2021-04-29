@@ -8,6 +8,7 @@ from threading import Thread
 import socket
 import numpy as np
 from sys import stdout
+from time import sleep
 
 
 # 12-dimensional state vector (Bouabdallah 2004)
@@ -23,9 +24,8 @@ def debug(msg):
     print(msg)
     stdout.flush()
 
-def run_telemetry(telemetryServerSocket, motorClientSocket):
+def run_telemetry(telemetryServerSocket, motorClientSocket, done):
 
-    done = False
     running = False
 
     while True:
@@ -33,8 +33,10 @@ def run_telemetry(telemetryServerSocket, motorClientSocket):
         try:
             data, _ = telemetryServerSocket.recvfrom(8*13)
         except Exception:
-            done = True
+            done[0] = True
             break
+
+        telemetryServerSocket.settimeout(.01)
 
         telem = np.frombuffer(data)
 
@@ -67,10 +69,14 @@ def main():
     motorClientSocket = make_udpsocket()
     telemetryServerSocket = make_udpsocket()
     telemetryServerSocket.bind((HOST, TELEMETRY_PORT))
+    done = [False]
     telemetryThread = Thread(target=run_telemetry,
-                             args=(telemetryServerSocket, motorClientSocket))
+                             args=(telemetryServerSocket, motorClientSocket, done))
 
     debug('Hit the start button ... ')
     telemetryThread.start()
+
+    while not done[0]:
+        sleep(.001)
 
 main()
