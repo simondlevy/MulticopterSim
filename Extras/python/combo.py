@@ -40,10 +40,20 @@ def run_telemetry(done):
 
     motor_client_socket = make_udpsocket()
     telemetry_server_socket = make_udpsocket()
+    telemetry_server_socket.settimeout(0.1)
 
     while not done[0]:
 
-        sleep(.001)
+        data = None
+
+        try:
+            data, _ = telemetry_server_socket.recvfrom(8*13)
+        except Exception:
+            dump('OOPS')
+
+        if data is not None:
+            telem = np.frombuffer(data)
+            dump(str(telem))
 
 
 if __name__ == '__main__':
