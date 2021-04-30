@@ -22,6 +22,23 @@ IMAGE_PORT = 5002
 IMAGE_ROWS = 480
 IMAGE_COLS = 640
 
+class Multicopter(object):
+
+    def __init__(self,
+            host='127.0.0.1',
+            motor_port=5000,
+            telem_port=5001,
+            image_port=5002,
+            image_rows=480,
+            image_cols=640):
+
+        self.host = host
+        self.motor_port = motor_port
+        self.telem_port = telem_port
+        self.image_port = image_port
+        self.image_rows = image_rows
+        self.image_cols = image_cols
+
 def debug(msg):
     print(msg)
     stdout.flush()
@@ -68,6 +85,8 @@ def make_udpsocket():
 
 
 def main():
+
+    copter = Multicopter()
 
     done = [False]
 
