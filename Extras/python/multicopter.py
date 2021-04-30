@@ -12,14 +12,6 @@ from time import sleep
 import cv2
 
 
-def make_udpsocket():
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
-
-    return sock
-
-
 class Multicopter(object):
 
     def __init__(
@@ -43,8 +35,8 @@ class Multicopter(object):
         done = [False]
 
         # Telemetry in and motors out run on their own thread
-        motorClientSocket = make_udpsocket()
-        telemetryServerSocket = make_udpsocket()
+        motorClientSocket = Multicopter._make_udpsocket()
+        telemetryServerSocket = Multicopter._make_udpsocket()
         telemetryServerSocket.bind((self.host, self.telem_port))
         telemetryThread = Thread(target=self._run_telemetry,
                                  args=(
@@ -121,6 +113,14 @@ class Multicopter(object):
                                      (self.host, self.motor_port))
 
             sleep(.001)
+
+    @staticmethod
+    def _make_udpsocket():
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
+
+        return sock
 
 
 def main():
