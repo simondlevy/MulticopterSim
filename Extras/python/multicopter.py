@@ -83,7 +83,7 @@ def main():
     sock.bind((HOST, IMAGE_PORT))
     sock.listen(1)
 
-    debug('Image server listening on %s:%d ... ' % (HOST, IMAGE_PORT))
+    debug('Hit the Start button ...')
 
     # This will block (wait) until a client connets
     conn, _ = sock.accept()
