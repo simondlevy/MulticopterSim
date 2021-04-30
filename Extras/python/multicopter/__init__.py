@@ -1,4 +1,6 @@
 '''
+  Socket-based multicopter class
+
   Copyright(C) 2021 Simon D.Levy
 
   MIT License
@@ -121,12 +123,3 @@ class Multicopter(object):
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
 
         return sock
-
-
-def main():
-
-    copter = Multicopter()
-    copter.start()
-
-
-main()
