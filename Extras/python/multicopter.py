@@ -12,11 +12,6 @@ from time import sleep
 import cv2
 
 
-def debug(msg):
-    print(msg)
-    stdout.flush()
-
-
 def make_udpsocket():
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -62,14 +57,14 @@ class Multicopter(object):
         imageServerSocket.bind((self.host, self.image_port))
         imageServerSocket.listen(1)
 
-        debug('Hit the Start button ...')
+        self.debug('Hit the Start button ...')
 
         # This will block (wait) until a client connets
         imageConn, _ = imageServerSocket.accept()
 
         imageConn.settimeout(1)
 
-        debug('Got a connection!')
+        self.debug('Got a connection!')
 
         telemetryThread.start()
 
@@ -91,6 +86,10 @@ class Multicopter(object):
                 cv2.imshow('Image', image)
                 cv2.waitKey(1)
 
+    def debug(self, msg):
+        print(msg)
+        stdout.flush()
+
     def _run_telemetry(self, telemetryServerSocket, motorClientSocket, done):
 
         running = False
@@ -108,7 +107,7 @@ class Multicopter(object):
             telem = np.frombuffer(data)
 
             if not running:
-                debug('Running')
+                self.debug('Running')
                 running = True
 
             if telem[0] < 0:
