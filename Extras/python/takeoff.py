@@ -12,47 +12,27 @@ import numpy as np
 from pidcontroller import AltitudePidController
 from multicopter_sim import Multicopter
 
-# Target
-ALTITUDE_TARGET = 10
 
-# PID params
-ALT_P = 1.0
-VEL_P = 1.0
-VEL_I = 0
-VEL_D = 0
+class TakeoffCopter(Multicopter):
 
+    def __init__(self, altP=1.0, velP=1.0, velI=0.0, velD=0.0, target=10.0):
 
-if __name__ == '__main__':
+        Multicopter.__init(self)
 
-    # initial conditions
-    z = 0
-    zprev = 0
-    tprev = 0
-    dzdt = 0
-    u = 0
+        # Set up initial conditions
+        self.z = 0
+        self.zprev = 0
+        self.tprev = 0
+        self.dzdt = 0
+        self.u = 0
 
-    # Create PID controller
-    pid = AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D)
+        # Create PID controller
+        pid = AltitudePidController(target, altP, velP, velD)
 
-    # Create a multicopter simulation
-    copter = Multicopter()
+        # Open a log file
+        self.logfile = open('ardupid.csv', 'w')
 
-    # Start the simulation
-    copter.start()
-
-    # Open a log file
-    fp = open('ardupid.csv', 'w')
-
-    # Loop until user hits the stop button
-    while True:
-
-        # Wait until simulator starts up
-        if not copter.isReady():
-            continue
-
-        # Quit after simulator quits
-        if copter.isDone():
-            break
+    def getMotors(telemetry):
 
         # Get vehicle state from sim
         t, x = copter.getTime(), copter.getState()
@@ -70,8 +50,8 @@ if __name__ == '__main__':
 
             # Write time and altitude to log file
             if t <= 20.0:
-                fp.write('%2.2f,%+3.3f\n' % (t, z))
-                fp.flush()
+                self.logfile.write('%2.2f,%+3.3f\n' % (t, z))
+                self.logfile.flush()
 
             # Use temporal first difference to compute vertical velocity
             dt = t - tprev
@@ -89,6 +69,3 @@ if __name__ == '__main__':
         # Update for first difference
         zprev = z
         tprev = t
-
-        # Yield to Multicopter thread
-        sleep(.001)
