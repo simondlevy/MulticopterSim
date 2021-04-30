@@ -17,39 +17,6 @@ def debug(msg):
     stdout.flush()
 
 
-def run_telemetry(self, telemetryServerSocket, motorClientSocket, done):
-
-    running = False
-
-    while True:
-
-        try:
-            data, _ = telemetryServerSocket.recvfrom(8*13)
-        except Exception:
-            done[0] = True
-            break
-
-        telemetryServerSocket.settimeout(.01)
-
-        telem = np.frombuffer(data)
-
-        if not running:
-            debug('Running')
-            running = True
-
-        if telem[0] < 0:
-            motorClientSocket.close()
-            telemetryServerSocket.close()
-            break
-
-        motorVals = np.array([0.6, 0.6, 0.6, 0.6])
-
-        motorClientSocket.sendto(np.ndarray.tobytes(motorVals),
-                                 (self.host, self.motor_port))
-
-        sleep(.001)
-
-
 def make_udpsocket():
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -84,8 +51,8 @@ class Multicopter(object):
         motorClientSocket = make_udpsocket()
         telemetryServerSocket = make_udpsocket()
         telemetryServerSocket.bind((self.host, self.telem_port))
-        telemetryThread = Thread(target=run_telemetry,
-                                 args=(self,
+        telemetryThread = Thread(target=self._run_telemetry,
+                                 args=(
                                        telemetryServerSocket,
                                        motorClientSocket,
                                        done))
@@ -123,6 +90,38 @@ class Multicopter(object):
 
                 cv2.imshow('Image', image)
                 cv2.waitKey(1)
+
+    def _run_telemetry(self, telemetryServerSocket, motorClientSocket, done):
+
+        running = False
+
+        while True:
+
+            try:
+                data, _ = telemetryServerSocket.recvfrom(8*13)
+            except Exception:
+                done[0] = True
+                break
+
+            telemetryServerSocket.settimeout(.01)
+
+            telem = np.frombuffer(data)
+
+            if not running:
+                debug('Running')
+                running = True
+
+            if telem[0] < 0:
+                motorClientSocket.close()
+                telemetryServerSocket.close()
+                break
+
+            motorVals = np.array([0.6, 0.6, 0.6, 0.6])
+
+            motorClientSocket.sendto(np.ndarray.tobytes(motorVals),
+                                     (self.host, self.motor_port))
+
+            sleep(.001)
 
 
 def main():
