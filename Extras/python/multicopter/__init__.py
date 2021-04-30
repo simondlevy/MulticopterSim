@@ -80,10 +80,16 @@ class Multicopter(object):
 
                 image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
 
-                cv2.imshow('Image', image)
-                cv2.waitKey(1)
+                self.handleImage(image)
 
-    def getMotors(self, telemtry):
+    def handleImage(self, image):
+        '''
+        Override for your application
+        '''
+        cv2.imshow('Image', image)
+        cv2.waitKey(1)
+
+    def getMotors(self, telemetry):
         '''
         Override for your application
         '''
