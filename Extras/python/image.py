@@ -22,12 +22,11 @@ PORT = 5002
 ROWS = 480
 COLS = 640
 
-
 def dump(msg):
     print(msg)
     stdout.flush()
 
-def run(done):
+if __name__ == '__main__':
 
     # Serve a socket with a maximum of one client
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -49,7 +48,6 @@ def run(done):
             imgbytes = conn.recv(ROWS*COLS*4)
 
         except Exception:  # likely a timeout from sim quitting
-            done[0] = True
             break
 
         if len(imgbytes) == ROWS*COLS*4:
@@ -61,15 +59,3 @@ def run(done):
 
             cv2.imshow('Image', image)
             cv2.waitKey(1)
-
-if __name__ == '__main__':
-
-    done = [False]
-
-    thread = Thread(target=run, args=(done,))
-    thread.start()
-
-    while not done[0]:
-        sleep(.001)
-
-
