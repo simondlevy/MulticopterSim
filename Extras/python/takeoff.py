@@ -7,17 +7,16 @@ Copyright (C) 2019 Simon D. Levy
 MIT License
 '''
 
-from time import sleep
 import numpy as np
 from pidcontroller import AltitudePidController
-from multicopter_sim import Multicopter
+from multicopter import Multicopter
 
 
 class TakeoffCopter(Multicopter):
 
     def __init__(self, altP=1.0, velP=1.0, velI=0.0, velD=0.0, target=10.0):
 
-        Multicopter.__init(self)
+        Multicopter.__init__(self)
 
         # Set up initial conditions
         self.z = 0
@@ -27,26 +26,23 @@ class TakeoffCopter(Multicopter):
         self.u = 0
 
         # Create PID controller
-        pid = AltitudePidController(target, altP, velP, velD)
+        self.pid = AltitudePidController(target, altP, velP, velI, velD)
 
         # Open a log file
         self.logfile = open('ardupid.csv', 'w')
 
-    def getMotors(telemetry):
-
-        # Get vehicle state from sim
-        t, x = copter.getTime(), copter.getState()
+    def getMotors(self, t, x):
 
         # Negative time means user hit stop button
         if t < 0:
-            break
+            return
 
         # Extract altitude from state.  Altitude is in NED coordinates, so we
         # negate it to use as input to PID controller.
         z = -x[4]
 
         # Compute vertical climb rate as first difference of altitude/time
-        if t > tprev:
+        if t > self.tprev:
 
             # Write time and altitude to log file
             if t <= 20.0:
@@ -54,18 +50,27 @@ class TakeoffCopter(Multicopter):
                 self.logfile.flush()
 
             # Use temporal first difference to compute vertical velocity
-            dt = t - tprev
-            dzdt = (z-zprev) / dt
+            dt = t - self.tprev
+            dzdt = (z-self.zprev) / dt
 
             # Get correction from PID controller
-            u = pid.u(z, dzdt, dt)
+            u = self.pid.u(z, dzdt, dt)
 
             # Constrain correction to [0,1] to represent motor value
             u = max(0, min(1, u))
 
-        # Set motor values in sim
-        copter.setMotors(u*np.ones(4))
-
         # Update for first difference
-        zprev = z
-        tprev = t
+        self.zprev = z
+        self.tprev = t
+
+        # Return motor values
+        return u*np.ones(4)
+
+
+def main():
+
+    copter = TakeoffCopter()
+    copter.start()
+
+
+main()
