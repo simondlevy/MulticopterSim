@@ -12,38 +12,12 @@ from time import sleep
 import cv2
 
 
-# 12-dimensional state vector (Bouabdallah 2004)
-STATE_SIZE = 12
-
-HOST ='127.0.0.1'
-MOTOR_PORT = 5000
-TELEM_PORT = 5001
-IMAGE_PORT = 5002
-IMAGE_ROWS = 480
-IMAGE_COLS = 640
-
-class Multicopter(object):
-
-    def __init__(self,
-            host='127.0.0.1',
-            motor_port=5000,
-            telem_port=5001,
-            image_port=5002,
-            image_rows=480,
-            image_cols=640):
-
-        self.host = host
-        self.motor_port = motor_port
-        self.telem_port = telem_port
-        self.image_port = image_port
-        self.image_rows = image_rows
-        self.image_cols = image_cols
-
 def debug(msg):
     print(msg)
     stdout.flush()
 
-def run_telemetry(telemetryServerSocket, motorClientSocket, done):
+
+def run_telemetry(self, telemetryServerSocket, motorClientSocket, done):
 
     running = False
 
@@ -68,10 +42,10 @@ def run_telemetry(telemetryServerSocket, motorClientSocket, done):
             telemetryServerSocket.close()
             break
 
-        motorVals = np.array([0.6,0.6,0.6,0.6])
+        motorVals = np.array([0.6, 0.6, 0.6, 0.6])
 
         motorClientSocket.sendto(np.ndarray.tobytes(motorVals),
-                                (HOST, MOTOR_PORT))
+                                 (self.host, self.motor_port))
 
         sleep(.001)
 
@@ -84,50 +58,77 @@ def make_udpsocket():
     return sock
 
 
+class Multicopter(object):
+
+    def __init__(
+            self,
+            host='127.0.0.1',
+            motor_port=5000,
+            telem_port=5001,
+            image_port=5002,
+            image_rows=480,
+            image_cols=640):
+
+        self.host = host
+        self.motor_port = motor_port
+        self.telem_port = telem_port
+        self.image_port = image_port
+        self.image_rows = image_rows
+        self.image_cols = image_cols
+
+    def start(self):
+
+        done = [False]
+
+        # Telemetry in and motors out run on their own thread
+        motorClientSocket = make_udpsocket()
+        telemetryServerSocket = make_udpsocket()
+        telemetryServerSocket.bind((self.host, self.telem_port))
+        telemetryThread = Thread(target=run_telemetry,
+                                 args=(self,
+                                       telemetryServerSocket,
+                                       motorClientSocket,
+                                       done))
+
+        # Serve a socket with a maximum of one client
+        imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        imageServerSocket.bind((self.host, self.image_port))
+        imageServerSocket.listen(1)
+
+        debug('Hit the Start button ...')
+
+        # This will block (wait) until a client connets
+        imageConn, _ = imageServerSocket.accept()
+
+        imageConn.settimeout(1)
+
+        debug('Got a connection!')
+
+        telemetryThread.start()
+
+        while not done[0]:
+
+            try:
+                imgbytes = imageConn.recv(self.image_rows*self.image_cols*4)
+
+            except Exception:  # likely a timeout from sim quitting
+                break
+
+            if len(imgbytes) == self.image_rows*self.image_cols*4:
+
+                rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
+                                        (self.image_rows, self.image_cols, 4))
+
+                image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
+
+                cv2.imshow('Image', image)
+                cv2.waitKey(1)
+
+
 def main():
 
     copter = Multicopter()
+    copter.start()
 
-    done = [False]
 
-    # Telemetry in and motors out run on their own thread
-    motorClientSocket = make_udpsocket()
-    telemetryServerSocket = make_udpsocket()
-    telemetryServerSocket.bind((HOST, TELEM_PORT))
-    telemetryThread = Thread(target=run_telemetry,
-                             args=(telemetryServerSocket, motorClientSocket, done))
-
-    # Serve a socket with a maximum of one client
-    imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    imageServerSocket.bind((HOST, IMAGE_PORT))
-    imageServerSocket.listen(1)
-
-    debug('Hit the Start button ...')
-
-    # This will block (wait) until a client connets
-    imageConn, _ = imageServerSocket.accept()
-
-    imageConn.settimeout(1)
-
-    debug('Got a connection!')
-
-    telemetryThread.start()
-
-    while not done[0]:
-
-        try:
-            imgbytes = imageConn.recv(IMAGE_ROWS*IMAGE_COLS*4)
-
-        except Exception:  # likely a timeout from sim quitting
-            break
-
-        if len(imgbytes) == IMAGE_ROWS*IMAGE_COLS*4:
-
-            rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
-                                    (IMAGE_ROWS, IMAGE_COLS, 4))
-
-            image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
-
-            cv2.imshow('Image', image)
-            cv2.waitKey(1)
 main()
