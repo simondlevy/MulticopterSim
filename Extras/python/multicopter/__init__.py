@@ -32,6 +32,9 @@ class Multicopter(object):
         self.image_rows = image_rows
         self.image_cols = image_cols
 
+        self.telem = None
+        self.image = None
+
     def start(self):
 
         done = [False]
@@ -51,14 +54,14 @@ class Multicopter(object):
         imageServerSocket.bind((self.host, self.image_port))
         imageServerSocket.listen(1)
 
-        self.debug('Hit the Start button ...')
+        Multicopter.debug('Hit the Start button ...')
 
         # This will block (wait) until a client connets
         imageConn, _ = imageServerSocket.accept()
 
         imageConn.settimeout(1)
 
-        self.debug('Got a connection!')
+        Multicopter.debug('Got a connection!')
 
         telemetryThread.start()
 
@@ -80,7 +83,8 @@ class Multicopter(object):
                 cv2.imshow('Image', image)
                 cv2.waitKey(1)
 
-    def debug(self, msg):
+    @staticmethod
+    def debug(msg):
         print(msg)
         stdout.flush()
 
@@ -101,7 +105,7 @@ class Multicopter(object):
             telem = np.frombuffer(data)
 
             if not running:
-                self.debug('Running')
+                Multicopter.debug('Running')
                 running = True
 
             if telem[0] < 0:
