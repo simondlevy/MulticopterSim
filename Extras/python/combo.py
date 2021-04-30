@@ -9,6 +9,7 @@ import socket
 import numpy as np
 from sys import stdout
 from time import sleep
+import cv2
 
 
 # 12-dimensional state vector (Bouabdallah 2004)
@@ -101,4 +102,13 @@ def main():
         except Exception:  # likely a timeout from sim quitting
             break
 
+        if len(imgbytes) == IMAGE_ROWS*IMAGE_COLS*4:
+
+            rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
+                                    (IMAGE_ROWS, IMAGE_COLS, 4))
+
+            image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
+
+            cv2.imshow('Image', image)
+            cv2.waitKey(1)
 main()
