@@ -98,16 +98,16 @@ def main():
                              args=(telemetryServerSocket, motorClientSocket, done))
 
     # Serve a socket with a maximum of one client
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((HOST, IMAGE_PORT))
-    sock.listen(1)
+    imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    imageServerSocket.bind((HOST, IMAGE_PORT))
+    imageServerSocket.listen(1)
 
     debug('Hit the Start button ...')
 
     # This will block (wait) until a client connets
-    conn, _ = sock.accept()
+    imageConn, _ = imageServerSocket.accept()
 
-    conn.settimeout(1)
+    imageConn.settimeout(1)
 
     debug('Got a connection!')
 
@@ -116,7 +116,7 @@ def main():
     while not done[0]:
 
         try:
-            imgbytes = conn.recv(IMAGE_ROWS*IMAGE_COLS*4)
+            imgbytes = imageConn.recv(IMAGE_ROWS*IMAGE_COLS*4)
 
         except Exception:  # likely a timeout from sim quitting
             break
