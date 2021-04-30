@@ -83,6 +83,12 @@ class Multicopter(object):
                 cv2.imshow('Image', image)
                 cv2.waitKey(1)
 
+    def getMotors(self, telemtry):
+        '''
+        Override for your application
+        '''
+        return np.array([0.6, 0.6, 0.6, 0.6])
+
     @staticmethod
     def debug(msg):
         print(msg)
@@ -113,9 +119,9 @@ class Multicopter(object):
                 telemetryServerSocket.close()
                 break
 
-            motorVals = np.array([0.6, 0.6, 0.6, 0.6])
+            motorvals = self.getMotors(telem)
 
-            motorClientSocket.sendto(np.ndarray.tobytes(motorVals),
+            motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
                                      (self.host, self.motor_port))
 
             sleep(.001)
