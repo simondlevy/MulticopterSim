@@ -8,7 +8,7 @@
 
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
-#include "../../Extras/sockets/TwoWayUdp.hpp"
+#include "sockets/TwoWayUdp.hpp"
 #include "SocketCamera.hpp"
 
 class FSocketFlightManager : public FFlightManager {

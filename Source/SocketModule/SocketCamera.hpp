@@ -10,7 +10,7 @@
 
 #include "../MainModule/Camera.hpp"
 
-#include "../../Extras/sockets/TcpClientSocket.hpp"
+#include "sockets/TcpClientSocket.hpp"
 
 class SocketCamera : public Camera {
 
