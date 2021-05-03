@@ -28,8 +28,5 @@ getTrade = do
 main :: IO ()
 main = do
   input <- BL.readFile "trades.bin"
-  let input2 = packStr "hello"
   return (runGet getTrade input)
   print "hello"
-
-

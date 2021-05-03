@@ -1,4 +1,5 @@
-all: pack convert
+ALL = pack convert udpserver readDouble 
+all: $(ALL)
 
 pack: pack.hs
 	ghc pack.hs
@@ -9,11 +10,11 @@ convert: convert.hs
 udpserver: udpserver.hs
 	ghc udpserver.hs
 
-run: convert
-	./convert
+run: udpserver
+	./udpserver
 clean:
-	rm -rf convert udpserver *.hi *.o
+	rm -rf $(ALL) *.hi *.o
 
 edit:
-	vim pack.hs
+	vim udpserver.hs
 
