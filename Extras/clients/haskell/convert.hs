@@ -1,20 +1,21 @@
 import Data.Word
 import Data.Binary.Get
+import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as BL
+import qualified Data.Text as T
+import Data.Text.Encoding (encodeUtf8)
 
 
 data Trade = Trade
   { timestamp :: !Word32
   , price     :: !Word32
-  , qty       :: !Word16
   } deriving (Show)
 
 getTrade :: Get Trade
 getTrade = do
   timestamp <- getWord32le
   price     <- getWord32le
-  quantity  <- getWord16le
-  return $! Trade timestamp price quantity
+  return $! Trade timestamp price
 
 getTrades :: Get [Trade]
 getTrades = do
@@ -24,6 +25,9 @@ getTrades = do
     else do trade <- getTrade
             trades <- getTrades
             return (trade:trades)
+
+packStr'' :: String -> B.ByteString
+packStr'' = encodeUtf8 . T.pack
 
 lazyIOExample :: IO [Trade]
 lazyIOExample = do
