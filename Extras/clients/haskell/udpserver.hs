@@ -29,6 +29,23 @@ foreign import ccall unsafe "static stdlib.h strtod" c_strtod
     :: Ptr CChar -> Ptr (Ptr CChar) -> IO CDouble
 
 
+-- show a Double into a lazy bytestring
+--
+
+showDouble :: Double -> L.ByteString
+showDouble d = L.fromChunks . return . unsafePerformIO . B.createAndTrim lim $  \p ->
+    B.useAsCString fmt $ \cfmt -> do
+        n <- c_printf_double (castPtr p) (fromIntegral lim) cfmt (realToFrac d)
+        return (min lim (fromIntegral n)) -- snprintf might truncate
+  where
+    lim = 100 -- n.b.
+    fmt = B.pack "%f"
+
+foreign import ccall unsafe "static stdio.h snprintf" 
+    c_printf_double :: Ptr CChar -> CSize -> Ptr CChar -> CDouble -> IO CInt
+
+------------------------------------------------------------------------
+
 -- // http://book.realworldhaskell.org/read/sockets-and-syslog.html -------------------------
 type HandlerFunc = SockAddr -> Data.ByteString.Internal.ByteString -> IO ()
 
