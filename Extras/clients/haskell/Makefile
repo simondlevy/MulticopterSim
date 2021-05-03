@@ -1,3 +1,8 @@
+all: pack convert
+
+pack: pack.hs
+	ghc pack.hs
+
 convert: convert.hs
 	ghc convert.hs
 
@@ -10,5 +15,5 @@ clean:
 	rm -rf convert udpserver *.hi *.o
 
 edit:
-	vim convert.hs
+	vim pack.hs
 
