@@ -10,6 +10,9 @@ convert: convert.hs
 udpserver: udpserver.hs
 	ghc udpserver.hs
 
+readDouble: readDouble.hs
+	ghc readDouble.hs
+
 run: udpserver
 	./udpserver
 clean:

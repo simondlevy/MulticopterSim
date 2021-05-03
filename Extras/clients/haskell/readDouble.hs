@@ -3,8 +3,8 @@
 -- https://wiki.haskell.org/Examples/Read_Double
 
 import Data.ByteString.Lazy.Char8 (ByteString)
-import qualified Data.ByteString.Char8      as B
-import qualified Data.ByteString.Internal       as B
+import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString.Internal as B
 import qualified Data.ByteString.Lazy.Char8 as L
 import Foreign
 import Foreign.C.Types
