@@ -1,4 +1,3 @@
--- // http://book.realworldhaskell.org/read/sockets-and-syslog.html
 import Data.Bits
 import Network.Socket
 import Network.Socket.ByteString
@@ -6,6 +5,31 @@ import Network.BSD
 import Data.List
 import Data.ByteString.Internal
 
+import Data.ByteString.Lazy.Char8 (ByteString)
+import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString.Internal as B
+import qualified Data.ByteString.Lazy.Char8 as L
+import Foreign
+import Foreign.C.Types
+import System.IO.Unsafe
+
+-- https://wiki.haskell.org/Examples/Read_Double --------------------------------------------
+
+--
+-- read a Double from a lazy ByteString
+-- 'read' should be a pure operation, right??
+--
+readDouble :: L.ByteString -> Double
+readDouble ls = unsafePerformIO $ B.useAsCString s $ \cstr ->
+    realToFrac `fmap` c_strtod cstr nullPtr
+  where
+    s = B.concat . L.toChunks $ ls
+
+foreign import ccall unsafe "static stdlib.h strtod" c_strtod
+    :: Ptr CChar -> Ptr (Ptr CChar) -> IO CDouble
+
+
+-- // http://book.realworldhaskell.org/read/sockets-and-syslog.html -------------------------
 type HandlerFunc = SockAddr -> Data.ByteString.Internal.ByteString -> IO ()
 
 main :: IO ()

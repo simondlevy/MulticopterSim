@@ -16,7 +16,7 @@ import System.IO.Unsafe
 -- read a Double from a lazy ByteString
 -- 'read' should be a pure operation, right??
 --
-readDouble :: ByteString -> Double
+readDouble :: L.ByteString -> Double
 readDouble ls = unsafePerformIO $ B.useAsCString s $ \cstr ->
     realToFrac `fmap` c_strtod cstr nullPtr
   where
@@ -30,7 +30,7 @@ foreign import ccall unsafe "static stdlib.h strtod" c_strtod
 -- show a Double into a lazy bytestring
 --
 
-showDouble :: Double -> ByteString
+showDouble :: Double -> L.ByteString
 showDouble d = L.fromChunks . return . unsafePerformIO . B.createAndTrim lim $  \p ->
     B.useAsCString fmt $ \cfmt -> do
         n <- c_printf_double (castPtr p) (fromIntegral lim) cfmt (realToFrac d)
