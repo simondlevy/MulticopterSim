@@ -1,25 +1,38 @@
--- https://stackoverflow.com/questions/12514013/lazily-read-and-manipulate-float-from-stdin-in-haskell
-import qualified Data.ByteString.Lazy as B
-import Data.Binary.IEEE754
+import Data.Word
 import Data.Binary.Get
+import qualified Data.ByteString.Lazy as BL
 
--- gives a list of doubles read from stdin
-listOfFloat64le = do
+
+data Trade = Trade
+  { timestamp :: !Word32
+  , price     :: !Word32
+  , qty       :: !Word16
+  } deriving (Show)
+
+getTrade :: Get Trade
+getTrade = do
+  timestamp <- getWord32le
+  price     <- getWord32le
+  quantity  <- getWord16le
+  return $! Trade timestamp price quantity
+
+getTrades :: Get [Trade]
+getTrades = do
   empty <- isEmpty
   if empty
-     then return []
-     else do v <- getFloat64le
-             rest <- listOfFloat64le
-             return (v : rest)
+    then return []
+    else do trade <- getTrade
+            trades <- getTrades
+            return (trade:trades)
 
+lazyIOExample :: IO [Trade]
+lazyIOExample = do
+  input <- BL.readFile "trades.bin"
+  return (runGet getTrades input)
 
--- delay signal by one
-delay us = 0 : us
-
--- feedback system, add delayed version of signal to signal
-sys us = zipWith (+) us (delay us)
-
+main :: IO ()
 main = do
-    input <- B.getContents
-    let hs = sys $ runGet listOfFloat64le input
-    print $ take 10 hs
+  result <- lazyIOExample
+  putStrLn "okay"
+
+

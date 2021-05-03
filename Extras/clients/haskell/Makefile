@@ -1,11 +1,14 @@
+convert: convert.hs
+	ghc convert.hs
+
 udpserver: udpserver.hs
 	ghc udpserver.hs
 
-run: udpserver
-	./udpserver
+run: convert
+	./convert
 clean:
-	rm -rf udpserver *.hi *.o
+	rm -rf convert udpserver *.hi *.o
 
 edit:
-	vim udpserver.hs
+	vim convert.hs
 

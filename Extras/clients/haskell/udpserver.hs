@@ -47,5 +47,5 @@ serveLog port handlerfunc = withSocketsDo $
 plainHandler :: HandlerFunc
 plainHandler addr msg = 
     do
-        putStrLn $ "From " ++ show addr ++ ": " 
+        -- putStrLn $ "From " ++ show addr ++ ": " 
         print msg
