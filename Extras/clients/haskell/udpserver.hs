@@ -39,12 +39,14 @@ serveSocket port handlerfunc = withSocketsDo $
                  -- And process more messages
                  procMessages sock
 
+convert :: ByteString -> Double
+convert bs = 0
+
 -- A simple handler that prints incoming packets
 plainHandler :: HandlerFunc
 plainHandler addr msg = 
     do
-        -- putStrLn $ "From " ++ show addr ++ ": " 
-        print msg
+        print (convert msg)
 
 main :: IO ()
 main = serveSocket "5001" plainHandler
