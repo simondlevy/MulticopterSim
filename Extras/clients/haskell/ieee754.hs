@@ -3,6 +3,6 @@ convert s = 0
 
 main :: IO ()
 main = do
-  print (convert "hello")
+  print (convert "\NUL\NUL\NUL\NUL\NUL\NUL\240?")
 
 
