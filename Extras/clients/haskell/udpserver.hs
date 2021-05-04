@@ -17,10 +17,11 @@ import qualified Data.Vector.Storable as V
 
 type HandlerFunc = SockAddr -> Data.ByteString.Internal.ByteString -> IO ()
 
-serveSocket :: String              -- ^ Port number or name
-         -> HandlerFunc         -- ^ Function to handle incoming messages
+serveSocket :: String    -- ^ Port number or name
+         -> HandlerFunc  -- ^ Function to handle incoming messages
+         -> Int          -- ^ Size of incoming message in bytes
          -> IO ()
-serveSocket port handlerfunc = withSocketsDo $
+serveSocket port handlerfunc insize = withSocketsDo $
     do -- Look up the port.  Either raises an exception or returns
        -- a nonempty list.  
        addrinfos <- getAddrInfo 
@@ -38,21 +39,10 @@ serveSocket port handlerfunc = withSocketsDo $
        -- Loop forever processing incoming data.  Ctrl-C to abort.
        procMessages sock
     where procMessages sock =
-              do -- Receive one UDP packet, maximum length 1024 bytes,
-                 -- and save its content into msg and its source
-                 -- IP and port into addr
-                 -- (msg, _, addr) <- recvFrom sock 1024
-                 (msg, addr) <- Network.Socket.ByteString.recvFrom sock 104
-                 -- Handle it
+              do 
+                 (msg, addr) <- Network.Socket.ByteString.recvFrom sock insize
                  handlerfunc addr msg
-                 -- And process more messages
                  procMessages sock
-
--- A simple handler that prints incoming packets
-plainHandler :: HandlerFunc
-plainHandler addr msg = 
-    do
-        print (bytesToDoubles msg)
 
 -- packStr :: String -> B.ByteString
 -- packStr = B.pack . map (fromIntegral . ord)
@@ -62,5 +52,12 @@ bytesToDoubles :: BS.ByteString -> V.Vector Double
 bytesToDoubles = V.unsafeCast . aux . BS.toForeignPtr
     where aux (fp,offset,len) = V.unsafeFromForeignPtr fp offset len
 
+--------------------------------------------------------------------------
+
+multicopterHandler :: HandlerFunc
+multicopterHandler addr msg = 
+    do
+        print (bytesToDoubles msg)
+
 main :: IO ()
-main = serveSocket "5001" plainHandler
+main = serveSocket "5001" multicopterHandler 104
