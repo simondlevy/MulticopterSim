@@ -6,6 +6,12 @@ import Network.BSD
 import Data.List
 import Data.ByteString.Internal
 
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as C
+import qualified Data.Text as T
+import Data.Text.Encoding (encodeUtf8)
+import Data.Char (ord)
+
 type HandlerFunc = SockAddr -> Data.ByteString.Internal.ByteString -> IO ()
 
 serveSocket :: String              -- ^ Port number or name
@@ -39,14 +45,18 @@ serveSocket port handlerfunc = withSocketsDo $
                  -- And process more messages
                  procMessages sock
 
-convert :: ByteString -> Double
-convert bs = 0
-
 -- A simple handler that prints incoming packets
 plainHandler :: HandlerFunc
 plainHandler addr msg = 
     do
         print (convert msg)
 
+convert :: ByteString -> Double
+convert bs = 0
+
+packStr :: String -> B.ByteString
+packStr = B.pack . map (fromIntegral . ord)
+
 main :: IO ()
-main = serveSocket "5001" plainHandler
+-- main = serveSocket "5001" plainHandler
+main = print (convert (packStr "\NUL\NUL\NUL\NUL\NUL\NUL\240?"))
