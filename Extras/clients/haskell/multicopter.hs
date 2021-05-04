@@ -48,7 +48,7 @@ runMulticopter = withSocketsDo $
 
     where procMessages telemetryServerSocket =
               do 
-                 (msg, addr) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
+                 (msg, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
                  print (bytesToDoubles msg)
                  procMessages telemetryServerSocket
 
