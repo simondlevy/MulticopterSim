@@ -48,15 +48,15 @@ runMulticopter = withSocketsDo $
        bind telemetryServerSocket (addrAddress telemetryServerAddr)
 
        -- Loop forever processing incoming data.  Ctrl-C to abort.
-       processMessages telemetryServerSocket motorClientSocket
+       processMessages telemetryServerSocket motorClientSocket motorClientAddr
 
-    where processMessages telemetryServerSocket motorClientSocket =
+    where processMessages telemetryServerSocket motorClientSocket motorClientAddr =
               do 
                  (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
                  print (bytesToDoubles msgIn)
                  let msgOut = packStr "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\NUL"
                  -- Network.Socket.ByteString.sendTo motorClientSocket msgOut motorClientAddr
-                 processMessages telemetryServerSocket motorClientSocket
+                 processMessages telemetryServerSocket motorClientSocket motorClientAddr
 
 packStr :: String -> B.ByteString
 packStr = B.pack . map (fromIntegral . ord)
