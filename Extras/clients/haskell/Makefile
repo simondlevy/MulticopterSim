@@ -1,20 +1,14 @@
-ALL = pack udpserver ieee754
+ALL = udpserver
 all: $(ALL)
-
-pack: pack.hs
-	ghc pack.hs
 
 udpserver: udpserver.hs
 	ghc udpserver.hs
 
-ieee754: ieee754.hs
-	ghc ieee754.hs
-
-run: ieee754
-	./ieee754
+run: udpserver
+	./udpserver
 clean:
 	rm -rf $(ALL) *.hi *.o
 
 edit:
-	vim ieee754.hs
+	vim udpserver.hs
 

@@ -8,14 +8,10 @@ import Data.ByteString.Internal
 
 type HandlerFunc = SockAddr -> Data.ByteString.Internal.ByteString -> IO ()
 
-main :: IO ()
--- main = putStrLn "Hello, World!"
-main = serveLog "5001" plainHandler
-
-serveLog :: String              -- ^ Port number or name
+serveSocket :: String              -- ^ Port number or name
          -> HandlerFunc         -- ^ Function to handle incoming messages
          -> IO ()
-serveLog port handlerfunc = withSocketsDo $
+serveSocket port handlerfunc = withSocketsDo $
     do -- Look up the port.  Either raises an exception or returns
        -- a nonempty list.  
        addrinfos <- getAddrInfo 
@@ -49,3 +45,6 @@ plainHandler addr msg =
     do
         -- putStrLn $ "From " ++ show addr ++ ": " 
         print msg
+
+main :: IO ()
+main = serveSocket "5001" plainHandler
