@@ -52,18 +52,15 @@ serveSocket port handlerfunc = withSocketsDo $
 plainHandler :: HandlerFunc
 plainHandler addr msg = 
     do
-        print (convert msg)
+        print (bytesToDoubles msg)
 
-convert :: ByteString -> Double
-convert bs = 0
+-- packStr :: String -> B.ByteString
+-- packStr = B.pack . map (fromIntegral . ord)
 
-packStr :: String -> B.ByteString
-packStr = B.pack . map (fromIntegral . ord)
-
+-- https://stackoverflow.com/questions/20912582/haskell-bytestring-to-float-array
 bytesToDoubles :: BS.ByteString -> V.Vector Double
 bytesToDoubles = V.unsafeCast . aux . BS.toForeignPtr
     where aux (fp,offset,len) = V.unsafeFromForeignPtr fp offset len
 
 main :: IO ()
--- main = serveSocket "5001" plainHandler
-main = print (bytesToDoubles (packStr "\NUL\NUL\NUL\NUL\NUL\NUL\240?"))
+main = serveSocket "5001" plainHandler

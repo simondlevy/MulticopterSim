@@ -85,14 +85,13 @@ int main(int argc, char ** argv)
             double telemetry[13] = {0};
 
             // Fill outgoing telemetry data
-            telemetry[0] = 1; // time;
+            telemetry[0] = time;
             for (uint8_t k=0; k<12; ++k) {
-                telemetry[k+1] = k+2; //dynamics.x(k);
+                telemetry[k+1] = dynamics.x(k);
             }
 
             // Send telemetry data
-            // twoWayUdp.send(telemetry, sizeof(telemetry));
-            twoWayUdp.send(telemetry, 8);
+            twoWayUdp.send(telemetry, sizeof(telemetry));
 
             // Send image data
             // imageSocket.sendData(image, sizeof(image));
