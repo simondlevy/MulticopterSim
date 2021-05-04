@@ -28,20 +28,24 @@ runMulticopter = withSocketsDo $
 
    -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
 
-
-    do -- Look up the port.  Either raises an exception or returns
-       -- a nonempty list.  
-       addrinfos <- getAddrInfo 
+    do 
+       -- Look up the port.  Either raises an exception or returns a nonempty list.  
+       telemetryServerAddrInfo <- getAddrInfo 
                     (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
                     Nothing (Just "5001")
-       let serveraddr = head addrinfos
+       let telemetryServerAddr = head telemetryServerAddrInfo
+
+       motorClientAddrInfo <- getAddrInfo 
+                    (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
+                    Nothing (Just "5002")
+       let motorClientAddr = head motorClientAddrInfo
 
        -- Create sockets for incoming and outgoing data
-       telemetryServerSocket <- socket (addrFamily serveraddr) Datagram defaultProtocol
-       motorClientSocket <- socket (addrFamily serveraddr) Datagram defaultProtocol
+       telemetryServerSocket <- socket (addrFamily telemetryServerAddr) Datagram defaultProtocol
+       motorClientSocket <- socket (addrFamily motorClientAddr) Datagram defaultProtocol
 
        -- Bind the incoming-data socket to the address we're listening to
-       bind telemetryServerSocket (addrAddress serveraddr)
+       bind telemetryServerSocket (addrAddress telemetryServerAddr)
 
        -- Loop forever processing incoming data.  Ctrl-C to abort.
        procMessages telemetryServerSocket
