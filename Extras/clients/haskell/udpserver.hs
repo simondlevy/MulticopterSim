@@ -12,6 +12,9 @@ import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8)
 import Data.Char (ord)
 
+import Data.ByteString.Internal as BS
+import qualified Data.Vector.Storable as V
+
 type HandlerFunc = SockAddr -> Data.ByteString.Internal.ByteString -> IO ()
 
 serveSocket :: String              -- ^ Port number or name
@@ -57,6 +60,10 @@ convert bs = 0
 packStr :: String -> B.ByteString
 packStr = B.pack . map (fromIntegral . ord)
 
+bytesToDoubles :: BS.ByteString -> V.Vector Double
+bytesToDoubles = V.unsafeCast . aux . BS.toForeignPtr
+    where aux (fp,offset,len) = V.unsafeFromForeignPtr fp offset len
+
 main :: IO ()
 -- main = serveSocket "5001" plainHandler
-main = print (convert (packStr "\NUL\NUL\NUL\NUL\NUL\NUL\240?"))
+main = print (bytesToDoubles (packStr "\NUL\NUL\NUL\NUL\NUL\NUL\240?"))
