@@ -1,6 +1,8 @@
+convert :: [Char] -> Double
+convert s = 0
 
 main :: IO ()
 main = do
-  print 5
+  print (convert "hello")
 
 

@@ -16,5 +16,5 @@ clean:
 	rm -rf $(ALL) *.hi *.o
 
 edit:
-	vim udpserver.hs
+	vim ieee754.hs
 
