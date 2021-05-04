@@ -91,7 +91,8 @@ int main(int argc, char ** argv)
             }
 
             // Send telemetry data
-            twoWayUdp.send(telemetry, sizeof(telemetry));
+            // twoWayUdp.send(telemetry, sizeof(telemetry));
+            twoWayUdp.send(telemetry, 8);
 
             // Send image data
             // imageSocket.sendData(image, sizeof(image));

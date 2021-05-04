@@ -1,4 +1,4 @@
-ALL = pack convert udpserver readDouble 
+ALL = pack convert udpserver
 all: $(ALL)
 
 pack: pack.hs
@@ -9,9 +9,6 @@ convert: convert.hs
 
 udpserver: udpserver.hs
 	ghc udpserver.hs
-
-readDouble: readDouble.hs
-	ghc readDouble.hs
 
 run: udpserver
 	./udpserver
