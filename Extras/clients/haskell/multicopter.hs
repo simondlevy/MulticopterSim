@@ -48,16 +48,18 @@ runMulticopter = withSocketsDo $
        bind telemetryServerSocket (addrAddress telemetryServerAddr)
 
        -- Loop forever processing incoming data.  Ctrl-C to abort.
-       procMessages telemetryServerSocket
+       processMessages telemetryServerSocket motorClientSocket
 
-    where procMessages telemetryServerSocket =
+    where processMessages telemetryServerSocket motorClientSocket =
               do 
-                 (msg, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
-                 print (bytesToDoubles msg)
-                 procMessages telemetryServerSocket
+                 (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
+                 print (bytesToDoubles msgIn)
+                 let msgOut = packStr "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\NUL"
+                 -- Network.Socket.ByteString.sendTo motorClientSocket msgOut motorClientAddr
+                 processMessages telemetryServerSocket motorClientSocket
 
--- packStr :: String -> B.ByteString
--- packStr = B.pack . map (fromIntegral . ord)
+packStr :: String -> B.ByteString
+packStr = B.pack . map (fromIntegral . ord)
 
 -- https://stackoverflow.com/questions/20912582/haskell-bytestring-to-float-array
 bytesToDoubles :: BS.ByteString -> V.Vector Double
