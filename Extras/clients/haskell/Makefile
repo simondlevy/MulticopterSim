@@ -1,4 +1,4 @@
-ALL = pack udpserver
+ALL = pack udpserver ieee754
 all: $(ALL)
 
 pack: pack.hs
@@ -7,8 +7,11 @@ pack: pack.hs
 udpserver: udpserver.hs
 	ghc udpserver.hs
 
-run: udpserver
-	./udpserver
+ieee754: ieee754.hs
+	ghc ieee754.hs
+
+run: ieee754
+	./ieee754
 clean:
 	rm -rf $(ALL) *.hi *.o
 
