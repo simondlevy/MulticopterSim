@@ -1,14 +1,14 @@
-ALL = udpserver
+ALL = multicopter
 all: $(ALL)
 
-udpserver: udpserver.hs
-	ghc udpserver.hs
+multicopter: multicopter.hs
+	ghc multicopter.hs
 
-run: udpserver
-	./udpserver
+run: multicopter
+	./multicopter
 clean:
 	rm -rf $(ALL) *.hi *.o
 
 edit:
-	vim udpserver.hs
+	vim multicopter.hs
 

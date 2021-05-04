@@ -1,4 +1,11 @@
--- // http://book.realworldhaskell.org/read/sockets-and-syslog.html
+{--
+  Socket-based multicopter control
+
+  Copyright(C) 2021 Simon D.Levy
+
+  MIT License
+--}
+
 import Data.Bits
 import Network.Socket
 import Network.Socket.ByteString
@@ -15,34 +22,35 @@ import Data.Char (ord)
 import Data.ByteString.Internal as BS
 import qualified Data.Vector.Storable as V
 
-type HandlerFunc = SockAddr -> Data.ByteString.Internal.ByteString -> IO ()
+runMulticopter :: IO ()
 
-serveSocket :: String    -- ^ Port number or name
-         -> HandlerFunc  -- ^ Function to handle incoming messages
-         -> Int          -- ^ Size of incoming message in bytes
-         -> IO ()
-serveSocket port handlerfunc insize = withSocketsDo $
+runMulticopter = withSocketsDo $
+
+   -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
+
+
     do -- Look up the port.  Either raises an exception or returns
        -- a nonempty list.  
        addrinfos <- getAddrInfo 
                     (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
-                    Nothing (Just port)
+                    Nothing (Just "5001")
        let serveraddr = head addrinfos
 
-       -- Create a socket
-       sock <- socket (addrFamily serveraddr) Datagram defaultProtocol
+       -- Create sockets for incoming and outgoing data
+       telemetryServerSocket <- socket (addrFamily serveraddr) Datagram defaultProtocol
+       motorClientSocket <- socket (addrFamily serveraddr) Datagram defaultProtocol
 
-       -- Bind it to the address we're listening to
-       -- bindSocket sock (addrAddress serveraddr)
-       bind sock (addrAddress serveraddr)
+       -- Bind the incoming-data socket to the address we're listening to
+       bind telemetryServerSocket (addrAddress serveraddr)
 
        -- Loop forever processing incoming data.  Ctrl-C to abort.
-       procMessages sock
-    where procMessages sock =
+       procMessages telemetryServerSocket
+
+    where procMessages telemetryServerSocket =
               do 
-                 (msg, addr) <- Network.Socket.ByteString.recvFrom sock insize
-                 handlerfunc addr msg
-                 procMessages sock
+                 (msg, addr) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
+                 print (bytesToDoubles msg)
+                 procMessages telemetryServerSocket
 
 -- packStr :: String -> B.ByteString
 -- packStr = B.pack . map (fromIntegral . ord)
@@ -54,10 +62,5 @@ bytesToDoubles = V.unsafeCast . aux . BS.toForeignPtr
 
 --------------------------------------------------------------------------
 
-multicopterHandler :: HandlerFunc
-multicopterHandler addr msg = 
-    do
-        print (bytesToDoubles msg)
-
 main :: IO ()
-main = serveSocket "5001" multicopterHandler 104
+main = runMulticopter
