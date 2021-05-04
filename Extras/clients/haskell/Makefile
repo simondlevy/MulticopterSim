@@ -1,11 +1,8 @@
-ALL = pack convert udpserver
+ALL = pack udpserver
 all: $(ALL)
 
 pack: pack.hs
 	ghc pack.hs
-
-convert: convert.hs
-	ghc convert.hs
 
 udpserver: udpserver.hs
 	ghc udpserver.hs
