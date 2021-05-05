@@ -29,6 +29,9 @@ runMulticopter = withSocketsDo $
    -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
 
     do 
+
+       -- XXX should replace this repeated code with a datatype
+
        telemetryServerAddrInfo <- getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just "5001")
        let telemetryServerAddr = head telemetryServerAddrInfo
        telemetryServerSocket <- socket (addrFamily telemetryServerAddr) Datagram defaultProtocol
@@ -38,6 +41,8 @@ runMulticopter = withSocketsDo $
        let motorClientAddr = head motorClientAddrInfo
        motorClientSocket <- socket (addrFamily motorClientAddr) Datagram defaultProtocol
        let motorSockAddr = addrAddress motorClientAddr
+
+       -- XXX --------------------------------------------------
 
        bind telemetryServerSocket telemetrySockAddr
 
@@ -52,12 +57,6 @@ runMulticopter = withSocketsDo $
                   let msgOut = packStr "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\NUL"
                   Network.Socket.ByteString.sendTo motorClientSocket msgOut motorClientSockAddr
                   processMessages telemetryServerSocket motorClientSocket motorClientSockAddr
-          
-          getSocket port = 
-              do
-                  addrInfo <- getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just port)
-                  let addr = head addrInfo
-                  socket (addrFamily addr) Datagram defaultProtocol
                       
 packStr :: String -> B.ByteString
 packStr = B.pack . map (fromIntegral . ord)
