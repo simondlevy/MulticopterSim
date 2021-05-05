@@ -6,6 +6,8 @@
   MIT License
 --}
 
+module Multicopter (runMulticopter) where
+
 import Control.Applicative
 import Data.Serialize
 import Network.Socket
@@ -52,8 +54,3 @@ doublesToBytes = runPut . mapM_ putFloat64le
 
 bytesToDoubles :: ByteString -> Either String [Double]
 bytesToDoubles = runGet $ many getFloat64le
-
---------------------------------------------------------------------------
-
-main :: IO ()
-main = runMulticopter

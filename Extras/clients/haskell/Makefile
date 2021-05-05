@@ -1,11 +1,11 @@
-ALL = multicopter
+ALL = takeoff
 all: $(ALL)
 
-multicopter: multicopter.hs
-	ghc -Wall multicopter.hs
+takeoff: takeoff.hs
+	ghc -Wall takeoff.hs
 
-run: multicopter
-	./multicopter
+run: takeoff
+	./takeoff
 clean:
 	rm -rf $(ALL) *.hi *.o
 
