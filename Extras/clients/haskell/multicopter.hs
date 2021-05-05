@@ -6,6 +6,8 @@
   MIT License
 --}
 
+import Control.Applicative
+import Data.Serialize
 import Data.Bits
 import Network.Socket
 import Network.Socket.ByteString
@@ -52,17 +54,17 @@ runMulticopter = withSocketsDo $
               do 
                   (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
                   print (bytesToDoubles msgIn)
-                  let msgOut = packStr "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\NUL"
+                  let msgOut = doublesToBytes [0]
                   Network.Socket.ByteString.sendTo motorClientSocket msgOut motorClientSockAddr
                   processMessages telemetryServerSocket motorClientSocket motorClientSockAddr
                       
-packStr :: String -> B.ByteString
-packStr = B.pack . map (fromIntegral . ord)
-
 -- https://stackoverflow.com/questions/20912582/haskell-bytestring-to-float-array
-bytesToDoubles :: BS.ByteString -> V.Vector Double
-bytesToDoubles = V.unsafeCast . aux . BS.toForeignPtr
-    where aux (fp,offset,len) = V.unsafeFromForeignPtr fp offset len
+
+doublesToBytes :: [Double] -> ByteString
+doublesToBytes = runPut . mapM_ putFloat64le
+
+bytesToDoubles :: ByteString -> Either String [Double]
+bytesToDoubles = runGet $ many getFloat64le
 
 --------------------------------------------------------------------------
 
