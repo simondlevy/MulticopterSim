@@ -48,9 +48,7 @@ runMulticopter = withSocketsDo $
 
        processMessages telemetryServerSocket motorClientSocket motorSockAddr
 
-    where 
-
-          processMessages telemetryServerSocket motorClientSocket motorClientSockAddr =
+    where processMessages telemetryServerSocket motorClientSocket motorClientSockAddr =
               do 
                   (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
                   print (bytesToDoubles msgIn)
