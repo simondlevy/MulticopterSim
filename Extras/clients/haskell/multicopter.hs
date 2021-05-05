@@ -35,10 +35,13 @@ runMulticopter = withSocketsDo $
                     Nothing (Just "5001")
        let telemetryServerAddr = head telemetryServerAddrInfo
 
+
        motorClientAddrInfo <- getAddrInfo 
                     (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
-                    Nothing (Just "5002")
+                    Nothing (Just "5000")
        let motorClientAddr = head motorClientAddrInfo
+
+       let motorClientSockAddr = addrAddress motorClientAddr
 
        -- Create sockets for incoming and outgoing data
        telemetryServerSocket <- socket (addrFamily telemetryServerAddr) Datagram defaultProtocol
@@ -48,15 +51,17 @@ runMulticopter = withSocketsDo $
        bind telemetryServerSocket (addrAddress telemetryServerAddr)
 
        -- Loop forever processing incoming data.  Ctrl-C to abort.
-       processMessages telemetryServerSocket motorClientSocket motorClientAddr
+       processMessages telemetryServerSocket motorClientSocket motorClientSockAddr
 
-    where processMessages telemetryServerSocket motorClientSocket motorClientAddr =
+    where processMessages telemetryServerSocket motorClientSocket motorClientSockAddr =
               do 
+                 putStrLn "receiving"
                  (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
                  print (bytesToDoubles msgIn)
                  let msgOut = packStr "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\NUL"
-                 -- Network.Socket.ByteString.sendTo motorClientSocket msgOut motorClientAddr
-                 processMessages telemetryServerSocket motorClientSocket motorClientAddr
+                 Network.Socket.ByteString.sendTo motorClientSocket msgOut motorClientSockAddr
+                 putStrLn "sent"
+                 processMessages telemetryServerSocket motorClientSocket motorClientSockAddr
 
 packStr :: String -> B.ByteString
 packStr = B.pack . map (fromIntegral . ord)
