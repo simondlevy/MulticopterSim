@@ -2,7 +2,7 @@ ALL = multicopter
 all: $(ALL)
 
 multicopter: multicopter.hs
-	ghc multicopter.hs
+	ghc -Wall multicopter.hs
 
 run: multicopter
 	./multicopter

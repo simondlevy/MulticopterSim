@@ -8,23 +8,10 @@
 
 import Control.Applicative
 import Data.Serialize
-import Data.Bits
 import Network.Socket
 import Network.Socket.ByteString
-import Network.BSD
-import Data.List
 import Data.ByteString.Internal
 
-import qualified Data.ByteString as B
-import qualified Data.ByteString.Char8 as C
-import qualified Data.Text as T
-import Data.Text.Encoding (encodeUtf8)
-import Data.Char (ord)
-
-import Data.ByteString.Internal as BS
-import qualified Data.Vector.Storable as V
-
-             
 runMulticopter :: IO ()
 runMulticopter = withSocketsDo $
 
