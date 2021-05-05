@@ -10,5 +10,5 @@ clean:
 	rm -rf $(ALL) *.hi *.o
 
 edit:
-	vim multicopter.hs
+	vim Multicopter.hs
 
