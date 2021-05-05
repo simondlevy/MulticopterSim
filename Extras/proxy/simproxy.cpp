@@ -98,7 +98,7 @@ int main(int argc, char ** argv)
 
              // Get incoming motor values
             double motorvals[4] = {};
-            twoWayUdp.receive(motorvals, 8); //sizeof(motorvals));
+            twoWayUdp.receive(motorvals, sizeof(motorvals));
 
             printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
             time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], dynamics.x(Dynamics::STATE_Z));
