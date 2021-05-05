@@ -42,12 +42,16 @@ runMulticopter = withSocketsDo $
     where processMessages telemetryServerSocket motorClientSocket motorClientSockAddr =
               do 
                   (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
-                  print (bytesToDoubles msgIn)
-                  let msgOut = doublesToBytes [0.6,0.6,0.6,0.6]
-                  _ <- Network.Socket.ByteString.sendTo motorClientSocket msgOut motorClientSockAddr
+                  _ <- Network.Socket.ByteString.sendTo
+                        motorClientSocket
+                        (doublesToBytes (getMotors (bytesToDoubles msgIn)))
+                        motorClientSockAddr
                   processMessages telemetryServerSocket motorClientSocket motorClientSockAddr
                       
 -- https://stackoverflow.com/questions/20912582/haskell-bytestring-to-float-array
+
+getMotors :: Either String [Double] -> [Double]
+getMotors x = [0.6,0.6,0.6,0.6]
 
 doublesToBytes :: [Double] -> ByteString
 doublesToBytes = runPut . mapM_ putFloat64le
