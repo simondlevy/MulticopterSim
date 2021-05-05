@@ -22,37 +22,43 @@ import Data.Char (ord)
 import Data.ByteString.Internal as BS
 import qualified Data.Vector.Storable as V
 
+             
 runMulticopter :: IO ()
-
 runMulticopter = withSocketsDo $
 
    -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
 
     do 
-       telemetryServerAddrInfo <- getAddrInfo 
-                    (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
-                    Nothing (Just "5001")
+       telemetryServerAddrInfo <- getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just "5001")
        let telemetryServerAddr = head telemetryServerAddrInfo
        telemetryServerSocket <- socket (addrFamily telemetryServerAddr) Datagram defaultProtocol
+       let telemetrySockAddr = addrAddress telemetryServerAddr
 
-       motorClientAddrInfo <- getAddrInfo 
-                    (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
-                    Nothing (Just "5000")
+       motorClientAddrInfo <- getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just "5000")
        let motorClientAddr = head motorClientAddrInfo
        motorClientSocket <- socket (addrFamily motorClientAddr) Datagram defaultProtocol
+       let motorSockAddr = addrAddress motorClientAddr
 
-       bind telemetryServerSocket (addrAddress telemetryServerAddr)
+       bind telemetryServerSocket telemetrySockAddr
 
-       processMessages telemetryServerSocket motorClientSocket (addrAddress motorClientAddr)
+       processMessages telemetryServerSocket motorClientSocket motorSockAddr
 
-    where processMessages telemetryServerSocket motorClientSocket motorClientSockAddr =
+    where 
+
+          processMessages telemetryServerSocket motorClientSocket motorClientSockAddr =
               do 
-                 (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
-                 print (bytesToDoubles msgIn)
-                 let msgOut = packStr "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\NUL"
-                 Network.Socket.ByteString.sendTo motorClientSocket msgOut motorClientSockAddr
-                 processMessages telemetryServerSocket motorClientSocket motorClientSockAddr
-
+                  (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
+                  print (bytesToDoubles msgIn)
+                  let msgOut = packStr "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\NUL"
+                  Network.Socket.ByteString.sendTo motorClientSocket msgOut motorClientSockAddr
+                  processMessages telemetryServerSocket motorClientSocket motorClientSockAddr
+          
+          getSocket port = 
+              do
+                  addrInfo <- getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just port)
+                  let addr = head addrInfo
+                  socket (addrFamily addr) Datagram defaultProtocol
+                      
 packStr :: String -> B.ByteString
 packStr = B.pack . map (fromIntegral . ord)
 
