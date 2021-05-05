@@ -6,5 +6,9 @@
 
 import Multicopter
 
+motorfun :: Int -> Int
+motorfun 0 = 0
+motorfun _ = 1
+
 main :: IO ()
-main = runMulticopter
+main = runMulticopter motorfun

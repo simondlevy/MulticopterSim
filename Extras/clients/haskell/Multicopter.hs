@@ -14,8 +14,8 @@ import Network.Socket
 import Network.Socket.ByteString
 import Data.ByteString.Internal
 
-runMulticopter :: IO ()
-runMulticopter = withSocketsDo $
+runMulticopter :: motorfun -> IO ()
+runMulticopter motorfun = withSocketsDo $
 
    -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
 
