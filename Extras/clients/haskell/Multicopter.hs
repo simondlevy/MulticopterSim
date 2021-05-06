@@ -44,11 +44,16 @@ runMulticopter controlFunc = withSocketsDo $
 
     where processMessages telemetryServerSocket motorClientSocket motorClientSockAddr =
               do 
+
                   (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
+
+                  let motorvals = bytesToDoubles msgIn
+
                   _ <- Network.Socket.ByteString.sendTo
                         motorClientSocket
-                        (doublesToBytes (controlFunc (bytesToDoubles msgIn)))
+                        (doublesToBytes (controlFunc motorvals))
                         motorClientSockAddr
+
                   processMessages telemetryServerSocket motorClientSocket motorClientSockAddr
                       
 
