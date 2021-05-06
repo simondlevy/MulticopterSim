@@ -6,7 +6,7 @@
   MIT License
 --}
 
-module Multicopter (runMulticopter, State, Motors, ControlFunc) where
+module Multicopter (runMulticopter) where
 
 import Control.Applicative
 import Data.Serialize -- from cereal
@@ -15,10 +15,7 @@ import Network.Socket.ByteString
 import Data.ByteString.Internal
 import Data.Either.Utils -- from MissingH
 
-data State = State Double Double Double Double Double Double Double Double Double Double Double Double deriving Show
-data Motors = Motors Double Double Double Double deriving Show
-
-type ControlFunc = [Double] -> [Double]
+import Types
 
 runMulticopter :: ControlFunc -> IO ()
 runMulticopter controlFunc = withSocketsDo $

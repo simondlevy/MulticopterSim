@@ -5,6 +5,7 @@
 --}
 
 import Multicopter
+import Types
 
 controlFunc :: ControlFunc
 controlFunc _ = [1,1,1,1]
