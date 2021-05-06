@@ -6,7 +6,7 @@
   MIT License
 --}
 
-module Types (State, Motors, ControlFunc) where
+module Types (State(..), Motors(..), ControlFunc) where
 
 data State = State Double Double Double Double Double Double Double Double Double Double Double Double deriving Show
 
