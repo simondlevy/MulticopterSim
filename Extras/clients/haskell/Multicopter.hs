@@ -6,19 +6,22 @@
   MIT License
 --}
 
-module Multicopter (runMulticopter) where
+module Multicopter (runMulticopter, State, Motors, ControlFunc) where
 
 import Control.Applicative
-import Data.Serialize -- crom cereal
+import Data.Serialize -- from cereal
 import Network.Socket
 import Network.Socket.ByteString
 import Data.ByteString.Internal
 import Data.Either.Utils -- from MissingH
 
-type MotorFunc = [Double] -> [Double]
+data State = State Double Double Double Double Double Double Double Double Double Double Double Double deriving Show
+data Motors = Motors Double Double Double Double deriving Show
 
-runMulticopter :: MotorFunc -> IO ()
-runMulticopter motorfun = withSocketsDo $
+type ControlFunc = [Double] -> [Double]
+
+runMulticopter :: ControlFunc -> IO ()
+runMulticopter controlFunc = withSocketsDo $
 
    -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
 
@@ -47,7 +50,7 @@ runMulticopter motorfun = withSocketsDo $
                   (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
                   _ <- Network.Socket.ByteString.sendTo
                         motorClientSocket
-                        (doublesToBytes (motorfun (bytesToDoubles msgIn)))
+                        (doublesToBytes (controlFunc (bytesToDoubles msgIn)))
                         motorClientSockAddr
                   processMessages telemetryServerSocket motorClientSocket motorClientSockAddr
                       

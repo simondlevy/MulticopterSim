@@ -6,8 +6,8 @@
 
 import Multicopter
 
-motorfun :: [Double] -> [Double]
-motorfun _ = [1,1,1,1]
+controlFunc :: ControlFunc
+controlFunc _ = [1,1,1,1]
 
 main :: IO ()
-main = runMulticopter motorfun
+main = runMulticopter controlFunc
