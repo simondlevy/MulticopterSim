@@ -13,8 +13,12 @@ import Data.Serialize
 import Network.Socket
 import Network.Socket.ByteString
 import Data.ByteString.Internal
+import qualified Data.Vector.Storable as V
+import Data.Either.Utils -- from MissingH
 
-runMulticopter :: motorfun -> IO ()
+type MotorFunc = [Double] -> [Double]
+
+runMulticopter :: MotorFunc -> IO ()
 runMulticopter motorfun = withSocketsDo $
 
    -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
@@ -33,7 +37,7 @@ runMulticopter motorfun = withSocketsDo $
        motorClientSocket <- socket (addrFamily motorClientAddr) Datagram defaultProtocol
        let motorSockAddr = addrAddress motorClientAddr
 
-       -- XXX --------------------------------------------------
+       -------------------------------------------------------
 
        bind telemetryServerSocket telemetrySockAddr
 
@@ -44,17 +48,15 @@ runMulticopter motorfun = withSocketsDo $
                   (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
                   _ <- Network.Socket.ByteString.sendTo
                         motorClientSocket
-                        (doublesToBytes (getMotors (bytesToDoubles msgIn)))
+                        (doublesToBytes (motorfun (bytesToDoubles msgIn)))
                         motorClientSockAddr
                   processMessages telemetryServerSocket motorClientSocket motorClientSockAddr
                       
--- https://stackoverflow.com/questions/20912582/haskell-bytestring-to-float-array
 
-getMotors :: Either String [Double] -> [Double]
-getMotors x = [0.6,0.6,0.6,0.6]
+-- https://stackoverflow.com/questions/20912582/haskell-bytestring-to-float-array
 
 doublesToBytes :: [Double] -> ByteString
 doublesToBytes = runPut . mapM_ putFloat64le
 
-bytesToDoubles :: ByteString -> Either String [Double]
-bytesToDoubles = runGet $ many getFloat64le
+bytesToDoubles :: ByteString -> [Double]
+bytesToDoubles bs = (fromRight ((runGet $ many getFloat64le) bs))
