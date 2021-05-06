@@ -9,11 +9,11 @@
 module Multicopter (runMulticopter) where
 
 import Control.Applicative
-import Data.Serialize -- from cereal
 import Network.Socket
 import Network.Socket.ByteString
 import Data.ByteString.Internal
 import Data.Either.Utils -- from MissingH
+import Data.Serialize -- from cereal
 
 import Types
 
