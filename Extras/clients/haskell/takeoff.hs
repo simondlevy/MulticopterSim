@@ -7,8 +7,7 @@
 import Multicopter
 
 motorfun :: [Double] -> [Double]
-motorfun [0] = [1,1,1,1]
-motorfun _ = [0,0,0,0]
+motorfun _ = [1,1,1,1]
 
 main :: IO ()
 main = runMulticopter motorfun

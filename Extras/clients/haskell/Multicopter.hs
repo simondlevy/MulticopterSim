@@ -9,11 +9,10 @@
 module Multicopter (runMulticopter) where
 
 import Control.Applicative
-import Data.Serialize
+import Data.Serialize -- crom cereal
 import Network.Socket
 import Network.Socket.ByteString
 import Data.ByteString.Internal
-import qualified Data.Vector.Storable as V
 import Data.Either.Utils -- from MissingH
 
 type MotorFunc = [Double] -> [Double]
