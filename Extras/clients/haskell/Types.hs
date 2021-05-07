@@ -20,4 +20,4 @@ data Motors = Motors [Double] deriving Show
 motorvals :: Motors -> [Double]
 motorvals (Motors vs) = vs
 
-type ControlFunc = State -> Motors
+type ControlFunc = Time -> State -> Motors

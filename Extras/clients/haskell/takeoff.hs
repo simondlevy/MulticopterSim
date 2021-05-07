@@ -8,7 +8,7 @@ import Types
 import Multicopter
 
 controlFunc :: ControlFunc
-controlFunc _ = Motors [1,1,1,1]
+controlFunc _ _ = Motors [1,1,1,1]
 
 main :: IO ()
 main = runMulticopter controlFunc
