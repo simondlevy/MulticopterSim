@@ -9,9 +9,11 @@
 module Types where
 
 data State = State [Double] deriving Show
+statevals :: State -> [Double]
+statevals (State v) = v
 
 data Motors = Motors [Double] deriving Show
 motorvals :: Motors -> [Double]
 motorvals (Motors v) = v
 
-type ControlFunc = [Double] -> Motors
+type ControlFunc = State -> Motors
