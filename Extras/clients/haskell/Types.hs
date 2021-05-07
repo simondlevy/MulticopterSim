@@ -8,7 +8,7 @@
 
 module Types where
 
-data Time = Time Double
+data Time = Time Double deriving Show
 timeval :: Time -> Double
 timeval (Time v) = v
 
