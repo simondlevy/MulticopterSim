@@ -14,4 +14,4 @@ data Motors = Motors [Double] deriving Show
 motorvals :: Motors -> [Double]
 motorvals (Motors v) = v
 
-type ControlFunc = [Double] -> [Double]
+type ControlFunc = [Double] -> Motors
