@@ -7,8 +7,9 @@
 import Types
 import Multicopter
 
-controlFunc :: ControlFunc
-controlFunc _ _ = Motors [1,1,1,1]
+altitudeHoldControl :: ControlFunc
+altitudeHoldControl time state = 
+    Motors [1,1,1,1]
 
 main :: IO ()
-main = runMulticopter controlFunc
+main = runMulticopter altitudeHoldControl
