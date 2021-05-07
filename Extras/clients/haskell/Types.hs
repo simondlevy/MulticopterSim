@@ -8,12 +8,16 @@
 
 module Types where
 
+data Time = Time Double
+timeval :: Time -> Double
+timeval (Time v) = v
+
 data State = State [Double] deriving Show
 statevals :: State -> [Double]
-statevals (State v) = v
+statevals (State vs) = vs
 
 data Motors = Motors [Double] deriving Show
 motorvals :: Motors -> [Double]
-motorvals (Motors v) = v
+motorvals (Motors vs) = vs
 
 type ControlFunc = State -> Motors
