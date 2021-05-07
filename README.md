@@ -134,12 +134,12 @@ in a predator/prey scenario.
 
 ## Matlab
 
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/matlab) contains an example of how
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/matlab) contains an example of how
 you can control MulticopterSim from a Matlab session running on your computer or another computer.
 
 ## Python
 
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/python) contains an example of how
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/python) contains an example of how
 you can control MulticopterSim from a Python session running on your computer or another computer.
 
 ## OpenCV
