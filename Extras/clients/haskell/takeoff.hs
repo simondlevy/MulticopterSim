@@ -12,4 +12,3 @@ controlFunc _ = [1,1,1,1]
 
 main :: IO ()
 main = runMulticopter controlFunc
--- main = print (Motors 0.0 0.0 0.0 0.0)

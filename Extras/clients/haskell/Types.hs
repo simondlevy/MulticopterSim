@@ -6,10 +6,10 @@
   MIT License
 --}
 
-module Types (State(..), Motors(..), ControlFunc) where
+module Types where
 
-data State = State Double Double Double Double Double Double Double Double Double Double Double Double deriving Show
+data State = State [Double] deriving Show
 
-data Motors = Motors Double Double Double Double deriving Show
+data Motors = Motors [Double] deriving Show
 
 type ControlFunc = [Double] -> [Double]
