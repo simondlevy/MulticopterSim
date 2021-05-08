@@ -91,8 +91,8 @@ class Ingenuity {
         void build(APawn * pawn)
         {
             // Build the frame
-            //vehicle.buildFull(pawn, BodyStatics.mesh.Get()); // Restore for cameras, audio
-            vehicle.build(pawn, BodyStatics.mesh.Get());
+            vehicle.buildFull(pawn, BodyStatics.mesh.Get()); // Restore for cameras, audio
+            // vehicle.build(pawn, BodyStatics.mesh.Get());
 
             // Add rotors
             addRotor(RotorTopStatics.mesh.Get(), .250);
