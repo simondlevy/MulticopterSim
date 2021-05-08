@@ -40,6 +40,8 @@ runMulticopter controlFunc = withSocketsDo $
 
        bind telemetryServerSocket telemetrySockAddr
 
+       putStrLn "Hit the Start button ..."
+
        processMessages telemetryServerSocket motorClientSocket motorSockAddr
 
     where processMessages telemetryServerSocket motorClientSocket motorClientSockAddr =

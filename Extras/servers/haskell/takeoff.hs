@@ -13,4 +13,5 @@ altitudeHoldControl time state =
     where altitude = -(state_z state)
 
 main :: IO ()
-main = runMulticopter altitudeHoldControl
+main = do
+    runMulticopter altitudeHoldControl
