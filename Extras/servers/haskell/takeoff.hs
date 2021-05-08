@@ -9,7 +9,8 @@ import Multicopter
 
 altitudeHoldControl :: ControlFunc
 altitudeHoldControl time state = 
-    Motors [1,1,1,1]
+    if altitude < 10 then Motors [0.6,0.6,0.6,0.6] else Motors [0,0,0,0]
+    where altitude = -(state_z state)
 
 main :: IO ()
 main = runMulticopter altitudeHoldControl

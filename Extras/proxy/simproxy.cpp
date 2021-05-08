@@ -101,7 +101,7 @@ int main(int argc, char ** argv)
             twoWayUdp.receive(motorvals, sizeof(motorvals));
 
             printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
-            time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], dynamics.x(Dynamics::STATE_Z));
+                   time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], dynamics.x(Dynamics::STATE_Z));
 
             // Update dynamics with motor values
             dynamics.setMotors(motorvals);
