@@ -10,7 +10,7 @@ module Multicopter (runMulticopter) where
 
 import Control.Applicative
 import Network.Socket
-import Network.Socket.ByteString
+import Network.Socket.ByteString -- from network
 import Data.ByteString.Internal
 import Data.Either.Utils -- from MissingH
 import Data.Serialize -- from cereal
