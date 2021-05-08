@@ -41,6 +41,9 @@ class TakeoffCopter(Multicopter):
         # negate it to use as input to PID controller.
         z = -x[4]
 
+        # No motor values yet
+        u = 0
+
         # Compute vertical climb rate as first difference of altitude/time
         if t > self.tprev:
 

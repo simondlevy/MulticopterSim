@@ -19,7 +19,7 @@
 static const char * HOST = "127.0.0.1"; // localhost
 static uint16_t  MOTOR_PORT = 5000;
 static uint16_t  TELEM_PORT = 5001;
-// static uint16_t  IMAGE_PORT = 5002;
+static uint16_t  IMAGE_PORT = 5002;
 
 // Image size
 static uint16_t IMAGE_ROWS = 480;
@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
         TwoWayUdp twoWayUdp = TwoWayUdp(HOST, TELEM_PORT, MOTOR_PORT);
 
         // Create one-way server for images out
-        // TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
+        TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
 
         // Create quadcopter dynamics model
         QuadXAPDynamics dynamics = QuadXAPDynamics(b, d, m, Ix, Iy, Iz, Jr, l, maxrpm);
@@ -76,7 +76,7 @@ int main(int argc, char ** argv)
         dynamics.init(rotation);
 
         // Open image socket's connection to host
-        // imageSocket.openConnection();
+        imageSocket.openConnection();
 
         // Loop forever, communicating with client
         while (true) {
@@ -94,7 +94,7 @@ int main(int argc, char ** argv)
             twoWayUdp.send(telemetry, sizeof(telemetry));
 
             // Send image data
-            // imageSocket.sendData(image, sizeof(image));
+            imageSocket.sendData(image, sizeof(image));
 
              // Get incoming motor values
             double motorvals[4] = {};

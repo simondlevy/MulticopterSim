@@ -6,12 +6,16 @@
 
 import Types
 import Multicopter
+import PidController
 
-altitudeHoldControl :: ControlFunc
-altitudeHoldControl time state = 
-    if altitude < 10 then Motors [0.6,0.6,0.6,0.6] else Motors [0,0,0,0]
-    where altitude = -(state_z state)
+takeoffControl :: ControlFunc
+takeoffControl _time state = 
+    let altitude = -(state_z state) -- NED => ENU
+        target = 10
+        err = target - altitude
+        u = 0.5 - 0.00001 * err
+    in Motors [u,u,u,u]
 
 main :: IO ()
 main = do
-    runMulticopter altitudeHoldControl
+    runMulticopter takeoffControl

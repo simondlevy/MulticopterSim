@@ -1,7 +1,7 @@
 ALL = takeoff
 all: $(ALL)
 
-takeoff: takeoff.hs Types.hs Multicopter.hs
+takeoff: takeoff.hs Types.hs Multicopter.hs PidController.hs
 	ghc -Wall takeoff.hs
 
 run: takeoff
@@ -10,5 +10,5 @@ clean:
 	rm -rf $(ALL) *.hi *.o
 
 edit:
-	vim takeoff.hs
+	vim PidController.hs
 

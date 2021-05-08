@@ -43,6 +43,9 @@ class Multicopter(object):
         motorClientSocket = Multicopter._make_udpsocket()
         telemetryServerSocket = Multicopter._make_udpsocket()
         telemetryServerSocket.bind((self.host, self.telem_port))
+
+        Multicopter.debug('Hit the Start button ...')
+
         telemetryThread = Thread(target=self._run_telemetry,
                                  args=(
                                        telemetryServerSocket,
@@ -54,13 +57,9 @@ class Multicopter(object):
         imageServerSocket.bind((self.host, self.image_port))
         imageServerSocket.listen(1)
 
-        Multicopter.debug('Hit the Start button ...')
-
         # This will block (wait) until a client connets
         imageConn, _ = imageServerSocket.accept()
-
         imageConn.settimeout(1)
-
         Multicopter.debug('Got a connection!')
 
         telemetryThread.start()
@@ -83,6 +82,8 @@ class Multicopter(object):
                 self.handleImage(image)
 
             sleep(.001)
+
+        Multicopter.debug('done')
 
     def handleImage(self, image):
         '''
@@ -114,7 +115,7 @@ class Multicopter(object):
                 done[0] = True
                 break
 
-            telemetryServerSocket.settimeout(.01)
+            telemetryServerSocket.settimeout(.1)
 
             telem = np.frombuffer(data)
 
