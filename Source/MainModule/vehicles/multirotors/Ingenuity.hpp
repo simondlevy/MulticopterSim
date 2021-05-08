@@ -135,5 +135,9 @@ class Ingenuity {
             vehicle.Tick(DeltaSeconds);
         }
 
+        void addCamera(Camera * camera)
+        {
+            vehicle.addCamera(camera);
+        }
 
 }; // class Ingenuity 

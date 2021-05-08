@@ -1,5 +1,5 @@
 /*
-* Class declaration for pawn class using UDP sockets
+* Class declaration for DJI Phantom pawn class using UDP sockets
 *
 * Copyright (C) 2019 Simon D. Levy
 *

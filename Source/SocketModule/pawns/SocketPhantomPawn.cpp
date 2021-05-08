@@ -1,5 +1,5 @@
 /*
-* Class implementation for Phantom pawn in MulticopterSim
+* Class implementation for DJI Phantom pawn in MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
