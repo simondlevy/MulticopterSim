@@ -17,9 +17,9 @@ class Camera {
     public:
 
         // Default position w.r.t vehicle
-        static constexpr float X = +20;
-        static constexpr float Y = 0;
-        static constexpr float Z = +30;
+        static constexpr float X = 0.2;
+        static constexpr float Y = 0.0;
+        static constexpr float Z = 0.3;
 
         // Arbitrary array limits supporting statically declared assets
         static const uint8_t MAX_CAMERAS = 10; 
@@ -136,7 +136,7 @@ class Camera {
             _captureComponent = pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
             _captureComponent->SetWorldScale3D(FVector(0.1,0.1,0.1));
             _captureComponent->SetupAttachment(springArm, USpringArmComponent::SocketName);
-            _captureComponent->SetRelativeLocation(FVector(_x, _y, _z));
+            _captureComponent->SetRelativeLocation(100*FVector(_x, _y, _z));  // m => cm
             _captureComponent->TextureTarget = textureRenderTarget2D;
 
             // Get the render target resource for copying the image pixels

@@ -28,7 +28,7 @@ class SOCKETMODULE_API ASocketIngenuityPawn : public APawn {
         Ingenuity _ingenuity;
 
         // Camera
-        SocketCamera _camera = SocketCamera(Camera::X+25, Camera::Y, Camera::Z+60);
+        SocketCamera _camera = SocketCamera(Camera::X+.25, Camera::Y, Camera::Z+.60);
 
     protected:
 
