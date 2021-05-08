@@ -107,6 +107,9 @@ int main(int argc, char ** argv)
             dynamics.setMotors(motorvals);
             dynamics.update(DELTA_T);
 
+            // Set AGL to arbitrary positive value to o avoid kinematic trick
+            dynamics.setAgl(1);
+
             time += DELTA_T;
         }
 
