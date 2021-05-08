@@ -16,6 +16,11 @@ class Camera {
 
     public:
 
+        // Default position w.r.t vehicle
+        static constexpr float X = +20;
+        static constexpr float Y = 0;
+        static constexpr float Z = +30;
+
         // Arbitrary array limits supporting statically declared assets
         static const uint8_t MAX_CAMERAS = 10; 
 
@@ -31,10 +36,9 @@ class Camera {
 
     private:
 
-        // Camera position w.r.t. to vehicle
-        static constexpr float CAMERA_X = +20;
-        static constexpr float CAMERA_Y =   0;
-        static constexpr float CAMERA_Z = +30;
+        float _x = 0;
+        float _y = 0;
+        float _z = 0;
 
         Resolution_t _res;
 
@@ -54,8 +58,8 @@ class Camera {
         USceneCaptureComponent2D * _captureComponent = NULL;
         UCameraComponent         * _cameraComponent = NULL;
         FRenderTarget            * _renderTarget = NULL;
- 
-        Camera(float fov, Resolution_t resolution) 
+
+        Camera(float fov, Resolution_t resolution, float x=Camera::X, float y=Camera::Y, float z=Camera::Z)
         {
             uint16_t rowss[3] = {480, 720, 1080};
             uint16_t colss[3] = {640, 1280, 1920};
@@ -64,6 +68,11 @@ class Camera {
             _cols = colss[resolution];
             _res  = resolution;
             _fov = fov;
+
+            // Set position w.r.t. vehicle
+            _x = x;
+            _y = y;
+            _z = z;
 
             // Create a byte array sufficient to hold the RGBA image
             _imageBytes = new uint8_t [_rows*_cols*4]();
@@ -127,7 +136,7 @@ class Camera {
             _captureComponent = pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
             _captureComponent->SetWorldScale3D(FVector(0.1,0.1,0.1));
             _captureComponent->SetupAttachment(springArm, USpringArmComponent::SocketName);
-            _captureComponent->SetRelativeLocation(FVector(CAMERA_X, CAMERA_Y, CAMERA_Z));
+            _captureComponent->SetRelativeLocation(FVector(_x, _y, _z));
             _captureComponent->TextureTarget = textureRenderTarget2D;
 
             // Get the render target resource for copying the image pixels

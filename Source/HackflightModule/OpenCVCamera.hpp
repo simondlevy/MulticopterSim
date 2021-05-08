@@ -24,9 +24,9 @@ class OpenCVCamera : public Camera {
 
     protected:
 
-        OpenCVCamera(float fov, Resolution_t res)
-            : Camera(fov, res)
-        {
+        OpenCVCamera(float fov, Resolution_t res, float x=Camera::X, float y=Camera::Y, float z=Camera::Z)
+            : Camera(fov, res, x, y, z)
+         {
             // Create a private RBGA image for acquiring render target on main thread
             _rbga_image = cv::Mat::zeros(_rows, _cols, CV_8UC4);
 

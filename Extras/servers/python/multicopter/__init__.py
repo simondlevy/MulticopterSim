@@ -82,6 +82,8 @@ class Multicopter(object):
 
                 self.handleImage(image)
 
+            sleep(.001)
+
     def handleImage(self, image):
         '''
         Override for your application

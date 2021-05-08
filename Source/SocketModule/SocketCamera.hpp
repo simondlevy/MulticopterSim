@@ -29,8 +29,8 @@ class SocketCamera : public Camera {
 
     public:
 
-        SocketCamera()
-            : Camera(FOV, RES)
+        SocketCamera(float x=Camera::X, float y=Camera::Y, float z=Camera::Z)
+            : Camera(FOV, RES, x, y, z)
         {
             // Open image socket's connection to host
             imageSocket.openConnection();
