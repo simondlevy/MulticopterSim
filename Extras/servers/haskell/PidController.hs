@@ -25,5 +25,8 @@ pid_windup_max (PidController _kp _ki _kd windupMax) = windupMax
 data PidController' = PidController' PidController Double Double Double deriving Show
 
 pid'_kp :: PidController' -> Double
-pid'_kp (PidController' pidController windupMax lastError integralError) = pid_kp pidController
+pid'_kp (PidController' pidController _windupMax _lastError _integralError) = pid_kp pidController
+
+pid'_kd :: PidController' -> Double
+pid'_kd (PidController' pidController _windupMax _lastError _integralError) = pid_kd pidController
 
