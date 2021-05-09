@@ -22,7 +22,6 @@ class AltitudePidController(object):
         self.windupMax = windupMax
 
         # Values modified in-flight
-        self.posTarget = 0
         self.lastError = 0
         self.integralError = 0
 

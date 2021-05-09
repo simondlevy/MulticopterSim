@@ -20,3 +20,5 @@ pid_ki (PidController _kp ki _kd) = ki
 pid_kd :: PidController -> Double
 pid_kd (PidController _kp _ki kd) = kd
 
+data PidController' = PidController' PidController Double deriving Show
+
