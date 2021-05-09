@@ -25,20 +25,25 @@ class Rocket {
 
     private:
 
-        // Estimated
-        static constexpr double b = 5.E-06; // force constexpratnt [F=b*w^2]
-        static constexpr double d = 2.E-06; // torque constexprant [T=d*w^2]
+        Dynamics::vehicle_params_t vparams = {
 
-        // https://www.dji.com/phantom-4/info
-        static constexpr double m = 1.380;  // mass [kg]
+            // Estimated
+            5.E-06, // b force constatnt [F=b*w^2]
+            2.E-06, // d torque constant [T=d*w^2]
 
-        // Estimated
-        static constexpr double Ix = 2;      // [kg*m^2] 
-        static constexpr double Iy = 2;      // [kg*m^2] 
-        static constexpr double Iz = 3;      // [kg*m^2] 
-        static constexpr double Jr = 38E-04; // prop inertial [kg*m^2] 
+            // https://www.dji.com/phantom-4/info
+            1.380,  // m mass [kg]
 
-        static const uint16_t maxrpm = 15000; // maxrpm
+            // Estimated
+            2,      // Ix [kg*m^2] 
+            2,      // Iy [kg*m^2] 
+            3,      // Iz [kg*m^2] 
+            38E-04, // Jr prop inertial [kg*m^2] 
+
+            0.350,  // l arm length [m]
+
+            15000 // maxrpm
+        };
 
         // Affects dynamics
         static constexpr double NOZZLE_MAX_ANGLE =  45;
@@ -95,7 +100,7 @@ class Rocket {
             float barrelHeight = meshHeightMeters(BodyStatics.mesh.Get());
 
             // Create dynamics
-            dynamics = new ThrustVectorDynamics(b, d, m, Ix, Iy, Iz, Jr, maxrpm, barrelHeight, NOZZLE_Z, NOZZLE_MAX_ANGLE);
+            dynamics = new ThrustVectorDynamics(vparams, NOZZLE_MAX_ANGLE);
 
             // Create vehicle object from dynamics
             _vehicle = new NozzleVehicle(dynamics);

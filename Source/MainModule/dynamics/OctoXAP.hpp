@@ -24,8 +24,8 @@ class OctoXAPDynamics : public Dynamics {
 
     public:	
 
-		OctoXAPDynamics(8, double b, double d, double m, double Ix, double Iy, double Iz, double Jr, double l, uint16_t maxrpm) 
-            : Dynamics(b, d, m, Ix, Iy, Iz, Jr, l, maxrpm)
+        OctoXAPDynamics(Dynamics::vehicle_params_t &vparams)
+            : Dynamics(8, vparams)
         {
         }
 
@@ -41,13 +41,13 @@ class OctoXAPDynamics : public Dynamics {
             double * o = _omegas2;
 
             // roll right
-			//       [2         5         6         7]     - [  1         3         4         8]
-			u2 = (C1*o[1] + C1*o[4] + C2*o[5] + C2*o[6]) - (C1*o[0] + C2*o[2] + C1*o[3] + C2*o[7]);
+            //       [2         5         6         7]     - [  1         3         4         8]
+            u2 = (C1*o[1] + C1*o[4] + C2*o[5] + C2*o[6]) - (C1*o[0] + C2*o[2] + C1*o[3] + C2*o[7]);
 
             // pitch forward
-			//       [ 2        4         6         8]   -   [  1         3         5         7]
-			u3 = (C2*o[1] + C2*o[3] + C1*o[5] + C1*o[7]) - (C2*o[0] + C1*o[2] + C2*o[4] + C1*o[6]);
-        
+            //       [ 2        4         6         8]   -   [  1         3         5         7]
+            u3 = (C2*o[1] + C2*o[3] + C1*o[5] + C1*o[7]) - (C2*o[0] + C1*o[2] + C2*o[4] + C1*o[6]);
+
             // yaw clockwise
             //       [3      4      5      6]  -   [1      2      7      8]
             u4 = (o[2] + o[3] + o[4] + o[5]) - (o[0] + o[1] + o[6] + o[7]);

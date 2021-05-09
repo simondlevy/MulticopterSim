@@ -20,8 +20,8 @@ class DragonflyDynamics : public Dynamics {
 
     public:	
 
-		DragonflyDynamics(double b, double d, double m, double Ix, double Iy, double Iz, double Jr, double l, uint16_t maxrpm) 
-            : Dynamics(4, b, d, m, Ix, Iy, Iz, Jr, l, maxrpm)
+        DragonflyDynamics(Dynamics::vehicle_params_t & vparams) 
+            : Dynamics(4, vparams)
         {
         }
 

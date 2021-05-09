@@ -59,7 +59,10 @@ class Ornithopter : public Vehicle {
             wing_t wing = _wings[index];
 
             // Flap wing via sine of angle
-            _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, wing.yawRelative, wing.rollRelative + MAX_FLAP_DEGREES*sin(angle/FLAP_ANGLE_DIVISOR)));
+            _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, 
+                                                                          wing.yawRelative,
+                                                                          wing.rollRelative + 
+                                                                            MAX_FLAP_DEGREES*sin(angle/FLAP_ANGLE_DIVISOR)));
         }
 
 };  // class Ornithopter

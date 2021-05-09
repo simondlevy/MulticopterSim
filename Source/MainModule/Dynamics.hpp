@@ -41,6 +41,33 @@ class Dynamics {
     public:
 
         /**
+         *  Vehicle parameters
+         */
+        typedef struct {
+
+            double b;  // force constatnt [F=b*w^2]
+            double d;  // torque constant [T=d*w^2]
+            double m;  // mass [kg]
+            double Ix; // [kg*m^2] 
+            double Iy; // [kg*m^2] 
+            double Iz; // [kg*m^2] 
+            double Jr; // prop inertial [kg*m^2] 
+            double l;  // arm length [m]
+
+            uint16_t maxrpm; // maxrpm
+
+        } vehicle_params_t; 
+
+        /**
+         *  World parameters
+         */
+        typedef struct {
+
+            double g;  // gravitational constant
+
+        } world_params_t; 
+
+        /**
          * Position map for state vector
          */
         enum {
@@ -71,7 +98,7 @@ class Dynamics {
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
             double accelNED[3] = {};
-            Transforms::bodyZToInertial(-_U1 / _m, euler, accelNED);
+            Transforms::bodyZToInertial(-_U1 / _vparams.m, euler, accelNED);
 
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + g;
@@ -95,300 +122,298 @@ class Dynamics {
             }
 
             // If we're not airborne, we become airborne when downward acceleration has become negative
-                else {
-                    _airborne = netz < 0;
-                }
-
-                // Once airborne, we can update dynamics
-                if (_airborne) {
-
-                    // Compute the state derivatives using Equation 12
-                    computeStateDerivative(accelNED, netz);
-
-                    // Compute state as first temporal integral of first temporal derivative
-                    for (uint8_t i = 0; i < 12; ++i) {
-                        _x[i] += dt * _dxdt[i];
-                    }
-
-                    // Once airborne, inertial-frame acceleration is same as NED acceleration
-                    _inertialAccel[0] = accelNED[0];
-                    _inertialAccel[1] = accelNED[1];
-                    _inertialAccel[2] = accelNED[2];
-                }
-                else {
-                    //"fly" to agl=0
-                    double vz = 5 * _agl;
-                    _x[STATE_Z] += vz * dt;
-                }
-
-                updateGimbalDynamics(dt);
-
-            } // update
-
-            // State-vector accessor
-            double x(uint8_t k)
-            {
-                return _x[k];
+            else {
+                _airborne = netz < 0;
             }
+
+            // Once airborne, we can update dynamics
+            if (_airborne) {
+
+                // Compute the state derivatives using Equation 12
+                computeStateDerivative(accelNED, netz);
+
+                // Compute state as first temporal integral of first temporal derivative
+                for (uint8_t i = 0; i < 12; ++i) {
+                    _x[i] += dt * _dxdt[i];
+                }
+
+                // Once airborne, inertial-frame acceleration is same as NED acceleration
+                _inertialAccel[0] = accelNED[0];
+                _inertialAccel[1] = accelNED[1];
+                _inertialAccel[2] = accelNED[2];
+            }
+            else {
+                //"fly" to agl=0
+                double vz = 5 * _agl;
+                _x[STATE_Z] += vz * dt;
+            }
+
+            updateGimbalDynamics(dt);
+
+        } // update
+
+        // State-vector accessor
+        double x(uint8_t k)
+        {
+            return _x[k];
+        }
+
+    private:
+
+        static constexpr world_params_t EARTH_PARAMS = { 
+            9.80665  // g graviational constant
+        };
+
+        void construct(uint8_t motorCount, vehicle_params_t & vparams)
+        {
+            _motorCount = motorCount;
+            _rotorCount = motorCount; // can be overridden for thrust-vectoring
+
+            memcpy(&_vparams, &vparams, sizeof(vehicle_params_t));
+
+            for (uint8_t i = 0; i < 12; ++i) {
+                _x[i] = 0;
+            }
+
+            _omegas = new double[motorCount]();
+            _omegas2 = new double[motorCount]();
+        }
 
     protected:
 
-            // Parameters
-            double _b;
-            double _d;
-            double _m;
-            double _Ix;
-            double _Iy;
-            double _Iz;
-            double _Jr;
-            double _l;
-            uint16_t _maxrpm;
+        vehicle_params_t _vparams;
+        world_params_t _wparams;
 
-            Dynamics(uint8_t motorCount,
-                    const double b, 
-                    const double d, 
-                    const double m, 
-                    const double Ix, 
-                    const double Iy, 
-                    const double Iz, 
-                    const double Jr, 
-                    const double l,
-                    uint16_t maxrpm)
-            {
-                _motorCount = motorCount;
-                _rotorCount = motorCount; // can be overridden for thrust-vectoring
+        Dynamics(uint8_t motorCount, vehicle_params_t & vparams)
+        {
+            construct(motorCount, vparams);
+            memcpy(&_wparams, &EARTH_PARAMS, sizeof(world_params_t));
+        }
 
-                _b = b;
-                _d = d;
-                _m = m;
-                _Ix = Ix;
-                _Iy = Iy;
-                _Iz = Iz;
-                _Jr = Jr;
-                _l = l;
-                _maxrpm = maxrpm;
+        Dynamics(uint8_t motorCount, vehicle_params_t & vparams, world_params_t & wparams)
+        {
+            construct(motorCount, vparams);
+            memcpy(&_wparams, &wparams, sizeof(world_params_t));
+        }
 
-                for (uint8_t i = 0; i < 12; ++i) {
-                    _x[i] = 0;
-                }
+        // Flag for whether we're airborne and can update dynamics
+        bool _airborne = false;
 
-                _omegas = new double[motorCount]();
-                _omegas2 = new double[motorCount]();
-            }
+        // Inertial-frame acceleration
+        double _inertialAccel[3] = {};
 
-            // Flag for whether we're airborne and can update dynamics
-            bool _airborne = false;
-
-            // Inertial-frame acceleration
-            double _inertialAccel[3] = {};
-
-            // y = Ax + b helper for frame-of-reference conversion methods
-            static void dot(double A[3][3], double x[3], double y[3])
-            {
-                for (uint8_t j = 0; j < 3; ++j) {
-                    y[j] = 0;
-                    for (uint8_t k = 0; k < 3; ++k) {
-                        y[j] += A[j][k] * x[k];
-                    }
+        // y = Ax + b helper for frame-of-reference conversion methods
+        static void dot(double A[3][3], double x[3], double y[3])
+        {
+            for (uint8_t j = 0; j < 3; ++j) {
+                y[j] = 0;
+                for (uint8_t k = 0; k < 3; ++k) {
+                    y[j] += A[j][k] * x[k];
                 }
             }
+        }
 
-            // bodyToInertial method optimized for body X=Y=0
-            static void bodyZToInertial(double bodyZ, const double rotation[3], double inertial[3])
-            {
-                double phi = rotation[0];
-                double theta = rotation[1];
-                double psi = rotation[2];
+        // bodyToInertial method optimized for body X=Y=0
+        static void bodyZToInertial(double bodyZ, const double rotation[3], double inertial[3])
+        {
+            double phi = rotation[0];
+            double theta = rotation[1];
+            double psi = rotation[2];
 
-                double cph = cos(phi);
-                double sph = sin(phi);
-                double cth = cos(theta);
-                double sth = sin(theta);
-                double cps = cos(psi);
-                double sps = sin(psi);
+            double cph = cos(phi);
+            double sph = sin(phi);
+            double cth = cos(theta);
+            double sth = sin(theta);
+            double cps = cos(psi);
+            double sps = sin(psi);
 
-                // This is the rightmost column of the body-to-inertial rotation matrix
-                double R[3] = { sph * sps + cph * cps * sth,
-                    cph * sps * sth - cps * sph,
-                    cph * cth };
+            // This is the rightmost column of the body-to-inertial rotation matrix
+            double R[3] = { sph * sps + cph * cps * sth,
+                cph * sps * sth - cps * sph,
+                cph * cth };
 
-                for (uint8_t i = 0; i < 3; ++i) {
-                    inertial[i] = bodyZ * R[i];
-                }
+            for (uint8_t i = 0; i < 3; ++i) {
+                inertial[i] = bodyZ * R[i];
             }
+        }
 
-            // Height above ground, set by kinematics
-            double _agl = 0;
+        // Height above ground, set by kinematics
+        double _agl = 0;
 
-            // universal constants
-            static constexpr double g = 9.80665; // might want to allow this to vary!
+        // universal constants
+        static constexpr double g = 9.80665; // might want to allow this to vary!
 
-            // state vector (see Eqn. 11) and its first temporal derivative
-            double _x[12] = {};
-            double _dxdt[12] = {};
+        // state vector (see Eqn. 11) and its first temporal derivative
+        double _x[12] = {};
+        double _dxdt[12] = {};
 
-            // Values computed in Equation 6
-            double _U1 = 0;     // total thrust
-            double _U2 = 0;     // roll thrust right
-            double _U3 = 0;     // pitch thrust forward
-            double _U4 = 0;     // yaw thrust clockwise
-            double _Omega = 0;  // torque clockwise
+        // Values computed in Equation 6
+        double _U1 = 0;     // total thrust
+        double _U2 = 0;     // roll thrust right
+        double _U3 = 0;     // pitch thrust forward
+        double _U4 = 0;     // yaw thrust clockwise
+        double _Omega = 0;  // torque clockwise
 
-            // Torques about Euler angles.  We need motorvals for thrust vectoring.
-            virtual void computeTorques(double * motorvals, double & u2, double & u3, double & u4) = 0;
+        // Torques about Euler angles.  We need motorvals for thrust vectoring.
+        virtual void computeTorques(double * motorvals, double & u2, double & u3, double & u4) = 0;
 
-            // radians per second for each motor, and their squared values
-            double* _omegas = NULL;
-            double* _omegas2 = NULL;
+        // radians per second for each motor, and their squared values
+        double* _omegas = NULL;
+        double* _omegas2 = NULL;
 
-            // quad, hexa, octo, etc.
-            uint8_t _rotorCount = 0;
+        // quad, hexa, octo, etc.
+        uint8_t _rotorCount = 0;
 
-            // For thrust vectoring, we can have four motors: two rotors and two servos.  For multirotors,
-            // rotorCount = motorCount
-            uint8_t _motorCount = 0;
-
-
-            virtual void updateGimbalDynamics(double dt) {}
-
-            /**
-             * Implements Equation 12 computing temporal first derivative of state.
-             * Should fill _dxdx[0..11] with appropriate values.
-             * @param accelNED acceleration in NED inertial frame
-             * @param netz accelNED[2] with gravitational constant added in
-             */
-            void computeStateDerivative(double accelNED[3], double netz)
-            {
-                double phidot = _x[STATE_PHI_DOT];
-                double thedot = _x[STATE_THETA_DOT];
-                double psidot = _x[STATE_PSI_DOT];
-
-                _dxdt[0] = _x[STATE_X_DOT];                                                              // x'
-                _dxdt[1] = accelNED[0];                                                                  // x''
-                _dxdt[2] = _x[STATE_Y_DOT];                                                              // y'
-                _dxdt[3] = accelNED[1];                                                                  // y''
-                _dxdt[4] = _x[STATE_Z_DOT];                                                              // z'
-                _dxdt[5] = netz;                                                                         // z''
-                _dxdt[6] = phidot;                                                                       // phi'
-                _dxdt[7] = psidot * thedot * (_Iy - _Iz) / _Ix - _Jr / _Ix * thedot * _Omega + _U2 / _Ix;    // phi''
-                _dxdt[8] = thedot;                                                                       // theta'
-                _dxdt[9] = -(psidot * phidot * (_Iz - _Ix) / _Iy + _Jr / _Iy * phidot * _Omega + _U3 / _Iy); // theta''
-                _dxdt[10] = psidot;                                                                        // psi'
-                _dxdt[11] = thedot * phidot * (_Ix - _Iy) / _Iz + _U4 / _Iz;                               // psi''
-            }
+        // For thrust vectoring, we can have four motors: two rotors and two servos.  For multirotors,
+        // rotorCount = motorCount
+        uint8_t _motorCount = 0;
 
 
-            /**
-             * Computes motor speed base on motor value
-             * @param motorval motor value in [0,1]
-             * @return motor speed in rad/s
-             */
-            virtual double computeMotorSpeed(double motorval)
-            {
-                return motorval * _maxrpm * 3.14159 / 30;
-            }
+        virtual void updateGimbalDynamics(double dt) {}
+
+        /**
+         * Implements Equation 12 computing temporal first derivative of state.
+         * Should fill _dxdx[0..11] with appropriate values.
+         * @param accelNED acceleration in NED inertial frame
+         * @param netz accelNED[2] with gravitational constant added in
+         */
+        void computeStateDerivative(double accelNED[3], double netz)
+        {
+            double phidot = _x[STATE_PHI_DOT];
+            double thedot = _x[STATE_THETA_DOT];
+            double psidot = _x[STATE_PSI_DOT];
+
+            double Ix = _vparams.Ix;
+            double Iy = _vparams.Iy;
+            double Iz = _vparams.Iz;
+            double Jr = _vparams.Jr;
+
+            _dxdt[0] = _x[STATE_X_DOT];                                                            // x'
+            _dxdt[1] = accelNED[0];                                                                // x''
+            _dxdt[2] = _x[STATE_Y_DOT];                                                            // y'
+            _dxdt[3] = accelNED[1];                                                                // y''
+            _dxdt[4] = _x[STATE_Z_DOT];                                                            // z'
+            _dxdt[5] = netz;                                                                       // z''
+            _dxdt[6] = phidot;                                                                     // phi'
+            _dxdt[7] = psidot * thedot * (Iy - Iz) / Ix - Jr / Ix * thedot * _Omega + _U2 / Ix;    // phi''
+            _dxdt[8] = thedot;                                                                     // theta'
+            _dxdt[9] = -(psidot * phidot * (Iz - Ix) / Iy + Jr / Iy * phidot * _Omega + _U3 / Iy); // theta''
+            _dxdt[10] = psidot;                                                                    // psi'
+            _dxdt[11] = thedot * phidot * (Ix - Iy) / Iz + _U4 / Iz;                               // psi''
+        }
+
+
+        /**
+         * Computes motor speed base on motor value
+         * @param motorval motor value in [0,1]
+         * @return motor speed in rad/s
+         */
+        virtual double computeMotorSpeed(double motorval)
+        {
+            return motorval * _vparams.maxrpm * 3.14159 / 30;
+        }
 
     public:
 
-            /**
-             *  Destructor
-             */
-            virtual ~Dynamics(void)
-            {
-                delete _omegas;
-                delete _omegas2;
+        /**
+         *  Destructor
+         */
+        virtual ~Dynamics(void)
+        {
+            delete _omegas;
+            delete _omegas2;
+        }
+
+        /**
+         * Initializes kinematic pose, with flag for whether we're airbone (helps with testing gravity).
+         *
+         * @param rotation initial rotation
+         * @param airborne allows us to start on the ground (default) or in the air (e.g., gravity test)
+         */
+        void init(double rotation[3], bool airborne = false)
+        {
+            // Always start at location (0,0,0)
+            _x[STATE_X] = 0;
+            _x[STATE_Y] = 0;
+            _x[STATE_Z] = 0;
+
+            _x[STATE_PHI] = rotation[0];
+            _x[STATE_THETA] = rotation[1];
+            _x[STATE_PSI] = rotation[2];
+
+            // Initialize velocities and airborne flag
+            _airborne = airborne;
+            _x[STATE_X_DOT] = 0;
+            _x[STATE_Y_DOT] = 0;
+            _x[STATE_Z_DOT] = 0;
+            _x[STATE_PHI_DOT] = 0;
+            _x[STATE_THETA_DOT] = 0;
+            _x[STATE_PSI_DOT] = 0;
+
+            // Initialize inertial frame acceleration in NED coordinates
+            bodyZToInertial(-g, rotation, _inertialAccel);
+
+            // We usuall start on ground, but can start in air for testing
+            _airborne = airborne;
+        }
+
+        /**
+         * Uses motor values to implement Equation 6.
+         *
+         * @param motorvals in interval [0,1] (rotors) or [-0.5,+0.5] (servos)
+         */
+        void setMotors(double* motorvals)
+        {
+            // Convert the  motor values to radians per second
+            for (unsigned int i = 0; i < _rotorCount; ++i) {
+                _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
             }
 
-            /**
-             * Initializes kinematic pose, with flag for whether we're airbone (helps with testing gravity).
-             *
-             * @param rotation initial rotation
-             * @param airborne allows us to start on the ground (default) or in the air (e.g., gravity test)
-             */
-            void init(double rotation[3], bool airborne = false)
-            {
-                // Always start at location (0,0,0)
-                _x[STATE_X] = 0;
-                _x[STATE_Y] = 0;
-                _x[STATE_Z] = 0;
-
-                _x[STATE_PHI] = rotation[0];
-                _x[STATE_THETA] = rotation[1];
-                _x[STATE_PSI] = rotation[2];
-
-                // Initialize velocities and airborne flag
-                _airborne = airborne;
-                _x[STATE_X_DOT] = 0;
-                _x[STATE_Y_DOT] = 0;
-                _x[STATE_Z_DOT] = 0;
-                _x[STATE_PHI_DOT] = 0;
-                _x[STATE_THETA_DOT] = 0;
-                _x[STATE_PSI_DOT] = 0;
-
-                // Initialize inertial frame acceleration in NED coordinates
-                bodyZToInertial(-g, rotation, _inertialAccel);
-
-                // We usuall start on ground, but can start in air for testing
-                _airborne = airborne;
+            // Overall thrust U1 is sum of squared omegas
+            _U1 = 0;
+            for (unsigned int i = 0; i < _rotorCount; ++i) {
+                _omegas2[i] = _omegas[i] * _omegas[i];
+                _U1 += _vparams.b * _omegas2[i];
             }
 
-            /**
-             * Uses motor values to implement Equation 6.
-             *
-             * @param motorvals in interval [0,1] (rotors) or [-0.5,+0.5] (servos)
-             */
-            void setMotors(double* motorvals)
-            {
-                // Convert the  motor values to radians per second
-                for (unsigned int i = 0; i < _rotorCount; ++i) {
-                    _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
-                }
+            // Torque forces are computed differently for each vehicle configuration
+            double u2=0, u3=0, u4=0;
+            computeTorques(motorvals, u2, u3, u4);
 
-                // Overall thrust U1 is sum of squared omegas
-                _U1 = 0;
-                for (unsigned int i = 0; i < _rotorCount; ++i) {
-                    _omegas2[i] = _omegas[i] * _omegas[i];
-                    _U1 += _b * _omegas2[i];
-                }
-
-                // Torque forces are computed differently for each vehicle configuration
-                double u2=0, u3=0, u4=0;
-                computeTorques(motorvals, u2, u3, u4);
-
-                _U2 = _l * _b * u2;
-                _U3 = _l * _b * u3;
-                _U4 = _b * u4;
-            }
+            _U2 = _vparams.l * _vparams.b * u2;
+            _U3 = _vparams.l * _vparams.b * u3;
+            _U4 = _vparams.b * u4;
+        }
 
 
-            /**
-             * Sets height above ground level (AGL).
-             * This method can be called by the kinematic visualization.
-             */
-            void setAgl(double agl)
-            {
-                _agl = agl;
-            }
+        /**
+         * Sets height above ground level (AGL).
+         * This method can be called by the kinematic visualization.
+         */
+        void setAgl(double agl)
+        {
+            _agl = agl;
+        }
 
-            // Rotor direction for animation
-            virtual int8_t rotorDirection(uint8_t i) { (void)i; return 0; }
+        // Rotor direction for animation
+        virtual int8_t rotorDirection(uint8_t i) { (void)i; return 0; }
 
-            /**
-             * Gets motor count set by constructor.
-             * @return motor count
-             */
-            uint8_t motorCount(void)
-            {
-                return _motorCount;
-            }
+        /**
+         * Gets motor count set by constructor.
+         * @return motor count
+         */
+        uint8_t motorCount(void)
+        {
+            return _motorCount;
+        }
 
-            /**
-             * Gets rotor count set by constructor.
-             * @return rotor count
-             */
-            uint8_t rotorCount(void)
-            {
-                return _rotorCount;
-            }
+        /**
+         * Gets rotor count set by constructor.
+         * @return rotor count
+         */
+        uint8_t rotorCount(void)
+        {
+            return _rotorCount;
+        }
 
 }; // class Dynamics
