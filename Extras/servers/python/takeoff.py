@@ -20,7 +20,6 @@ class TakeoffCopter(Multicopter):
 
         # Set up initial conditions
         self.z = 0
-        self.zprev = 0
         self.tprev = 0
         self.dzdt = 0
         self.u = 0
@@ -55,7 +54,6 @@ class TakeoffCopter(Multicopter):
 
             # Use temporal first difference to compute vertical velocity
             dt = t - self.tprev
-            # dzdt = (z-self.zprev) / dt
 
             # Get correction from PID controller
             u = self.pid.u(z, dzdt, dt)
@@ -64,7 +62,6 @@ class TakeoffCopter(Multicopter):
             u = max(0, min(1, u))
 
         # Update for first difference
-        self.zprev = z
         self.tprev = t
 
         # Return motor values
