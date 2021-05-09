@@ -29,7 +29,7 @@ class TakeoffCopter(Multicopter):
         self.pid = AltitudePidController(target, altP, velP, velI, velD)
 
         # Open a log file
-        self.logfile = open('ardupid.csv', 'w')
+        self.logfile = open('takeoff.csv', 'w')
 
     def getMotors(self, t, x):
 
@@ -40,6 +40,7 @@ class TakeoffCopter(Multicopter):
         # Extract altitude from state.  Altitude is in NED coordinates, so we
         # negate it to use as input to PID controller.
         z = -x[4]
+        dzdt = -x[5]
 
         # No motor values yet
         u = 0
@@ -54,7 +55,7 @@ class TakeoffCopter(Multicopter):
 
             # Use temporal first difference to compute vertical velocity
             dt = t - self.tprev
-            dzdt = (z-self.zprev) / dt
+            # dzdt = (z-self.zprev) / dt
 
             # Get correction from PID controller
             u = self.pid.u(z, dzdt, dt)
