@@ -3,7 +3,6 @@ Binaries/Win64/UE4*
 Binaries/Win64/MulticopterSimEditor.target
 Intermediate/
 Saved/
-Content/StarterContent/
 MulticopterSim.sln
 *.csv
 *.swp
@@ -23,7 +22,6 @@ Extras/joytest/windows/x64/
 Content/AdvancedGlassPack/
 Content/Desert_Landscape/
 Content/MarsLandscape/
-Content/MS_PristineMe/
 Content/MulitcopterSim/Decals/
 Content/MulitcopterSim/Maps/Goshawk.umap
 Content/MulitcopterSim/Maps/Goshawk_BuiltData.uasset
