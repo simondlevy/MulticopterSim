@@ -28,20 +28,26 @@ static uint16_t IMAGE_COLS = 640;
 // Time constant
 static const double DELTA_T = 0.001;
 
-// Estimated
-static constexpr float b = 5.E-06; // force constatnt [F=b*w^2]
-static constexpr float d = 2.E-06; // torque constant [T=d*w^2]
+static Dynamics::vehicle_params_t vparams = {
 
-// https://www.dji.com/phantom-4/info
-static constexpr float m = 1.380;  // mass [kg]
+    // Estimated
+    5.E-06, // b force constatnt [F=b*w^2]
+    2.E-06, // d torque constant [T=d*w^2]
 
-// Estimated vehicle properties
-static constexpr float Ix = 2;        // [kg*m^2]
-static constexpr float Iy = 2;        // [kg*m^2]
-static constexpr float Iz = 3;        // [kg*m^2]
-static constexpr float Jr = 38E-04;   // prop inertial [kg*m^2]
-static constexpr float l = 0.350;     // arm length [m]
-static const uint16_t maxrpm = 15000; 
+    // https://www.dji.com/phantom-4/info
+    1.380,  // m mass [kg]
+
+    // Estimated
+    2,      // Ix [kg*m^2] 
+    2,      // Iy [kg*m^2] 
+    3,      // Iz [kg*m^2] 
+    38E-04, // Jr prop inertial [kg*m^2] 
+
+    0.350,  // l arm length [m]
+
+    15000 // maxrpm
+};
+
 
 int main(int argc, char ** argv)
 {
@@ -68,7 +74,7 @@ int main(int argc, char ** argv)
         TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
 
         // Create quadcopter dynamics model
-        QuadXAPDynamics dynamics = QuadXAPDynamics(b, d, m, Ix, Iy, Iz, Jr, l, maxrpm);
+        QuadXAPDynamics dynamics = QuadXAPDynamics(vparams);
 
         // Set up initial conditions
         double time = 0;
@@ -96,12 +102,12 @@ int main(int argc, char ** argv)
             // Send image data
             imageSocket.sendData(image, sizeof(image));
 
-             // Get incoming motor values
+            // Get incoming motor values
             double motorvals[4] = {};
             twoWayUdp.receive(motorvals, sizeof(motorvals));
 
             printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
-                   time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], dynamics.x(Dynamics::STATE_Z));
+                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], dynamics.x(Dynamics::STATE_Z));
 
             // Update dynamics with motor values
             dynamics.setMotors(motorvals);
