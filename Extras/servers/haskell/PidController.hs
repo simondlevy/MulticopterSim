@@ -8,17 +8,22 @@
 
 module PidController (PidController) where
 
-
-data PidController = PidController Double Double Double deriving Show
+data PidController = PidController Double Double Double Double deriving Show
 
 pid_kp :: PidController -> Double
-pid_kp (PidController kp _ki _kd) = kp
+pid_kp (PidController kp _ki _kd _windupMax) = kp
 
 pid_ki :: PidController -> Double
-pid_ki (PidController _kp ki _kd) = ki
+pid_ki (PidController _kp ki _kd _windupMax) = ki
 
 pid_kd :: PidController -> Double
-pid_kd (PidController _kp _ki kd) = kd
+pid_kd (PidController _kp _ki kd _windupMax) = kd
 
-data PidController' = PidController' PidController Double deriving Show
+pid_windup_max :: PidController -> Double
+pid_windup_max (PidController _kp _ki _kd windupMax) = windupMax
+
+data PidController' = PidController' PidController Double Double Double deriving Show
+
+pid'_kp :: PidController' -> Double
+pid'_kp (PidController' pidController windupMax lastError integralError) = pid_kp pidController
 
