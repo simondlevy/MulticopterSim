@@ -59,6 +59,15 @@ class Dynamics {
         } vehicle_params_t; 
 
         /**
+         *  World parameters
+         */
+        typedef struct {
+
+            double g;  // gravitational constant
+
+        } world_params_t; 
+
+        /**
          * Position map for state vector
          */
         enum {
@@ -149,16 +158,18 @@ class Dynamics {
             return _x[k];
         }
 
-    protected:
+    private:
 
-        vehicle_params_t _vparams;
+        static constexpr world_params_t EARTH_PARAMS = { 
+            9.80665  // g graviational constant
+        };
 
-        Dynamics(uint8_t motorCount, vehicle_params_t & vparams)
+        void construct(uint8_t motorCount, vehicle_params_t & vparams)
         {
             _motorCount = motorCount;
             _rotorCount = motorCount; // can be overridden for thrust-vectoring
 
-            memcpy(&_vparams, &vparams, sizeof(vparams));
+            memcpy(&_vparams, &vparams, sizeof(vehicle_params_t));
 
             for (uint8_t i = 0; i < 12; ++i) {
                 _x[i] = 0;
@@ -166,6 +177,23 @@ class Dynamics {
 
             _omegas = new double[motorCount]();
             _omegas2 = new double[motorCount]();
+        }
+
+    protected:
+
+        vehicle_params_t _vparams;
+        world_params_t _wparams;
+
+        Dynamics(uint8_t motorCount, vehicle_params_t & vparams)
+        {
+            construct(motorCount, vparams);
+            memcpy(&_wparams, &EARTH_PARAMS, sizeof(world_params_t));
+        }
+
+        Dynamics(uint8_t motorCount, vehicle_params_t & vparams, world_params_t & wparams)
+        {
+            construct(motorCount, vparams);
+            memcpy(&_wparams, &wparams, sizeof(world_params_t));
         }
 
         // Flag for whether we're airborne and can update dynamics
