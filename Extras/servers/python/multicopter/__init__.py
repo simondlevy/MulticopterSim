@@ -83,8 +83,6 @@ class Multicopter(object):
 
             sleep(.001)
 
-        Multicopter.debug('done')
-
     def handleImage(self, image):
         '''
         Override for your application

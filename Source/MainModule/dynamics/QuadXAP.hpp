@@ -1,16 +1,16 @@
 /*
-* Dynamics class for quad-X frames using ArduPilot motor layout:
-*
-*    3cw   1ccw
-*       \ /
-*        ^
-*       / \
-*    2ccw  4cw
-*
-* Copyright (C) 2019 Simon D. Levy, Daniel Katzav
-*
-* MIT License
-*/
+ * Dynamics class for quad-X frames using ArduPilot motor layout:
+ *
+ *    3cw   1ccw
+ *       \ /
+ *        ^
+ *       / \
+ *    2ccw  4cw
+ *
+ * Copyright (C) 2019 Simon D. Levy, Daniel Katzav
+ *
+ * MIT License
+ */
 
 #pragma once
 
@@ -20,17 +20,8 @@ class QuadXAPDynamics : public Dynamics {
 
     public:	
 
-        QuadXAPDynamics(
-                const double b, 
-                const double d, 
-                const double m, 
-                const double Ix, 
-                const double Iy, 
-                const double Iz, 
-                const double Jr, 
-                const double l,
-                uint16_t maxrpm) 
-            : Dynamics(4, b, d, m, Ix, Iy, Iz, Jr, l, maxrpm)
+        QuadXAPDynamics(Dynamics::vehicle_params_t &vparams)
+            : Dynamics(4, vparams)
         {
         }
 

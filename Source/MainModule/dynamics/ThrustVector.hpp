@@ -48,19 +48,8 @@ class ThrustVectorDynamics : public Dynamics {
 
     public:	
 
-        ThrustVectorDynamics(
-                const double b,
-                const double d,
-                const double m,
-                const double Ix,
-                const double Iy,
-                const double Iz,
-                const double Jr,
-                uint16_t maxrpm,
-                const double barrelHeight,
-                const double nozzleOffset,
-                const double nozzleMaxAngle) // degrees
-            : Dynamics(4, b, d, m, Ix, Iy, Iz, Jr, barrelHeight/2-nozzleOffset, maxrpm)
+        ThrustVectorDynamics(Dynamics::vehicle_params_t &vparams, double nozzleMaxAngle)
+            : Dynamics(4, vparams)
         {
             _rotorCount = 2;
 
