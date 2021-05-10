@@ -62,6 +62,6 @@ quadXAPMixer demands =
      
 -------------------------------------------------------
 
-type ClosedLoopControllerState = [Double]
+type PidControllerState = [Double]
 
-type ClosedLoopController = Time -> VehicleState -> ClosedLoopControllerState -> Demands
+type PidController = Time -> VehicleState -> PidControllerState -> Demands

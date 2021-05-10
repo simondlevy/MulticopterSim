@@ -17,7 +17,7 @@ import Data.Serialize -- from cereal
 
 import Types
 
-runMulticopter :: ClosedLoopController -> Mixer -> IO ()
+runMulticopter :: PidController -> Mixer -> IO ()
 runMulticopter closedLoopFun mixer = withSocketsDo $
 
    -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
