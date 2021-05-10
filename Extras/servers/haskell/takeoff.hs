@@ -6,7 +6,7 @@
 
 import Types
 import Multicopter
-import AltitudePidController
+import AltitudeController
 
 takeoffControl :: ControlFunc
 takeoffControl _time state = 
