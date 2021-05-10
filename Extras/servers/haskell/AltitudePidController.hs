@@ -34,4 +34,4 @@ make :: Double -> Double -> Double -> AltitudePidController
 make kp ki kd = AltitudePidController kp ki kd 1 0 0
 
 apply :: AltitudePidController -> State -> (Motors, AltitudePidController)
-apply altPid state = ((Motors [0, 0, 0, 0]), altPid)
+apply altPid state = ((Motors 0  0  0  0), altPid)

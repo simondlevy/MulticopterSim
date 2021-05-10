@@ -65,9 +65,11 @@ data Demands = Demands { throttle :: Double
 
 ------------------------------------
 
-data Motors = Motors [Double] deriving Show
-motorvals :: Motors -> [Double]
-motorvals (Motors vs) = vs
+data Motors = Motors { m1 :: Double
+                     , m2 :: Double  
+                     , m3 :: Double  
+                     , m4 :: Double  
+                     } deriving (Show)
 
 ------------------------------------
 
