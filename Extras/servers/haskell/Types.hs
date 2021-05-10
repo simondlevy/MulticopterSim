@@ -10,6 +10,7 @@ module Types where
 
 data Time = Time { time :: Double} deriving (Show)
 
+-- See Bouabdallah (2004)
 data State = State { x :: Double
                    , dx :: Double 
                    , y :: Double
@@ -36,4 +37,6 @@ data Motors = Motors { m1 :: Double
                      , m4 :: Double  
                      } deriving (Show)
 
-type ControlFunc = Time -> State -> Motors
+type Mixer = Demands -> Motors
+
+type ClosedLoopControl = Time -> State -> Motors
