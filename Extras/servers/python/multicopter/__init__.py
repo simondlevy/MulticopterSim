@@ -44,7 +44,7 @@ class Multicopter(object):
         telemetryServerSocket = Multicopter._make_udpsocket()
         telemetryServerSocket.bind((self.host, self.telem_port))
 
-        Multicopter.debug('Hit the Start button ...')
+        Multicopter.debug('Hit the Play button ...')
 
         telemetryThread = Thread(target=self._run_telemetry,
                                  args=(

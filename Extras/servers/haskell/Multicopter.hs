@@ -40,7 +40,7 @@ runMulticopter closedLoopFun mixer = withSocketsDo $
 
        bind telemetryServerSocket telemetrySockAddr
 
-       putStrLn "Hit the Start button ..."
+       putStrLn "Hit the Play button ..."
 
        processMessages telemetryServerSocket motorClientSocket motorSockAddr
 
