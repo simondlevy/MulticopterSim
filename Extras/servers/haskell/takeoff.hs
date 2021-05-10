@@ -10,7 +10,7 @@ import AltitudePidController
 
 takeoffControl :: ControlFunc
 takeoffControl _time state = 
-    let altitude = -(state_z state) -- NED => ENU
+    let altitude = -(z state) -- NED => ENU
         target = 10
         err = target - altitude
         u = 0.5 - 0.00001 * err
