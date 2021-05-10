@@ -6,7 +6,9 @@
   MIT License
 --}
 
-module AltitudePidController (AltitudePidController) where
+module AltitudePidController (make) where
+
+import Types
 
 data AltitudePidController = AltitudePidController Double Double Double Double Double Double deriving Show
 
@@ -22,5 +24,14 @@ pid_kd (AltitudePidController _kp _ki kd _windupMax _lastError _errorIntegral) =
 pid_windup_max :: AltitudePidController -> Double
 pid_windup_max (AltitudePidController _kp _ki _kd windupMax _lastError _errorIntegral) = windupMax
 
-makeAltitudePidController :: Double -> Double -> Double -> AltitudePidController
-makeAltitudePidController kp ki kd = AltitudePidController kp ki kd 0 0 0
+pid_last_error :: AltitudePidController -> Double
+pid_last_error (AltitudePidController _kp _ki _kd _windupMax lastError _errorIntegral) = lastError
+
+pid_integral_error :: AltitudePidController -> Double
+pid_integral_error (AltitudePidController _kp _ki _kd _windupMax _lastError errorIntegral) = errorIntegral
+
+make :: Double -> Double -> Double -> AltitudePidController
+make kp ki kd = AltitudePidController kp ki kd 1 0 0
+
+apply :: AltitudePidController -> State -> (Motors, AltitudePidController)
+apply altPid state = ((Motors [0, 0, 0, 0]), altPid)
