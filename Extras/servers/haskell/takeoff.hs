@@ -18,4 +18,4 @@ takeoffControl _time state =
 
 main :: IO ()
 main = do
-    runMulticopter takeoffControl
+    runMulticopter takeoffControl quadXAPMixer
