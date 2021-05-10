@@ -14,7 +14,7 @@ from multicopter import Multicopter
 
 class TakeoffCopter(Multicopter):
 
-    def __init__(self, kp_z=1.0, kp_dz=1.0, ki_dz=0.0, target=10.0):
+    def __init__(self, kp_z=1.0, kp_dz=1.0, ki_dz=0.0, target=10.0, logfile=None):
 
         Multicopter.__init__(self)
 
@@ -25,7 +25,7 @@ class TakeoffCopter(Multicopter):
         self.ctrl = AltitudeController(target, kp_z, kp_dz, ki_dz)
 
         # Open a log file
-        self.logfile = open('takeoff.csv', 'w')
+        self.logfile = None if logfile is None else open('takeoff.csv', 'w')
 
     def getMotors(self, t, x):
 
@@ -45,7 +45,7 @@ class TakeoffCopter(Multicopter):
         if t > self.tprev:
 
             # Write time and altitude to log file
-            if t <= 20.0:
+            if t <= 20.0 and self.logfile is not None:
                 self.logfile.write('%2.2f,%+3.3f\n' % (t, z))
                 self.logfile.flush()
 
