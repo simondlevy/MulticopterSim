@@ -59,7 +59,6 @@ quadXAPMixer demands =
               (t + r - p + y)
               (t - r + p + y)
      
-
 -------------------------------------------------------
 
-type ClosedLoopControl = Time -> State -> Demands
+type ClosedLoopController = Time -> State -> Demands

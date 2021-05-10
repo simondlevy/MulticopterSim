@@ -6,8 +6,9 @@
 
 import Types
 import Multicopter
+import AltitudeController
 
-takeoffControl :: ClosedLoopControl
+takeoffControl :: ClosedLoopController
 takeoffControl _time state = 
     let altitude = -(state_z state) -- NED => ENU
         target = 10
