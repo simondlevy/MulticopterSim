@@ -18,7 +18,7 @@ import Data.Serialize -- from cereal
 import Types
 
 runMulticopter :: ClosedLoopControl -> Mixer -> IO ()
-runMulticopter controlFunc mixer = withSocketsDo $
+runMulticopter closedLoopFun mixer = withSocketsDo $
 
    -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
 
@@ -53,7 +53,7 @@ runMulticopter controlFunc mixer = withSocketsDo $
 
                   let t = Time (v!!0)
                   let s = State (v!!1) (v!!2) (v!!3) (v!!4) (v!!5) (v!!6) (v!!7) (v!!8) (v!!9) (v!!10) (v!!11) (v!!12) 
-                  let motors = (controlFunc t s)
+                  let motors = (mixer (closedLoopFun t s))
                   _ <- Network.Socket.ByteString.sendTo
                         motorClientSocket
                         (doublesToBytes [(m1 motors), (m2 motors), (m3 motors), (m4 motors)])

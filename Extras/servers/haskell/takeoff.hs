@@ -14,7 +14,7 @@ takeoffControl _time state =
         target = 10
         err = target - altitude
         u = 0.5 - 0.00001 * err
-    in Motors u u u u
+    in Demands u 0 0 0
 
 main :: IO ()
 main = do

@@ -62,5 +62,4 @@ quadXAPMixer demands =
 
 -------------------------------------------------------
 
--- type ClosedLoopControl = Time -> State -> Demands
-type ClosedLoopControl = Time -> State -> Motors
+type ClosedLoopControl = Time -> State -> Demands
