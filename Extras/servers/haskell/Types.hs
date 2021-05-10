@@ -13,7 +13,8 @@ data Time = Time { time :: Double} deriving (Show)
 -------------------------------------------------------
 
 -- See Bouabdallah et al. (2004)
-data State = State { state_x :: Double
+data VehicleState = VehicleState { 
+                     state_x :: Double
                    , state_dx :: Double 
                    , state_y :: Double
                    , state_dy :: Double 
@@ -61,4 +62,6 @@ quadXAPMixer demands =
      
 -------------------------------------------------------
 
-type ClosedLoopController = Time -> State -> Demands
+type ControllerState = [Double]
+
+type ClosedLoopController = Time -> VehicleState -> ControllerState -> Demands

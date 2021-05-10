@@ -52,8 +52,9 @@ runMulticopter closedLoopFun mixer = withSocketsDo $
                   let v = bytesToDoubles msgIn
 
                   let t = Time (v!!0)
-                  let s = State (v!!1) (v!!2) (v!!3) (v!!4) (v!!5) (v!!6) (v!!7) (v!!8) (v!!9) (v!!10) (v!!11) (v!!12) 
-                  let motors = (mixer (closedLoopFun t s))
+                  let vs = VehicleState (v!!1) (v!!2) (v!!3) (v!!4) (v!!5) (v!!6) (v!!7) (v!!8) (v!!9) (v!!10) (v!!11) (v!!12) 
+                  let cs = []
+                  let motors = (mixer (closedLoopFun t vs cs))
                   _ <- Network.Socket.ByteString.sendTo
                         motorClientSocket
                         (doublesToBytes [(m1 motors), (m2 motors), (m3 motors), (m4 motors)])
