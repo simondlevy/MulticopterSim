@@ -6,16 +6,15 @@
   MIT License
 --}
 
-module AltitudePidController (make) where
+module AltitudeController (make) where
 
 import Types
 
-data PidConstants = PidConstants { kp :: Double
-                                 , ki :: Double
-                                 , kd :: Double } deriving (Show)
+data Constants = Constants { kp_z  :: Double
+                           , kp_dz :: Double
+                           , ki_dz :: Double } deriving (Show)
 
-data 
-
+{--
 data AltitudePidController = AltitudePidController Double Double Double Double Double Double deriving Show
 
 pid_kp :: AltitudePidController -> Double
@@ -41,3 +40,4 @@ make kp ki kd = AltitudePidController kp ki kd 1 0 0
 
 apply :: AltitudePidController -> State -> (Motors, AltitudePidController)
 apply altPid state = ((Motors 0  0  0  0), altPid)
+--}

@@ -8,24 +8,21 @@ MIT License
 '''
 
 import numpy as np
-from altitude_pidcontroller import AltitudePidController
+from altitude_controller import AltitudeController
 from multicopter import Multicopter
 
 
 class TakeoffCopter(Multicopter):
 
-    def __init__(self, altP=1.0, velP=1.0, velI=0.0, target=10.0):
+    def __init__(self, kp_z=1.0, kp_dz=1.0, ki_dz=0.0, target=10.0):
 
         Multicopter.__init__(self)
 
         # Set up initial conditions
-        self.z = 0
         self.tprev = 0
-        self.dzdt = 0
-        self.u = 0
 
         # Create PID controller
-        self.pid = AltitudePidController(target, altP, velP, velI)
+        self.ctrl = AltitudeController(target, kp_z, kp_dz, ki_dz)
 
         # Open a log file
         self.logfile = open('takeoff.csv', 'w')
@@ -56,7 +53,7 @@ class TakeoffCopter(Multicopter):
             dt = t - self.tprev
 
             # Get correction from PID controller
-            u = self.pid.u(z, dzdt, dt)
+            u = self.ctrl.u(z, dzdt, dt)
 
             # Constrain correction to [0,1] to represent motor value
             u = max(0, min(1, u))
