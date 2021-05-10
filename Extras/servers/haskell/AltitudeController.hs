@@ -8,8 +8,6 @@
 
 module AltitudeController where
 
-import Types
-
 data Constants = Constants { kp_z  :: Double
                            , kp_dz :: Double
                            , ki_dz :: Double 

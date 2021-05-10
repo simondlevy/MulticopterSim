@@ -6,7 +6,6 @@
 
 import Types
 import Multicopter
-import AltitudeController
 
 takeoffControl :: ClosedLoopControl
 takeoffControl _time state = 
