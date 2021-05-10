@@ -57,6 +57,14 @@ state_dpsi (State vs) = vs !! 11
 
 ------------------------------------
 
+data Demands = Demands { throttle :: Double
+                     ,   roll :: Double  
+                     ,   pitch :: Double  
+                     ,   yaw :: Double  
+                     } deriving (Show)
+
+------------------------------------
+
 data Motors = Motors [Double] deriving Show
 motorvals :: Motors -> [Double]
 motorvals (Motors vs) = vs
