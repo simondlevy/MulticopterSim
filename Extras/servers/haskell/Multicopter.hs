@@ -51,9 +51,9 @@ runMulticopter controlFunc = withSocketsDo $
 
                   let v = bytesToDoubles msgIn
 
-                  let time = Time (v!!0)
-                  let state = State (v!!1) (v!!2) (v!!3) (v!!4) (v!!5) (v!!6) (v!!7) (v!!8) (v!!9) (v!!10) (v!!11) (v!!12) 
-                  let motors = (controlFunc time state)
+                  let t = Time (v!!0)
+                  let s = State (v!!1) (v!!2) (v!!3) (v!!4) (v!!5) (v!!6) (v!!7) (v!!8) (v!!9) (v!!10) (v!!11) (v!!12) 
+                  let motors = (controlFunc t s)
                   _ <- Network.Socket.ByteString.sendTo
                         motorClientSocket
                         (doublesToBytes [(m1 motors), (m2 motors), (m3 motors), (m4 motors)])

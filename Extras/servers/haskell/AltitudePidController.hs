@@ -10,6 +10,12 @@ module AltitudePidController (make) where
 
 import Types
 
+data PidConstants = PidConstants { kp :: Double
+                                 , ki :: Double
+                                 , kd :: Double } deriving (Show)
+
+data 
+
 data AltitudePidController = AltitudePidController Double Double Double Double Double Double deriving Show
 
 pid_kp :: AltitudePidController -> Double

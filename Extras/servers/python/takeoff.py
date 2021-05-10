@@ -14,7 +14,7 @@ from multicopter import Multicopter
 
 class TakeoffCopter(Multicopter):
 
-    def __init__(self, altP=1.0, velP=1.0, velI=0.0, velD=0.0, target=10.0):
+    def __init__(self, altP=1.0, velP=1.0, velI=0.0, target=10.0):
 
         Multicopter.__init__(self)
 
@@ -25,7 +25,7 @@ class TakeoffCopter(Multicopter):
         self.u = 0
 
         # Create PID controller
-        self.pid = AltitudePidController(target, altP, velP, velI, velD)
+        self.pid = AltitudePidController(target, altP, velP, velI)
 
         # Open a log file
         self.logfile = open('takeoff.csv', 'w')
