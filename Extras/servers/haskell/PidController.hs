@@ -6,21 +6,21 @@
   MIT License
 --}
 
-module PidController (PidController) where
+module AltitudePidController (AltitudePidController) where
 
-data PidController = PidController Double Double Double Double Double Double deriving Show
+data AltitudePidController = AltitudePidController Double Double Double Double Double Double deriving Show
 
-pid_kp :: PidController -> Double
-pid_kp (PidController kp _ki _kd _windupMax _lastError _errorIntegral) = kp
+pid_kp :: AltitudePidController -> Double
+pid_kp (AltitudePidController kp _ki _kd _windupMax _lastError _errorIntegral) = kp
 
-pid_ki :: PidController -> Double
-pid_ki (PidController _kp ki _kd _windupMax _lastError _errorIntegral) = ki
+pid_ki :: AltitudePidController -> Double
+pid_ki (AltitudePidController _kp ki _kd _windupMax _lastError _errorIntegral) = ki
 
-pid_kd :: PidController -> Double
-pid_kd (PidController _kp _ki kd _windupMax _lastError _errorIntegral) = kd
+pid_kd :: AltitudePidController -> Double
+pid_kd (AltitudePidController _kp _ki kd _windupMax _lastError _errorIntegral) = kd
 
-pid_windup_max :: PidController -> Double
-pid_windup_max (PidController _kp _ki _kd windupMax _lastError _errorIntegral) = windupMax
+pid_windup_max :: AltitudePidController -> Double
+pid_windup_max (AltitudePidController _kp _ki _kd windupMax _lastError _errorIntegral) = windupMax
 
-makePidController :: Double -> Double -> Double -> PidController
-makePidController kp ki kd = PidController kp ki kd 0 0 0
+makeAltitudePidController :: Double -> Double -> Double -> AltitudePidController
+makeAltitudePidController kp ki kd = AltitudePidController kp ki kd 0 0 0

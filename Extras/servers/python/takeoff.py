@@ -8,7 +8,7 @@ MIT License
 '''
 
 import numpy as np
-from pidcontroller import AltitudePidController
+from altitude_pidcontroller import AltitudePidController
 from multicopter import Multicopter
 
 
