@@ -10,7 +10,7 @@ import AltitudeController
 
 takeoffControl :: ClosedLoopControl
 takeoffControl _time state = 
-    let altitude = -(z state) -- NED => ENU
+    let altitude = -(state_z state) -- NED => ENU
         target = 10
         err = target - altitude
         u = 0.5 - 0.00001 * err

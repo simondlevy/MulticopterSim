@@ -11,18 +11,18 @@ module Types where
 data Time = Time { time :: Double} deriving (Show)
 
 -- See Bouabdallah et al. (2004)
-data State = State { x :: Double
-                   , dx :: Double 
-                   , y :: Double
-                   , dy :: Double 
-                   , z :: Double
-                   , dz :: Double 
-                   , phi :: Double
-                   , dphi :: Double 
-                   , theta :: Double
-                   , dtheta :: Double 
-                   , psi :: Double
-                   , dpsi :: Double 
+data State = State { state_x :: Double
+                   , state_dx :: Double 
+                   , state_y :: Double
+                   , state_dy :: Double 
+                   , state_z :: Double
+                   , state_dz :: Double 
+                   , state_phi :: Double
+                   , state_dphi :: Double 
+                   , state_theta :: Double
+                   , state_dtheta :: Double 
+                   , state_psi :: Double
+                   , state_dpsi :: Double 
                    } deriving (Show)
 
 data Demands = Demands { throttle :: Double
@@ -40,8 +40,16 @@ data Motors = Motors { m1 :: Double
 
 type Mixer = Demands -> Motors
 
--- quadXAMixer :: Mixer
--- quadXAPMixer demands motors = 
+quadXAPMixer :: Mixer
+quadXAPMixer demands = 
+    let t = (throttle demands)
+        r = (roll demands)
+        p = (pitch demands)
+        y = (yaw demands)
+    in Motors (t - r - p - y)
+              (t + r + p - y)
+              (t + r - p + y)
+              (t - r + p + y)
      
 
 -- type ClosedLoopControl = Time -> State -> Demands
