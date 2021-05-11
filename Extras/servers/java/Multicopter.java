@@ -8,6 +8,7 @@
    MIT License
  */
 
+import java.util.Arrays;
 import java.lang.Thread;
 import java.io.*;
 import java.net.DatagramSocket;
@@ -67,8 +68,6 @@ public class Multicopter {
         {
             return  _telemetry;
         }
-
-        // Adapted from view-source:https://stackoverflow.com/questions/2905556/how-can-i-convert-a-byte-array-into-a-double-and-back
 
         private byte[] doublesToBytes(double [] doubles)
         {
@@ -200,20 +199,27 @@ public class Multicopter {
     }
 
     /**
-      * Returns current vehicle state as an array of the form [time, gx, gy, gz, qw, qx, qy, qz, px, py, pz],
-      * where g=gyro; q=quaternion; p=position.
-      * @return vehicle state 
-      */
-    public double [] getState()
+     * Returns current time.
+     * @return current time
+     */
+    public double getTime()
     {
-        return _thread.getTelemetry();
-
+        return _thread.getTelemetry()[0];
     }
 
     /**
-      * Sets motor values.
-      * @param motorVals array of values between 0 and 1
-      */
+     * Returns current vehicle state as an array of the form [x, dx, y, dy, z, dz, phi, dphi, theta, dtheta, psi, dpsi].
+     * @return vehicle state 
+     */
+    public double [] getVehicleState()
+    {
+        return Arrays.copyOfRange(_thread.getTelemetry(), 1, 13);
+    }
+
+    /**
+     * Sets motor values.
+     * @param motorVals array of values between 0 and 1
+     */
     public void setMotors(double [] motorVals)
     {
         _thread.setMotors(motorVals);
