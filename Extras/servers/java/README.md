@@ -5,18 +5,11 @@ to the simualtor and for retrieving the vehicle state (time, gyrometer, quaterni
 
 To run the example, you should:
 
-1. Clone the master branch of this repostitory into your <b>Documents/Unreal
-   Projects</b> folder, first creating that folder if it doesn't exist.
-   
-2. Clone the  [SocketModule](https://github.com/simondlevy/MulticopterSim/tree/SocketModule) branch
-of the repository onto your desktop, rename it <b>FlightModule</b>, and drag the
-<b>FlightModule</b> folder into the <b>MulticopterSim/Source</b> folder.
+1. Build MulticopterSim as described [here](https://github.com/simondlevy/MulticopterSim).
 
-3. Build MulticopterSim as described [here](https://github.com/simondlevy/MulticopterSim#Windows).
+2. Compile the Java source using your favorite Java compiler (or Makefile or build script in this folder).
 
-4. Compile the Java source using your favorite Java compiler (or Makefile or build script in this folder).
+3. Run the <b>Takeoff</b> program.
 
-5. Run the <b>Takeoff</b> program.
-
-6. Hit F5 to launch MulticopterSim, then hit the play button.
+4. Hit the Play button in the UE4 editor
 
