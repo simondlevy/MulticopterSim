@@ -159,39 +159,55 @@ public class Multicopter {
     private MulticopterThread _thread;
 
     /**
-      * Creates a Multicopter object.
-      * @param host name of host running MulticopterSim
-      * @param motorPort port over which this object will send motor commands to host
-      * @param telemeteryPort port over which this object will receive telemetry  from
-      * @param motorCount number of motors in vehicle running in simulator on host
-      */
+     * Indices for state vector from Bouabdallah (2004)
+     */
+        public static final int STATE_X = 0;
+        public static final int STATE_DX = 1;
+        public static final int STATE_Y = 2;
+        public static final int STATE_DY = 3;
+        public static final int STATE_Z = 4;
+        public static final int STATE_DZ = 5;
+        public static final int STATE_THETA = 6;
+        public static final int STATE_DTHETA = 7;
+        public static final int STATE_PHI = 8;
+        public static final int STATE_DPHI = 9;
+        public static final int STATE_PSI = 10;
+        public static final int STATE_DPSI = 11;
+
+    /**
+     * Creates a Multicopter object.
+     * @param host name of host running MulticopterSim
+     * @param motorPort port over which this object will send motor commands to host
+     * @param telemeteryPort port over which this object will receive telemetry  from
+     * @param motorCount number of motors in vehicle running in simulator on host
+     */
     public Multicopter(String host, int motorPort, int telemetryPort, int motorCount)
     {
         _thread = new MulticopterThread(host, motorPort, telemetryPort, motorCount);
     }
 
     /**
-      * Creates a Multicopter object using a default number of motors (4).
-      * @param host name of host running MulticopterSim
-      * @param motorPort port over which this object will send motor commands to host
-      * @param telemeteryPort port over which this object will receive telemetry  from
-      */
-     public Multicopter(String host, int motorPort, int telemetryPort)
+     * Creates a Multicopter object using a default number of motors (4).
+     * @param host name of host running MulticopterSim
+     * @param motorPort port over which this object will send motor commands to host
+     * @param telemeteryPort port over which this object will receive telemetry  from
+     */
+    public Multicopter(String host, int motorPort, int telemetryPort)
     {
         _thread = new MulticopterThread(host, motorPort, telemetryPort, 4);
     }
 
     /**
-      * Creates a Multicopter object using default parameters.
-      */
-     public Multicopter()
+     * Creates a Multicopter object using default parameters.
+     */
+    public Multicopter()
     {
         _thread = new MulticopterThread("127.0.0.1", 5000, 5001, 4);
     }
 
     /**
-      * Begins communication with simulator running on host.
-      */
+     * Begins communication with simulator running on host.
+     */
     public void start()
     {
         System.out.println("Hit the Play button ...");

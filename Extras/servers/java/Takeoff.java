@@ -47,7 +47,7 @@ public class Takeoff {
             double [] state = copter.getVehicleState();
 
             // Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input to PID controller.
-            z = -state[4];
+            z = -state[Multicopter.STATE_Z];
 
             // Compute vertical climb rate as first difference of altitude over time
             if (t > tprev) {
