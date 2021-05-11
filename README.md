@@ -142,7 +142,7 @@ you can control MulticopterSim from a Matlab session running on your computer or
 [This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/python) contains an example of how
 you can control MulticopterSim from a Python program running on your computer or another computer.
 
-## Python
+## Java
 
 [This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/java) contains an example of how
 you can control MulticopterSim from a Java program running on your computer or another computer.
