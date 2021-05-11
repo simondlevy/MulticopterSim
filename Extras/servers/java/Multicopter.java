@@ -55,8 +55,6 @@ public class Multicopter {
                 if (_telemetry[0] < 0) {
                     break;
                 }
-
-                yield();
             }
 
             _motorSocket.close();
