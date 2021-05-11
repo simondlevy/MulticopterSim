@@ -47,8 +47,6 @@ public class Takeoff {
             // Negative time means quit
             if (t < 0) break;
 
-            //System.out.println(t);
-
             //Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input to PID controller.
             z = -telem[9];
 

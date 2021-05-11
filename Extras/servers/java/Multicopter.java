@@ -195,6 +195,7 @@ public class Multicopter {
       */
     public void start()
     {
+        System.out.println("Hit the Play button ...");
         _thread.start();
     }
 
