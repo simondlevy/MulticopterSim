@@ -83,7 +83,7 @@ Hackflight / RFT.
 
 # Launch and fly!
 
-In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Then open the
+In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
 <b>Content/C++ Classes/HackflightModule/pawns</b> folder and drag one of the
 vehicle pawns into the map. Click the play button and you're ready to begin.
 You can use the spacebar to switch your point-of-view.
@@ -140,7 +140,12 @@ you can control MulticopterSim from a Matlab session running on your computer or
 ## Python
 
 [This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/python) contains an example of how
-you can control MulticopterSim from a Python session running on your computer or another computer.
+you can control MulticopterSim from a Python program running on your computer or another computer.
+
+## Python
+
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/java) contains an example of how
+you can control MulticopterSim from a Java program running on your computer or another computer.
 
 ## OpenCV
 

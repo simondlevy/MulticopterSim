@@ -7,9 +7,11 @@ To run the example, you should:
 
 1. Build MulticopterSim as described [here](https://github.com/simondlevy/MulticopterSim).
 
-2. Compile the Java source using your favorite Java compiler (or Makefile or build script in this folder).
+2. In UnrealEditor, select one of the maps in <b>Content/Flying/Maps</b>. Then open the
+<b>Content/C++ Classes/SocketModule/pawns</b> folder and drag one of the vehicle pawns into the map. 
 
-3. Run the <b>Takeoff</b> program.
+3. Compile the Java source using your favorite Java compiler (or Makefile or build script in this folder).
 
-4. Hit the Play button in the UE4 editor
+4. Run the <b>Takeoff</b> program (<tt>java Takeoff</tt>)
 
+5. Hit the Play button in the UE4 editor
