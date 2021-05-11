@@ -14,7 +14,13 @@ from multicopter import Multicopter
 
 class TakeoffCopter(Multicopter):
 
-    def __init__(self, kp_z=1.0, kp_dz=1.0, ki_dz=0.0, target=10.0, logfile=None):
+    def __init__(
+            self,
+            kp_z=1.0,
+            kp_dz=1.0,
+            ki_dz=0.0,
+            target=10.0,
+            logfile=None):
 
         Multicopter.__init__(self)
 
@@ -27,7 +33,7 @@ class TakeoffCopter(Multicopter):
         # Open a log file
         self.logfile = None if logfile is None else open('takeoff.csv', 'w')
 
-    def getMotors(self, t, x):
+    def getMotors(self, t, state):
 
         # Negative time means user hit stop button
         if t < 0:
@@ -35,8 +41,8 @@ class TakeoffCopter(Multicopter):
 
         # Extract altitude from state.  Altitude is in NED coordinates, so we
         # negate it to use as input to PID controller.
-        z = -x[4]
-        dzdt = -x[5]
+        z = -state[Multicopter.STATE_Z]
+        dzdt = -state[Multicopter.STATE_DZ]
 
         # No motor values yet
         u = 0

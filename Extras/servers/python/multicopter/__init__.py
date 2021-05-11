@@ -16,6 +16,20 @@ import cv2
 
 class Multicopter(object):
 
+    # See Bouabdallah (2004)
+    (STATE_X,
+     STATE_DX,
+     STATE_Y,
+     STATE_DY,
+     STATE_Z,
+     STATE_DZ,
+     STATE_PHI,
+     STATE_DPHI,
+     STATE_THETA,
+     STATE_DTHETA,
+     STATE_PSI,
+     STATE_DPSI) = range(12)
+
     def __init__(
             self,
             host='127.0.0.1',
