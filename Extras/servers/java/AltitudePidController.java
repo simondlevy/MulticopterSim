@@ -8,14 +8,14 @@ MIT License
 
 public class AltitudePidController {
 
-    public AltitudePidController(double target, double posP, double velP, double velI, double velD, double windupMax)
+    public AltitudePidController(double target, double posP, double velP, double velI, double windupMax)
     {
-        construct(target, posP, velP, velI, velD, windupMax);
+        construct(target, posP, velP, velI, windupMax);
     }
 
-    public AltitudePidController(double target, double posP, double velP, double velI, double velD)
+    public AltitudePidController(double target, double posP, double velP, double velI)
     {
-        construct(target, posP, velP, velI, velD, 10.0);
+        construct(target, posP, velP, velI, 10.0);
     }
 
     public double u(double alt, double vel, double dt)
@@ -27,24 +27,20 @@ public class AltitudePidController {
         // Update error integral and error derivative
         _integralError +=  velError * dt;
         _integralError = AltitudePidController.constrainAbs(_integralError + velError * dt, _windupMax);
-        double deltaError = java.lang.Math.abs(_lastError) > 0 ? (velError - _lastError) / dt : 0;
-        _lastError = velError;
 
         // Compute control u
-        return _velP * velError + _velD * deltaError + _velI * _integralError;
+        return _velP * velError + _velI * _integralError;
     }
 
     private double _target;
     private double _posP;
     private double _velP;
     private double _velI;
-    private double _velD;
     private double _windupMax;
     private double _posTarget;
-    private double _lastError;
     private double _integralError;
 
-    private void construct(double target, double posP, double velP, double velI, double velD, double windupMax)
+    private void construct(double target, double posP, double velP, double velI, double windupMax)
     {
         // In a real PID controller, this would be a set-point
         _target = target;
@@ -53,12 +49,10 @@ public class AltitudePidController {
         _posP = posP;
         _velP = velP;
         _velI = velI;
-        _velD = velD;
         _windupMax = windupMax;
 
         // Values modified in-flight
         _posTarget      = 0;
-        _lastError      = 0;
         _integralError  = 0;
     }
 

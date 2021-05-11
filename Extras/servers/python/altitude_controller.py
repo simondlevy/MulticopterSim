@@ -21,7 +21,6 @@ class AltitudeController(object):
         self.windupMax = windupMax
 
         # Values modified in-flight
-        self.lastError = 0
         self.integralError = 0
 
     def u(self, alt, vel, dt):
@@ -34,10 +33,6 @@ class AltitudeController(object):
         self.integralError += velError * dt
         self.integralError = AltitudeController._constrainAbs(
                         self.integralError + velError * dt, self.windupMax)
-        deltaError = ((velError - self.lastError) / dt
-                      if abs(self.lastError) > 0
-                      else 0)
-        self.lastError = velError
 
         # Compute control u
         return self.velP * velError + self.velI * self.integralError

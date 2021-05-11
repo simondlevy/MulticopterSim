@@ -15,7 +15,6 @@ public class Takeoff {
     static final double ALT_P = 1.0;
     static final double VEL_P = 1.0;
     static final double VEL_I = 0;
-    static final double VEL_D = 0;
 
     public static void main(String [] args)
     {
@@ -27,7 +26,7 @@ public class Takeoff {
         double u = 0;
 
         // Create PID controller
-        AltitudePidController pid  = new AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I, VEL_D);
+        AltitudePidController pid  = new AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I);
 
         // Create a multicopter simulation
         Multicopter copter = new Multicopter();
