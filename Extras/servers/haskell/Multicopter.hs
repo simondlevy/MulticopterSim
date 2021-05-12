@@ -20,8 +20,8 @@ import Types
 myGetAddrInfo :: String -> IO[AddrInfo]
 myGetAddrInfo port = getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just port)
 
-mySocket :: AddrInfo -> IO Socket
-mySocket addr = socket (addrFamily addr) Datagram defaultProtocol
+udpSocket :: AddrInfo -> IO Socket
+udpSocket addr = socket (addrFamily addr) Datagram defaultProtocol
 
 
 runMulticopter :: PidController -> Mixer -> IO ()
@@ -33,23 +33,17 @@ runMulticopter controller mixer = withSocketsDo $
 
        telemetryServerAddrInfo <- myGetAddrInfo "5001"
        let telemetryServerAddr = head telemetryServerAddrInfo
-       telemetryServerSocket <- mySocket telemetryServerAddr
-       let telemetrySockAddr = addrAddress telemetryServerAddr
+       telemetryServerSocket <- udpSocket telemetryServerAddr
 
        motorClientAddrInfo <- myGetAddrInfo "5000"
        let motorClientAddr = head motorClientAddrInfo
-       motorClientSocket <- mySocket motorClientAddr
-       let motorSockAddr = addrAddress motorClientAddr
+       motorClientSocket <- udpSocket motorClientAddr
 
-       -- telemetryServerSocket telemetrySockAddr motorClientSocket motorSockAddr
-
-       -------------------------------------------------------
-
-       bind telemetryServerSocket telemetrySockAddr
+       bind telemetryServerSocket (addrAddress telemetryServerAddr)
 
        putStrLn "Hit the Play button ..."
 
-       processMessages telemetryServerSocket motorClientSocket motorSockAddr (PidControllerState 0)
+       processMessages telemetryServerSocket motorClientSocket (addrAddress motorClientAddr) (PidControllerState 0)
 
     where processMessages telemetryServerSocket motorClientSocket motorClientSockAddr controllerState =
               do 
