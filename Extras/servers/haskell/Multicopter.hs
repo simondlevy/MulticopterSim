@@ -17,27 +17,24 @@ import Data.Serialize -- from cereal
 
 import Types
 
-myGetAddrInfo :: String -> IO[AddrInfo]
-myGetAddrInfo port = getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just port)
+-- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
 
-udpSocket :: AddrInfo -> IO Socket
-udpSocket addr = socket (addrFamily addr) Datagram defaultProtocol
+makeSocket :: String -> IO (Socket, AddrInfo)
+makeSocket port =
+    do 
+       addrInfo <- getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just port)
+       let addr = head addrInfo
+       sock <- socket (addrFamily addr) Datagram defaultProtocol
+       return (sock, addr)
 
 
 runMulticopter :: PidController -> Mixer -> IO ()
 runMulticopter controller mixer = withSocketsDo $
 
-   -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
-
     do 
 
-       telemetryServerAddrInfo <- myGetAddrInfo "5001"
-       let telemetryServerAddr = head telemetryServerAddrInfo
-       telemetryServerSocket <- udpSocket telemetryServerAddr
-
-       motorClientAddrInfo <- myGetAddrInfo "5000"
-       let motorClientAddr = head motorClientAddrInfo
-       motorClientSocket <- udpSocket motorClientAddr
+       (telemetryServerSocket, telemetryServerAddr) <- makeSocket "5001"
+       (motorClientSocket, motorClientAddr) <- makeSocket "5000"
 
        bind telemetryServerSocket (addrAddress telemetryServerAddr)
 
