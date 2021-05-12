@@ -9,4 +9,4 @@ import Multicopter
 import AltitudeController
 
 main :: IO ()
-main = runMulticopter (altitudeController 10.0 1.0 1.0 0.0 10.0) quadXAPMixer
+main = runMulticopter altitudeController quadXAPMixer

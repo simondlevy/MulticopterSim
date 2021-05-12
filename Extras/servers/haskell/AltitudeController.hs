@@ -10,9 +10,7 @@ module AltitudeController where
 
 import Types
 
+altitudeController :: PidController
 
-
-altitudeController :: Double -> Double -> Double -> Double -> Double -> PidController
-
-altitudeController _target _kp_z _kp_dz _ki_dz _windupMax = 
-    \_time -> \_vstate -> \_cstate -> (Demands 1 0 0 0)
+altitudeController _time _vehicleState _demands _controllerState =
+    ((Demands 1 0 0 0), (PidControllerState 0))

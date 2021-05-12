@@ -62,8 +62,6 @@ quadXAPMixer demands =
      
 -------------------------------------------------------
 
-data PidControllerState = PidControllerState { previousError :: Double
-                                             , errorIntegral :: Double
-                                             } deriving (Show)
+data PidControllerState = PidControllerState { lastError :: Double} deriving (Show)
 
-type PidController = Time -> VehicleState -> PidControllerState -> Demands
+type PidController = Time -> VehicleState -> Demands -> PidControllerState -> (Demands, PidControllerState)
