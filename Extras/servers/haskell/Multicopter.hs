@@ -17,6 +17,10 @@ import Data.Serialize -- from cereal
 
 import Types
 
+myGetAddrInfo :: String -> IO[AddrInfo]
+myGetAddrInfo port = getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just port)
+
+
 runMulticopter :: PidController -> Mixer -> IO ()
 runMulticopter controller mixer = withSocketsDo $
 
@@ -24,17 +28,17 @@ runMulticopter controller mixer = withSocketsDo $
 
     do 
 
-       -- XXX should replace this repeated code with a datatype
-
-       telemetryServerAddrInfo <- getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just "5001")
+       telemetryServerAddrInfo <- myGetAddrInfo "5001"
        let telemetryServerAddr = head telemetryServerAddrInfo
        telemetryServerSocket <- socket (addrFamily telemetryServerAddr) Datagram defaultProtocol
        let telemetrySockAddr = addrAddress telemetryServerAddr
 
-       motorClientAddrInfo <- getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just "5000")
+       motorClientAddrInfo <- myGetAddrInfo "5000"
        let motorClientAddr = head motorClientAddrInfo
        motorClientSocket <- socket (addrFamily motorClientAddr) Datagram defaultProtocol
        let motorSockAddr = addrAddress motorClientAddr
+
+       -- telemetryServerSocket telemetrySockAddr motorClientSocket motorSockAddr
 
        -------------------------------------------------------
 
