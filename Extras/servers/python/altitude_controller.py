@@ -9,15 +9,15 @@ MIT License
 
 class AltitudeController(object):
 
-    def __init__(self, target, posP, velP, velI, windupMax=10):
+    def __init__(self, target, Kp_pos, Kp_vel, Ki_vel, windupMax=10):
 
         # In a real PID controller, this would be a set-point
         self.target = target
 
         # Constants
-        self.posP = posP
-        self.velP = velP
-        self.velI = velI
+        self.Kp_pos = Kp_pos
+        self.Kp_vel = Kp_vel
+        self.Ki_vel = Ki_vel
         self.windupMax = windupMax
 
         # Values modified in-flight
@@ -26,7 +26,7 @@ class AltitudeController(object):
     def u(self, alt, vel, dt):
 
         # Compute dzdt setpoint and error
-        velTarget = (self.target - alt) * self.posP
+        velTarget = (self.target - alt) * self.Kp_pos
         velError = velTarget - vel
 
         # Update error integral and error derivative
@@ -35,7 +35,7 @@ class AltitudeController(object):
                         self.integralError + velError * dt, self.windupMax)
 
         # Compute control u
-        return self.velP * velError + self.velI * self.integralError
+        return self.Kp_vel * velError + self.Ki_vel * self.integralError
 
     def _constrainAbs(x, lim):
 
