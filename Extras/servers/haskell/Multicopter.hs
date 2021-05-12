@@ -20,6 +20,9 @@ import Types
 myGetAddrInfo :: String -> IO[AddrInfo]
 myGetAddrInfo port = getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just port)
 
+mySocket :: AddrInfo -> IO Socket
+mySocket addr = socket (addrFamily addr) Datagram defaultProtocol
+
 
 runMulticopter :: PidController -> Mixer -> IO ()
 runMulticopter controller mixer = withSocketsDo $
@@ -30,12 +33,12 @@ runMulticopter controller mixer = withSocketsDo $
 
        telemetryServerAddrInfo <- myGetAddrInfo "5001"
        let telemetryServerAddr = head telemetryServerAddrInfo
-       telemetryServerSocket <- socket (addrFamily telemetryServerAddr) Datagram defaultProtocol
+       telemetryServerSocket <- mySocket telemetryServerAddr
        let telemetrySockAddr = addrAddress telemetryServerAddr
 
        motorClientAddrInfo <- myGetAddrInfo "5000"
        let motorClientAddr = head motorClientAddrInfo
-       motorClientSocket <- socket (addrFamily motorClientAddr) Datagram defaultProtocol
+       motorClientSocket <- mySocket motorClientAddr
        let motorSockAddr = addrAddress motorClientAddr
 
        -- telemetryServerSocket telemetrySockAddr motorClientSocket motorSockAddr
