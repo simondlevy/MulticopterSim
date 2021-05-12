@@ -51,16 +51,17 @@ runMulticopter controller mixer = withSocketsDo $
 
                   let v = bytesToDoubles msgIn
 
-                  let t = Time (v!!0)
-                  let vs = VehicleState (v!!1) (v!!2) (v!!3) (v!!4) (v!!5) (v!!6) (v!!7) (v!!8) (v!!9) (v!!10) (v!!11) (v!!12) 
-                  let (demands, controllerState) = controller t vs  demands controllerState
+                  let t = Time (head v)
+                  let vs = makeState (tail v)
+
+                  let (demands, newControllerState) = controller t vs  demands controllerState
                   let motors = mixer demands
                   _ <- Network.Socket.ByteString.sendTo
                         motorClientSocket
                         (doublesToBytes [(m1 motors), (m2 motors), (m3 motors), (m4 motors)])
                         motorClientSockAddr
 
-                  processMessages telemetryServerSocket motorClientSocket motorClientSockAddr controllerState
+                  processMessages telemetryServerSocket motorClientSocket motorClientSockAddr newControllerState
                       
 
 -- https://stackoverflow.com/questions/20912582/haskell-bytestring-to-float-array
