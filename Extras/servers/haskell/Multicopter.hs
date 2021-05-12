@@ -19,8 +19,8 @@ import Types
 
 -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
 
-makeSocket :: String -> IO (Socket, SockAddr)
-makeSocket port =
+makeUdpSocket :: String -> IO (Socket, SockAddr)
+makeUdpSocket port =
     do 
        addrInfo <- getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just port)
        let addr = head addrInfo
@@ -33,9 +33,9 @@ runMulticopter controller mixer = withSocketsDo $
 
     do 
 
-       (telemetryServerSocket, telemetryServerSocketAddress) <- makeSocket "5001"
+       (telemetryServerSocket, telemetryServerSocketAddress) <- makeUdpSocket "5001"
 
-       (motorClientSocket, motorClientSocketAddress) <- makeSocket "5000"
+       (motorClientSocket, motorClientSocketAddress) <- makeUdpSocket "5000"
 
        bind telemetryServerSocket telemetryServerSocketAddress
 
