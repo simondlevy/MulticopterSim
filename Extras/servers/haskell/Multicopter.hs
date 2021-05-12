@@ -19,13 +19,13 @@ import Types
 
 -- Adapted from http://book.realworldhaskell.org/read/sockets-and-syslog.html
 
-makeSocket :: String -> IO (Socket, AddrInfo)
+makeSocket :: String -> IO (Socket, SockAddr)
 makeSocket port =
     do 
        addrInfo <- getAddrInfo (Just (defaultHints {addrFlags = [AI_PASSIVE]})) Nothing (Just port)
        let addr = head addrInfo
        sock <- socket (addrFamily addr) Datagram defaultProtocol
-       return (sock, addr)
+       return (sock, (addrAddress addr))
 
 
 runMulticopter :: PidController -> Mixer -> IO ()
@@ -33,14 +33,15 @@ runMulticopter controller mixer = withSocketsDo $
 
     do 
 
-       (telemetryServerSocket, telemetryServerAddr) <- makeSocket "5001"
-       (motorClientSocket, motorClientAddr) <- makeSocket "5000"
+       (telemetryServerSocket, telemetryServerSocketAddress) <- makeSocket "5001"
 
-       bind telemetryServerSocket (addrAddress telemetryServerAddr)
+       (motorClientSocket, motorClientSocketAddress) <- makeSocket "5000"
+
+       bind telemetryServerSocket telemetryServerSocketAddress
 
        putStrLn "Hit the Play button ..."
 
-       processMessages telemetryServerSocket motorClientSocket (addrAddress motorClientAddr) (PidControllerState 0)
+       processMessages telemetryServerSocket motorClientSocket motorClientSocketAddress (PidControllerState 0)
 
     where processMessages telemetryServerSocket motorClientSocket motorClientSockAddr controllerState =
               do 
