@@ -9,4 +9,5 @@ import Multicopter
 import AltitudeController
 
 main :: IO ()
-main = runMulticopter altitudeController quadXAPMixer
+main = let constants = AltitudeControllerConstants 10 1 1 0
+       in runMulticopter (makeAltitudeController constants) quadXAPMixer
