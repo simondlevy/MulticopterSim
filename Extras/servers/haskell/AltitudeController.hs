@@ -18,10 +18,11 @@ data AltitudeControllerConstants =
     , altitude_Ki_dz ::Double
     } deriving (Show)
              
-
 type AltitudeController = AltitudeControllerConstants -> PidController
 
 makeAltitudeController :: AltitudeController
 
 makeAltitudeController _constants =
-    \_time -> \_vehicleState -> \_demands -> \_controllerState -> ((Demands 1 0 0 0), (PidControllerState 0))
+    \_time -> \_vehicleState -> \_demands -> \_controllerState ->
+
+    ((Demands 1 0 0 0), (PidControllerState 0))
