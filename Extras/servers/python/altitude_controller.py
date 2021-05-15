@@ -30,7 +30,6 @@ class AltitudeController(object):
         dzdt_error = dzdt_target - dzdt
 
         # Update error integral and error derivative
-        self.integralError += dzdt_error * dt
         self.integralError = AltitudeController._constrainAbs(
                         self.integralError + dzdt_error * dt, self.windupMax)
 
