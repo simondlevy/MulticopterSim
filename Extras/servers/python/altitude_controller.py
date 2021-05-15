@@ -23,19 +23,19 @@ class AltitudeController(object):
         # Values modified in-flight
         self.integralError = 0
 
-    def u(self, alt, vel, dt):
+    def u(self, z, dzdt, dt):
 
         # Compute dzdt setpoint and error
-        velTarget = (self.target - alt) * self.Kp_pos
-        velError = velTarget - vel
+        dzdt_target = (self.target - z) * self.Kp_pos
+        dzdt_error = dzdt_target - dzdt
 
         # Update error integral and error derivative
-        self.integralError += velError * dt
+        self.integralError += dzdt_error * dt
         self.integralError = AltitudeController._constrainAbs(
-                        self.integralError + velError * dt, self.windupMax)
+                        self.integralError + dzdt_error * dt, self.windupMax)
 
         # Compute control u
-        return self.Kp_vel * velError + self.Ki_vel * self.integralError
+        return self.Kp_vel * dzdt_error + self.Ki_vel * self.integralError
 
     def _constrainAbs(x, lim):
 
