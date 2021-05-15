@@ -23,6 +23,9 @@ type AltitudeController = AltitudeControllerConstants -> PidController
 makeAltitudeController :: AltitudeController
 
 makeAltitudeController _constants =
+
     \_time -> \_vehicleState -> \_demands -> \_controllerState ->
 
-    ((Demands 1 0 0 0), (PidControllerState 0))
+    let u = 1
+
+    in ((Demands u 0 0 0), (PidControllerState 0))
