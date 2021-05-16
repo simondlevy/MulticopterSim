@@ -36,7 +36,7 @@ makeAltitudeController constants =
          ki_dz = altitude_Ki_dz constants
          windupMax = altitude_windupMax constants
 
-         -- Get vehicle state
+         -- Get vehicle state, negating for NED
          z = -(state_z vehicleState)
          dzdt = -(state_dz vehicleState)
 
@@ -46,7 +46,7 @@ makeAltitudeController constants =
 
          -- Update error integral
          dt = time - (previousTime controllerState)
-         newErrorIntegral = 0 -- constrainAbs ((errorIntegral controllerState) + dzdt_error * dt) windupMax
+         newErrorIntegral = constrainAbs ((errorIntegral controllerState) + dzdt_error * dt) windupMax
 
          -- Compute throttle demand
          u = min (kp_dz * dzdt_error + ki_dz * newErrorIntegral) 1
