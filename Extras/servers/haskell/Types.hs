@@ -8,10 +8,6 @@
 
 module Types where
 
-data Time = Time { time :: Double} deriving (Show)
-
--------------------------------------------------------
-
 -- See Bouabdallah et al. (2004)
 data VehicleState = VehicleState { 
                      state_x :: Double
@@ -65,6 +61,8 @@ quadXAPMixer demands =
      
 -------------------------------------------------------
 
-data PidControllerState = PidControllerState { lastError :: Double} deriving (Show)
+data PidControllerState = PidControllerState { previousTime :: Double 
+                                             , errorIntegral :: Double
+                                             } deriving (Show)
 
-type PidController = Time -> VehicleState -> Demands -> PidControllerState -> (Demands, PidControllerState)
+type PidController = Double -> VehicleState -> Demands -> PidControllerState -> (Demands, PidControllerState)

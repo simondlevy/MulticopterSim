@@ -41,7 +41,7 @@ runMulticopter controller mixer = withSocketsDo $
 
        putStrLn "Hit the Play button ..."
 
-       processMessages telemetryServerSocket motorClientSocket motorClientSocketAddress (PidControllerState 0)
+       processMessages telemetryServerSocket motorClientSocket motorClientSocketAddress (PidControllerState 0 0)
 
     where processMessages telemetryServerSocket motorClientSocket motorClientSockAddr controllerState =
               do 
@@ -50,7 +50,7 @@ runMulticopter controller mixer = withSocketsDo $
 
                   let v = bytesToDoubles msgIn
 
-                  let t = Time (head v)
+                  let t = head v
                   let vs = makeState (tail v)
 
                   let (demands, newControllerState) = controller t vs  demands controllerState
