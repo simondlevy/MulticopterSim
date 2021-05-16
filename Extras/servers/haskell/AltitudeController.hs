@@ -48,7 +48,7 @@ makeAltitudeController constants =
          dt = time - (previousTime controllerState)
          newErrorIntegral = constrainAbs ((errorIntegral controllerState) + dzdt_error * dt) windupMax
 
-         -- Compute throttle demand
+         -- Compute throttle demand, constrained to [0,1]
          u = min (kp_dz * dzdt_error + ki_dz * newErrorIntegral) 1
 
     in ((Demands u 0 0 0), (PidControllerState time newErrorIntegral))
