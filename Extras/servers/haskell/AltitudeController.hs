@@ -1,5 +1,5 @@
 {--
-  PID Controller
+  Altitude-hold PID Controller
 
   Copyright(C) 2021 Simon D.Levy
 
