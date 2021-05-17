@@ -8,6 +8,8 @@
 
 module Types where
 
+type Time = Double
+
 -- See Bouabdallah et al. (2004)
 data VehicleState = VehicleState { 
                      state_x :: Double
@@ -65,4 +67,4 @@ data PidControllerState = PidControllerState { previousTime :: Double
                                              , errorIntegral :: Double
                                              } deriving (Show)
 
-type PidController = Double -> VehicleState -> Demands -> PidControllerState -> (Demands, PidControllerState)
+type PidController = Time -> VehicleState -> Demands -> PidControllerState -> (Demands, PidControllerState)
