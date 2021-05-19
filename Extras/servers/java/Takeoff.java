@@ -52,7 +52,7 @@ public class Takeoff {
             // Compute vertical climb rate as first difference of altitude over time
             if (t > tprev) {
 
-                // Use temporal first difference to compute vertical velocity
+                // Get temporal first difference
                 double dt = t - tprev;
 
                 // Get correction from PID controller

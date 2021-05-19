@@ -8,47 +8,50 @@ MIT License
 
 public class AltitudePidController {
 
-    public AltitudePidController(double target, double posP, double velP, double velI, double windupMax)
+    public AltitudePidController(double target, double Kp_z, double Kp_dz, double Ki_dz, double windupMax)
     {
-        construct(target, posP, velP, velI, windupMax);
+        construct(target, Kp_z, Kp_dz, Ki_dz, windupMax);
     }
 
-    public AltitudePidController(double target, double posP, double velP, double velI)
+    public AltitudePidController(double target, double Kp_z, double Kp_dz, double Ki_dz)
     {
-        construct(target, posP, velP, velI, 10.0);
+        construct(target, Kp_z, Kp_dz, Ki_dz, 10.0);
     }
 
-    public double u(double alt, double vel, double dt)
+    /**
+      * @return demands U [throttle, roll, pitch, yaw]
+      */
+    public double u(double z, double dz, double dt)
     {
         // Compute dzdt setpoint and error
-        double velTarget = (_target - alt) * _posP;
-        double velError = velTarget - vel;
+        double dzTarget = (_target - z) * _Kp_z;
+        double dzError = dzTarget - dz;
 
         // Update error integral and error derivative
-        _integralError +=  velError * dt;
-        _integralError = AltitudePidController.constrainAbs(_integralError + velError * dt, _windupMax);
+        _integralError +=  dzError * dt;
+        _integralError = AltitudePidController.constrainAbs(_integralError + dzError * dt, _windupMax);
 
         // Compute control u
-        return _velP * velError + _velI * _integralError;
+        return _Kp_dz * dzError + _Ki_dz * _integralError;
     }
 
     private double _target;
-    private double _posP;
-    private double _velP;
-    private double _velI;
+    private double _Kp_z;
+    private double _Kp_dz;
+    private double _Ki_dz;
     private double _windupMax;
     private double _posTarget;
     private double _integralError;
 
-    private void construct(double target, double posP, double velP, double velI, double windupMax)
+    private void construct(double target, double Kp_z, double Kp_dz, double Ki_dz, double windupMax)
     {
         // In a real PID controller, this would be a set-point
         _target = target;
 
         // Constants
-        _posP = posP;
-        _velP = velP;
-        _velI = velI;
+        _Kp_z = Kp_z;
+        _Kp_dz = Kp_dz;
+        _Ki_dz = Ki_dz;
         _windupMax = windupMax;
 
         // Values modified in-flight
