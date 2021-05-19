@@ -24,6 +24,9 @@ public class Takeoff {
         // Create PID controller
         AltitudePidController pid  = new AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I);
 
+        // Create mixer
+        Mixer mixer = new Mixer();
+
         // Create a multicopter simulation
         Multicopter copter = new Multicopter();
 
@@ -60,10 +63,8 @@ public class Takeoff {
                 // Get demands from PID controller
                 double [] u = pid.getDemands(z, dz, dt);
 
-                // XXX Fake up a mixer by setting all motors to throttle demand
-                for (int k=0; k<4; ++k) {
-                    omega[k] = u[0];
-                }
+                // Run demands through mixer to get motor spins
+                omega = mixer.getMotors(u);
 
                 // Constrain correction to [0,1] to represent motor value
                 for (int k=0; k<4; ++k) {
