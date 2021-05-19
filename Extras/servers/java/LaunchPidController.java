@@ -39,9 +39,11 @@ public class LaunchPidController {
         _integralError +=  dzError * dt;
         _integralError = LaunchPidController.constrainAbs(_integralError + dzError * dt, _windupMax);
 
-        // Compute control U, setting only throttle component U1
+        // Compute control for throttle
         double [] u = new double[4];
         u[0] = _Kp_dz * dzError + _Ki_dz * _integralError;
+
+        // If time is between five and six seconds, set pitch to a very small value (.001)
 
         // Track previous time for dt
         tprev = t;
