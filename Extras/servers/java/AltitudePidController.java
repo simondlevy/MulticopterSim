@@ -19,9 +19,12 @@ public class AltitudePidController {
     }
 
     /**
+      * @param z altitude
+      * @param dz altitude first temporal difference (climb rate)
+      * @param dt time difference
       * @return demands U [throttle, roll, pitch, yaw]
       */
-    public double u(double z, double dz, double dt)
+    public double [] getDemands(double z, double dz, double dt)
     {
         // Compute dzdt setpoint and error
         double dzTarget = (_target - z) * _Kp_z;
@@ -31,8 +34,10 @@ public class AltitudePidController {
         _integralError +=  dzError * dt;
         _integralError = AltitudePidController.constrainAbs(_integralError + dzError * dt, _windupMax);
 
-        // Compute control u
-        return _Kp_dz * dzError + _Ki_dz * _integralError;
+        // Compute control u, setting only throttle component U1
+        double [] u = new double[4];
+        u[0] = _Kp_dz * dzError + _Ki_dz * _integralError;
+        return u;
     }
 
     private double _target;

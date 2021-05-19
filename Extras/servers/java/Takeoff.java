@@ -20,7 +20,6 @@ public class Takeoff {
     {
         // initial conditions
         double tprev = 0;
-        double u = 0;
 
         // Create PID controller
         AltitudePidController pid  = new AltitudePidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I);
@@ -49,21 +48,31 @@ public class Takeoff {
             double z = -state[Multicopter.STATE_Z];
             double dz = -state[Multicopter.STATE_DZ];
 
+            // Start with zeros for demands
+            double []  omega = new double[4];
+
             // Compute vertical climb rate as first difference of altitude over time
             if (t > tprev) {
 
                 // Get temporal first difference
                 double dt = t - tprev;
 
-                // Get correction from PID controller
-                u = pid.u(z, dz, dt);
+                // Get demands from PID controller
+                double [] u = pid.getDemands(z, dz, dt);
+
+                // XXX Fake up a mixer by setting all motors to throttle demand
+                for (int k=0; k<4; ++k) {
+                    omega[k] = u[0];
+                }
 
                 // Constrain correction to [0,1] to represent motor value
-                u = Math.max(0., Math.min(1., u));
+                for (int k=0; k<4; ++k) {
+                    omega[k] = Math.max(0., Math.min(1., omega[k]));
+                }
             }
 
             // Set motor values in sim
-            copter.setMotors(ones(u, 4));
+            copter.setMotors(omega);
 
             // Update
             tprev = t;
