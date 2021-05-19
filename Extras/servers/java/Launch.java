@@ -18,9 +18,6 @@ public class Launch {
 
     public static void main(String [] args)
     {
-        // initial conditions
-        double tprev = 0;
-
         // Create PID controller
         LaunchPidController pid  = new LaunchPidController(ALTITUDE_TARGET, ALT_P, VEL_P, VEL_I);
 
@@ -54,29 +51,20 @@ public class Launch {
             // Start with zeros for demands
             double []  omega = new double[4];
 
-            // Compute vertical climb rate as first difference of altitude over time
-            if (t > tprev) {
 
-                // Get temporal first difference
-                double dt = t - tprev;
+            // Get demands from PID controller
+            double [] u = pid.getDemands(z, dz, t);
 
-                // Get demands from PID controller
-                double [] u = pid.getDemands(z, dz, dt);
+            // Run demands through mixer to get motor spins
+            omega = mixer.getMotors(u);
 
-                // Run demands through mixer to get motor spins
-                omega = mixer.getMotors(u);
-
-                // Constrain correction to [0,1] to represent motor value
-                for (int k=0; k<4; ++k) {
-                    omega[k] = Math.max(0., Math.min(1., omega[k]));
-                }
+            // Constrain correction to [0,1] to represent motor value
+            for (int k=0; k<4; ++k) {
+                omega[k] = Math.max(0., Math.min(1., omega[k]));
             }
 
             // Set motor values in sim
             copter.setMotors(omega);
-
-            // Update
-            tprev = t;
 
             // Yield to Multicopter thread
             try {

@@ -8,6 +8,8 @@ MIT License
 
 public class LaunchPidController {
 
+    private double tprev; // previous time for computing dt
+
     public LaunchPidController(double target, double Kp_z, double Kp_dz, double Ki_dz, double windupMax)
     {
         construct(target, Kp_z, Kp_dz, Ki_dz, windupMax);
@@ -21,11 +23,14 @@ public class LaunchPidController {
     /**
       * @param z altitude
       * @param dz altitude first temporal difference (climb rate)
-      * @param dt time difference
+      * @param t current time
       * @return demands U [throttle, roll, pitch, yaw]
       */
-    public double [] getDemands(double z, double dz, double dt)
+    public double [] getDemands(double z, double dz, double t)
     {
+        // Compute dt
+        double dt = t - tprev;
+
         // Compute dzdt setpoint and error
         double dzTarget = (_target - z) * _Kp_z;
         double dzError = dzTarget - dz;
@@ -34,9 +39,14 @@ public class LaunchPidController {
         _integralError +=  dzError * dt;
         _integralError = LaunchPidController.constrainAbs(_integralError + dzError * dt, _windupMax);
 
-        // Compute control u, setting only throttle component U1
+        // Compute control U, setting only throttle component U1
         double [] u = new double[4];
         u[0] = _Kp_dz * dzError + _Ki_dz * _integralError;
+
+        // Track previous time for dt
+        tprev = t;
+
+        // Return U
         return u;
     }
 
