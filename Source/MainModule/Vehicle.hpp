@@ -46,15 +46,23 @@ class Vehicle {
     private:
 
         // Support cycling through views by hitting spacebar
-        enum {
+        typedef enum {
 
             VIEW_CHASE,
             VIEW_FRONT, 
             VIEW_GROUND,
             VIEW_COUNT
 
-        };
-        uint8_t _view = VIEW_CHASE;
+        } view_t;
+        view_t _view = VIEW_CHASE;
+
+        // Have to select a map before flying
+        typedef enum {
+            MAP_NONE,
+            MAP_EARTH,
+            MAP_MARS
+        } map_t;
+        map_t _mapSelected = MAP_NONE;
 
         // Special camera for ground view
         ACameraActor* _groundCamera = NULL;
@@ -84,9 +92,6 @@ class Vehicle {
         // Cameras
         Camera* _cameras[Camera::MAX_CAMERAS];
         uint8_t  _cameraCount;
-
-        // Have to seledct a map before flying
-        bool _mapSelected = false;
 
         // For computing AGL
         float _aglOffset = 0;
@@ -313,12 +318,18 @@ class Vehicle {
             _playerController->SetViewTargetWithBlend(_pawn);
 
             // Make sure a map has been selected
-            _mapSelected = false;
-            if (_pawn->GetWorld()->GetMapName().Contains("Untitled")) {
+            _mapSelected = MAP_NONE;
+            FString mapName = _pawn->GetWorld()->GetMapName();
+            if (mapName.Contains("Untitled")) {
                 error("NO MAP SELECTED");
                 return;
             }
-            _mapSelected = true;
+            if (mapName.Contains("Mars")) {
+                _mapSelected = MAP_MARS;
+            }
+            else {
+                _mapSelected = MAP_EARTH;
+            }
 
             // Disable built-in physics
             _frameMeshComponent->SetSimulatePhysics(false);
@@ -371,7 +382,7 @@ class Vehicle {
             }
 
             // Run the game if a map has been selected
-            if (_mapSelected) {
+            if (_mapSelected != MAP_NONE) {
 
                 // Use 1/2/3 keys to switch player-camera view
                 setPlayerCameraView();
@@ -406,7 +417,17 @@ class Vehicle {
 
             if (hitKey(EKeys::SpaceBar)) {
                 if (!didhit) {
-                    _view = (_view + 1) % VIEW_COUNT;
+                    switch (_view) {
+                        case VIEW_CHASE:
+                            _view = VIEW_FRONT;
+                            break;
+                         case VIEW_FRONT:
+                            _view = VIEW_GROUND;
+                            break;
+                        case VIEW_GROUND:
+                            _view = VIEW_CHASE;
+                            break;
+                    }
                     setView();
                 }
                 didhit = true;
