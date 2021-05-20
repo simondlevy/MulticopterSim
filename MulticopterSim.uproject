@@ -11,16 +11,6 @@
 			"AdditionalDependencies": [
 				"Engine"
 			]
-		},
-		{
-			"Name": "SocketModule",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
-			"Name": "HackflightModule",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
 		}
 	]
 }
