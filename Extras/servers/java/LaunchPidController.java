@@ -45,7 +45,7 @@ public class LaunchPidController {
 
         // If time is between five and six seconds, set pitch to a very small value (.001)
         if (5<t && t<6){
-            u[2] = u[2] += .001;
+            u[2] += .001;
         }
         // Track previous time for dt
         tprev = t;
