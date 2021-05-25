@@ -90,11 +90,6 @@ The key mappings are based on those used in [Microsoft Flight Simulator](https:/
 
 # Support for other programming languages / packages
 
-## Matlab
-
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/matlab) contains an example of how
-you can control MulticopterSim from a Matlab session running on your computer or another computer.
-
 ## Python
 
 [This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/python) contains an example of how
@@ -104,6 +99,19 @@ you can control MulticopterSim from a Python program running on your computer or
 
 [This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/java) contains an example of how
 you can control MulticopterSim from a Java program running on your computer or another computer.
+
+## Haskell
+
+[This
+folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/haskell)
+contains an example of how you can control MulticopterSim from a Haskell program
+running on your computer or another computer.
+
+
+## Matlab
+
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/matlab) contains an example of how
+you can control MulticopterSim from a Matlab session running on your computer or another computer.
 
 ## OpenCV
 
