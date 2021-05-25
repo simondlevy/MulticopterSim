@@ -10,7 +10,7 @@
 
 #include "../../MainModule/vehicles/multirotors/Phantom.hpp"
 
-#include "../SocketFlightManager.hpp"
+#include "../QuickstartFlightManager.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -26,9 +26,6 @@ class QUICKSTARTMODULE_API APhantomPawn : public APawn {
 
         // Helper class
         Phantom _phantom;
-
-        // Camera
-        SocketCamera _camera;
 
     protected:
 

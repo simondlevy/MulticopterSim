@@ -11,8 +11,6 @@
 APhantomPawn::APhantomPawn()
 {
     _phantom.build(this);
-
-    _phantom.addCamera(&_camera);
 }
 
 void APhantomPawn::PostInitializeComponents()
@@ -25,7 +23,7 @@ void APhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void APhantomPawn::BeginPlay()
 {
-    _phantom.BeginPlay(new FSocketFlightManager(&_phantom.dynamics));
+    _phantom.BeginPlay(new FQuickstartFlightManager(&_phantom.dynamics));
 
     Super::BeginPlay();
 }
