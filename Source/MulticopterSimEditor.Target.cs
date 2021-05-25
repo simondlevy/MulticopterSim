@@ -10,15 +10,15 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class MulticopterSimHackflightEditorTarget : TargetRules
+public class MulticopterSimEditorTarget : TargetRules
 {
-	public MulticopterSimHackflightEditorTarget(TargetInfo Target) : base(Target)
+	public MulticopterSimEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 
 		ExtraModuleNames.AddRange( new string[] { 
                 "MainModule", 
-                "HackflightModule"
+                "SocketModule"
                 } );
 	}
 }
