@@ -69,9 +69,9 @@ where MulticopterSim looks for the Hackflight firmware.)
 
 2. In the files
 [MulticopterSim.uproject](https://github.com/simondlevy/MulticopterSim/blob/master/MulticopterSim.uproject#L16),
-[](),
-and [](),
-change <b>SocketModule</b> to <b>HackflightMoldue</b>
+[Source/MulticopterSim.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim.Target.cs#L20),
+and [Source/MulticopterSimEditor.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSimEditor.Target.cs#L20),
+change <b>SocketModule</b> to <b>HackflightModlue</b>
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers

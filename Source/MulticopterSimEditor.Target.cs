@@ -6,7 +6,6 @@
 * MIT License
 */
 
-
 using UnrealBuildTool;
 using System.Collections.Generic;
 
