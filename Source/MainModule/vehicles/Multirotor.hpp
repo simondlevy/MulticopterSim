@@ -30,22 +30,22 @@ class MultirotorVehicle : public Vehicle {
             return meshComponent;
         }
 
-        UStaticMeshComponent * addProp(UStaticMesh* propMesh, float x, float y, float z, float angle)
+        UStaticMeshComponent * addRotor(UStaticMesh* rotorMesh, float x, float y, float z, float angle)
         {
-            UStaticMeshComponent * propMeshComponent = addComponent(propMesh, makeName("Prop", _propCount, "Mesh"), x, y, z, angle);
-            _propellerMeshComponents[_propCount] = propMeshComponent;
-            _propCount++;
-            return propMeshComponent;
+            UStaticMeshComponent * rotorMeshComponent = addComponent(rotorMesh, makeName("Rotor", _rotorCount, "Mesh"), x, y, z, angle);
+            _rotorMeshComponents[_rotorCount] = rotorMeshComponent;
+            _rotorCount++;
+            return rotorMeshComponent;
         }
 
-        void addProp(UStaticMesh* propMesh, float x, float y, float z)
+        void addRotor(UStaticMesh* rotorMesh, float x, float y, float z)
         {
-            addProp(propMesh, x, y, z, propStartAngle(x,y));
+            addRotor(rotorMesh, x, y, z, rotorStartAngle(x,y));
         }
 
-        virtual void setPropRotation(uint8_t index, float angle)
+        virtual void setRotorRotation(uint8_t index, float angle)
         {
-            _propellerMeshComponents[index]->SetRelativeRotation(FRotator(0, angle, 0));
+            _rotorMeshComponents[index]->SetRelativeRotation(FRotator(0, angle, 0));
         }
 
 
@@ -62,9 +62,9 @@ class MultirotorVehicle : public Vehicle {
                 motorsum += _motorvals[j];
             }
 
-            // Rotate props. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
+            // Rotate rotors. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
             if (motorsum > 0) {
-                rotateProps(_rotorDirections);
+                rotateRotors(_rotorDirections);
             }
 
             // Add mean to circular buffer for moving average
@@ -78,7 +78,7 @@ class MultirotorVehicle : public Vehicle {
             }
             smoothedMotorMean /= _motorBuffer->Capacity();
 
-            // Use the mean motor value to modulate the pitch and voume of the propeller sound
+            // Use the mean motor value to modulate the pitch and voume of the rotor sound
             if (_audioComponent) {
                 _audioComponent->SetFloatParameter(FName("pitch"), smoothedMotorMean);
                 _audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
@@ -89,18 +89,18 @@ class MultirotorVehicle : public Vehicle {
 
         uint8_t _nmotors = 0;
 
-        float propStartAngle(float propX, float propY)
+        float rotorStartAngle(float rotorX, float rotorY)
         {
             FVector vehicleCenter = _pawn->GetActorLocation();
-            double theta = -atan2((propY - vehicleCenter.Y), (propX - vehicleCenter.X));
-            return FMath::RadiansToDegrees(3.14159 / 2 - theta) + 57.5;
+            double theta = -atan2((rotorY - vehicleCenter.Y), (rotorX - vehicleCenter.X));
+            return FMath::RadiansToDegrees(M_PI / 2 - theta) + 57.5;
         }
 
-        void rotateProps(int8_t* rotorDirections)
+        void rotateRotors(int8_t* rotorDirections)
         {
             static float rotation;
-            for (uint8_t i = 0; i < _propCount; ++i) {
-                setPropRotation(i, rotation * rotorDirections[i] * 200);
+            for (uint8_t i = 0; i < _rotorCount; ++i) {
+                setRotorRotation(i, rotation * rotorDirections[i] * 200);
             }
             rotation++;
         }

@@ -31,9 +31,10 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define _USE_MATH_DEFINES
 #include <math.h>
 
-// #include "Utils.hpp"
 #include "Transforms.hpp"
 
 class Dynamics {
@@ -310,7 +311,7 @@ class Dynamics {
          */
         virtual double computeMotorSpeed(double motorval)
         {
-            return motorval * _vparams.maxrpm * 3.14159 / 30;
+            return motorval * _vparams.maxrpm * M_PI / 30;
         }
 
     public:

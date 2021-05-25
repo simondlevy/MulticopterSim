@@ -10,7 +10,7 @@
 
 #include "../Multirotor.hpp"
 
-#include "../../dynamics/QuadXAP.hpp" // XXX use quadrotor dynamics for now
+#include "../../dynamics/Coaxial.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -65,12 +65,6 @@ class Ingenuity {
             15000 // maxrpm
         };
 
-    public:
-
-        QuadXAPDynamics dynamics = QuadXAPDynamics(vparams);
-
-        MultirotorVehicle vehicle = MultirotorVehicle(&dynamics, 4);
-
     private:
 
         // Threaded worker for flight control
@@ -78,7 +72,7 @@ class Ingenuity {
 
         void addRotor(UStaticMesh* propMesh, float z)
         {
-            vehicle.addProp(propMesh, 0, 0, z);
+            vehicle.addRotor(propMesh, 0, 0, z);
         }
 
         void addLeg(uint8_t index, UStaticMesh * bracketMesh, UStaticMesh * topMesh, UStaticMesh * bottomMesh)
@@ -90,6 +84,10 @@ class Ingenuity {
         }
 
     public:
+
+        CoaxialDynamics dynamics = CoaxialDynamics(vparams);
+
+        MultirotorVehicle vehicle = MultirotorVehicle(&dynamics, 4);
 
         void build(APawn * pawn)
         {

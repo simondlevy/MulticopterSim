@@ -11,6 +11,11 @@
 			"AdditionalDependencies": [
 				"Engine"
 			]
+		},
+		{
+			"Name": "FlightModule",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	]
 }

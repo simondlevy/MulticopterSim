@@ -89,10 +89,10 @@ class FFlightManager : public FThreadedManager {
         {
         }
 
-        // Called by VehiclePawn::Tick() method to propeller animation/sound (motorvals)
+        // Called by VehiclePawn::Tick() method to rotor animation/sound (motorvals)
         void getMotorValues(float * motorvals)
         {
-            // Get motor values for propeller animation / motor sound
+            // Get motor values for rotor animation / motor sound
             for (uint8_t j=0; j<_nmotors; ++j) {
                 motorvals[j] = _motorvals[j];
             }

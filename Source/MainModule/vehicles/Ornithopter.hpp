@@ -44,7 +44,7 @@ class Ornithopter : public Vehicle {
             _wings[_propCount].rollRelative = (yawStart==yawRelative) ? 0 : 180;
 
             // Use a tiny hinge as the "propeller" for this wing
-            UStaticMeshComponent* hingeMeshComponent = Vehicle::addProp(hingeMesh, hingeX, hingeY, yawStart);
+            UStaticMeshComponent* hingeMeshComponent = Vehicle::addRotor(hingeMesh, hingeX, hingeY, yawStart);
 
             // Add the actual wing to the hinge
             UStaticMeshComponent* wingMeshComponent =

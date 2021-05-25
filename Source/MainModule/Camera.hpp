@@ -56,7 +56,6 @@ class Camera {
 
         // UE4 resources, set in Vehicle::addCamera()
         USceneCaptureComponent2D * _captureComponent = NULL;
-        UCameraComponent         * _cameraComponent = NULL;
         FRenderTarget            * _renderTarget = NULL;
 
         Camera(float fov, Resolution_t resolution, float x=Camera::X, float y=Camera::Y, float z=Camera::Z)
@@ -79,7 +78,6 @@ class Camera {
 
             // These will be set in Vehicle::addCamera()
             _captureComponent = NULL;
-            _cameraComponent = NULL;
             _renderTarget = NULL;
         }
 

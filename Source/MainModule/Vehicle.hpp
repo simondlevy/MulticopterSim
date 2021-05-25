@@ -191,7 +191,7 @@ class Vehicle {
 
         UStaticMeshComponent* _frameMeshComponent = NULL;
 
-	    UStaticMeshComponent* _propellerMeshComponents[FFlightManager::MAX_MOTORS] = {};
+	    UStaticMeshComponent* _rotorMeshComponents[FFlightManager::MAX_MOTORS] = {};
 
         // Threaded worker for running flight control
         class FFlightManager* _flightManager = NULL;
@@ -203,8 +203,8 @@ class Vehicle {
         TCircularBuffer<float>* _motorBuffer = NULL;
         uint32_t _bufferIndex = 0;
 
-        // Starts at zero and increases each time we add a propeller
-        uint8_t _propCount;
+        // Starts at zero and increases each time we add a rotor
+        uint8_t _rotorCount;
 
         // Also set in constructor, but purely for visual effect
         int8_t _rotorDirections[FFlightManager::MAX_MOTORS] = {};
@@ -224,7 +224,7 @@ class Vehicle {
             
             _pawn->SetRootComponent(_frameMeshComponent);
 
-            _propCount = 0;
+            _rotorCount = 0;
         }
 
         void buildFull(APawn* pawn, UStaticMesh* frameMesh, float chaseCameraDistanceMeters=1.5, 
@@ -242,7 +242,7 @@ class Vehicle {
             _soundCue = soundCue.Object;
 
             // Create an audio component, which wraps the sound cue, and allows us to ineract with it and its parameters from code
-            _audioComponent = _pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
+            _audioComponent = _pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("RotorAudioComp"));
 
             // Set the audio component's volume to zero
             _audioComponent->SetFloatParameter(FName("volume"), 0);
@@ -334,7 +334,7 @@ class Vehicle {
             // Disable built-in physics
             _frameMeshComponent->SetSimulatePhysics(false);
 
-            // Start the audio for the propellers Note that because the
+            // Start the audio for the rotors Note that because the
             // Cue Asset is set to loop the sound, once we start playing the sound, it
             // will play continiously...
             if (_audioComponent) {

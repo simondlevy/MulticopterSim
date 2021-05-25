@@ -9,6 +9,8 @@
 #pragma once
 
 #include "../Dynamics.hpp"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 class ThrustVectorDynamics : public Dynamics {
 
@@ -36,13 +38,13 @@ class ThrustVectorDynamics : public Dynamics {
             u3 = thrust * sin(motorvals[3] * _nozzleMaxAngle);
 
             // yaw clockwise is difference between rotor rotations
-            u4 = (o[1] - o[0]);
+            u4 = (o[0] - o[1]);
         }
 
         // motor direction for animation
         virtual int8_t rotorDirection(uint8_t i) override
         {
-            const int8_t dir[2] = {+1, -1};
+            const int8_t dir[2] = {-1, +1};
             return dir[i];
         }
 

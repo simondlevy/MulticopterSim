@@ -17,7 +17,8 @@
 
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "Phantom/Frame.Frame", FrameStatics)
-DECLARE_STATIC_MESH(FPropStatics, "Phantom/Prop.Prop", PropStatics)
+DECLARE_STATIC_MESH(FPropCWStatics, "Phantom/PropCW.PropCW", PropCWStatics)
+DECLARE_STATIC_MESH(FPropCCWStatics, "Phantom/PropCCW.PropCCW", PropCCWStatics)
 
 class Phantom {
 
@@ -61,10 +62,10 @@ class Phantom {
             vehicle.buildFull(pawn, FrameStatics.mesh.Get());
 
             // Add propellers
-            addProp(+1, +1);
-            addProp(-1, -1);
-            addProp(+1, -1);
-            addProp(-1, +1);
+            addRotor(PropCCWStatics.mesh.Get(), +1, +1);
+            addRotor(PropCCWStatics.mesh.Get(), -1, -1);
+            addRotor(PropCWStatics.mesh.Get(), +1, -1);
+            addRotor(PropCWStatics.mesh.Get(), -1, +1);
 
             _flightManager = NULL;
         }
@@ -96,9 +97,9 @@ class Phantom {
             vehicle.addCamera(camera);
         }
 
-        void addProp(int8_t dx, int8_t dy)
+        void addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy)
         {
-            vehicle.addProp(PropStatics.mesh.Get(), dx*0.12, dy*0.12, 0.17);
+            vehicle.addRotor(mesh, dx*0.12, dy*0.12, 0.17);
         }
 
 }; // class Phantom 

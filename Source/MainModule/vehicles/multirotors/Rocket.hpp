@@ -16,9 +16,9 @@
 #include "GameFramework/Pawn.h"
 
 // Structures to hold static mesh initializations
-DECLARE_STATIC_MESH(FBodyStatics,   "Rocket/Body.Body",     BodyStatics)
-DECLARE_STATIC_MESH(FRotor1Statics, "Rocket/Rotor1.Rotor1", Rotor1Statics)
-DECLARE_STATIC_MESH(FRotor2Statics, "Rocket/Rotor2.Rotor2", Rotor2Statics)
+DECLARE_STATIC_MESH(FBodyStatics, "Rocket/Body.Body", BodyStatics)
+DECLARE_STATIC_MESH(FRotorTopStatics, "Rocket/RotorTop.RotorTop", RotorTopStatics)
+DECLARE_STATIC_MESH(FRotorBottomStatics, "Rocket/RotorBottom.RotorBottom", RotorBottomStatics)
 DECLARE_STATIC_MESH(FNozzleStatics, "Rocket/Nozzle.Nozzle", NozzleStatics)
 
 class Rocket {
@@ -50,8 +50,8 @@ class Rocket {
         static constexpr double NOZZLE_Z         =  0.15;
 
         // For appearance only
-        static constexpr double ROTOR1_Z  =  0.60;
-        static constexpr double ROTOR2_Z  =  0.70;
+        static constexpr double ROTOR_TOP_Z  =  0.70;
+        static constexpr double ROTOR_BOTTOM_Z  =  0.60;
 
         // A private class to support animating the nozzle
         class NozzleVehicle : public MultirotorVehicle {
@@ -78,7 +78,7 @@ class Rocket {
 
         void addRotor(UStaticMesh* mesh, float z)
         {
-            _vehicle->addProp(mesh, 0, 0, z);
+            _vehicle->addRotor(mesh, 0, 0, z);
         }
 
         float meshHeightMeters(UStaticMesh * mesh) 
@@ -92,28 +92,28 @@ class Rocket {
 
     public:
 
-        ThrustVectorDynamics * dynamics = NULL;
+        ThrustVectorDynamics dynamics = ThrustVectorDynamics(vparams, NOZZLE_MAX_ANGLE);
+
 
         void build(APawn * pawn)
         {
             // Get height of barrel for dynamics
             float barrelHeight = meshHeightMeters(BodyStatics.mesh.Get());
 
-            // Create dynamics
-            dynamics = new ThrustVectorDynamics(vparams, NOZZLE_MAX_ANGLE);
-
             // Create vehicle object from dynamics
-            _vehicle = new NozzleVehicle(dynamics);
+            _vehicle = new NozzleVehicle(&dynamics);
 
             // Add barrel mesh to vehicle
             _vehicle->buildFull(pawn, BodyStatics.mesh.Get());
 
             // Add rotors
-            addRotor(Rotor1Statics.mesh.Get(), ROTOR1_Z);
-            addRotor(Rotor2Statics.mesh.Get(), ROTOR2_Z);
+            addRotor(RotorTopStatics.mesh.Get(), ROTOR_TOP_Z);
+            addRotor(RotorBottomStatics.mesh.Get(), ROTOR_BOTTOM_Z);
 
             // Add nozzle
-            _vehicle->nozzleMeshComponent = _vehicle->addComponent(NozzleStatics.mesh.Get(), FName("Nozzle"), 0, 0, NOZZLE_Z, 0);
+            _vehicle->nozzleMeshComponent =
+                _vehicle->addComponent(NozzleStatics.mesh.Get(),
+                                       FName("Nozzle"), 0, 0, NOZZLE_Z, 0);
 
             _flightManager = NULL;
         }
