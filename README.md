@@ -115,11 +115,10 @@ you can control MulticopterSim from a Matlab session running on your computer or
 
 ## OpenCV
 
-After you build the simulator, the <b>Content/C++ Classes/Hackflight/pawns</b> folder will contain a
+After you build the Hackflight module, the <b>Content/C++ Classes/Hackflight/pawns</b> folder will contain a
 pawn that will run OpenCV edge detection.  By sub-classing the
 [OpenCVCamera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/HackflightModule/OpenCVCamera.hpp)
-class you can run different
-kinds of machine-vision algorithms.
+class you can run different kinds of machine-vision algorithms.
 
 # Design principles
 
