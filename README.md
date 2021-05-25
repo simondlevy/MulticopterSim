@@ -88,6 +88,31 @@ If you don't have a controller, MulticopterSim will use input from the numeric k
 that NumLock is turned on!)
 The key mappings are based on those used in [Microsoft Flight Simulator](https://www.flightsimbooks.com/flightsimhandbook/keyboardcontrols.php#:~:text=Microsoft%20Flight%20Simulator%20Handbook%20%20%20Control%20,%20Keypad%202%20%2043%20more%20rows%20i).
 
+# Support for other programming languages / packages
+
+## Matlab
+
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/matlab) contains an example of how
+you can control MulticopterSim from a Matlab session running on your computer or another computer.
+
+## Python
+
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/python) contains an example of how
+you can control MulticopterSim from a Python program running on your computer or another computer.
+
+## Java
+
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/java) contains an example of how
+you can control MulticopterSim from a Java program running on your computer or another computer.
+
+## OpenCV
+
+After you build the simulator, the <b>Content/C++ Classes/Hackflight/pawns</b> folder will contain a
+pawn that will run OpenCV edge detection.  By sub-classing the
+[OpenCVCamera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/HackflightModule/OpenCVCamera.hpp)
+class you can run different
+kinds of machine-vision algorithms.
+
 # Design principles
 
 The core of MulticopterSim is the abstract C++ 
@@ -130,27 +155,4 @@ In addition, an abstract, threaded C++
 class supports modeling interaction with other moving objects having their own dynamics; for example,
 in a predator/prey scenario. 
 
-# Support for other programming languages / packages
 
-## Matlab
-
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/matlab) contains an example of how
-you can control MulticopterSim from a Matlab session running on your computer or another computer.
-
-## Python
-
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/python) contains an example of how
-you can control MulticopterSim from a Python program running on your computer or another computer.
-
-## Java
-
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/java) contains an example of how
-you can control MulticopterSim from a Java program running on your computer or another computer.
-
-## OpenCV
-
-After you build the simulator, the <b>Content/C++ Classes/Hackflight/pawns</b> folder will contain a
-pawn that will run OpenCV edge detection.  By sub-classing the
-[OpenCVCamera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/HackflightModule/OpenCVCamera.hpp)
-class you can run different
-kinds of machine-vision algorithms.
