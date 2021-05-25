@@ -71,7 +71,7 @@ where MulticopterSim looks for the Hackflight firmware.)
 [MulticopterSim.uproject](https://github.com/simondlevy/MulticopterSim/blob/master/MulticopterSim.uproject#L16),
 [Source/MulticopterSim.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim.Target.cs#L20),
 and [Source/MulticopterSimEditor.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSimEditor.Target.cs#L20),
-change <b>SocketModule</b> to <b>HackflightModlue</b>
+change <b>QuickstartModule</b> to <b>HackflightModlue</b>
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
@@ -93,6 +93,14 @@ that NumLock is turned on!)
 The key mappings are based on those used in [Microsoft Flight Simulator](https://www.flightsimbooks.com/flightsimhandbook/keyboardcontrols.php#:~:text=Microsoft%20Flight%20Simulator%20Handbook%20%20%20Control%20,%20Keypad%202%20%2043%20more%20rows%20i).
 
 # Support for other programming languages / packages
+
+MulticopterSim supports other programming languages via the SocketModule.  To
+use this module, edit the files
+[MulticopterSim.uproject](https://github.com/simondlevy/MulticopterSim/blob/master/MulticopterSim.uproject#L16),
+[Source/MulticopterSim.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim.Target.cs#L20),
+and
+[Source/MulticopterSimEditor.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSimEditor.Target.cs#L20),
+changing <b>QuickstartModule</b> to <b>SocketModlue</b>.
 
 ## Python
 
