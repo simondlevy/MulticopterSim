@@ -53,21 +53,21 @@ vehicle pawns into the map. Click the play button and you'll see the vehicle
 take off to an altitude of 10 meters.  You can use the spacebar to switch your
 point-of-view.
 
-# Hackflight
-
-2. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
-and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit) 
-(RFT) repositories into your 
-<b>DocumentsArduino/libraries</b> folder, first creating that folder if it
-doesn't already exist.  (You don't need to install Arduino; this is simply
-where MulticopterSim looks for the Hackflight firmware.)
-
+# C++ development with Hackflight
 
 Although MulticopterSim is designed to work with any flight-control software
 you like, it easiest to get started with the
 [Hackflight](https://github.com/simondlevy/Hackflight) software. So to get started, you should 
 do the following:
 
+1. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
+and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit) 
+(RFT) repositories into your 
+<b>DocumentsArduino/libraries</b> folder, first creating that folder if it
+doesn't already exist.  (You don't need to install Arduino; this is simply
+where MulticopterSim looks for the Hackflight firmware.)
+
+2. In the files [](), [](), and [](), change <b>SocketModule</b> to <b>HackflightMoldue</b>
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
