@@ -3,6 +3,7 @@ Binaries/Win64/UE4*
 Binaries/Win64/MulticopterSimEditor.target
 Intermediate/
 Saved/
+Source/FlightManager/
 MulticopterSim.sln
 *.csv
 *.swp
