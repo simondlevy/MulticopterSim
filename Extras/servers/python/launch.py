@@ -1,28 +1,35 @@
 #!/usr/bin/env python3
 '''
-Test simple altitude-hold PID controller
+Simple take-off-and-move-forward script
 
-Copyright (C) 2019 Simon D. Levy
+Copyright (C) 2021 Simon D. Levy
 
 MIT License
 '''
 
 import cv2
 import numpy as np
+import argparse
+from argparse import ArgumentDefaultsHelpFormatter
+
 from launch_controller import LaunchController
 from multicopter import Multicopter
+from mixers import PhantomMixer, IngenuityMixer
 
 
 class LaunchCopter(Multicopter):
 
     def __init__(
             self,
+            mixer,
             kp_z=1.0,
             kp_dz=1.0,
             ki_dz=0.0,
             initial_target=15.0):
 
         Multicopter.__init__(self)
+
+        self.mixer = mixer
 
         self.time = 0
         self.target = initial_target
@@ -62,40 +69,35 @@ class LaunchCopter(Multicopter):
         # Get demands U [throttle, roll, pitch, yaw] from PID controller
         u = self.ctrl.getDemands(self.target, z, dzdt, t)
 
-        motors = self.mixer(u)
+        # Use mixer to convert demands U into motor values Omega
+        omega = self.mixer.getMotors(u)
 
-        # Constrain correction to [0,1] to represent motor value
-        motors[motors > 1] = 1
-        motors[motors < 0] = 0
+        # Constrain motor values to [0,1]
+        omega[omega > 1] = 1
+        omega[omega < 0] = 0
 
         # Return motor values
-        return motors
-
-    def mixer(self, u):
-        '''
-        Converts demands U [throttle, roll, pitch, yaw] into four motor demands
-        Omega
-        '''
-
-        #                      Th  RR  PF  YR
-        d = ((+1, -1, -1, +1),   # 1 right front
-             (+1, +1, +1, +1),   # 2 left rear
-             (+1, +1, -1, -1),   # 3 left front
-             (+1, -1, +1, -1))   # 4 right rear
-
-        motorvals = np.zeros(4)
-
-        for i in range(4):
-            motorvals[i] = (u[0] * d[i][0] + u[1] * d[i][1] +
-                            u[2] * d[i][2] + u[3] * d[i][3])
-
-        return motorvals
+        return omega
 
 
 def main():
 
-    copter = LaunchCopter()
-    copter.start()
+    parser = argparse.ArgumentParser(
+            formatter_class=ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument('vehicle', 
+                        help='Vehicle name [Phantom or Ingenuity]')
+
+    args = parser.parse_args()
+
+    d = {'Phantom': PhantomMixer, 'Ingenuity': IngenuityMixer}
+
+    if args.vehicle in d:
+        copter = LaunchCopter(d[args.vehicle]())
+        copter.start()
+
+    else:
+        print('Unrecognized vehicle: %s' % args.vehicle)
 
 
 main()
