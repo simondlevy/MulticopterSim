@@ -1,4 +1,4 @@
-<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="Extras/media/IndoorScene.png" width=800></a>
+<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="Extras/media/IndoorScene.png" width=500></a>
 
 # About
 
@@ -27,6 +27,52 @@ less &ldquo;loaded&rdquo; machine &ndash; see
 [here](https://docs.unrealengine.com/latest/INT/GettingStarted/RecommendedSpecifications/)
 for the minimum requirements recommended by Unreal Engine.
 
+## Toolchain
+
+You will need Unreal Engine 4 (UE4). I am attempting to use the latest version, which as of the time of this
+writing is UE4.26.1. To install UE4, follow these [instructions](https://docs.unrealengine.com/en-US/GettingStarted/Installation/index.html).
+
+# Quickstart
+
+1. Clone this repostitory (MulticopterSim) into your
+<b>Documents/Unreal Projects</b> folder, first creating that folder if it
+doesn't exist.
+   
+2. Right-click on the <b>MulticopterSim.uproject</b> 
+file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
+
+3. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
+you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
+to build the project.
+
+4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+
+5. In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
+<b>Content/C++ Classes/QuickstartModule/pawns</b> folder and drag one of the
+vehicle pawns into the map. Click the play button and you'll see the vehicle
+take off to an altitude of 10 meters.  You can use the spacebar to switch your
+point-of-view.
+
+# C++ development with Hackflight
+
+Although MulticopterSim is designed to work with any flight-control software
+you like, it easiest to get started with the
+[Hackflight](https://github.com/simondlevy/Hackflight) software. So to get started, you should 
+do the following:
+
+1. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
+and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit) 
+(RFT) repositories into your 
+<b>DocumentsArduino/libraries</b> folder, first creating that folder if it
+doesn't already exist.  (You don't need to install Arduino; this is simply
+where MulticopterSim looks for the Hackflight firmware.)
+
+2. In the files
+[MulticopterSim.uproject](https://github.com/simondlevy/MulticopterSim/blob/master/MulticopterSim.uproject#L16),
+[Source/MulticopterSim.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim.Target.cs#L20),
+and [Source/MulticopterSimEditor.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSimEditor.Target.cs#L20),
+change <b>QuickstartModule</b> to <b>HackflightModlue</b>
+
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
 through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/FlightModule/joystick/Joystick.h) class:
@@ -46,47 +92,45 @@ If you don't have a controller, MulticopterSim will use input from the numeric k
 that NumLock is turned on!)
 The key mappings are based on those used in [Microsoft Flight Simulator](https://www.flightsimbooks.com/flightsimhandbook/keyboardcontrols.php#:~:text=Microsoft%20Flight%20Simulator%20Handbook%20%20%20Control%20,%20Keypad%202%20%2043%20more%20rows%20i).
 
-## Toolchain
+# Support for other programming languages / packages
 
-You will need Unreal Engine 4 (UE4). I am attempting to use the latest version, which as of the time of this
-writing is UE4.26.1. To install UE4, follow these [instructions](https://docs.unrealengine.com/en-US/GettingStarted/Installation/index.html).
+MulticopterSim supports other programming languages via the SocketModule.  To
+use this module, edit the files
+[MulticopterSim.uproject](https://github.com/simondlevy/MulticopterSim/blob/master/MulticopterSim.uproject#L16),
+[Source/MulticopterSim.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim.Target.cs#L20),
+and
+[Source/MulticopterSimEditor.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSimEditor.Target.cs#L20),
+changing <b>QuickstartModule</b> to <b>SocketModlue</b>.
 
-# Build
+## Python
 
-Although MulticopterSim is designed to work with any flight-control software
-you like, it easiest to get started with the
-[Hackflight](https://github.com/simondlevy/Hackflight) software. So to get started, you should 
-do the following:
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/python) contains an example of how
+you can control MulticopterSim from a Python program running on your computer or another computer.
 
-1. Clone this repostitory (MulticopterSim) into your
-<b>Documents/Unreal Projects</b> folder, first creating that folder if it
-doesn't exist.
-   
-2. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
-and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit) 
-(RFT) repositories into your 
-<b>DocumentsArduino/libraries</b> folder, first creating that folder if it
-doesn't already exist.  (You don't need to install Arduino; this is simply
-where MulticopterSim looks for the Hackflight firmware.)
+## Java
 
-3. Right-click on the <b>MulticopterSim.uproject</b> 
-file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/java) contains an example of how
+you can control MulticopterSim from a Java program running on your computer or another computer.
 
-4. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
-you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
-to build the project.
+## Haskell
 
-5. In Visual Studio, edit the file [MulticopterSim/Source/HackflightModule/HackflightModule.Build.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source//HackflightModule/HackflightModule.Build.cs#L16-L17) to reflect where you installed
-Hackflight / RFT.
+[This
+folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/haskell)
+contains an example of how you can control MulticopterSim from a Haskell program
+running on your computer or another computer.
 
-6. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
-# Launch and fly!
+## Matlab
 
-In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
-<b>Content/C++ Classes/HackflightModule/pawns</b> folder and drag one of the
-vehicle pawns into the map. Click the play button and you're ready to begin.
-You can use the spacebar to switch your point-of-view.
+[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/matlab) contains an example of how
+you can control MulticopterSim from a Matlab session running on your computer or another computer.
+
+## OpenCV
+
+After you build the Hackflight module, the <b>Content/C++ Classes/Hackflight/pawns</b> folder will contain a
+pawn that will run OpenCV edge detection.  By sub-classing the
+[OpenCVCamera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/HackflightModule/OpenCVCamera.hpp)
+class you can run different kinds of machine-vision algorithms.
 
 # Design principles
 
@@ -130,27 +174,4 @@ In addition, an abstract, threaded C++
 class supports modeling interaction with other moving objects having their own dynamics; for example,
 in a predator/prey scenario. 
 
-# Support for other programming languages / packages
 
-## Matlab
-
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/matlab) contains an example of how
-you can control MulticopterSim from a Matlab session running on your computer or another computer.
-
-## Python
-
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/python) contains an example of how
-you can control MulticopterSim from a Python program running on your computer or another computer.
-
-## Java
-
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/java) contains an example of how
-you can control MulticopterSim from a Java program running on your computer or another computer.
-
-## OpenCV
-
-After you build the simulator, the <b>Content/C++ Classes/Hackflight/pawns</b> folder will contain a
-pawn that will run OpenCV edge detection.  By sub-classing the
-[OpenCVCamera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/HackflightModule/OpenCVCamera.hpp)
-class you can run different
-kinds of machine-vision algorithms.
