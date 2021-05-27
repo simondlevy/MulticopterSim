@@ -14,7 +14,7 @@ from time import sleep
 import cv2
 
 
-class Multicopter(object):
+class MulticopterServer(object):
 
     # See Bouabdallah (2004)
     (STATE_X,
@@ -54,11 +54,11 @@ class Multicopter(object):
         done = [False]
 
         # Telemetry in and motors out run on their own thread
-        motorClientSocket = Multicopter._make_udpsocket()
-        telemetryServerSocket = Multicopter._make_udpsocket()
+        motorClientSocket = MulticopterServer._make_udpsocket()
+        telemetryServerSocket = MulticopterServer._make_udpsocket()
         telemetryServerSocket.bind((self.host, self.telem_port))
 
-        Multicopter.debug('Hit the Play button ...')
+        MulticopterServer.debug('Hit the Play button ...')
 
         telemetryThread = Thread(target=self._run_telemetry,
                                  args=(
@@ -74,7 +74,7 @@ class Multicopter(object):
         # This will block (wait) until a client connets
         imageConn, _ = imageServerSocket.accept()
         imageConn.settimeout(1)
-        Multicopter.debug('Got a connection!')
+        MulticopterServer.debug('Got a connection!')
 
         telemetryThread.start()
 
@@ -132,7 +132,7 @@ class Multicopter(object):
             telem = np.frombuffer(data)
 
             if not running:
-                Multicopter.debug('Running')
+                MulticopterServer.debug('Running')
                 running = True
 
             if telem[0] < 0:

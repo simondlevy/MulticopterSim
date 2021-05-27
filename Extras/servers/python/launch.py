@@ -13,11 +13,11 @@ import argparse
 from argparse import ArgumentDefaultsHelpFormatter
 
 from launch_controller import LaunchController
-from multicopter import Multicopter
+from multicopter_server import MulticopterServer
 from mixers import PhantomMixer, IngenuityMixer
 
 
-class LaunchCopter(Multicopter):
+class LaunchCopter(MulticopterServer):
 
     def __init__(
             self,
@@ -27,7 +27,7 @@ class LaunchCopter(Multicopter):
             ki_dz=0.0,
             initial_target=15.0):
 
-        Multicopter.__init__(self)
+        MulticopterServer.__init__(self)
 
         self.mixer = mixer
 
@@ -60,8 +60,8 @@ class LaunchCopter(Multicopter):
 
         # Extract altitude from state.  Altitude is in NED coordinates, so we
         # negate it to use as input to PID controller.
-        z = -state[Multicopter.STATE_Z]
-        dzdt = -state[Multicopter.STATE_DZ]
+        z = -state[MulticopterServer.STATE_Z]
+        dzdt = -state[MulticopterServer.STATE_DZ]
 
         # No demands yet
         u = 0
@@ -85,7 +85,7 @@ def main():
     parser = argparse.ArgumentParser(
             formatter_class=ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument('vehicle', 
+    parser.add_argument('vehicle',
                         help='Vehicle name [Phantom or Ingenuity]')
 
     args = parser.parse_args()

@@ -9,7 +9,7 @@ MIT License
 from distutils.core import setup
 
 setup(name='MulticopterSim',
-      packages=['multicopter'],
+      packages=['multicopter_server'],
       version='0.1',
       description='Talk to MulticopterSim over sockets',
       author_email='simon.d.levy@gmail.com',
