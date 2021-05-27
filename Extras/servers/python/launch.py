@@ -85,8 +85,8 @@ def main():
     parser = argparse.ArgumentParser(
             formatter_class=ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument('vehicle',
-                        help='Vehicle name [Phantom or Ingenuity]')
+    parser.add_argument('--vehicle', required=False, default='Phantom',
+                        help='Vehicle name')
 
     args = parser.parse_args()
 
