@@ -89,7 +89,7 @@ class FQuickstartFlightManager : public FFlightManager {
                     -_dynamics->x(Dynamics::STATE_Z),
                     -_dynamics->x(Dynamics::STATE_Z_DOT));
 
-            for (uint8_t i=0; i<_nmotors; ++i) {
+            for (uint8_t i=0; i<_dynamics->rotorCount(); ++i) {
                 motorvals[i] = throttle;
             }
         }
