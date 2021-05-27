@@ -9,8 +9,8 @@
 from threading import Thread
 import socket
 import numpy as np
-from sys import stdout
-from time import sleep
+import sys
+import time
 import cv2
 
 
@@ -95,7 +95,7 @@ class MulticopterServer(object):
 
                 self.handleImage(image)
 
-            sleep(.001)
+            time.sleep(.001)
 
     def handleImage(self, image):
         '''
@@ -113,7 +113,7 @@ class MulticopterServer(object):
     @staticmethod
     def debug(msg):
         print(msg)
-        stdout.flush()
+        sys.stdout.flush()
 
     def _run_telemetry(self, telemetryServerSocket, motorClientSocket, done):
 
@@ -145,7 +145,7 @@ class MulticopterServer(object):
             motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
                                      (self.host, self.motor_port))
 
-            sleep(.001)
+            time.sleep(.001)
 
     @staticmethod
     def _make_udpsocket():
