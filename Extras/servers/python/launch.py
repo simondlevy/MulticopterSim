@@ -59,9 +59,6 @@ class LaunchCopter(MulticopterServer):
         z = -state[MulticopterServer.STATE_Z]
         dzdt = -state[MulticopterServer.STATE_DZ]
 
-        # No demands yet
-        u = 0
-
         # Get demands U [throttle, roll, pitch, yaw] from PID controller
         u = self.ctrl.getDemands(self.target, z, dzdt, t)
 
