@@ -140,10 +140,7 @@ class MulticopterServer(object):
                 telemetryServerSocket.close()
                 break
 
-            try:
-                motorvals = self.getMotors(telem[0], telem[1:])
-            except Exception:
-                break
+            motorvals = self.getMotors(telem[0], telem[1:])
 
             motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
                                      (self.host, self.motor_port))
