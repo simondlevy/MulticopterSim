@@ -93,8 +93,6 @@ class MulticopterServer(object):
 
                 self.handleImage(image)
 
-            time.sleep(.001)
-
     def handleImage(self, image):
         '''
         Override for your application
@@ -107,6 +105,10 @@ class MulticopterServer(object):
         Override for your application
         '''
         return np.array([0.6, 0.6, 0.6, 0.6])
+
+    def isDone(self):
+
+        return self.done
 
     @staticmethod
     def debug(msg):
@@ -124,7 +126,6 @@ class MulticopterServer(object):
             except Exception:
                 self.done = True
                 break
-
 
             telemetryServerSocket.settimeout(.1)
 
