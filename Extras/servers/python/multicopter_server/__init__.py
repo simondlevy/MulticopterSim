@@ -127,6 +127,7 @@ class MulticopterServer(object):
                 done[0] = True
                 break
 
+
             telemetryServerSocket.settimeout(.1)
 
             telem = np.frombuffer(data)
@@ -140,10 +141,14 @@ class MulticopterServer(object):
                 telemetryServerSocket.close()
                 break
 
-            motorvals = self.getMotors(telem[0], telem[1:])
+            try:
+                motorvals = self.getMotors(telem[0], telem[1:])
+            except Exception:
+                break
 
             motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
                                      (self.host, self.motor_port))
+
 
             time.sleep(.001)
 

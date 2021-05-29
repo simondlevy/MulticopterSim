@@ -43,17 +43,13 @@ class LaunchCopter(MulticopterServer):
         cv2.imshow('Edge Detection', edges)
         cv2.waitKey(1)
 
-        nonzero = np.nonzero(edges)
+        nonzero = np.nonzero(edges)[0]
 
         # Ignore image for first five seconds
-        if np.mean(nonzero[0]) > 390 and self.time > 5:
+        if len(nonzero) > 0 and np.mean(nonzero) > 390 and self.time > 5:
             self.target = 30
 
     def getMotors(self, t, state):
-
-        # Negative time means user hit stop button
-        if t < 0:
-            return
 
         # Track current time to share it with handleImage()
         self.time = t
