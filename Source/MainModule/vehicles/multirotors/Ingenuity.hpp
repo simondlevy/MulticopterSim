@@ -21,7 +21,7 @@ DECLARE_STATIC_MESH(FBodyStatics, "Ingenuity/Body.Body", BodyStatics)
 DECLARE_STATIC_MESH(FRotorBottomStatics, "Ingenuity/Rotor_Bottom.Rotor_Bottom", RotorBottomStatics)
 DECLARE_STATIC_MESH(FRotorTopStatics, "Ingenuity/Rotor_Top.Rotor_Top", RotorTopStatics)
 DECLARE_STATIC_MESH(FMastStatics, "Ingenuity/Mast.Mast", MastStatics)
-DECLARE_STATIC_MESH(FSolar_PanelStatics, "Ingenuity/Solar_Panel2.Solar_Panel2", SolarPanelStatics)
+DECLARE_STATIC_MESH(FSolar_PanelStatics, "Ingenuity/Solar_Panel.Solar_Panel", SolarPanelStatics)
 DECLARE_STATIC_MESH(FAntennaStatics, "Ingenuity/Antenna.Antenna", AntennaStatics)
 
 DECLARE_STATIC_MESH(FLeg1BottomStatics, "Ingenuity/Leg1_Bottom.Leg1_Bottom", Leg1BottomStatics)
