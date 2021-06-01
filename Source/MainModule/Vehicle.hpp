@@ -59,13 +59,7 @@ class Vehicle {
         } view_t;
         view_t _view = VIEW_CHASE;
 
-        // Have to select a map before flying
-        typedef enum {
-            MAP_NONE,
-            MAP_EARTH,
-            MAP_MARS
-        } map_t;
-        map_t _mapSelected = MAP_NONE;
+        bool _mapSelected = false;
 
         // Special camera for ground view
         ACameraActor* _groundCamera = NULL;
@@ -181,6 +175,13 @@ class Vehicle {
 
                 _bodyHorizontalSpringArm->bInheritYaw = false;
             }
+        }
+
+        static double tag2double(FString tag, const char * label)
+        {
+            int k = tag.Find(label) + strlen(label);
+            debugline("%s", TCHAR_TO_ANSI(*tag));
+            return 0;
         }
 
     protected:
@@ -320,18 +321,26 @@ class Vehicle {
             // Change view to player camera on start
             _playerController->SetViewTargetWithBlend(_pawn);
 
+
+            // Check landscape for world parameters
+            for (TActorIterator<ALandscape> LandscapeItr(_pawn->GetWorld()); LandscapeItr; ++LandscapeItr) {
+
+                for (FName Tag : LandscapeItr->Tags) {
+
+                    FString tag = Tag.ToString();
+                    if (tag.Contains("g=") && tag.Contains("rho=")) {
+                        tag2double(tag, "g");
+                        //debugline("g=%f  rho=%f", tag2double(tag, "g"), tag2double(tag, "rho"));
+                    }
+                }
+            }
+
             // Make sure a map has been selected
-            _mapSelected = MAP_NONE;
+            _mapSelected = false;
             FString mapName = _pawn->GetWorld()->GetMapName();
             if (mapName.Contains("Untitled")) {
                 error("NO MAP SELECTED");
                 return;
-            }
-            if (mapName.Contains("Mars")) {
-                _mapSelected = MAP_MARS;
-            }
-            else {
-                _mapSelected = MAP_EARTH;
             }
 
             // Disable built-in physics
@@ -385,7 +394,7 @@ class Vehicle {
             }
 
             // Run the game if a map has been selected
-            if (_mapSelected != MAP_NONE) {
+            if (_mapSelected) {
 
                 // Use 1/2/3 keys to switch player-camera view
                 setPlayerCameraView();
@@ -400,12 +409,6 @@ class Vehicle {
                 animateActuators();
 
                 _dynamics->setAgl(agl());
-            }
-
-            for (TActorIterator<ALandscape> LandscapeItr(_pawn->GetWorld()); LandscapeItr; ++LandscapeItr) {
-                for(FName Tag : LandscapeItr->Tags) {
-                    debugline("%s", TCHAR_TO_ANSI(*Tag.ToString()));
-                }
             }
         }
 

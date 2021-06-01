@@ -65,6 +65,7 @@ class Dynamics {
         typedef struct {
 
             double g;  // gravitational constant
+            double rho;  // air density
 
         } world_params_t; 
 
@@ -87,6 +88,14 @@ class Dynamics {
             STATE_SIZE
         };
 
+        /**
+          * Sets world parameters (currently just gravity and air density)
+          */
+        void setWorldParams(double g, double rho)
+        {
+            _wparams.g = g;
+            _wparams.rho = rho;
+        }
 
         /**
          * Updates state.
@@ -162,7 +171,8 @@ class Dynamics {
     private:
 
         static constexpr world_params_t EARTH_PARAMS = { 
-            9.80665  // g graviational constant
+            9.80665,  // g graviational constant
+            1.225 // rho air density 
         };
 
         void construct(uint8_t motorCount, vehicle_params_t & vparams)
