@@ -18,6 +18,6 @@ public class MainModule : ModuleRules
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PublicDependencyModuleNames.AddRange(new string[] 
-                { "Core", "CoreUObject", "Engine", "InputCore"});
+                { "Core", "CoreUObject", "Engine", "InputCore" });
     }
 }

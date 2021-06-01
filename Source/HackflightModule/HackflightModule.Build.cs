@@ -21,7 +21,7 @@ public class HackflightModule : ModuleRules
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PublicDependencyModuleNames.AddRange(new string[] 
-                { "Core", "CoreUObject", "Engine", "InputCore" });
+                { "Core", "CoreUObject", "Engine", "InputCore", "Landscape" });
 
         PrivateDependencyModuleNames.AddRange(new string[] { "MainModule" });
 

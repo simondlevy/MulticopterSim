@@ -16,6 +16,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 
+#include "Classes/Landscape.h"
+
 #include "Utils.hpp"
 #include "Dynamics.hpp"
 #include "FlightManager.hpp"
@@ -40,6 +42,7 @@
         structname() : mesh(TEXT("/Game/MulticopterSim/Meshes/" assetstr)) { } \
     };                                                                     \
     static structname objname;
+
 
 class Vehicle {
 
@@ -397,6 +400,12 @@ class Vehicle {
                 animateActuators();
 
                 _dynamics->setAgl(agl());
+            }
+
+            for (TActorIterator<ALandscape> LandscapeItr(_pawn->GetWorld()); LandscapeItr; ++LandscapeItr) {
+                for(FName Tag : LandscapeItr->Tags) {
+                    debugline("%s", TCHAR_TO_ANSI(*Tag.ToString()));
+                }
             }
         }
 
