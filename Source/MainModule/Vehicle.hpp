@@ -177,13 +177,6 @@ class Vehicle {
             }
         }
 
-        static double tag2double(FString tag, const char * label)
-        {
-            int k = tag.Find(label) + strlen(label);
-            debugline("%s", TCHAR_TO_ANSI(*tag));
-            return 0;
-        }
-
     protected:
 
         UAudioComponent* _audioComponent = NULL;
@@ -329,8 +322,10 @@ class Vehicle {
 
                     FString tag = Tag.ToString();
                     if (tag.Contains("g=") && tag.Contains("rho=")) {
-                        tag2double(tag, "g");
-                        //debugline("g=%f  rho=%f", tag2double(tag, "g"), tag2double(tag, "rho"));
+                        float g = 0, rho = 0;
+                        if (sscanf(TCHAR_TO_ANSI(*tag), "g=%f rho=%f", &g, &rho) == 2) {
+                            debugline("g:%f   rho: %f", g, rho);
+                        }
                     }
                 }
             }
