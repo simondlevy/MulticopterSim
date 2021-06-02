@@ -324,7 +324,7 @@ class Vehicle {
                     if (tag.Contains("g=") && tag.Contains("rho=")) {
                         float g = 0, rho = 0;
                         if (sscanf(TCHAR_TO_ANSI(*tag), "g=%f rho=%f", &g, &rho) == 2) {
-                            debugline("g:%f   rho: %f", g, rho);
+                            _dynamics->setWorldParams(g, rho);
                         }
                     }
                 }
