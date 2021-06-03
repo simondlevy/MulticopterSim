@@ -337,6 +337,7 @@ class Vehicle {
                 error("NO MAP SELECTED");
                 return;
             }
+            _mapSelected = true;
 
             // Disable built-in physics
             _frameMeshComponent->SetSimulatePhysics(false);
