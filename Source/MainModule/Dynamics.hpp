@@ -111,7 +111,7 @@ class Dynamics {
             Transforms::bodyZToInertial(-_U1 / _vparams.m, euler, accelNED);
 
             // We're airborne once net downward acceleration goes below zero
-            double netz = accelNED[2] + g;
+            double netz = accelNED[2] + _wparams.g;
 
             // If we're airborne, check for low AGL on descent
             if (_airborne) {
@@ -175,20 +175,6 @@ class Dynamics {
             1.225 // rho air density 
         };
 
-        void construct(uint8_t motorCount, vehicle_params_t & vparams)
-        {
-            _motorCount = motorCount;
-            _rotorCount = motorCount; // can be overridden for thrust-vectoring
-
-            memcpy(&_vparams, &vparams, sizeof(vehicle_params_t));
-
-            for (uint8_t i = 0; i < 12; ++i) {
-                _x[i] = 0;
-            }
-
-            _omegas = new double[motorCount]();
-            _omegas2 = new double[motorCount]();
-        }
 
     protected:
 
@@ -197,15 +183,21 @@ class Dynamics {
 
         Dynamics(uint8_t motorCount, vehicle_params_t & vparams)
         {
-            construct(motorCount, vparams);
-            memcpy(&_wparams, &EARTH_PARAMS, sizeof(world_params_t));
-        }
+            _motorCount = motorCount;
+            _rotorCount = motorCount; // can be overridden for thrust-vectoring
 
-        Dynamics(uint8_t motorCount, vehicle_params_t & vparams, world_params_t & wparams)
-        {
-            construct(motorCount, vparams);
-            memcpy(&_wparams, &wparams, sizeof(world_params_t));
-        }
+            memcpy(&_vparams, &vparams, sizeof(vehicle_params_t));
+
+            // Default to Earth params (can be overridden by setWorldParams())
+            memcpy(&_wparams, &EARTH_PARAMS, sizeof(world_params_t));
+
+            for (uint8_t i = 0; i < 12; ++i) {
+                _x[i] = 0;
+            }
+
+            _omegas = new double[motorCount]();
+            _omegas2 = new double[motorCount]();
+        }        
 
         // Flag for whether we're airborne and can update dynamics
         bool _airborne = false;
@@ -250,9 +242,6 @@ class Dynamics {
 
         // Height above ground, set by kinematics
         double _agl = 0;
-
-        // universal constants
-        static constexpr double g = 9.80665; // might want to allow this to vary!
 
         // state vector (see Eqn. 11) and its first temporal derivative
         double _x[12] = {};
@@ -321,6 +310,8 @@ class Dynamics {
          */
         virtual double computeMotorSpeed(double motorval)
         {
+            debugline("RPM = %d", (int)(motorval * _vparams.maxrpm));
+
             return motorval * _vparams.maxrpm * M_PI / 30;
         }
 
@@ -362,7 +353,7 @@ class Dynamics {
             _x[STATE_PSI_DOT] = 0;
 
             // Initialize inertial frame acceleration in NED coordinates
-            bodyZToInertial(-g, rotation, _inertialAccel);
+            bodyZToInertial(-_wparams.g, rotation, _inertialAccel);
 
             // We usuall start on ground, but can start in air for testing
             _airborne = airborne;
@@ -383,7 +374,7 @@ class Dynamics {
             // Overall thrust U1 is sum of squared omegas
             _U1 = 0;
             for (unsigned int i = 0; i < _rotorCount; ++i) {
-                _omegas2[i] = _omegas[i] * _omegas[i];
+                _omegas2[i] = _wparams.rho * _omegas[i] * _omegas[i];
                 _U1 += _vparams.b * _omegas2[i];
             }
 
