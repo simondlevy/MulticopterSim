@@ -28,8 +28,7 @@ class Rocket {
         Dynamics::vehicle_params_t vparams = {
 
             // Estimated
-            5.E-06, // b force constatnt [F=b*w^2]
-            2.E-06, // d torque constant [T=d*w^2]
+            2.E-06, // d drag coefficient [T=d*w^2]
 
             // https://www.dji.com/phantom-4/info
             1.380,  // m mass [kg]
@@ -39,10 +38,11 @@ class Rocket {
             2,      // Iy [kg*m^2] 
             3,      // Iz [kg*m^2] 
             38E-04, // Jr prop inertial [kg*m^2] 
+            15000,  // maxrpm
 
-            0.350,  // l arm length [m]
+            5.E-06, // b thrust coefficient [F=b*w^2]
+            0.350   // l arm length [m]
 
-            15000 // maxrpm
         };
 
         // Affects dynamics

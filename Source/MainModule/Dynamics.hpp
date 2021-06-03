@@ -39,6 +39,20 @@
 
 class Dynamics {
 
+    private:
+
+        typedef struct {
+
+            double g;  // gravitational constant
+            double rho;  // air density
+
+        } world_params_t; 
+
+        static constexpr world_params_t EARTH_PARAMS = { 
+            9.80665,  // g graviational constant
+            1.225 // rho air density 
+        };
+
     public:
 
         /**
@@ -46,28 +60,19 @@ class Dynamics {
          */
         typedef struct {
 
-            double b;  // force constatnt [F=b*w^2]
-            double d;  // torque constant [T=d*w^2]
+            double d;  // drag coefficient [T=d*w^2]
             double m;  // mass [kg]
             double Ix; // [kg*m^2] 
             double Iy; // [kg*m^2] 
             double Iz; // [kg*m^2] 
-            double Jr; // prop inertial [kg*m^2] 
-            double l;  // arm length [m]
-
+            double Jr; // rotor inertial [kg*m^2] 
             uint16_t maxrpm; // maxrpm
 
+            // For vehicles with fixed-pitch rotors
+            double b;  // thrust coefficient [F=b*w^2]
+            double l;  // arm length [m]
+
         } vehicle_params_t; 
-
-        /**
-         *  World parameters
-         */
-        typedef struct {
-
-            double g;  // gravitational constant
-            double rho;  // air density
-
-        } world_params_t; 
 
         /**
          * Position map for state vector
@@ -87,92 +92,6 @@ class Dynamics {
             STATE_PSI_DOT,
             STATE_SIZE
         };
-
-        /**
-          * Sets world parameters (currently just gravity and air density)
-          */
-        void setWorldParams(double g, double rho)
-        {
-            _wparams.g = g;
-            _wparams.rho = rho;
-        }
-
-        /**
-         * Updates state.
-         *
-         * @param dt time in seconds since previous update
-         */
-        void update(double dt) 
-        {
-            // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
-            // Negate to use NED.
-            double euler[3] = { _x[6], _x[8], _x[10] };
-            double accelNED[3] = {};
-            Transforms::bodyZToInertial(-_U1 / _vparams.m, euler, accelNED);
-
-            // We're airborne once net downward acceleration goes below zero
-            double netz = accelNED[2] + _wparams.g;
-
-            // If we're airborne, check for low AGL on descent
-            if (_airborne) {
-
-                if (_agl <= 0 && netz >= 0) {
-                    _airborne = false;
-                    _x[STATE_PHI_DOT] = 0;
-                    _x[STATE_THETA_DOT] = 0;
-                    _x[STATE_PSI_DOT] = 0;
-                    _x[STATE_X_DOT] = 0;
-                    _x[STATE_Y_DOT] = 0;
-                    _x[STATE_Z_DOT] = 0;
-
-                    _x[STATE_PHI] = 0;
-                    _x[STATE_THETA] = 0;
-                    _x[STATE_Z] += _agl;
-                }
-            }
-
-            // If we're not airborne, we become airborne when downward acceleration has become negative
-            else {
-                _airborne = netz < 0;
-            }
-
-            // Once airborne, we can update dynamics
-            if (_airborne) {
-
-                // Compute the state derivatives using Equation 12
-                computeStateDerivative(accelNED, netz);
-
-                // Compute state as first temporal integral of first temporal derivative
-                for (uint8_t i = 0; i < 12; ++i) {
-                    _x[i] += dt * _dxdt[i];
-                }
-
-                // Once airborne, inertial-frame acceleration is same as NED acceleration
-                _inertialAccel[0] = accelNED[0];
-                _inertialAccel[1] = accelNED[1];
-                _inertialAccel[2] = accelNED[2];
-            }
-            else {
-                //"fly" to agl=0
-                double vz = 5 * _agl;
-                _x[STATE_Z] += vz * dt;
-            }
-
-        } // update
-
-        // State-vector accessor
-        double x(uint8_t k)
-        {
-            return _x[k];
-        }
-
-    private:
-
-        static constexpr world_params_t EARTH_PARAMS = { 
-            9.80665,  // g graviational constant
-            1.225 // rho air density 
-        };
-
 
     protected:
 
@@ -411,6 +330,87 @@ class Dynamics {
         uint8_t rotorCount(void)
         {
             return _rotorCount;
+        }
+
+
+        /**
+          * Sets world parameters (currently just gravity and air density)
+          */
+        void setWorldParams(double g, double rho)
+        {
+            _wparams.g = g;
+            _wparams.rho = rho;
+        }
+
+        /**
+         * Updates state.
+         *
+         * @param dt time in seconds since previous update
+         */
+        void update(double dt) 
+        {
+            // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
+            // Negate to use NED.
+            double euler[3] = { _x[6], _x[8], _x[10] };
+            double accelNED[3] = {};
+            Transforms::bodyZToInertial(-_U1 / _vparams.m, euler, accelNED);
+
+            // We're airborne once net downward acceleration goes below zero
+            double netz = accelNED[2] + _wparams.g;
+
+            // If we're airborne, check for low AGL on descent
+            if (_airborne) {
+
+                if (_agl <= 0 && netz >= 0) {
+                    _airborne = false;
+                    _x[STATE_PHI_DOT] = 0;
+                    _x[STATE_THETA_DOT] = 0;
+                    _x[STATE_PSI_DOT] = 0;
+                    _x[STATE_X_DOT] = 0;
+                    _x[STATE_Y_DOT] = 0;
+                    _x[STATE_Z_DOT] = 0;
+
+                    _x[STATE_PHI] = 0;
+                    _x[STATE_THETA] = 0;
+                    _x[STATE_Z] += _agl;
+                }
+            }
+
+            // If we're not airborne, we become airborne when downward acceleration has become negative
+            else {
+                _airborne = netz < 0;
+            }
+
+            // Once airborne, we can update dynamics
+            if (_airborne) {
+
+                // Compute the state derivatives using Equation 12
+                computeStateDerivative(accelNED, netz);
+
+                // Compute state as first temporal integral of first temporal derivative
+                for (uint8_t i = 0; i < 12; ++i) {
+                    _x[i] += dt * _dxdt[i];
+                }
+
+                // Once airborne, inertial-frame acceleration is same as NED acceleration
+                _inertialAccel[0] = accelNED[0];
+                _inertialAccel[1] = accelNED[1];
+                _inertialAccel[2] = accelNED[2];
+            }
+            else {
+                //"fly" to agl=0
+                double vz = 5 * _agl;
+                _x[STATE_Z] += vz * dt;
+            }
+
+        } // update
+
+        /**
+          * State-vector accessor
+          */
+        double x(uint8_t k)
+        {
+            return _x[k];
         }
 
 }; // class Dynamics
