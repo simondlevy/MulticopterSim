@@ -224,7 +224,7 @@ class Dynamics {
          */
         virtual double computeMotorSpeed(double motorval)
         {
-            debugline("RPM = %d", (int)(motorval * _vparams.maxrpm));
+            debugline("AGL = %2.2fm    RPM = %d", -_x[STATE_Z], (int)(motorval * _vparams.maxrpm));
 
             return motorval * _vparams.maxrpm * M_PI / 30;
         }
