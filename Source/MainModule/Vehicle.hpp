@@ -395,9 +395,6 @@ class Vehicle {
                 // Use 1/2/3 keys to switch player-camera view
                 setPlayerCameraView();
 
-                // Check for keypad presses
-                //checkKeypadKey();
-
                 updateKinematics();
 
                 grabImages();
