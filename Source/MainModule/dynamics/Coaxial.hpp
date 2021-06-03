@@ -29,7 +29,7 @@ class CoaxialDynamics : public Dynamics {
             u3 = thrust * motorvals[3];
 
             // yaw clockwise is difference between rotor rotations
-            u4 = (o[0] - o[1]);
+            u4 = o[0] - o[1];
         }
 
         // motor direction for animation
