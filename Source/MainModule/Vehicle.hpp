@@ -323,7 +323,7 @@ class Vehicle {
                     FString tag = Tag.ToString();
                     if (tag.Contains("g=") && tag.Contains("rho=")) {
                         float g = 0, rho = 0;
-                        if (sscanf(TCHAR_TO_ANSI(*tag), "g=%f rho=%f", &g, &rho) == 2) {
+                        if (sscanf_s(TCHAR_TO_ANSI(*tag), "g=%f rho=%f", &g, &rho) == 2) {
                             _dynamics->setWorldParams(g, rho);
                         }
                     }
