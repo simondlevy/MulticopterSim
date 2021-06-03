@@ -158,8 +158,6 @@ class Dynamics {
                 _x[STATE_Z] += vz * dt;
             }
 
-            updateGimbalDynamics(dt);
-
         } // update
 
         // State-vector accessor
@@ -267,9 +265,6 @@ class Dynamics {
         // For thrust vectoring, we can have four motors: two rotors and two servos.  For multirotors,
         // rotorCount = motorCount
         uint8_t _motorCount = 0;
-
-
-        virtual void updateGimbalDynamics(double dt) {}
 
         /**
          * Implements Equation 12 computing temporal first derivative of state.
