@@ -186,8 +186,12 @@ class Dynamics {
          * Should fill _dxdx[0..11] with appropriate values.
          * @param accelNED acceleration in NED inertial frame
          * @param netz accelNED[2] with gravitational constant added in
+         * @param omega net torque from rotors
+         * @param u2 roll force
+         * @param u3 pitch force
+         * @param u4 yaw force
          */
-        void computeStateDerivative(double accelNED[3], double netz)
+        void computeStateDerivative(double accelNED[3], double netz, double omega, double u2, double u3, double u4)
         {
             double phidot = _x[STATE_PHI_DOT];
             double thedot = _x[STATE_THETA_DOT];
@@ -205,11 +209,11 @@ class Dynamics {
             _dxdt[4] = _x[STATE_Z_DOT];                                                            // z'
             _dxdt[5] = netz;                                                                       // z''
             _dxdt[6] = phidot;                                                                     // phi'
-            _dxdt[7] = psidot * thedot * (Iy - Iz) / Ix - Jr / Ix * thedot * _Omega + _U2 / Ix;    // phi''
+            _dxdt[7] = psidot * thedot * (Iy - Iz) / Ix - Jr / Ix * thedot * omega + u2 / Ix;    // phi''
             _dxdt[8] = thedot;                                                                     // theta'
-            _dxdt[9] = -(psidot * phidot * (Iz - Ix) / Iy + Jr / Iy * phidot * _Omega + _U3 / Iy); // theta''
+            _dxdt[9] = -(psidot * phidot * (Iz - Ix) / Iy + Jr / Iy * phidot * omega + u3 / Iy); // theta''
             _dxdt[10] = psidot;                                                                    // psi'
-            _dxdt[11] = thedot * phidot * (Ix - Iy) / Iz + _U4 / Iz;                               // psi''
+            _dxdt[11] = thedot * phidot * (Ix - Iy) / Iz + u4 / Iz;                               // psi''
         }
 
 
@@ -353,7 +357,7 @@ class Dynamics {
             if (_airborne) {
 
                 // Compute the state derivatives using Equation 12
-                computeStateDerivative(accelNED, netz);
+                computeStateDerivative(accelNED, netz, _Omega, _U2, _U3, _U4);
 
                 // Compute state as first temporal integral of first temporal derivative
                 for (uint8_t i = 0; i < 12; ++i) {
