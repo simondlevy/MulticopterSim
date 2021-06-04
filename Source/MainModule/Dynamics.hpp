@@ -271,21 +271,6 @@ class Dynamics {
             _airborne = airborne;
         }
 
-        /**
-         * Uses motor values to implement Equation 6.
-         *
-         * @param motorvals in interval [0,1] (rotors) or [-0.5,+0.5] (servos)
-         */
-        void setMotors(double* motorvals)
-        {
-            // Convert the  motor values to radians per second
-            for (unsigned int i = 0; i < _rotorCount; ++i) {
-                _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
-            }
-
-            // Torque forces are computed differently for each vehicle configuration
-            computeForces(motorvals);
-        }
 
         /**
          * Sets height above ground level (AGL).
@@ -330,10 +315,19 @@ class Dynamics {
         /**
          * Updates state.
          *
+         * @param motorvals in interval [0,1] (rotors) or [-0.5,+0.5] (servos)
          * @param dt time in seconds since previous update
          */
-        void update(double dt) 
+        void update(double * motorvals, double dt) 
         {
+            // Convert the  motor values to radians per second
+            for (unsigned int i = 0; i < _rotorCount; ++i) {
+                _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
+            }
+
+            // Torque forces are computed differently for each vehicle configuration
+            computeForces(motorvals);
+
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
@@ -391,8 +385,8 @@ class Dynamics {
         } // update
 
         /**
-          * State-vector accessor
-          */
+         * State-vector accessor
+         */
         double x(uint8_t k)
         {
             return _x[k];
