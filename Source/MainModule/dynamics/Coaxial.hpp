@@ -47,4 +47,27 @@ class CoaxialDynamics : public Dynamics {
             _rotorCount = 2;
         }
 
-}; // class Coaxial
+        virtual void setMotors(double* motorvals) override
+        {
+            static constexpr double FAKE_B = 5.E-06;
+            static constexpr double FAKE_L = 3.5;
+
+            Dynamics::setMotors(motorvals);
+
+            // Overall thrust U1 is sum of squared omegas
+            _U1 = 0;
+            for (unsigned int i = 0; i < _rotorCount; ++i) {
+                _omegas2[i] = _wparams.rho * _omegas[i] * _omegas[i];
+                _U1 += FAKE_B * _omegas2[i];
+            }
+
+            // Torque forces are computed differently for each vehicle configuration
+            double u2=0, u3=0, u4=0;
+            computeTorques(motorvals, u2, u3, u4);
+
+            _U2 = FAKE_L * FAKE_B * u2;
+            _U3 = FAKE_L * FAKE_B * u3;
+            _U4 = FAKE_B * u4;
+        }
+
+}; // class CoaxialDynamics

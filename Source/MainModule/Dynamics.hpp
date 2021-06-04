@@ -68,10 +68,6 @@ class Dynamics {
             double Jr; // rotor inertial [kg*m^2] 
             uint16_t maxrpm; // maxrpm
 
-            // For vehicles with fixed-pitch rotors
-            double b;  // thrust coefficient [F=b*w^2]
-            double l;  // arm length [m]
-
         } vehicle_params_t; 
 
         /**
@@ -278,29 +274,13 @@ class Dynamics {
          *
          * @param motorvals in interval [0,1] (rotors) or [-0.5,+0.5] (servos)
          */
-        void setMotors(double* motorvals)
+        virtual void setMotors(double* motorvals)
         {
             // Convert the  motor values to radians per second
             for (unsigned int i = 0; i < _rotorCount; ++i) {
                 _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
             }
-
-            // Overall thrust U1 is sum of squared omegas
-            _U1 = 0;
-            for (unsigned int i = 0; i < _rotorCount; ++i) {
-                _omegas2[i] = _wparams.rho * _omegas[i] * _omegas[i];
-                _U1 += _vparams.b * _omegas2[i];
-            }
-
-            // Torque forces are computed differently for each vehicle configuration
-            double u2=0, u3=0, u4=0;
-            computeTorques(motorvals, u2, u3, u4);
-
-            _U2 = _vparams.l * _vparams.b * u2;
-            _U3 = _vparams.l * _vparams.b * u3;
-            _U4 = _vparams.b * u4;
         }
-
 
         /**
          * Sets height above ground level (AGL).

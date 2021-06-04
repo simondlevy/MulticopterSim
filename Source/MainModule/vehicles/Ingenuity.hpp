@@ -60,9 +60,6 @@ class Ingenuity {
             38E-04, // Jr prop inertial [kg*m^2] 
 
             15000,// maxrpm
-
-            5.E-06, // b force constatnt [F=b*w^2]
-            0.350   // l arm length [m]
         };
 
     private:

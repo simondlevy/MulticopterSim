@@ -9,7 +9,7 @@
 
 #include "../Vehicle.hpp"
 
-#include "../dynamics/QuadXAP.hpp"
+#include "../dynamics/fixedpitch/QuadXAP.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -49,15 +49,16 @@ class TinyWhoop {
             3,      // Iz [kg*m^2] 
             38E-04, // Jr prop inertial [kg*m^2] 
             15000,  // maxrpm
+        };
 
+        FixedPitchDynamics::fixed_pitch_params_t fparams = {
             5.E-06, // b thrust coefficient [F=b*w^2]
             0.350   // l arm length [m]
         };
 
-
     public:
 
-        QuadXAPDynamics dynamics = QuadXAPDynamics(vparams);
+        QuadXAPDynamics dynamics = QuadXAPDynamics(vparams, fparams);
 
         Vehicle vehicle = Vehicle(&dynamics, 4);
 

@@ -39,10 +39,6 @@ class Rocket {
             3,      // Iz [kg*m^2] 
             38E-04, // Jr prop inertial [kg*m^2] 
             15000,  // maxrpm
-
-            5.E-06, // b thrust coefficient [F=b*w^2]
-            0.350   // l arm length [m]
-
         };
 
         // Affects dynamics
