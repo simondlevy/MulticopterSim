@@ -7,9 +7,9 @@
 
 #pragma once 
 
-#include "../Multirotor.hpp"
+#include "../Vehicle.hpp"
 
-#include "../MainModule/dynamics/QuadXAP.hpp"
+#include "../dynamics/QuadXAP.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -59,7 +59,7 @@ class TinyWhoop {
 
         QuadXAPDynamics dynamics = QuadXAPDynamics(vparams);
 
-        MultirotorVehicle vehicle = MultirotorVehicle(&dynamics, 4);
+        Vehicle vehicle = Vehicle(&dynamics, 4);
 
     private:
 

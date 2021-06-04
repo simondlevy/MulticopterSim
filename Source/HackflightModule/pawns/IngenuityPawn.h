@@ -13,7 +13,7 @@
 #include <rft_motors/mockrotary.hpp>
 #include <rft_motors/mockservo.hpp>
 
-#include "../../MainModule/vehicles/multirotors/Ingenuity.hpp"
+#include "../../MainModule/vehicles/Ingenuity.hpp"
 
 #include "../HackflightFlightManager.hpp"
 

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../Multirotor.hpp"
+#include "../Vehicle.hpp"
 
 #include "../MainModule/dynamics/QuadXAP.hpp"
 
@@ -47,7 +47,7 @@ class Phantom {
 
         QuadXAPDynamics dynamics = QuadXAPDynamics(vparams);
 
-        MultirotorVehicle vehicle = MultirotorVehicle(&dynamics, 4);
+        Vehicle vehicle = Vehicle(&dynamics, 4);
 
     private:
 

@@ -13,7 +13,7 @@
 #include <rft_motors/mockrotary.hpp>
 #include <rft_motors/mockservo.hpp>
 
-#include "../../MainModule/vehicles/multirotors/Rocket.hpp"
+#include "../../MainModule/vehicles/Rocket.hpp"
 
 #include "../HackflightFlightManager.hpp"
 

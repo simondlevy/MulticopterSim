@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "../Multirotor.hpp"
+#include "../Vehicle.hpp"
 
-#include "../../MainModule/dynamics/ThrustVector.hpp"
+#include "../dynamics/ThrustVector.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -54,20 +54,20 @@ class Rocket {
         static constexpr double ROTOR_BOTTOM_Z  =  0.60;
 
         // A private class to support animating the nozzle
-        class NozzleVehicle : public MultirotorVehicle {
+        class NozzleVehicle : public Vehicle {
 
             friend class Rocket;
 
             UStaticMeshComponent * nozzleMeshComponent = NULL;
 
             NozzleVehicle(Dynamics* dynamics) 
-                : MultirotorVehicle(dynamics, 4)
+                : Vehicle(dynamics, 4)
             {
             }
 
             virtual void animateActuators(void) override
             {
-                MultirotorVehicle::animateActuators();
+                Vehicle::animateActuators();
 
                 nozzleMeshComponent->SetRelativeRotation(FRotator(-_motorvals[3]*NOZZLE_MAX_ANGLE, 0, -_motorvals[2]*NOZZLE_MAX_ANGLE));
             }

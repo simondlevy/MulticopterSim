@@ -13,7 +13,7 @@
 
 #include <rft_motors/mockrotary.hpp>
 
-#include "../../MainModule/vehicles/multirotors/Phantom.hpp"
+#include "../../MainModule/vehicles/Phantom.hpp"
 
 #include "../HackflightFlightManager.hpp"
 #include "EdgeDetectionCamera.hpp"

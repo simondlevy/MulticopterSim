@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../../MainModule/vehicles/multirotors/Phantom.hpp"
+#include "../../MainModule/vehicles/Phantom.hpp"
 
 #include "../QuickstartFlightManager.hpp"
 

@@ -12,7 +12,7 @@
 
 #include <rft_motors/mockrotary.hpp>
 
-#include "../../MainModule/vehicles/multirotors/TinyWhoop.hpp"
+#include "../../MainModule/vehicles/TinyWhoop.hpp"
 
 #include "../HackflightFlightManager.hpp"
 

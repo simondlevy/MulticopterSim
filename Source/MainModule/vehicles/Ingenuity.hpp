@@ -8,9 +8,9 @@
 #pragma once 
 
 
-#include "../Multirotor.hpp"
+#include "../Vehicle.hpp"
 
-#include "../../dynamics/Coaxial.hpp"
+#include "../dynamics/Coaxial.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -87,7 +87,7 @@ class Ingenuity {
 
         CoaxialDynamics dynamics = CoaxialDynamics(vparams);
 
-        MultirotorVehicle vehicle = MultirotorVehicle(&dynamics, 4);
+        Vehicle vehicle = Vehicle(&dynamics, 4);
 
         void build(APawn * pawn)
         {
