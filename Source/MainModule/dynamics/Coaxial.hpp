@@ -45,6 +45,7 @@ class CoaxialDynamics : public Dynamics {
             _U2 = FAKE_L * FAKE_B * u2;
             _U3 = FAKE_L * FAKE_B * u3;
             _U4 = FAKE_B * u4;
+            _Omega = _omegas[0] - _omegas[1];
          }
 
         // motor direction for animation
