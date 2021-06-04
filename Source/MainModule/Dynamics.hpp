@@ -167,8 +167,8 @@ class Dynamics {
         double _U4 = 0;     // yaw thrust clockwise
         double _Omega = 0;  // torque clockwise
 
-        // Torques about Euler angles.  We need motorvals for thrust vectoring.
-        virtual void computeTorques(double * motorvals, double & u2, double & u3, double & u4) = 0;
+        // Compute forces about Euler angles.  We need motorvals for thrust vectoring.
+        virtual void computeForces(double * motorvals) = 0;
 
         // radians per second for each motor, and their squared values
         double* _omegas = NULL;
@@ -274,12 +274,15 @@ class Dynamics {
          *
          * @param motorvals in interval [0,1] (rotors) or [-0.5,+0.5] (servos)
          */
-        virtual void setMotors(double* motorvals)
+        void setMotors(double* motorvals)
         {
             // Convert the  motor values to radians per second
             for (unsigned int i = 0; i < _rotorCount; ++i) {
                 _omegas[i] = computeMotorSpeed(motorvals[i]); //rad/s
             }
+
+            // Torque forces are computed differently for each vehicle configuration
+            computeForces(motorvals);
         }
 
         /**

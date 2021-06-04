@@ -27,24 +27,31 @@ class QuadXAPDynamics : public FixedPitchDynamics {
 
     protected:
 
-        // Dynamics method overrides
+        // FixedPitchDynamics method overrides
 
-        virtual void computeTorques(double * motorvals, double & u2, double & u3, double & u4) override
+        virtual double u2(void) override
         {
-            // motor values are needed only for thrust vectoring
-            (void)motorvals;
-
             // shorthand
             double * o = _omegas2;
 
-            // roll right
-            u2 = (o[1] + o[2]) - (o[0] + o[3]);
+            return (o[1] + o[2]) - (o[0] + o[3]);
+        }
+
+        virtual double u3(void) override
+        {
+            // shorthand
+            double * o = _omegas2;
 
             // pitch forward
-            u3 = (o[1] + o[3]) - (o[0] + o[2]);
+            return (o[1] + o[3]) - (o[0] + o[2]);
+        }
 
-            // yaw clockwise
-            u4 = (o[0] + o[1]) - (o[2] + o[3]);
+        virtual double u4(void) override
+        {
+            // shorthand
+            double * o = _omegas2;
+
+            return (o[0] + o[1]) - (o[2] + o[3]);
         }
 
         // rotor direction for animation

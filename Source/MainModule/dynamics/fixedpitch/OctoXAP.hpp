@@ -31,26 +31,34 @@ class OctoXAPDynamics : public FixedPitchDynamics {
 
     protected:
 
-        // Dynamics method overrides
-        virtual void computeTorques(double * motorvals, double & u2, double & u3, double & u4) override
-        {
-            // motor values are needed only for thrust vectoring
-            (void)motorvals;
+        // FixedPitchDynamics method overrides
 
+        virtual double u2(void) override
+        {
             // shorthand
             double * o = _omegas2;
 
             // roll right
-            //       [2         5         6         7]     - [  1         3         4         8]
-            u2 = (C1*o[1] + C1*o[4] + C2*o[5] + C2*o[6]) - (C1*o[0] + C2*o[2] + C1*o[3] + C2*o[7]);
+            //        [2         5         6         7]     - [  1         3         4         8]
+            return = (C1*o[1] + C1*o[4] + C2*o[5] + C2*o[6]) - (C1*o[0] + C2*o[2] + C1*o[3] + C2*o[7]);
+        }
 
-            // pitch forward
+        virtual double u3 (void) override
+        {
+            // shorthand
+            double * o = _omegas2;
+
             //       [ 2        4         6         8]   -   [  1         3         5         7]
-            u3 = (C2*o[1] + C2*o[3] + C1*o[5] + C1*o[7]) - (C2*o[0] + C1*o[2] + C2*o[4] + C1*o[6]);
+            return (C2*o[1] + C2*o[3] + C1*o[5] + C1*o[7]) - (C2*o[0] + C1*o[2] + C2*o[4] + C1*o[6]);
+        }
 
-            // yaw clockwise
+        virtual double u4(void) override
+        {
+            // shorthand
+            double * o = _omegas2;
+
             //       [3      4      5      6]  -   [1      2      7      8]
-            u4 = (o[2] + o[3] + o[4] + o[5]) - (o[0] + o[1] + o[6] + o[7]);
+            return (o[2] + o[3] + o[4] + o[5]) - (o[0] + o[1] + o[6] + o[7]);
         }
 
         // rotor direction for animation

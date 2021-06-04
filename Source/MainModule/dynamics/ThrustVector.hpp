@@ -23,7 +23,7 @@ class ThrustVectorDynamics : public Dynamics {
 
         // Dynamics method overrides
 
-        virtual void computeTorques(double * motorvals, double & u2, double & u3, double & u4) override
+        virtual void computeForces(double * motorvals, double & u2, double & u3, double & u4) override
         {
             // shorthand
             double * o = _omegas2;
@@ -72,7 +72,7 @@ class ThrustVectorDynamics : public Dynamics {
 
             // Torque forces are computed differently for each vehicle configuration
             double u2=0, u3=0, u4=0;
-            computeTorques(motorvals, u2, u3, u4);
+            computeForces(motorvals, u2, u3, u4);
 
             _U2 = u2;
             _U3 = u3;

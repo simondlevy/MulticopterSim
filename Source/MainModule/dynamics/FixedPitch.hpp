@@ -38,13 +38,8 @@ class FixedPitchDynamics : public Dynamics {
             memcpy(&_fparams, &fparams, sizeof(fixed_pitch_params_t));
         }
 
-
-    public:
-
-        virtual void setMotors(double* motorvals) override
+        virtual void computeForces(double* motorvals) override
         {
-            Dynamics::setMotors(motorvals);
-
             // Overall thrust U1 is sum of squared omegas
             _U1 = 0;
             for (unsigned int i = 0; i < _rotorCount; ++i) {
@@ -52,13 +47,13 @@ class FixedPitchDynamics : public Dynamics {
                 _U1 += _fparams.b * _omegas2[i];
             }
 
-            // Torque forces are computed differently for each vehicle configuration
-            double u2=0, u3=0, u4=0;
-            computeTorques(motorvals, u2, u3, u4);
-
-            _U2 = _fparams.l * _fparams.b * u2;
-            _U3 = _fparams.l * _fparams.b * u3;
-            _U4 = _fparams.b * u4;
+            _U2 = _fparams.l * _fparams.b * u2();
+            _U3 = _fparams.l * _fparams.b * u3();
+            _U4 = _fparams.b * u4();
         }
+
+        virtual double u2(void) = 0;
+        virtual double u3(void) = 0;
+        virtual double u4(void) = 0;
 
 }; // class FixedPitchDynamics
