@@ -189,6 +189,8 @@ class Dynamics {
          */
         void computeStateDerivative(double accelNED[3], double netz)
         {
+            debugline("_Omega: %+3.3f", _Omega);
+
             double phidot = _x[STATE_PHI_DOT];
             double thedot = _x[STATE_THETA_DOT];
             double psidot = _x[STATE_PSI_DOT];
@@ -220,7 +222,7 @@ class Dynamics {
          */
         virtual double computeMotorSpeed(double motorval)
         {
-            debugline("AGL = %2.2fm    RPM = %d", -_x[STATE_Z], (int)(motorval * _vparams.maxrpm));
+            // debugline("AGL = %2.2fm    RPM = %d", -_x[STATE_Z], (int)(motorval * _vparams.maxrpm));
 
             return motorval * _vparams.maxrpm * M_PI / 30;
         }

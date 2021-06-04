@@ -5,8 +5,6 @@
 ::
 :: MIT License
 
-clean.bat
-
-copy Extras\modules\MulticopterSim_startup.uproject MulticopterSim.uproject
-copy Extras\modules\MulticopterSim_startup.Target.cs Source\MulticopterSim.Target.cs
-copy Extras\modules\MulticopterSimEditor_startup.Target.cs Source\MulticopterSimEditor.Target.cs
+copy Extras\modules\MulticopterSim_quickstart.uproject MulticopterSim.uproject
+copy Extras\modules\MulticopterSim_quickstart.Target.cs Source\MulticopterSim.Target.cs
+copy Extras\modules\MulticopterSimEditor_quickstart.Target.cs Source\MulticopterSimEditor.Target.cs

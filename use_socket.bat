@@ -5,8 +5,6 @@
 ::
 :: MIT License
 
-clean.bat
-
 copy Extras\modules\MulticopterSim_socket.uproject MulticopterSim.uproject
 copy Extras\modules\MulticopterSim_socket.Target.cs Source\MulticopterSim.Target.cs
 copy Extras\modules\MulticopterSimEditor_socket.Target.cs Source\MulticopterSimEditor.Target.cs
