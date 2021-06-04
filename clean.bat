@@ -13,5 +13,3 @@ del /f /q Binaries\Win64\*.target > NUL
 del /f /q Binaries\Win64\UE4* > NUL
 
 rmdir /q /s .vs Build DerivedDataCache Intermediate Saved > NUL:q
-
-startup.bat

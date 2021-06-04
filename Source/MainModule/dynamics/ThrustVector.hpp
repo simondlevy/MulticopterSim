@@ -23,7 +23,7 @@ class ThrustVectorDynamics : public Dynamics {
 
         // Dynamics method overrides
 
-        virtual void computeForces(double * motorvals, double & u2, double & u3, double & u4) override
+        virtual void computeForces(double * motorvals) override
         {
             // shorthand
             double * o = _omegas2;
@@ -32,14 +32,29 @@ class ThrustVectorDynamics : public Dynamics {
             double thrust = o[0] + o[1];
 
             // roll right is thrust time sine of nozzle angle along right/left axis
-            u2 = thrust * sin(motorvals[2] * _nozzleMaxAngle);
+            double u2 = thrust * sin(motorvals[2] * _nozzleMaxAngle);
 
             // pitch forward is thrust time sine of nozzle angle along forward/backward axis
-            u3 = thrust * sin(motorvals[3] * _nozzleMaxAngle);
+            double u3 = thrust * sin(motorvals[3] * _nozzleMaxAngle);
 
             // yaw clockwise is difference between rotor rotations
-            u4 = (o[0] - o[1]);
-        }
+            double u4 = (o[0] - o[1]);
+
+            // XXX
+            static constexpr double FAKE_B = 5.E-06;
+            static constexpr double FAKE_L = 3.5;
+
+            // Overall thrust U1 is sum of squared omegas
+            _U1 = 0;
+            for (unsigned int i = 0; i < _rotorCount; ++i) {
+                _omegas2[i] = _wparams.rho * _omegas[i] * _omegas[i];
+                _U1 += FAKE_B * _omegas2[i];
+            }
+
+            _U2 = FAKE_L * FAKE_B * u2;
+            _U3 = FAKE_L * FAKE_B * u3;
+            _U4 = FAKE_B * u4;
+         }
 
         // motor direction for animation
         virtual int8_t rotorDirection(uint8_t i) override
@@ -57,26 +72,6 @@ class ThrustVectorDynamics : public Dynamics {
 
             // degrees => radians
             _nozzleMaxAngle = M_PI * nozzleMaxAngle / 180;
-        }
-
-        virtual void setMotors(double* motorvals) override
-        {
-            Dynamics::setMotors(motorvals);
-
-            // Overall thrust U1 is sum of squared omegas
-            _U1 = 0;
-            for (unsigned int i = 0; i < _rotorCount; ++i) {
-                _omegas2[i] = _wparams.rho * _omegas[i] * _omegas[i];
-                _U1 += _omegas2[i];
-            }
-
-            // Torque forces are computed differently for each vehicle configuration
-            double u2=0, u3=0, u4=0;
-            computeForces(motorvals, u2, u3, u4);
-
-            _U2 = u2;
-            _U3 = u3;
-            _U4 = u4;
         }
 
 }; // class ThrustVectorDynamics

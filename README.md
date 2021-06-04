@@ -67,11 +67,7 @@ and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit)
 doesn't already exist.  (You don't need to install Arduino; this is simply
 where MulticopterSim looks for the Hackflight firmware.)
 
-2. In the files
-[MulticopterSim.uproject](https://github.com/simondlevy/MulticopterSim/blob/master/MulticopterSim.uproject#L16),
-[Source/MulticopterSim.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim.Target.cs#L20),
-and [Source/MulticopterSimEditor.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSimEditor.Target.cs#L20),
-change <b>QuickstartModule</b> to <b>HackflightModlue</b>
+2. Double-click <b>use_hackflight.bat</b>
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
@@ -95,12 +91,7 @@ The key mappings are based on those used in [Microsoft Flight Simulator](https:/
 # Support for other programming languages / packages
 
 MulticopterSim supports other programming languages via the SocketModule.  To
-use this module, edit the files
-[MulticopterSim.uproject](https://github.com/simondlevy/MulticopterSim/blob/master/MulticopterSim.uproject#L16),
-[Source/MulticopterSim.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSim.Target.cs#L20),
-and
-[Source/MulticopterSimEditor.Target.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MulticopterSimEditor.Target.cs#L20),
-changing <b>QuickstartModule</b> to <b>SocketModlue</b>.
+use this module, first double-click <b>use_socket.bat</b>.  Then follow the directions below for your language:
 
 ## Python
 

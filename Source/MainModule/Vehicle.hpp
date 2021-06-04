@@ -224,7 +224,7 @@ class Vehicle {
         // Also set in constructor, but purely for visual effect
         int8_t _rotorDirections[FFlightManager::MAX_MOTORS] = {};
 
-        void animateActuators(void)
+        virtual void animateActuators(void)
         {
             // Get motor values from dynamics
             _flightManager->getMotorValues(_motorvals);
