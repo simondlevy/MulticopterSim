@@ -50,10 +50,12 @@ class FixedPitchDynamics : public Dynamics {
             _U2 = _fparams.l * _fparams.b * u2();
             _U3 = _fparams.l * _fparams.b * u3();
             _U4 = _fparams.b * u4();
+            _Omega = omega();
         }
 
         virtual double u2(void) = 0;
         virtual double u3(void) = 0;
         virtual double u4(void) = 0;
+        virtual double omega(void) = 0;
 
 }; // class FixedPitchDynamics

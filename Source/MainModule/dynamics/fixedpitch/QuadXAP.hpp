@@ -54,6 +54,14 @@ class QuadXAPDynamics : public FixedPitchDynamics {
             return (o[0] + o[1]) - (o[2] + o[3]);
         }
 
+        virtual double omega(void) override
+        {
+            // shorthand
+            double * o = _omegas;
+
+            return (o[0] + o[1]) - (o[2] + o[3]);
+        }
+
         // rotor direction for animation
         virtual int8_t rotorDirection(uint8_t i) override
         {
