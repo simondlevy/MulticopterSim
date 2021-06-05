@@ -22,21 +22,20 @@ class ThrustVectorDynamics : public Dynamics {
         // radians
         double _nozzleMaxAngle = 0;
 
+        double compute(double * motorvals, double * omegas2, uint8_t axis)
+        {
+            return THRUST_COEFFICIENT * (omegas2[0] + omegas2[1]) * sin(motorvals[axis] * _nozzleMaxAngle);
+        }
+
     protected:
 
         // Dynamics method overrides
 
-        virtual double computeRoll(double * motorvals, double * omegas2) override
+        virtual void computeRollAndPitch(double * motorvals, double * omegas2, double & roll, double & pitch) override
         {
-            // roll right is thrust time sine of nozzle angle along right/left axis
-            return THRUST_COEFFICIENT * (omegas2[0] + omegas2[1]) * sin(motorvals[2] * _nozzleMaxAngle);
-         }
-
-        virtual double computePitch(double * motorvals, double * omegas2) override
-        {
-            // pitch forward is thrust time sine of nozzle angle along forward/backward axis
-            return THRUST_COEFFICIENT * (omegas2[0] + omegas2[1]) * sin(motorvals[3] * _nozzleMaxAngle);
-         }
+            roll = compute(motorvals, omegas2, 2);
+            pitch = compute(motorvals, omegas2, 3);
+        }
 
         // motor direction for animation
         virtual int8_t getRotorDirection(uint8_t i) override

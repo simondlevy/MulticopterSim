@@ -15,31 +15,29 @@ class CoaxialDynamics : public Dynamics {
     private:
 
         // XXX
-        static constexpr double FAKE_B = 5.E-06;
-        static constexpr double FAKE_L = 3.5;
+        static constexpr double FAKE_COLLECTIVE = 5.E-06;
+        static constexpr double FAKE_CYCLIC = 1.0;
+
+        static double compute(double * motorvals, uint8_t axis)
+        {
+            return FAKE_CYCLIC * motorvals[axis];
+        }
 
     protected:
 
         virtual double getThrustCoefficient(double * motorvals) override
         {
             (void)motorvals;
-            return FAKE_B;
+            return FAKE_COLLECTIVE;
         }
 
-        virtual double computeRoll(double * motorvals, double * omegas2) override
-        {
-            // For a coaxial, rotor speeds do not determine roll and pitch
-            (void)omegas2;
-
-            return FAKE_B * FAKE_L * motorvals[2];
-         }
-
-        virtual double computePitch(double * motorvals, double * omegas2) override
+        virtual void computeRollAndPitch(double * motorvals, double * omegas2, double & roll, double & pitch) override
         {
             // For a coaxial, rotor speeds do not determine roll and pitch
             (void)omegas2;
             
-            return FAKE_B * FAKE_L * motorvals[3];
+            roll = compute(motorvals, 2);
+            pitch = compute(motorvals, 3);
          }
 
         // motor direction for animation

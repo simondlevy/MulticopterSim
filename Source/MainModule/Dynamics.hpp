@@ -250,8 +250,7 @@ class Dynamics {
         // Different for each vehicle
         virtual int8_t getRotorDirection(uint8_t i) = 0;
         virtual double getThrustCoefficient(double * motorvals) = 0;
-        virtual double computeRoll(double * motorvals, double * omegas2) = 0;
-        virtual double computePitch(double * motorvals, double * omegas2) = 0;
+        virtual void computeRollAndPitch(double * motorvals, double * omegas2, double & roll, double & pitch) = 0;
 
         /**
          * Gets motor count set by constructor.
@@ -313,8 +312,8 @@ class Dynamics {
             }
             
             // Compute roll, pitch, yaw forces (different method for fixed-pitch blades vs. variable-pitch)
-            double u2 = computeRoll(motorvals, omegas2);
-            double u3 = computePitch(motorvals, omegas2);
+            double u2 = 0, u3 = 0;
+            computeRollAndPitch(motorvals, omegas2, u2, u3);
 
             // -----------------------------------------------------------------------------------------------------------------------------
 

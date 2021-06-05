@@ -48,20 +48,13 @@ class FixedPitchDynamics : public Dynamics {
             return _fparams.b;
         }
 
-        virtual double computeRoll(double * motorvals, double * omegas2) override
+        virtual void computeRollAndPitch(double * motorvals, double * omegas2, double & roll, double & pitch) override
         {
             // We've already used motorvals to compute omegas2
             (void)motorvals;
 
-            return _fparams.l * _fparams.b * computeRoll(omegas2);
-        }
-
-        virtual double computePitch(double * motorvals, double * omegas2) override
-        {
-            // We've already used motorvals to compute omegas2
-            (void)motorvals;
-
-            return _fparams.l * _fparams.b * computePitch(omegas2);
+            roll = _fparams.l * _fparams.b * computeRoll(omegas2);
+            pitch =  _fparams.l * _fparams.b * computePitch(omegas2);
         }
 
         virtual double computeRoll(double * omegas2) = 0;
