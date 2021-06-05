@@ -346,7 +346,7 @@ class Vehicle {
             _nmotors = nmotors;
 
             for (uint8_t i = 0; i < dynamics->rotorCount(); ++i) {
-                _rotorDirections[i] = dynamics->rotorDirection(i);
+                _rotorDirections[i] = dynamics->getRotorDirection(i);
             }
 
             _flightManager = NULL;

@@ -27,43 +27,17 @@ class QuadXAPDynamics : public FixedPitchDynamics {
 
     protected:
 
-        // FixedPitchDynamics method overrides
-
-        virtual double u2(void) override
+        virtual double computeRoll(double * omegas2)
         {
-            // shorthand
-            double * o = _omegas2;
-
-            return (o[1] + o[2]) - (o[0] + o[3]);
+            return (omegas2[1] + omegas2[2]) - (omegas2[0] + omegas2[3]);
         }
 
-        virtual double u3(void) override
+        virtual double computePitch(double * omegas2)
         {
-            // shorthand
-            double * o = _omegas2;
-
-            // pitch forward
-            return (o[1] + o[3]) - (o[0] + o[2]);
+            return (omegas2[1] + omegas2[3]) - (omegas2[0] + omegas2[2]);
         }
 
-        virtual double u4(void) override
-        {
-            // shorthand
-            double * o = _omegas2;
-
-            return (o[0] + o[1]) - (o[2] + o[3]);
-        }
-
-        virtual double omega(void) override
-        {
-            // shorthand
-            double * o = _omegas;
-
-            return (o[0] + o[1]) - (o[2] + o[3]);
-        }
-
-        // rotor direction for animation
-        virtual int8_t rotorDirection(uint8_t i) override
+        virtual int8_t getRotorDirection(uint8_t i) override
         {
             const int8_t dir[4] = {-1, -1, +1, +1};
             return dir[i];

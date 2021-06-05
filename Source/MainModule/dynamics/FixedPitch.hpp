@@ -38,24 +38,33 @@ class FixedPitchDynamics : public Dynamics {
             memcpy(&_fparams, &fparams, sizeof(fixed_pitch_params_t));
         }
 
-        virtual void computeForces(double* motorvals) override
-        {
-            // Overall thrust U1 is sum of squared omegas
-            _U1 = 0;
-            for (unsigned int i = 0; i < _rotorCount; ++i) {
-                _omegas2[i] = _wparams.rho * _omegas[i] * _omegas[i];
-                _U1 += _fparams.b * _omegas2[i];
-            }
 
-            _U2 = _fparams.l * _fparams.b * u2();
-            _U3 = _fparams.l * _fparams.b * u3();
-            _U4 = _fparams.b * u4();
-            _Omega = omega();
+        virtual double getThrustCoefficient(double * motorvals) override
+        {
+            // Thrust coefficient is constant for fixed-pitch rotors
+
+            (void)motorvals;
+            
+            return _fparams.b;
         }
 
-        virtual double u2(void) = 0;
-        virtual double u3(void) = 0;
-        virtual double u4(void) = 0;
-        virtual double omega(void) = 0;
+        virtual double computeRoll(double * motorvals, double * omegas2) override
+        {
+            // We've already used motorvals to compute omegas2
+            (void)motorvals;
+
+            return _fparams.l * _fparams.b * computeRoll(omegas2);
+        }
+
+        virtual double computePitch(double * motorvals, double * omegas2) override
+        {
+            // We've already used motorvals to compute omegas2
+            (void)motorvals;
+
+            return _fparams.l * _fparams.b * computePitch(omegas2);
+        }
+
+        virtual double computeRoll(double * omegas2) = 0;
+        virtual double computePitch(double * omegas2) = 0;
 
 }; // class FixedPitchDynamics

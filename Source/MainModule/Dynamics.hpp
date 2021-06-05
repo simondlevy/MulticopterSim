@@ -41,6 +41,8 @@ class Dynamics {
 
     private:
 
+        static const uint8_t MAX_ROTORS = 20; // arbitrary; avoids dynamic allocation
+
         typedef struct {
 
             double g;  // gravitational constant
@@ -107,9 +109,6 @@ class Dynamics {
             for (uint8_t i = 0; i < 12; ++i) {
                 _x[i] = 0;
             }
-
-            _omegas = new double[motorCount]();
-            _omegas2 = new double[motorCount]();
         }        
 
         // Flag for whether we're airborne and can update dynamics
@@ -160,20 +159,6 @@ class Dynamics {
         double _x[12] = {};
         double _dxdt[12] = {};
 
-        // Values computed in Equation 6
-        double _U1 = 0;     // total thrust
-        double _U2 = 0;     // roll thrust right
-        double _U3 = 0;     // pitch thrust forward
-        double _U4 = 0;     // yaw thrust clockwise
-        double _Omega = 0;  // torque clockwise
-
-        // Compute forces about Euler angles.  We need motorvals for thrust vectoring.
-        virtual void computeForces(double * motorvals) = 0;
-
-        // radians per second for each motor, and their squared values
-        double* _omegas = NULL;
-        double* _omegas2 = NULL;
-
         // quad, hexa, octo, etc.
         uint8_t _rotorCount = 0;
 
@@ -220,15 +205,6 @@ class Dynamics {
     public:
 
         /**
-         *  Destructor
-         */
-        virtual ~Dynamics(void)
-        {
-            delete _omegas;
-            delete _omegas2;
-        }
-
-        /**
          * Initializes kinematic pose, with flag for whether we're airbone (helps with testing gravity).
          *
          * @param rotation initial rotation
@@ -271,8 +247,11 @@ class Dynamics {
             _agl = agl;
         }
 
-        // Rotor direction for animation
-        virtual int8_t rotorDirection(uint8_t i) { (void)i; return 0; }
+        // Different for each vehicle
+        virtual int8_t getRotorDirection(uint8_t i) = 0;
+        virtual double getThrustCoefficient(double * motorvals) = 0;
+        virtual double computeRoll(double * motorvals, double * omegas2) = 0;
+        virtual double computePitch(double * motorvals, double * omegas2) = 0;
 
         /**
          * Gets motor count set by constructor.
@@ -310,22 +289,43 @@ class Dynamics {
          */
         void update(double * motorvals, double dt) 
         {
-            // Convert the  motor values to radians per second
+            // Implement Equation 6 ------------------------------------------------------------------------------------------------------
+
+            // Radians per second of rotors, and squared radians per second
+            double omegas[MAX_ROTORS] = {};
+            double omegas2[MAX_ROTORS] = {};
+
+            double u1 = 0, u4 = 0, omega = 0;
             for (unsigned int i = 0; i < _rotorCount; ++i) {
-                _omegas[i] = motorvals[i] * _vparams.maxrpm * M_PI / 30;
+
+                // Convert fractional speed to radians per second
+                omegas[i] = motorvals[i] * _vparams.maxrpm * M_PI / 30;  
+
+                // Thrust is squared rad/sec scaled by air density
+                omegas2[i] = _wparams.rho * omegas[i] * omegas[i]; 
+
+                // Thrust coefficient is constant for fixed-pitch rotors, variable for collective-pitch
+                u1 += getThrustCoefficient(motorvals) * omegas2[i];                  
+
+                // Newton's Third Law (action/reaction) tells us that yaw is opposite to net rotor spin
+                u4 += _vparams.d * omegas2[i] * -getRotorDirection(i);
+                omega += omegas[i] * -getRotorDirection(i);
             }
             
+            // Compute roll, pitch, yaw forces (different method for fixed-pitch blades vs. variable-pitch)
+            double u2 = computeRoll(motorvals, omegas2);
+            double u3 = computePitch(motorvals, omegas2);
+
+            // -----------------------------------------------------------------------------------------------------------------------------
+
             // XXX for Ingenuity demo
             // debugline("AGL = %2.2fm    RPM = %d", -_x[STATE_Z], (int)(motorval * _vparams.maxrpm));
-
-            // Torque forces are computed differently for each vehicle configuration
-            computeForces(motorvals);
 
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
             double accelNED[3] = {};
-            Transforms::bodyZToInertial(-_U1 / _vparams.m, euler, accelNED);
+            Transforms::bodyZToInertial(-u1 / _vparams.m, euler, accelNED);
 
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + _wparams.g;
@@ -357,7 +357,7 @@ class Dynamics {
             if (_airborne) {
 
                 // Compute the state derivatives using Equation 12
-                computeStateDerivative(accelNED, netz, _Omega, _U2, _U3, _U4);
+                computeStateDerivative(accelNED, netz, omega, u2, u3, u4);
 
                 // Compute state as first temporal integral of first temporal derivative
                 for (uint8_t i = 0; i < 12; ++i) {
