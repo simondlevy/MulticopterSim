@@ -57,17 +57,7 @@ point-of-view.
 
 Although MulticopterSim is designed to work with any flight-control software
 you like, it easiest to get started with the
-[Hackflight](https://github.com/simondlevy/Hackflight) software. So to get started, you should 
-do the following:
-
-1. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
-and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit) 
-(RFT) repositories into your 
-<b>DocumentsArduino/libraries</b> folder, first creating that folder if it
-doesn't already exist.  (You don't need to install Arduino; this is simply
-where MulticopterSim looks for the Hackflight firmware.)
-
-2. Double-click <b>use_hackflight.bat</b>
+[Hackflight](https://github.com/simondlevy/Hackflight) software. 
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
@@ -87,6 +77,33 @@ through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/
 If you don't have a controller, MulticopterSim will use input from the numeric keypad on your keyboard (make sure
 that NumLock is turned on!)
 The key mappings are based on those used in [Microsoft Flight Simulator](https://www.flightsimbooks.com/flightsimhandbook/keyboardcontrols.php#:~:text=Microsoft%20Flight%20Simulator%20Handbook%20%20%20Control%20,%20Keypad%202%20%2043%20more%20rows%20i).
+
+To get MulticopterSim working with Hackflight, you should do the following:
+
+1. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
+and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit) 
+(RFT) repositories into your 
+<b>DocumentsArduino/libraries</b> folder, first creating that folder if it
+doesn't already exist.  (You don't need to install Arduino; this is simply
+where MulticopterSim looks for the Hackflight firmware.)
+
+2. Double-click <b>use_hackflight.bat</b>
+
+3. Right-click on the <b>MulticopterSim.uproject</b> 
+file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
+
+4. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.
+to build the project.
+
+5. In Visual Studio, edit the file
+   [MulticopterSim/Source/HackflightModule/HackflightModule.Build.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source//HackflightModule/HackflightModule.Build.cs#L16-L17)
+   to reflect where you installed Hackflight / RFT.
+
+6. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+
+7. In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
+<b>Content/C++ Classes/HackflightModule/pawns</b> folder and drag one of the
+vehicle pawns into the map. Click the play button and you're ready to take off!
 
 ## OpenCV
 
