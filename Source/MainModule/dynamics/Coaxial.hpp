@@ -14,13 +14,14 @@ class CoaxialDynamics : public Dynamics {
 
     private:
 
-        // XXX
-        static constexpr double FAKE_COLLECTIVE = 5.E-06;
-        static constexpr double FAKE_CYCLIC = 1.0;
+        
+        static constexpr double FAKE_COLLECTIVE = 5.E-06; // XXX
 
-        static double compute(double * motorvals, uint8_t axis)
+        static constexpr double CYCLIC_COEFFICIENT = 1.0;
+
+        static double computeCyclic(double * motorvals, uint8_t axis)
         {
-            return FAKE_CYCLIC * motorvals[axis];
+            return CYCLIC_COEFFICIENT * motorvals[axis];
         }
 
     protected:
@@ -36,8 +37,8 @@ class CoaxialDynamics : public Dynamics {
             // For a coaxial, rotor speeds do not determine roll and pitch
             (void)omegas2;
             
-            roll = compute(motorvals, 2);
-            pitch = compute(motorvals, 3);
+            roll = computeCyclic(motorvals, 2);
+            pitch = computeCyclic(motorvals, 3);
          }
 
         // motor direction for animation

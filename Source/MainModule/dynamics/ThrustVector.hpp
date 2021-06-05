@@ -22,7 +22,7 @@ class ThrustVectorDynamics : public Dynamics {
         // radians
         double _nozzleMaxAngle = 0;
 
-        double compute(double * motorvals, double * omegas2, uint8_t axis)
+        double computeNozzle(double * motorvals, double * omegas2, uint8_t axis)
         {
             return THRUST_COEFFICIENT * (omegas2[0] + omegas2[1]) * sin(motorvals[axis] * _nozzleMaxAngle);
         }
@@ -33,8 +33,8 @@ class ThrustVectorDynamics : public Dynamics {
 
         virtual void computeRollAndPitch(double * motorvals, double * omegas2, double & roll, double & pitch) override
         {
-            roll = compute(motorvals, omegas2, 2);
-            pitch = compute(motorvals, omegas2, 3);
+            roll = computeNozzle(motorvals, omegas2, 2);
+            pitch = computeNozzle(motorvals, omegas2, 3);
         }
 
         // motor direction for animation
