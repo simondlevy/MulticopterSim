@@ -71,7 +71,7 @@ where MulticopterSim looks for the Hackflight firmware.)
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
-through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/FlightModule/joystick/Joystick.h) class:
+through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/joystick/Joystick.h) class:
 
 * PS4 controller
 * XBox One controller
