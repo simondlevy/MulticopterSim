@@ -53,11 +53,16 @@ class FixedPitchDynamics : public Dynamics {
             // We've already used motorvals to compute omegas2
             (void)motorvals;
 
-            roll = _fparams.l * _fparams.b * computeRoll(omegas2);
-            pitch =  _fparams.l * _fparams.b * computePitch(omegas2);
+            roll = 0;
+            pitch = 0;
+
+            for (uint8_t i=0; i<_rotorCount; ++i) {
+                roll += _fparams.l * _fparams.b * omegas2[i] * getRotorRollContribution(i);
+                pitch += _fparams.l * _fparams.b * omegas2[i] * getRotorPitchContribution(i);
+            }
         }
 
-        virtual double computeRoll(double * omegas2) = 0;
-        virtual double computePitch(double * omegas2) = 0;
-
+        virtual int8_t getRotorRollContribution(uint8_t i)  = 0;
+        virtual int8_t getRotorPitchContribution(uint8_t i)  = 0;
+ 
 }; // class FixedPitchDynamics
