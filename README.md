@@ -115,7 +115,23 @@ class you can run different kinds of machine-vision algorithms.
 # Support for other programming languages / packages
 
 MulticopterSim supports other programming languages via the SocketModule.  To
-use this module, first double-click <b>use_socket.bat</b>.  Then follow the directions below for your language:
+use this module, do the following:
+
+1. Double-click <b>use_socket.bat</b>
+
+2. Right-click on the <b>MulticopterSim.uproject</b> 
+file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
+
+3. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.
+to build the project.
+
+4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+
+5. In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
+<b>Content/C++ Classes/SocketModule/pawns</b> folder and drag one of the
+vehicle pawns into the map.  
+
+Then follow the directions below for your language:
 
 ## Python
 
