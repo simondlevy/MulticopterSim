@@ -96,10 +96,10 @@ class Dynamics {
         vehicle_params_t _vparams;
         world_params_t _wparams;
 
-        Dynamics(uint8_t motorCount, vehicle_params_t & vparams)
+        Dynamics(uint8_t actuatorCount, vehicle_params_t & vparams)
         {
-            _motorCount = motorCount;
-            _rotorCount = motorCount; // can be overridden for thrust-vectoring
+            _actuatorCount = actuatorCount;
+            _rotorCount = actuatorCount; // can be overridden for thrust-vectoring
 
             memcpy(&_vparams, &vparams, sizeof(vehicle_params_t));
 
@@ -165,7 +165,7 @@ class Dynamics {
         // For coaxials we have five actuators: two rotors, plus collective pitch, cyclic roll, and cyclic pitch.
         // For thrust vectoring, we have four actuators: two rotors and two servos.
         // For standard multirotors (e.g., quadcopter), actuatorCount = rotorCount.
-        uint8_t _motorCount = 0;
+        uint8_t _actuatorCount = 0;
 
         /**
          * Implements Equation 12 computing temporal first derivative of state.
@@ -257,9 +257,9 @@ class Dynamics {
          * Gets motor count set by constructor.
          * @return motor count
          */
-        uint8_t motorCount(void)
+        uint8_t actuatorCount(void)
         {
-            return _motorCount;
+            return _actuatorCount;
         }
 
         /**

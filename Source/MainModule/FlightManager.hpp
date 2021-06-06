@@ -44,7 +44,7 @@ class FFlightManager : public FThreadedManager {
             : FThreadedManager()
         {
             // Constant
-            _nmotors = dynamics->motorCount();
+            _nmotors = dynamics->actuatorCount();
 
             // Allocate array for motor values
             _motorvals = new double[_nmotors];
