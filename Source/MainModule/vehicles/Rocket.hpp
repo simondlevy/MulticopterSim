@@ -65,7 +65,9 @@ class Rocket {
             {
                 Vehicle::animateActuators();
 
-                nozzleMeshComponent->SetRelativeRotation(FRotator(-_motorvals[3]*NOZZLE_MAX_ANGLE, 0, -_motorvals[2]*NOZZLE_MAX_ANGLE));
+                nozzleMeshComponent->SetRelativeRotation(FRotator(-_flightManager->actuatorValue(3)*NOZZLE_MAX_ANGLE,
+                                                                  0,
+                                                                  -_flightManager->actuatorValue(2)*NOZZLE_MAX_ANGLE));
             }
         };
 

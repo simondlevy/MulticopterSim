@@ -77,8 +77,8 @@ class FHackflightFlightManager : public FFlightManager {
             : FFlightManager(dynamics) 
         {
 
-            _motors = new rft::MockMotor * [_nmotors];
-            for (uint8_t i=0; i < _nmotors; ++i) {
+            _motors = new rft::MockMotor * [_actuatorCount];
+            for (uint8_t i=0; i < _actuatorCount; ++i) {
                 _motors[i] = motors[i];
             }
 
@@ -145,7 +145,7 @@ class FHackflightFlightManager : public FFlightManager {
             // _imu.set(quaternion, angularVel);
 
             //  Get motor values
-            for (uint8_t i=0; i < _nmotors; ++i) {
+            for (uint8_t i=0; i < _actuatorCount; ++i) {
                 values[i] = _motors[i]->getValue();
             }
         }

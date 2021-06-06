@@ -15,7 +15,7 @@ class FFlightManager : public FThreadedManager {
 
     private:
 
-        // Current motor values from PID controller
+        // Current actuator values from getActuators() method
         double * _actuatorValues = NULL; 
         
         // For computing deltaT
