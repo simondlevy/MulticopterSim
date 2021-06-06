@@ -16,7 +16,7 @@ class FFlightManager : public FThreadedManager {
     private:
 
         // Current motor values from PID controller
-        double * _motorvals = NULL; 
+        double * _actuatorValues = NULL; 
         
         // For computing deltaT
         double   _previousTime = 0;
@@ -35,7 +35,7 @@ class FFlightManager : public FThreadedManager {
         
     protected:
 
-        uint8_t _nmotors = 0;
+        uint8_t _actuatorCount = 0;
 
         Dynamics * _dynamics = NULL;
 
@@ -44,10 +44,10 @@ class FFlightManager : public FThreadedManager {
             : FThreadedManager()
         {
             // Constant
-            _nmotors = dynamics->actuatorCount();
+            _actuatorCount = dynamics->actuatorCount();
 
             // Allocate array for motor values
-            _motorvals = new double[_nmotors];
+            _actuatorValues = new double[_actuatorCount];
 
             // Store dynamics for performTask()
             _dynamics = dynamics;
@@ -64,11 +64,11 @@ class FFlightManager : public FThreadedManager {
             if (_running) {
 
                 // Update dynamics
-                _dynamics->update(_motorvals, currentTime - _previousTime);
+                _dynamics->update(_actuatorValues, currentTime - _previousTime);
 
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the dynamics state, getting back the motor values
-                this->getMotors(currentTime, _motorvals);
+                this->getMotors(currentTime, _actuatorValues);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;
@@ -84,12 +84,12 @@ class FFlightManager : public FThreadedManager {
         {
         }
 
-        // Called by VehiclePawn::Tick() method to rotor animation/sound (motorvals)
-        void getMotorValues(float * motorvals)
+        // Called by VehiclePawn::Tick() method to animate actuators
+        void getActuatorValues(float * values)
         {
             // Get motor values for rotor animation / motor sound
-            for (uint8_t j=0; j<_nmotors; ++j) {
-                motorvals[j] = _motorvals[j];
+            for (uint8_t j=0; j<_actuatorCount; ++j) {
+                values[j] = _actuatorValues[j];
             }
         }
 

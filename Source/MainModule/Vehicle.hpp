@@ -227,7 +227,7 @@ class Vehicle {
         virtual void animateActuators(void)
         {
             // Get motor values from dynamics
-            _flightManager->getMotorValues(_motorvals);
+            _flightManager->getActuatorValues(_motorvals);
 
             // Compute the sum of the motor values
             float motorsum = 0;
