@@ -28,10 +28,10 @@ class FFlightManager : public FThreadedManager {
          * Override this method to implement your own flight controller.
          *
          * @param time current time in seconds (input)
-         * @param motorvals motor values returned by your controller (output)
+         * @param values actuator values returned by your controller (output)
          *
          */
-        virtual void getMotors(const double time, double * motorvals)  = 0;
+        virtual void getActuators(const double time, double * values)  = 0;
         
     protected:
 
@@ -68,7 +68,7 @@ class FFlightManager : public FThreadedManager {
 
                 // PID controller: update the flight manager (e.g., HackflightManager) with
                 // the dynamics state, getting back the motor values
-                this->getMotors(currentTime, _actuatorValues);
+                this->getActuators(currentTime, _actuatorValues);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;

@@ -81,7 +81,7 @@ class FQuickstartFlightManager : public FFlightManager {
         {
         }
 
-        virtual void getMotors(const double time, double * motorvals) override
+        virtual void getActuators(const double time, double * values) override
         {
             double throttle = _altitudeController.getThrottle(
                     ALTITUDE_TARGET, 
@@ -90,7 +90,7 @@ class FQuickstartFlightManager : public FFlightManager {
                     -_dynamics->x(Dynamics::STATE_Z_DOT));
 
             for (uint8_t i=0; i<_dynamics->rotorCount(); ++i) {
-                motorvals[i] = throttle;
+                values[i] = throttle;
             }
         }
 

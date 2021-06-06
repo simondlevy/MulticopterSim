@@ -114,7 +114,7 @@ class FHackflightFlightManager : public FFlightManager {
             delete _hackflight;
         }
 
-        virtual void getMotors(const double time, double * motorvals) override
+        virtual void getActuators(const double time, double * values) override
         {
             // Zero on success, nonzero otherwise
             uint16_t joystickError = _receiver->update();
@@ -146,7 +146,7 @@ class FHackflightFlightManager : public FFlightManager {
 
             //  Get motor values
             for (uint8_t i=0; i < _nmotors; ++i) {
-                motorvals[i] = _motors[i]->getValue();
+                values[i] = _motors[i]->getValue();
             }
         }
 
