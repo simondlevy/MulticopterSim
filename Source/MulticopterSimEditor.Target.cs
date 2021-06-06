@@ -17,7 +17,7 @@ public class MulticopterSimEditorTarget : TargetRules
 
 		ExtraModuleNames.AddRange( new string[] { 
                 "MainModule", 
-                "QuickstartModule"
+                "SocketModule"
                 } );
 	}
 }

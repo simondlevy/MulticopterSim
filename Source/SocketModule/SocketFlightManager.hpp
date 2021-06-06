@@ -43,7 +43,7 @@ class FSocketFlightManager : public FFlightManager {
             delete _twoWayUdp;
         }
 
-        virtual void getActutators(const double time, double * values) override
+        virtual void getActuators(const double time, double * values) override
         {
             // Avoid null-pointer exceptions at startup, freeze after control program halts
             if (!_twoWayUdp|| !_running) {
@@ -61,7 +61,7 @@ class FSocketFlightManager : public FFlightManager {
 			_twoWayUdp->send(telemetry, sizeof(telemetry));
 
 			// Get motor values from control program
-			_twoWayUdp->receive(values, 8 * _nmotors);
+			_twoWayUdp->receive(values, 8 * _actuatorCount);
 
 			// Control program sends a -1 to halt
 			if (values[0] == -1) {
