@@ -49,7 +49,7 @@ class Phantom {
 
         QuadXAPDynamics dynamics = QuadXAPDynamics(vparams, fparams);
 
-        Vehicle vehicle = Vehicle(&dynamics, 4);
+        Vehicle vehicle = Vehicle(&dynamics);
 
     private:
 

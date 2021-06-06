@@ -84,7 +84,7 @@ class Ingenuity {
 
         CoaxialDynamics dynamics = CoaxialDynamics(vparams);
 
-        Vehicle vehicle = Vehicle(&dynamics, 4);
+        Vehicle vehicle = Vehicle(&dynamics);
 
         void build(APawn * pawn)
         {
