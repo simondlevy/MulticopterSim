@@ -75,10 +75,7 @@ class FFlightManager : public FThreadedManager {
             }
         }
 
-
     public:
-
-        static const uint8_t MAX_MOTORS = 16;
 
         ~FFlightManager(void)
         {

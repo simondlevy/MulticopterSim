@@ -206,7 +206,7 @@ class Vehicle {
 
         UStaticMeshComponent* _frameMeshComponent = NULL;
 
-	    UStaticMeshComponent* _rotorMeshComponents[FFlightManager::MAX_MOTORS] = {};
+	    UStaticMeshComponent* _rotorMeshComponents[Dynamics::MAX_ROTORS] = {};
 
         // Threaded worker for running flight control
         class FFlightManager* _flightManager = NULL;
@@ -219,7 +219,7 @@ class Vehicle {
         uint8_t _rotorCount;
 
         // Also set in constructor, but purely for visual effect
-        int8_t _rotorDirections[FFlightManager::MAX_MOTORS] = {};
+        int8_t _rotorDirections[Dynamics::MAX_ROTORS] = {};
 
         virtual void animateActuators(void)
         {
