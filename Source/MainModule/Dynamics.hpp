@@ -252,12 +252,12 @@ class Dynamics {
 
         // Different for each vehicle
         virtual int8_t getRotorDirection(uint8_t i) = 0;
-        virtual double getThrustCoefficient(double * motorvals) = 0;
-        virtual void computeRollAndPitch(double * motorvals, double * omegas2, double & roll, double & pitch) = 0;
+        virtual double getThrustCoefficient(double * actuators) = 0;
+        virtual void computeRollAndPitch(double * actuators, double * omegas2, double & roll, double & pitch) = 0;
 
         /**
-         * Gets motor count set by constructor.
-         * @return motor count
+         * Gets actuator count set by constructor.
+         * @return actuator count
          */
         uint8_t actuatorCount(void)
         {
@@ -286,10 +286,10 @@ class Dynamics {
         /**
          * Updates state.
          *
-         * @param motorvals in interval [0,1] (rotors) or [-0.5,+0.5] (servos)
+         * @param actuators values in interval [0,1] (rotors) or [-0.5,+0.5] (servos)
          * @param dt time in seconds since previous update
          */
-        void update(double * motorvals, double dt) 
+        void update(double * actuators, double dt) 
         {
             // Implement Equation 6 ------------------------------------------------------------------------------------------------------
 
@@ -301,13 +301,13 @@ class Dynamics {
             for (unsigned int i = 0; i < _rotorCount; ++i) {
 
                 // Convert fractional speed to radians per second
-                omegas[i] = motorvals[i] * _vparams.maxrpm * M_PI / 30;  
+                omegas[i] = actuators[i] * _vparams.maxrpm * M_PI / 30;  
 
                 // Thrust is squared rad/sec scaled by air density
                 omegas2[i] = _wparams.rho * omegas[i] * omegas[i]; 
 
                 // Thrust coefficient is constant for fixed-pitch rotors, variable for collective-pitch
-                u1 += getThrustCoefficient(motorvals) * omegas2[i];                  
+                u1 += getThrustCoefficient(actuators) * omegas2[i];                  
 
                 // Newton's Third Law (action/reaction) tells us that yaw is opposite to net rotor spin
                 u4 += _vparams.d * omegas2[i] * -getRotorDirection(i);
@@ -316,12 +316,12 @@ class Dynamics {
             
             // Compute roll, pitch, yaw forces (different method for fixed-pitch blades vs. variable-pitch)
             double u2 = 0, u3 = 0;
-            computeRollAndPitch(motorvals, omegas2, u2, u3);
+            computeRollAndPitch(actuators, omegas2, u2, u3);
 
             // -----------------------------------------------------------------------------------------------------------------------------
 
             // XXX for Ingenuity demo
-            // debugline("AGL = %2.2fm    RPM = %d", -_x[STATE_Z], (int)(motorval * _vparams.maxrpm));
+            // debugline("AGL = %2.2fm    RPM = %d", -_x[STATE_Z], (int)(actuator * _vparams.maxrpm));
 
             // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
             // Negate to use NED.

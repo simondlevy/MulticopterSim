@@ -46,7 +46,7 @@ class FFlightManager : public FThreadedManager {
             // Constant
             _actuatorCount = dynamics->actuatorCount();
 
-            // Allocate array for motor values
+            // Allocate array for actuator values
             _actuatorValues = new double[_actuatorCount];
 
             // Store dynamics for performTask()
@@ -67,7 +67,7 @@ class FFlightManager : public FThreadedManager {
                 _dynamics->update(_actuatorValues, currentTime - _previousTime);
 
                 // PID controller: update the flight manager (e.g., HackflightManager) with
-                // the dynamics state, getting back the motor values
+                // the dynamics state, getting back the actuator values
                 this->getActuators(currentTime, _actuatorValues);
 
                 // Track previous time for deltaT

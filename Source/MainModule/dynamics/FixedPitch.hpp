@@ -39,19 +39,19 @@ class FixedPitchDynamics : public Dynamics {
         }
 
 
-        virtual double getThrustCoefficient(double * motorvals) override
+        virtual double getThrustCoefficient(double * actuators) override
         {
             // Thrust coefficient is constant for fixed-pitch rotors
 
-            (void)motorvals;
+            (void)actuators;
             
             return _fparams.b;
         }
 
-        virtual void computeRollAndPitch(double * motorvals, double * omegas2, double & roll, double & pitch) override
+        virtual void computeRollAndPitch(double * actuators, double * omegas2, double & roll, double & pitch) override
         {
-            // We've already used motorvals to compute omegas2
-            (void)motorvals;
+            // We've already used actuators to compute omegas2
+            (void)actuators;
 
             roll = 0;
             pitch = 0;
