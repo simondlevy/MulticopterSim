@@ -211,9 +211,6 @@ class Vehicle {
         // Threaded worker for running flight control
         class FFlightManager* _flightManager = NULL;
 
-        // Motor values for animation/sound
-        float  _motorvals[FFlightManager::MAX_MOTORS] = {};
-
         // Circular buffer for moving average of motor values
         TCircularBuffer<float>* _motorBuffer = NULL;
         uint32_t _bufferIndex = 0;
@@ -226,13 +223,10 @@ class Vehicle {
 
         virtual void animateActuators(void)
         {
-            // Get motor values from dynamics
-            _flightManager->getActuatorValues(_motorvals);
-
             // Compute the sum of the motor values
             float motorsum = 0;
             for (uint8_t j = 0; j < _nrotors; ++j) {
-                motorsum += _motorvals[j];
+                motorsum += _flightManager->actuatorValue(j);
             }
 
             // Rotate rotors. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
