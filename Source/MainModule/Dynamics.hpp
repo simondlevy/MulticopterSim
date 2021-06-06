@@ -162,8 +162,9 @@ class Dynamics {
         // quad, hexa, octo, etc.
         uint8_t _rotorCount = 0;
 
-        // For thrust vectoring, we can have four motors: two rotors and two servos.  For multirotors,
-        // rotorCount = motorCount
+        // For coaxials we have five actuators: two rotors, plus collective pitch, cyclic roll, and cyclic pitch.
+        // For thrust vectoring, we have four actuators: two rotors and two servos.
+        // For standard multirotors (e.g., quadcopter), actuatorCount = rotorCount.
         uint8_t _motorCount = 0;
 
         /**

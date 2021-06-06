@@ -59,7 +59,7 @@ class Vehicle {
         } view_t;
         view_t _view = VIEW_CHASE;
 
-        uint8_t _nmotors = 0;
+        uint8_t _nrotors = 0;
 
         float rotorStartAngle(float rotorX, float rotorY)
         {
@@ -231,7 +231,7 @@ class Vehicle {
 
             // Compute the sum of the motor values
             float motorsum = 0;
-            for (uint8_t j = 0; j < _nmotors; ++j) {
+            for (uint8_t j = 0; j < _nrotors; ++j) {
                 motorsum += _motorvals[j];
             }
 
@@ -242,7 +242,7 @@ class Vehicle {
 
             // Add mean to circular buffer for moving average
             _bufferIndex = _motorBuffer->GetNextIndex(_bufferIndex);
-            (*_motorBuffer)[_bufferIndex] = motorsum / _nmotors;
+            (*_motorBuffer)[_bufferIndex] = motorsum / _nrotors;
 
             // Compute the mean motor value over the buffer frames
             float smoothedMotorMean = 0;
@@ -340,10 +340,10 @@ class Vehicle {
             _flightManager = NULL;
         }
 
-        Vehicle(Dynamics* dynamics, uint8_t nmotors)
+        Vehicle(Dynamics* dynamics, uint8_t nrotors)
         {
             _dynamics = dynamics;
-            _nmotors = nmotors;
+            _nrotors = nrotors;
 
             for (uint8_t i = 0; i < dynamics->rotorCount(); ++i) {
                 _rotorDirections[i] = dynamics->getRotorDirection(i);
