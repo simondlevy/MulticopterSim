@@ -90,7 +90,6 @@ class Vehicle {
 
         // UE4 objects that must be built statically
         UStaticMesh* _frameMesh = NULL;
-        UStaticMesh* _motorMesh = NULL;
         USoundCue* _soundCue = NULL;
         USpringArmComponent* _gimbalSpringArm = NULL;
         USpringArmComponent * _playerCameraSpringArm = NULL;
@@ -211,8 +210,8 @@ class Vehicle {
         // Threaded worker for running flight control
         class FFlightManager* _flightManager = NULL;
 
-        // Circular buffer for moving average of motor values
-        TCircularBuffer<float>* _motorBuffer = NULL;
+        // Circular buffer for moving average of rotor values
+        TCircularBuffer<float>* _rotorBuffer = NULL;
         uint32_t _bufferIndex = 0;
 
         // Starts at zero and increases each time we add a rotor
@@ -223,32 +222,32 @@ class Vehicle {
 
         virtual void animateActuators(void)
         {
-            // Compute the sum of the motor values
-            float motorsum = 0;
+            // Compute the sum of the rotor values
+            float rotorsum = 0;
             for (uint8_t j = 0; j < _nrotors; ++j) {
-                motorsum += _flightManager->actuatorValue(j);
+                rotorsum += _flightManager->actuatorValue(j);
             }
 
-            // Rotate rotors. For visual effect, we can ignore actual motor values, and just keep increasing the rotation.
-            if (motorsum > 0) {
+            // Rotate rotors. For visual effect, we can ignore actual rotor values, and just keep increasing the rotation.
+            if (rotorsum > 0) {
                 rotateRotors(_rotorDirections);
             }
 
             // Add mean to circular buffer for moving average
-            _bufferIndex = _motorBuffer->GetNextIndex(_bufferIndex);
-            (*_motorBuffer)[_bufferIndex] = motorsum / _nrotors;
+            _bufferIndex = _rotorBuffer->GetNextIndex(_bufferIndex);
+            (*_rotorBuffer)[_bufferIndex] = rotorsum / _nrotors;
 
-            // Compute the mean motor value over the buffer frames
-            float smoothedMotorMean = 0;
-            for (uint8_t i = 0; i < _motorBuffer->Capacity(); ++i) {
-                smoothedMotorMean += (*_motorBuffer)[i];
+            // Compute the mean rotor value over the buffer frames
+            float smoothedRotorMean = 0;
+            for (uint8_t i = 0; i < _rotorBuffer->Capacity(); ++i) {
+                smoothedRotorMean += (*_rotorBuffer)[i];
             }
-            smoothedMotorMean /= _motorBuffer->Capacity();
+            smoothedRotorMean /= _rotorBuffer->Capacity();
 
-            // Use the mean motor value to modulate the pitch and voume of the rotor sound
+            // Use the mean rotor value to modulate the pitch and voume of the rotor sound
             if (_audioComponent) {
-                _audioComponent->SetFloatParameter(FName("pitch"), smoothedMotorMean);
-                _audioComponent->SetFloatParameter(FName("volume"), smoothedMotorMean);
+                _audioComponent->SetFloatParameter(FName("pitch"), smoothedRotorMean);
+                _audioComponent->SetFloatParameter(FName("volume"), smoothedRotorMean);
             }
         }
 
@@ -395,8 +394,8 @@ class Vehicle {
                 _audioComponent->Play();
             }
 
-            // Create circular queue for moving-average of motor values
-            _motorBuffer = new TCircularBuffer<float>(20);
+            // Create circular queue for moving-average of rotor values
+            _rotorBuffer = new TCircularBuffer<float>(20);
 
             // Get vehicle ground-truth location for kinematic offset
             _startLocation = _pawn->GetActorLocation();
