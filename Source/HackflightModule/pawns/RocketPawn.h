@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <mixers/coaxial.hpp>
+#include <mixers/thrustvector.hpp>
 
 #include <rft_motors/mockrotary.hpp>
 #include <rft_motors/mockservo.hpp>
@@ -39,7 +39,7 @@ class HACKFLIGHTMODULE_API ARocketPawn : public APawn {
         rft::MockServoMotor _servo1;
         rft::MockServoMotor _servo2;
 
-        hf::CoaxialMixer  _mixer = hf::CoaxialMixer(&_rotor1, &_rotor2, &_servo1, &_servo2);
+        hf::ThrustVectorMixer  _mixer = hf::ThrustVectorMixer(&_rotor1, &_rotor2, &_servo1, &_servo2);
 
     protected:
 

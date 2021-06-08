@@ -36,10 +36,12 @@ class HACKFLIGHTMODULE_API AIngenuityPawn : public APawn {
 
         rft::MockRotaryMotor _rotor1;
         rft::MockRotaryMotor _rotor2;
-        rft::MockServoMotor _servo1;
-        rft::MockServoMotor _servo2;
+        rft::MockServoMotor _collective;
+        rft::MockServoMotor _cyclicRoll;
+        rft::MockServoMotor _cyclicPitch;
 
-        hf::CoaxialMixer  _mixer = hf::CoaxialMixer(&_rotor1, &_rotor2, &_servo1, &_servo2);
+        hf::CoaxialMixer  _mixer = hf::CoaxialMixer(&_rotor1, &_rotor2,
+                &_collective, &_cyclicRoll, &_cyclicPitch);
 
     protected:
 

@@ -23,7 +23,7 @@ void AIngenuityPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AIngenuityPawn::BeginPlay()
 {
-    rft::MockMotor * motors[4] = {&_rotor1, &_rotor2, &_servo1, &_servo2};
+    rft::MockMotor * motors[5] = {&_rotor1, &_rotor2, &_collective, &_cyclicRoll, &_cyclicPitch};
 
     _flightManager = new FHackflightFlightManager(this, &_mixer, motors, &_ingenuity.dynamics);
 

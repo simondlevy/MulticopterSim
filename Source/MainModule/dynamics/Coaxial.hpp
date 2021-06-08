@@ -45,8 +45,8 @@ class CoaxialDynamics : public Dynamics {
             // For a coaxial, rotor speeds do not determine roll and pitch
             (void)omegas2;
             
-            roll = computeCyclic(actuators, 2);
-            pitch = computeCyclic(actuators, 3);
+            roll = computeCyclic(actuators, 3);
+            pitch = computeCyclic(actuators, 4);
          }
 
         // motor direction for animation
