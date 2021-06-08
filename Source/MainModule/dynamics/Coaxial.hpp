@@ -1,6 +1,14 @@
 /*
  * Dynamics class for coaxial copters
  *
+ * Degrees of Freedom are:
+ *
+ *   - Head speed 1
+ *   - Head speed 2
+ *   - Collective (blade) pitch
+ *   - Cyclic pitch
+ *   - Cyclic roll
+ * 
  * Copyright (C) 2021 Simon D. Levy
  *
  * MIT License
@@ -51,7 +59,7 @@ class CoaxialDynamics : public Dynamics {
     public:	
 
         CoaxialDynamics(Dynamics::vehicle_params_t &vparams)
-            : Dynamics(4, vparams)
+            : Dynamics(5, vparams)
         {
             _rotorCount = 2;
         }
