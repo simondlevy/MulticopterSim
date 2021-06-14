@@ -246,6 +246,7 @@ class Vehicle {
 
             // Use the mean rotor value to modulate the pitch and voume of the rotor sound
             if (_audioComponent) {
+
                 _audioComponent->SetFloatParameter(FName("pitch"), smoothedRotorMean);
                 _audioComponent->SetFloatParameter(FName("volume"), smoothedRotorMean);
             }
@@ -285,11 +286,14 @@ class Vehicle {
             // Create an audio component, which wraps the sound cue, and allows us to ineract with it and its parameters from code
             _audioComponent = _pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("RotorAudioComp"));
 
-            // Set the audio component's volume to zero
-            _audioComponent->SetFloatParameter(FName("volume"), 0);
+            if (_audioComponent) {
 
-            // Attach the sound to the pawn's root, the sound follows the pawn around
-            _audioComponent->SetupAttachment(_pawn->GetRootComponent());
+                // Set the audio component's volume to zero
+                _audioComponent->SetFloatParameter(FName("volume"), 0);
+
+                // Attach the sound to the pawn's root, the sound follows the pawn around
+                _audioComponent->SetupAttachment(_pawn->GetRootComponent());
+            }
 
             // Create a spring-arm for the gimbal
             _gimbalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("GimbalSpringArm"));
