@@ -9,12 +9,11 @@ MIT License
 
 class LaunchController(object):
 
-    def __init__(self, posP, velP, velI, windupMax=10):
+    def __init__(self, Kp, Ki, windupMax=10):
 
         # Constants
-        self.posP = posP
-        self.velP = velP
-        self.velI = velI
+        self.Kp = Kp
+        self.Ki = Ki
         self.windupMax = windupMax
 
         # Values modified in-flight
@@ -24,8 +23,7 @@ class LaunchController(object):
     def getDemands(self, target, alt, vel, t):
 
         # Compute dzdt setpoint and error
-        velTarget = (target - alt) * self.posP
-        velError = velTarget - vel
+        velError = (target - alt) - vel
 
         # Compute dt
         dt = t - self.tprev
@@ -39,7 +37,7 @@ class LaunchController(object):
         self.tprev = t
 
         # Always compute throttle demand for altitude hold
-        throttle = self.velP * velError + self.velI * self.integralError
+        throttle = self.Kp * velError + self.Ki * self.integralError
 
         # Don't mess with roll and yaw for now
         roll = 0

@@ -22,9 +22,8 @@ class LaunchCopter(MulticopterServer):
     def __init__(
             self,
             mixer,
-            kp_z=1.0,
-            kp_dz=1.0,
-            ki_dz=0.0,
+            kp=1.0,
+            ki=0.0,
             initial_target=15.0):
 
         MulticopterServer.__init__(self)
@@ -35,7 +34,7 @@ class LaunchCopter(MulticopterServer):
         self.target = initial_target
 
         # Create PID controller
-        self.ctrl = LaunchController(kp_z, kp_dz, ki_dz)
+        self.ctrl = LaunchController(kp, ki)
 
     def handleImage(self, image):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
