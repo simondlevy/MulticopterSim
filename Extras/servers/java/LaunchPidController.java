@@ -10,14 +10,14 @@ public class LaunchPidController {
 
     private double tprev; // previous time for computing dt
 
-    public LaunchPidController(double target, double Kp_z, double Kp_dz, double Ki_dz, double windupMax)
+    public LaunchPidController(double target, double Kp, double Ki, double windupMax)
     {
-        construct(target, Kp_z, Kp_dz, Ki_dz, windupMax);
+        construct(target, Kp, Ki, windupMax);
     }
 
-    public LaunchPidController(double target, double Kp_z, double Kp_dz, double Ki_dz)
+    public LaunchPidController(double target, double Kp, double Ki)
     {
-        construct(target, Kp_z, Kp_dz, Ki_dz, 10.0);
+        construct(target, Kp, Ki, 10.0);
     }
 
     /**
@@ -32,8 +32,7 @@ public class LaunchPidController {
         double dt = t - tprev;
 
         // Compute dzdt setpoint and error
-        double dzTarget = (_target - z) * _Kp_z;
-        double dzError = dzTarget - dz;
+        double dzError = (_target - z) - dz;
 
         // Update error integral and error derivative
         _integralError +=  dzError * dt;
@@ -41,7 +40,7 @@ public class LaunchPidController {
 
         // Compute control for throttle
         double [] u = new double[4];
-        u[0] = _Kp_dz * dzError + _Ki_dz * _integralError;
+        u[0] = _Kp * dzError + _Ki * _integralError;
 
         // If time is between five and six seconds, set pitch to a very small value (.001)
         if (5<t && t<6){
@@ -55,22 +54,20 @@ public class LaunchPidController {
     }
 
     private double _target;
-    private double _Kp_z;
-    private double _Kp_dz;
-    private double _Ki_dz;
+    private double _Kp;
+    private double _Ki;
     private double _windupMax;
     private double _posTarget;
     private double _integralError;
 
-    private void construct(double target, double Kp_z, double Kp_dz, double Ki_dz, double windupMax)
+    private void construct(double target, double Kp, double Ki, double windupMax)
     {
         // In a real PID controller, this would be a set-point
         _target = target;
 
         // Constants
-        _Kp_z = Kp_z;
-        _Kp_dz = Kp_dz;
-        _Ki_dz = Ki_dz;
+        _Kp = Kp;
+        _Ki = Ki;
         _windupMax = windupMax;
 
         // Values modified in-flight
