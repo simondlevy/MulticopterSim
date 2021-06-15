@@ -4,23 +4,23 @@
 #
 #   MIT License
 
-Takeoff.class: Takeoff.java Multicopter.class AltitudePidController.class
-	javac Takeoff.java
+Launch.class: Launch.java Multicopter.class LaunchPidController.class
+	javac Launch.java
 
 Multicopter.class: Multicopter.java
 	javac Multicopter.java
 
-AltitudePidController.class: AltitudePidController.java
-	javac AltitudePidController.java
+LaunchPidController.class: LaunchPidController.java
+	javac LaunchPidController.java
 
-run: Takeoff.class 
-	java Takeoff
+run: Launch.class 
+	java Launch
 
-test: Takeoff.class 
-	java Takeoff
+test: Launch.class 
+	java Launch
 
-plot: Takeoff.class
-	java Takeoff | ../python/plotalt.py
+plot: Launch.class
+	java Launch | ../python/plotalt.py
 
 jar: Multicopter.java
 	javac Multicopter.java
