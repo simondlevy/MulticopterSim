@@ -13,7 +13,7 @@
 #include "../../Source/SocketModule/sockets/TwoWayUdp.hpp"
 #include "../../Source/SocketModule/sockets/TcpClientSocket.hpp"
 
-#include <dynamics/QuadXAP.hpp>
+#include "../../Source/MainModule/dynamics/fixedpitch/QuadXAP.hpp"
 
 // Comms
 static const char * HOST = "127.0.0.1"; // localhost
@@ -31,7 +31,6 @@ static const double DELTA_T = 0.001;
 static Dynamics::vehicle_params_t vparams = {
 
     // Estimated
-    5.E-06, // b force constatnt [F=b*w^2]
     2.E-06, // d torque constant [T=d*w^2]
 
     // https://www.dji.com/phantom-4/info
@@ -43,9 +42,14 @@ static Dynamics::vehicle_params_t vparams = {
     3,      // Iz [kg*m^2] 
     38E-04, // Jr prop inertial [kg*m^2] 
 
-    0.350,  // l arm length [m]
-
     15000 // maxrpm
+};
+
+static FixedPitchDynamics::fixed_pitch_params_t fparams = {
+
+    // Estimated
+    5.E-06, // b force constatnt [F=b*w^2]
+    0.350   // l arm length [m]
 };
 
 
@@ -74,7 +78,7 @@ int main(int argc, char ** argv)
         TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
 
         // Create quadcopter dynamics model
-        QuadXAPDynamics dynamics = QuadXAPDynamics(vparams);
+        QuadXAPDynamics dynamics = QuadXAPDynamics(vparams, fparams);
 
         // Set up initial conditions
         double time = 0;
@@ -110,8 +114,7 @@ int main(int argc, char ** argv)
                     time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], dynamics.x(Dynamics::STATE_Z));
 
             // Update dynamics with motor values
-            dynamics.setMotors(motorvals);
-            dynamics.update(DELTA_T);
+            dynamics.update(motorvals, DELTA_T);
 
             // Set AGL to arbitrary positive value to o avoid kinematic trick
             dynamics.setAgl(1);

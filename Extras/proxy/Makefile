@@ -18,7 +18,7 @@ simproxy: simproxy.o
 	g++ -o simproxy simproxy.o 
 
 simproxy.o: simproxy.cpp ../../Source/MainModule/Dynamics.hpp
-	g++ $(CFLAGS) -Isockets -I../../Source/MainModule -c simproxy.cpp
+	g++ $(CFLAGS) -c simproxy.cpp
 
 run: simproxy
 	./simproxy

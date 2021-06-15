@@ -52,7 +52,7 @@ class Dynamics {
 
         } world_params_t; 
 
-        static constexpr world_params_t EARTH_PARAMS = { 
+        /* XXX static constexpr*/ world_params_t EARTH_PARAMS = { 
             9.80665,  // g graviational constant
             1.225 // rho air density 
         };
