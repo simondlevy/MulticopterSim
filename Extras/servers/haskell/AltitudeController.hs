@@ -14,9 +14,8 @@ import Types
 data AltitudeControllerConstants =
     AltitudeControllerConstants {
       altitude_target ::Double
-    , altitude_Kp_z ::Double
-    , altitude_Kp_dz ::Double
-    , altitude_Ki_dz ::Double
+    , altitude_Kp ::Double
+    , altitude_Ki ::Double
     , altitude_windupMax ::Double
     } deriving (Show)
              
@@ -31,9 +30,8 @@ makeAltitudeController constants =
     let  
          -- Get constants 
          ztarget = altitude_target constants
-         kp_z = altitude_Kp_z constants
-         kp_dz = altitude_Kp_dz constants
-         ki_dz = altitude_Ki_dz constants
+         kp = altitude_Kp constants
+         ki = altitude_Ki constants
          windupMax = altitude_windupMax constants
 
          -- Get vehicle state, negating for NED
@@ -41,15 +39,14 @@ makeAltitudeController constants =
          dzdt = -(state_dz vehicleState)
 
          -- Compute dzdt setpoint and error
-         dzdt_target = (ztarget - z) * kp_z
-         dzdt_error = dzdt_target - dzdt
+         dzdt_error = (ztarget - z) - dzdt
 
          -- Update error integral
          dt = time - (previousTime controllerState)
          newErrorIntegral = constrainAbs ((errorIntegral controllerState) + dzdt_error * dt) windupMax
 
          -- Compute throttle demand, constrained to [0,1]
-         u = min (kp_dz * dzdt_error + ki_dz * newErrorIntegral) 1
+         u = min (kp * dzdt_error + ki * newErrorIntegral) 1
 
     in ((Demands u 0 0 0), (PidControllerState time newErrorIntegral))
 
