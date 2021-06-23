@@ -43,17 +43,6 @@ class FHackflightFlightManager : public FFlightManager {
         // Level
         hf::LevelPid levelPid = hf::LevelPid(1.0);
 
-        rft::PassthruController passthru;
-
-        /*
-        // Alt-hold
-        hf::AltitudeHoldPid althold = hf::AltitudeHoldPid(
-                10.00f, // altHoldPosP
-                1.00f,  // altHoldVelP
-                0.01f,  // altHoldVelI
-                0.10f); // altHoldVelD
-                */
-
         // Flight-controller board
         SimBoard _board;
 
@@ -63,7 +52,7 @@ class FHackflightFlightManager : public FFlightManager {
         // "Sensors"
         SimSensors* _sensors = NULL;
 
-        // Motors are passed to mixer so it can modify them
+        // "Motors" are passed to mixer so it can modify them
         SimMotor * _motors[100] = {};
 
         // Main firmware
@@ -90,15 +79,10 @@ class FHackflightFlightManager : public FFlightManager {
             _sensors = new SimSensors(_dynamics);
             _hackflight->addSensor(_sensors);
 
-            // Add altitude-hold PID controller in switch position 1 or greater
-            //_hackflight->addClosedLoopController(&althold, 1);
-
-            // Add yaw and level PID controllers for all aux switch positions
+            // Add PID controllers for all aux switch positions
             // _hackflight->addClosedLoopController(&levelPid);
             // _hackflight->addClosedLoopController(&ratePid);
             _hackflight->addClosedLoopController(&yawPid);
-
-            _hackflight->addClosedLoopController(&passthru);
 
             // Start Hackflight firmware, indicating already armed
             _hackflight->begin(true);

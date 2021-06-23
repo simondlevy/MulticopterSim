@@ -50,8 +50,6 @@ class HACKFLIGHTMODULE_API APhantomPawn : public APawn {
 
         virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-        // virtual void NotifyHit(...) override
-
     public:	
 
         APhantomPawn();
