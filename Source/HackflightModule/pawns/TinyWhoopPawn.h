@@ -31,7 +31,7 @@ class HACKFLIGHTMODULE_API ATinyWhoopPawn : public APawn {
 
         FHackflightFlightManager * _flightManager = NULL;
 
-        hf::MixerQuadXAP  _mixer;
+        // hf::MixerQuadXAP  _mixer;
 
     protected:
 

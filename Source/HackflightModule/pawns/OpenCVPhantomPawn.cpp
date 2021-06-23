@@ -26,7 +26,7 @@ void AOpenCVPhantomPawn::PostInitializeComponents()
 void AOpenCVPhantomPawn::BeginPlay()
 {
 
-    _flightManager = new FHackflightFlightManager(this, &_mixer, &_phantom.dynamics);
+    // _flightManager = new FHackflightFlightManager(this, &_mixer, &_phantom.dynamics);
 
     _phantom.BeginPlay(_flightManager);
 

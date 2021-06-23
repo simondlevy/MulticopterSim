@@ -11,6 +11,7 @@
 APhantomPawn::APhantomPawn()
 {
     _phantom.build(this);
+
 }
 
 void APhantomPawn::PostInitializeComponents()
@@ -23,7 +24,9 @@ void APhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void APhantomPawn::BeginPlay()
 {
-    _flightManager = new FHackflightFlightManager(this, &_mixer, &_phantom.dynamics);
+    SimMotor * _motors[4] = {&_motor1, &_motor2, &_motor3, &_motor4};
+
+    _flightManager = new FHackflightFlightManager(this, &_mixer, _motors, &_phantom.dynamics);
 
     _phantom.BeginPlay(_flightManager);
 
@@ -44,5 +47,4 @@ void APhantomPawn::Tick(float DeltaSeconds)
 
     _flightManager->tick();
 
-    Super::Tick(DeltaSeconds);
-}
+    Super::Tick(DeltaSeconds); }

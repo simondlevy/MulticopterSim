@@ -31,7 +31,7 @@ class HACKFLIGHTMODULE_API ARocketPawn : public APawn {
 
         FHackflightFlightManager * _flightManager = NULL;
 
-        hf::MixerThrustVector _mixer;
+        // hf::MixerThrustVector _mixer;
 
     protected:
 

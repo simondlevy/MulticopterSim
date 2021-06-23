@@ -26,6 +26,7 @@
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
 #include "SimSensors.hpp"
+#include "SimMotor.hpp"
 
 class FHackflightFlightManager : public FFlightManager {
 
@@ -62,18 +63,27 @@ class FHackflightFlightManager : public FFlightManager {
         // "Sensors"
         SimSensors* _sensors = NULL;
 
+        // Motors are passed to mixer so it can modify them
+        SimMotor * _motors[4] = {};
+
         // Main firmware
         hf::Hackflight * _hackflight = NULL;
 
     public:
 
         // Constructor
-        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, Dynamics * dynamics, bool pidsEnabled=true) 
+        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, SimMotor ** motors, Dynamics * dynamics, bool pidsEnabled=true) 
             : FFlightManager(dynamics) 
         {
+            // Store motors for later
+            for (uint8_t k=0; k<4; ++k) {
+                _motors[k] = motors[k];
+            }
+
             // Pass PlayerController to receiver constructor in case we have no joystick / game-controller
             _receiver = new SimReceiver(UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0));
 
+            // Create Hackflight object
             _hackflight = new hf::Hackflight(&_board, _receiver, mixer);
 
             // Add simulated sensor suite
@@ -99,6 +109,7 @@ class FHackflightFlightManager : public FFlightManager {
 
         virtual ~FHackflightFlightManager(void)
         {
+            // delete _motors;
             delete _hackflight;
         }
 
@@ -130,7 +141,10 @@ class FHackflightFlightManager : public FFlightManager {
 
             _board.set(time);
 
-            // _imu.set(quaternion, angularVel);
+            //  Get motor values
+            for (uint8_t i=0; i < _actuatorCount; ++i) {
+                values[i] = _motors[i]->getValue();
+            }
         }
 
         void tick(void)

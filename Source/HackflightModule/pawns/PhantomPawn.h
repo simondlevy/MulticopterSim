@@ -10,8 +10,8 @@
 
 #include <mixers/quad/xap.hpp>
 
+#include "../SimMotor.hpp"
 #include "../../MainModule/vehicles/Phantom.hpp"
-
 #include "../HackflightFlightManager.hpp"
 
 #include "CoreMinimal.h"
@@ -31,7 +31,12 @@ class HACKFLIGHTMODULE_API APhantomPawn : public APawn {
 
         FHackflightFlightManager * _flightManager = NULL;
 
-        hf::MixerQuadXAP  _mixer;
+        SimRotaryMotor _motor1;
+        SimRotaryMotor _motor2;
+        SimRotaryMotor _motor3;
+        SimRotaryMotor _motor4;
+
+        hf::MixerQuadXAP _mixer = hf::MixerQuadXAP(&_motor1, &_motor2, &_motor3, &_motor4);
 
     protected:
 

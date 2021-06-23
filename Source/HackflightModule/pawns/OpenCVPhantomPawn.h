@@ -33,7 +33,7 @@ class HACKFLIGHTMODULE_API AOpenCVPhantomPawn : public APawn {
 
         FHackflightFlightManager * _flightManager = NULL;
 
-        hf::MixerQuadXAP  _mixer;
+        // hf::MixerQuadXAP  _mixer;
 
         EdgeDetectionCamera  _camera;
 
