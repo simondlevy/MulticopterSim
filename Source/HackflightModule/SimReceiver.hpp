@@ -47,20 +47,7 @@ class SimReceiver : public hf::Receiver {
 			return 0; // XXX Receiver::getAux1State();  // With only five channels, we use Aux1 for Aux2
 		}
 
-    public:
-
-		SimReceiver(APlayerController * playerController, uint16_t updateFrequency=50)
-			: Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
-		{
-			_joystick = new IJoystick();
-
-            _keypad = new Keypad(playerController);
-
-			_deltaT = 1./updateFrequency;
-			_previousTime = 0;
-		}
-
-		bool gotNewFrame(void)
+   		bool gotNewFrame(void) override
 		{
 			// Get a high-fidelity current time value from the OS
 			double currentTime = FPlatformTime::Seconds();
@@ -72,6 +59,23 @@ class SimReceiver : public hf::Receiver {
 			}
 
 			return false;
+		}
+
+        virtual void readRawvals(void) override
+        {
+        }
+
+ public:
+
+		SimReceiver(APlayerController * playerController, uint16_t updateFrequency=50)
+			: Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
+		{
+			_joystick = new IJoystick();
+
+            _keypad = new Keypad(playerController);
+
+			_deltaT = 1./updateFrequency;
+			_previousTime = 0;
 		}
 
 		uint16_t update(void)

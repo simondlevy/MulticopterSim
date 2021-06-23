@@ -20,7 +20,6 @@
 #include <pidcontrollers/rate.hpp>
 // #include <pidcontrollers/althold.hpp>
 
-#include <rft_motors/mock.hpp>
 #include <rft_closedloops/passthru.hpp>
 
 
@@ -63,25 +62,15 @@ class FHackflightFlightManager : public FFlightManager {
         // "Sensors"
         SimSensors* _sensors = NULL;
 
-        // Helps us access individual motors
-        rft::MockMotor ** _motors = NULL;
-
         // Main firmware
         hf::Hackflight * _hackflight = NULL;
 
     public:
 
         // Constructor
-        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, rft::MockMotor ** motors, Dynamics * dynamics, 
-                bool pidsEnabled=true) 
+        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, Dynamics * dynamics, bool pidsEnabled=true) 
             : FFlightManager(dynamics) 
         {
-
-            _motors = new rft::MockMotor * [_actuatorCount];
-            for (uint8_t i=0; i < _actuatorCount; ++i) {
-                _motors[i] = motors[i];
-            }
-
             // Pass PlayerController to receiver constructor in case we have no joystick / game-controller
             _receiver = new SimReceiver(UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0));
 
@@ -110,7 +99,6 @@ class FHackflightFlightManager : public FFlightManager {
 
         virtual ~FHackflightFlightManager(void)
         {
-            delete _motors;
             delete _hackflight;
         }
 
@@ -143,11 +131,6 @@ class FHackflightFlightManager : public FFlightManager {
             _board.set(time);
 
             // _imu.set(quaternion, angularVel);
-
-            //  Get motor values
-            for (uint8_t i=0; i < _actuatorCount; ++i) {
-                values[i] = _motors[i]->getValue();
-            }
         }
 
         void tick(void)

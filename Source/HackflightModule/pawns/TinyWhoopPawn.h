@@ -8,9 +8,7 @@
 
 #pragma once
 
-#include <mixers/quads/quadxap.hpp>
-
-#include <rft_motors/mockrotary.hpp>
+#include <mixers/quad/xap.hpp>
 
 #include "../../MainModule/vehicles/TinyWhoop.hpp"
 
@@ -33,12 +31,7 @@ class HACKFLIGHTMODULE_API ATinyWhoopPawn : public APawn {
 
         FHackflightFlightManager * _flightManager = NULL;
 
-        rft::MockRotaryMotor _motor1;
-        rft::MockRotaryMotor _motor2;
-        rft::MockRotaryMotor _motor3;
-        rft::MockRotaryMotor _motor4;
-
-        hf::MixerQuadXAP  _mixer = hf::MixerQuadXAP(&_motor1, &_motor2, &_motor3, &_motor4);
+        hf::MixerQuadXAP  _mixer;
 
     protected:
 

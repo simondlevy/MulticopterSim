@@ -10,9 +10,6 @@
 
 #include <mixers/coaxial.hpp>
 
-#include <rft_motors/mockrotary.hpp>
-#include <rft_motors/mockservo.hpp>
-
 #include "../../MainModule/vehicles/Ingenuity.hpp"
 
 #include "../HackflightFlightManager.hpp"
@@ -34,14 +31,7 @@ class HACKFLIGHTMODULE_API AIngenuityPawn : public APawn {
 
         FHackflightFlightManager * _flightManager = NULL;
 
-        rft::MockRotaryMotor _rotor1;
-        rft::MockRotaryMotor _rotor2;
-        rft::MockServoMotor _collective;
-        rft::MockServoMotor _cyclicRoll;
-        rft::MockServoMotor _cyclicPitch;
-
-        hf::CoaxialMixer  _mixer = hf::CoaxialMixer(&_rotor1, &_rotor2,
-                &_collective, &_cyclicRoll, &_cyclicPitch);
+        hf::CoaxialMixer _mixer;
 
     protected:
 

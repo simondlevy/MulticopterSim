@@ -8,10 +8,7 @@
 
 #pragma once
 
-#include <mixers/thrustvector.hpp>
-
-#include <rft_motors/mockrotary.hpp>
-#include <rft_motors/mockservo.hpp>
+#include <mixers/thrustvec.hpp>
 
 #include "../../MainModule/vehicles/Rocket.hpp"
 
@@ -34,12 +31,7 @@ class HACKFLIGHTMODULE_API ARocketPawn : public APawn {
 
         FHackflightFlightManager * _flightManager = NULL;
 
-        rft::MockRotaryMotor _rotor1;
-        rft::MockRotaryMotor _rotor2;
-        rft::MockServoMotor _servo1;
-        rft::MockServoMotor _servo2;
-
-        hf::ThrustVectorMixer  _mixer = hf::ThrustVectorMixer(&_rotor1, &_rotor2, &_servo1, &_servo2);
+        hf::MixerThrustVector _mixer;
 
     protected:
 

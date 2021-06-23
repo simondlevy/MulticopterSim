@@ -23,9 +23,7 @@ void ARocketPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void ARocketPawn::BeginPlay()
 {
-    rft::MockMotor * motors[4] = {&_rotor1, &_rotor2, &_servo1, &_servo2};
-
-    _flightManager = new FHackflightFlightManager(this, &_mixer, motors, &_rocket.dynamics);
+    _flightManager = new FHackflightFlightManager(this, &_mixer, &_rocket.dynamics);
 
     _rocket.BeginPlay(_flightManager);
 

@@ -24,9 +24,7 @@ void ATinyWhoopPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void ATinyWhoopPawn::BeginPlay()
 {
-    rft::MockMotor * motors[4] = {&_motor1, &_motor2, &_motor3, &_motor4};
-
-    _flightManager = new FHackflightFlightManager(this, &_mixer, motors, &_tinyWhoop.dynamics);
+    _flightManager = new FHackflightFlightManager(this, &_mixer, &_tinyWhoop.dynamics);
 
     _tinyWhoop.BeginPlay(_flightManager);
 
