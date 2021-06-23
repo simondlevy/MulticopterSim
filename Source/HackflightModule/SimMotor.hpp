@@ -12,17 +12,20 @@
 
 class SimMotor {
 
+   protected:
+
+        float _value = 0;
+
    public:
 
-       virtual float getValue(void) = 0;
+       float getValue(void) 
+       {
+           return _value;
+       }
 
 }; // class SimMotor
 
 class SimRotaryMotor : public SimMotor, public rft::RotaryMotor {
-
-    private:
-
-        float _value = 0;
 
     protected:
 
@@ -36,12 +39,6 @@ class SimRotaryMotor : public SimMotor, public rft::RotaryMotor {
         SimRotaryMotor(void)
             : RotaryMotor(0) // dummy number for pin
         {
-            _value = 0;
-        }
-
-        virtual float getValue(void) override
-        {
-            return _value;
         }
 
 }; // class SimRotaryMotor

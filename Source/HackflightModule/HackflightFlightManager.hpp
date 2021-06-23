@@ -64,7 +64,7 @@ class FHackflightFlightManager : public FFlightManager {
         SimSensors* _sensors = NULL;
 
         // Motors are passed to mixer so it can modify them
-        SimMotor * _motors[4] = {};
+        SimMotor * _motors[100] = {};
 
         // Main firmware
         hf::Hackflight * _hackflight = NULL;
@@ -76,7 +76,7 @@ class FHackflightFlightManager : public FFlightManager {
             : FFlightManager(dynamics) 
         {
             // Store motors for later
-            for (uint8_t k=0; k<4; ++k) {
+            for (uint8_t k=0; k<_actuatorCount; ++k) {
                 _motors[k] = motors[k];
             }
 
@@ -109,7 +109,6 @@ class FHackflightFlightManager : public FFlightManager {
 
         virtual ~FHackflightFlightManager(void)
         {
-            // delete _motors;
             delete _hackflight;
         }
 
