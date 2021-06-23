@@ -72,7 +72,7 @@ class FHackflightFlightManager : public FFlightManager {
     public:
 
         // Constructor
-        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, SimMotor ** motors, Dynamics * dynamics, bool pidsEnabled=true) 
+        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, SimMotor ** motors, Dynamics * dynamics) 
             : FFlightManager(dynamics) 
         {
             // Store motors for later
@@ -90,18 +90,15 @@ class FHackflightFlightManager : public FFlightManager {
             _sensors = new SimSensors(_dynamics);
             _hackflight->addSensor(_sensors);
 
-            if (pidsEnabled) {
+            // Add altitude-hold PID controller in switch position 1 or greater
+            //_hackflight->addClosedLoopController(&althold, 1);
 
-                // Add altitude-hold PID controller in switch position 1 or greater
-                //_hackflight->addClosedLoopController(&althold, 1);
+            // Add yaw and level PID controllers for all aux switch positions
+            // _hackflight->addClosedLoopController(&levelPid);
+            // _hackflight->addClosedLoopController(&ratePid);
+            _hackflight->addClosedLoopController(&yawPid);
 
-                // Add yaw and level PID controllers for all aux switch positions
-                _hackflight->addClosedLoopController(&levelPid);
-                _hackflight->addClosedLoopController(&ratePid);
-                _hackflight->addClosedLoopController(&yawPid);
-            }
-
-            // _hackflight->addClosedLoopController(&passthru);
+            _hackflight->addClosedLoopController(&passthru);
 
             // Start Hackflight firmware, indicating already armed
             _hackflight->begin(true);
