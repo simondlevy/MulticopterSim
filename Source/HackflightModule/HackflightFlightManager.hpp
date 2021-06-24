@@ -80,8 +80,8 @@ class FHackflightFlightManager : public FFlightManager {
             _hackflight->addSensor(_sensors);
 
             // Add PID controllers for all aux switch positions
-            // _hackflight->addClosedLoopController(&levelPid);
-            // _hackflight->addClosedLoopController(&ratePid);
+            _hackflight->addClosedLoopController(&levelPid);
+            _hackflight->addClosedLoopController(&ratePid);
             _hackflight->addClosedLoopController(&yawPid);
 
             // Start Hackflight firmware, indicating already armed
