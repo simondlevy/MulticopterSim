@@ -24,9 +24,10 @@ void APhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void APhantomPawn::BeginPlay()
 {
-    SimMotor * _motors[4] = {&_motor1, &_motor2, &_motor3, &_motor4};
 
-    _flightManager = new FHackflightFlightManager(this, &_mixer, _motors, &_phantom.dynamics);
+    SimMotor * motors[4] = {&_motor1, &_motor2, &_motor3, &_motor4};
+
+    _flightManager = new FHackflightFlightManager(this, &_mixer, motors, &_phantom.dynamics);
 
     _phantom.BeginPlay(_flightManager);
 

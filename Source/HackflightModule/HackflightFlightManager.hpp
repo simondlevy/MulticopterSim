@@ -18,10 +18,6 @@
 #include <pidcontrollers/level.hpp>
 #include <pidcontrollers/yaw.hpp>
 #include <pidcontrollers/rate.hpp>
-// #include <pidcontrollers/althold.hpp>
-
-#include <rft_closedloops/passthru.hpp>
-
 
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
