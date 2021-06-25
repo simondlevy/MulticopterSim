@@ -8,10 +8,9 @@
 
 #pragma once
 
-#include <mixers/quad/xap.hpp>
 
+#include "../SimQuadMixer.hpp"
 #include "../../MainModule/vehicles/TinyWhoop.hpp"
-
 #include "../HackflightFlightManager.hpp"
 
 #include "CoreMinimal.h"
@@ -26,17 +25,11 @@ class HACKFLIGHTMODULE_API ATinyWhoopPawn : public APawn {
 
         GENERATED_BODY()
 
-        // Helper class
+        // Helper classes
         TinyWhoop _tinyWhoop;
+        SimQuadMixer _mixer;
 
         FHackflightFlightManager * _flightManager = NULL;
-
-        SimRotaryMotor _motor1;
-        SimRotaryMotor _motor2;
-        SimRotaryMotor _motor3;
-        SimRotaryMotor _motor4;
-
-        hf::MixerQuadXAP _mixer = hf::MixerQuadXAP(&_motor1, &_motor2, &_motor3, &_motor4);
 
     protected:
 
