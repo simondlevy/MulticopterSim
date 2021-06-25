@@ -31,7 +31,14 @@ class HACKFLIGHTMODULE_API ARocketPawn : public APawn {
 
         FHackflightFlightManager * _flightManager = NULL;
 
-        // hf::MixerThrustVector _mixer;
+        SimRotaryMotor _rotor1;
+        SimRotaryMotor _rotor2;
+        SimServoMotor _servo1;
+        SimServoMotor _servo2;
+
+        hf::MixerThrustVector _mixer = hf::MixerThrustVector(&_rotor1, &_rotor2, &_servo1, &_servo2);
+
+        SimMotor * _motors[4] = {&_rotor1, &_rotor2, &_servo1, &_servo2};
 
     protected:
 
@@ -44,8 +51,6 @@ class HACKFLIGHTMODULE_API ARocketPawn : public APawn {
         virtual void PostInitializeComponents() override;
 
         virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-        // virtual void NotifyHit(...) override
 
     public:	
 

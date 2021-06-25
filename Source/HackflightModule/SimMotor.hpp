@@ -9,6 +9,7 @@
 #pragma once
 
 #include <rft_motors/rotary.hpp>
+#include <rft_motors/servo.hpp>
 
 class SimMotor {
 
@@ -24,6 +25,7 @@ class SimMotor {
        }
 
 }; // class SimMotor
+
 
 class SimRotaryMotor : public SimMotor, public rft::RotaryMotor {
 
@@ -42,3 +44,22 @@ class SimRotaryMotor : public SimMotor, public rft::RotaryMotor {
         }
 
 }; // class SimRotaryMotor
+
+
+class SimServoMotor : public SimMotor, public rft::ServoMotor {
+
+    protected:
+
+        virtual void write(float value) override 
+        {
+            _value = value;
+        }
+
+    public:
+
+        SimServoMotor(void)
+            : ServoMotor(0) // dummy number for pin
+        {
+        }
+
+}; // class SimServoMotor
