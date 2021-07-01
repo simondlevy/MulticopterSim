@@ -8,7 +8,7 @@
 
 #pragma once
 
-// #include <RFT_board.hpp>
+#include <RFT_board.hpp>
 
 class SimBoard : public rft::Board {
 

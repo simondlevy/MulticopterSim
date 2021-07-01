@@ -12,7 +12,7 @@
 #include "../MainModule/Dynamics.hpp"
 #include "../MainModule/Transforms.hpp"
 
-#include <hackflight.hpp>
+#include <hfpure.hpp>
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
@@ -52,7 +52,7 @@ class FHackflightFlightManager : public FFlightManager {
         SimMotor * _motors[100] = {};
 
         // Main firmware
-        hf::Hackflight * _hackflight = NULL;
+        hf::HackflightPure * _hackflight = NULL;
 
     public:
 
@@ -69,7 +69,7 @@ class FHackflightFlightManager : public FFlightManager {
             _receiver = new SimReceiver(UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0));
 
             // Create Hackflight object
-            _hackflight = new hf::Hackflight(&_board, _receiver, mixer);
+            _hackflight = new hf::HackflightPure(&_board, _receiver, mixer);
 
             // Add simulated sensor suite
             _sensors = new SimSensors(_dynamics);
