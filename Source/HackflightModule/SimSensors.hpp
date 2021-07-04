@@ -32,15 +32,9 @@ class SimSensors : public rft::Sensor {
     protected:
 
         // We do all dynamcics => state conversion; subclasses just return sensor values
-        Dynamics * _dynamics;
+        Dynamics * _dynamics = NULL;
 
-        virtual bool ready(float time) override
-        {
-            (void) time;
-            return true;
-        }
-
-        virtual void modifyState(rft::State * state, float time)
+        virtual void modifyState(rft::State * state, float time) override
         {
             (void)time;
 
