@@ -32,10 +32,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <RFT_filters.hpp>
+
 #define _USE_MATH_DEFINES
 #include <math.h>
-
-#include "Transforms.hpp"
 
 class Dynamics {
 
@@ -327,7 +327,7 @@ class Dynamics {
             // Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
             double accelNED[3] = {};
-            Transforms::bodyZToInertial(-u1 / _vparams.m, euler, accelNED);
+            bodyZToInertial(-u1 / _vparams.m, euler, accelNED);
 
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + _wparams.g;

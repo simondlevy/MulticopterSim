@@ -10,9 +10,11 @@
 
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
-#include "../MainModule/Transforms.hpp"
 
 #include <hfpure.hpp>
+
+// Coordinate transform helpers
+#include <RFT_filters.hpp>
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
@@ -100,18 +102,14 @@ class FHackflightFlightManager : public FFlightManager {
                 _dynamics->x(Dynamics::STATE_PSI_DOT) 
             };
 
-            double eulerAngles[3] = {
+            float eulerAngles[3] = {
                 _dynamics->x(Dynamics::STATE_PHI),
                 _dynamics->x(Dynamics::STATE_THETA),
                 _dynamics->x(Dynamics::STATE_PSI) 
             };
 
-            double quaternion[4] = {};
-            Transforms::eulerToQuaternion(eulerAngles, quaternion);
-
-            // If joystick missing or bad, use keypad
-            if (joystickError) {
-            }
+            float quaternion[4] = {};
+            rft::Filter::euler2quat(eulerAngles, quaternion);
 
             _hackflight->update();
 
