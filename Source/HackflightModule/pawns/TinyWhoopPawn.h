@@ -11,7 +11,7 @@
 
 #include "../SimQuadMixer.hpp"
 #include "../../MainModule/vehicles/TinyWhoop.hpp"
-#include "../HackflightFlightManager.hpp"
+#include "../FlightManager.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"

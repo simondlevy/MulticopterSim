@@ -11,7 +11,7 @@
 
 #include "../SimQuadMixer.hpp"
 #include "../../MainModule/vehicles/Phantom.hpp"
-#include "../HackflightFlightManager.hpp"
+#include "../FlightManager.hpp"
 
 #include "EdgeDetectionCamera.hpp"
 

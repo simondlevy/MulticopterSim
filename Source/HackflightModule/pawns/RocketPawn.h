@@ -12,7 +12,7 @@
 
 #include "../../MainModule/vehicles/Rocket.hpp"
 
-#include "../HackflightFlightManager.hpp"
+#include "../FlightManager.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
