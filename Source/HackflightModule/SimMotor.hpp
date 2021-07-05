@@ -1,5 +1,7 @@
 /*
-   Hackflight Motor class implementations for MulticopterSim
+   RFT Motor class implementations for MulticopterSim
+
+   Acts as a pass-through for values set by the mixer
 
    Copyright(C) 2021 Simon D.Levy
 

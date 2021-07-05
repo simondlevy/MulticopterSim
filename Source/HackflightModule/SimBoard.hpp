@@ -1,6 +1,8 @@
 /*
    Hackflight Board class implementation for MulticopterSim
 
+   Implements the core Board functionality getTime()
+
    Copyright(C) 2019 Simon D.Levy
 
    MIT License
