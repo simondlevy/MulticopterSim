@@ -13,9 +13,6 @@
 
 #include <hfpure.hpp>
 
-// Coordinate transform helpers
-#include <RFT_filters.hpp>
-
 // PID controllers
 #include <pidcontrollers/level.hpp>
 #include <pidcontrollers/yaw.hpp>
@@ -31,17 +28,11 @@ class FHackflightFlightManager : public FFlightManager {
     private:
 
         // PID tuning
-
-		// Rate
 		hf::RatePid ratePid = hf::RatePid(.01, .01, .01);	
-
-   		// Yaw 
 		hf::YawPid yawPid = hf::YawPid(.025, .01);
-
-        // Level
         hf::LevelPid levelPid = hf::LevelPid(1.0);
 
-        // Flight-controller board
+        // "Board"
         SimBoard _board;
 
         // "Receiver" (joystick/gamepad)
@@ -93,29 +84,17 @@ class FHackflightFlightManager : public FFlightManager {
 
         virtual void getActuators(const double time, double * values) override
         {
-            // Zero on success, nonzero otherwise
-            uint16_t joystickError = _receiver->update();
+            // Update the "receiver" (joystick or game controller)
+            _receiver->update();
 
-            double angularVel[3] = {
-                _dynamics->x(Dynamics::STATE_PHI_DOT),
-                _dynamics->x(Dynamics::STATE_THETA_DOT),
-                _dynamics->x(Dynamics::STATE_PSI_DOT) 
-            };
-
-            float eulerAngles[3] = {
-                _dynamics->x(Dynamics::STATE_PHI),
-                _dynamics->x(Dynamics::STATE_THETA),
-                _dynamics->x(Dynamics::STATE_PSI) 
-            };
-
-            float quaternion[4] = {};
-            rft::Filter::euler2quat(eulerAngles, quaternion);
-
+            // Update the Hackflight firmware, causing Hackflight's actuator
+            // to set the values of the simulated motors
             _hackflight->update();
 
+            // Set the time in the simulated board, so it can be retrieved by Hackflight
             _board.set(time);
 
-            //  Get motor values
+            //  Get the new motor values
             for (uint8_t i=0; i < _actuatorCount; ++i) {
                 values[i] = _motors[i]->getValue();
             }
