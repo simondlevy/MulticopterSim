@@ -32,8 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <RFT_filters.hpp>
-
 #define _USE_MATH_DEFINES
 #include <math.h>
 
