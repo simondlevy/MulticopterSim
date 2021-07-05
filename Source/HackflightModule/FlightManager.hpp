@@ -28,9 +28,9 @@ class FHackflightFlightManager : public FFlightManager {
     private:
 
         // PID tuning
-		hf::RatePid ratePid = hf::RatePid(.01, .01, .01);	
-		hf::YawPid yawPid = hf::YawPid(.025, .01);
-        hf::LevelPid levelPid = hf::LevelPid(1.0);
+		hf::RatePid ratePid = hf::RatePid(0.225, 0.001875, 0.375);
+		hf::YawPid yawPid = hf::YawPid(1.0625, 0.005625);
+        hf::LevelPid levelPid = hf::LevelPid(0.20);
 
         // "Board"
         SimBoard _board;
