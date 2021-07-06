@@ -18,6 +18,7 @@
 #include <pidcontrollers/yaw.hpp>
 #include <pidcontrollers/rate.hpp>
 #include <pidcontrollers/althold.hpp>
+#include <pidcontrollers/poshold.hpp>
 
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
@@ -32,7 +33,8 @@ class FHackflightFlightManager : public FFlightManager {
 		hf::RatePid ratePid = hf::RatePid(0.225, 0.001875, 0.375);
 		hf::YawPid yawPid = hf::YawPid(1.0625, 0.005625);
         hf::LevelPid levelPid = hf::LevelPid(0.20);
-        hf::AltitudeHoldPid altHoldPid = hf::AltitudeHoldPid();
+        hf::AltitudeHoldPid altHoldPid;
+        hf::PositionHoldPid posHoldPid;
 
         // "Board"
         SimBoard _board;
@@ -75,6 +77,7 @@ class FHackflightFlightManager : public FFlightManager {
             _hackflight->addClosedLoopController(&yawPid);
             _hackflight->addClosedLoopController(&levelPid);
             _hackflight->addClosedLoopController(&altHoldPid);
+            _hackflight->addClosedLoopController(&posHoldPid);
 
             // Start Hackflight firmware, indicating already armed
             _hackflight->begin(true);
