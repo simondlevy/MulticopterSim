@@ -36,9 +36,6 @@ class SimSensors : public rft::Sensor {
             // Negate for NED => ENU conversion
             hfstate->x[hf::State::Z] *= -1;
             hfstate->x[hf::State::DZ] *= -1;
-
-            // Rotate inertial velocity into body frame for simulating optical flow
-            //rft::Filter::inertial2body(state.inertialVel, dynamicsState.pose.rotation, state.bodyVel);
         }
 
     public:
