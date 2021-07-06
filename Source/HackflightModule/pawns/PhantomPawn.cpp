@@ -8,6 +8,8 @@
 
 #include "PhantomPawn.h"
 
+float rxroll;
+
 APhantomPawn::APhantomPawn()
 {
     _phantom.build(this);
