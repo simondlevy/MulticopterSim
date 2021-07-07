@@ -23,7 +23,7 @@ class UJoystick : public UInterface
 /**
  * 
  */
-class MAINMODULE_API IJoystick
+class IJoystick
 {
 	GENERATED_BODY()
 

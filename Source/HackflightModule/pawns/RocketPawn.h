@@ -20,7 +20,7 @@
 #include "RocketPawn.generated.h"
 
 UCLASS(Config=Game)
-class HACKFLIGHTMODULE_API ARocketPawn : public APawn {
+class ARocketPawn : public APawn {
 
     private:
 

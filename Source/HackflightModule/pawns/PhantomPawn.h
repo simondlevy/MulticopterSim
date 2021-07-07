@@ -18,7 +18,7 @@
 #include "PhantomPawn.generated.h"
 
 UCLASS(Config=Game)
-class HACKFLIGHTMODULE_API APhantomPawn : public APawn {
+class APhantomPawn : public APawn {
 
     private:
 

@@ -13,8 +13,8 @@
 #include <receiver.hpp>
 #include <RFT_debugger.hpp>
 
-#include "../MainModule/joystick/Joystick.h"
-#include "../MainModule/Keypad.hpp"
+#include "joystick/Joystick.h"
+#include "Keypad.hpp"
 
 class SimReceiver : public hf::Receiver {
 

@@ -21,7 +21,7 @@
 #include "OpenCVPhantomPawn.generated.h"
 
 UCLASS(Config=Game)
-class HACKFLIGHTMODULE_API AOpenCVPhantomPawn : public APawn {
+class AOpenCVPhantomPawn : public APawn {
 
     private:
 

@@ -19,7 +19,7 @@
 #include "TinyWhoopPawn.generated.h"
 
 UCLASS(Config=Game)
-class HACKFLIGHTMODULE_API ATinyWhoopPawn : public APawn {
+class ATinyWhoopPawn : public APawn {
 
     private:
 

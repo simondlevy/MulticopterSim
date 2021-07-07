@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class MAINMODULE_API AMainModuleGameModeBase : public AGameModeBase
+class AMainModuleGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
