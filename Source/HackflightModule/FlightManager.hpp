@@ -43,7 +43,7 @@ class FHackflightFlightManager : public FFlightManager {
         SimReceiver * _receiver = NULL;
 
         // "Sensors"
-        SimSensors* _sensors = NULL;
+        SimSensors * _sensors = NULL;
 
         // "Motors" are passed to mixer so it can modify them
         SimMotor * _motors[100] = {};
