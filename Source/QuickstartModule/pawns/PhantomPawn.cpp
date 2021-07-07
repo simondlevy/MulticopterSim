@@ -6,7 +6,7 @@
 * MIT License
 */
 
-#include "SocketModule/pawns/PhantomPawn.h"
+#include "PhantomPawn.h"
 
 APhantomPawn::APhantomPawn()
 {

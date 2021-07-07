@@ -18,7 +18,7 @@
 #include "IngenuityPawn.generated.h"
 
 UCLASS(Config=Game)
-class QUICKSTARTMODULE_API AIngenuityPawn : public APawn {
+class AIngenuityPawn : public APawn {
 
     private:
 
