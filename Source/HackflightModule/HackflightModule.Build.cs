@@ -29,6 +29,7 @@ public class HackflightModule : ModuleRules
 
         PrivateIncludePaths.Add(ARDUINO_PATH + "Hackflight\\src");
         PrivateIncludePaths.Add(ARDUINO_PATH + "RoboFirmwareToolkit\\src");
+
         // OpenCV support --------------------------------------------------------------------
     
         // Create OpenCV Path
@@ -40,11 +41,8 @@ public class HackflightModule : ModuleRules
         //Add Include path
         PublicIncludePaths.AddRange(new string[] { Path.Combine(OpenCVPath, "include") });
 
-        // Add Library Path
-        PublicLibraryPaths.Add(LibPath);
-
         // Add Libraries
-        PublicAdditionalLibraries.Add("opencv_world452.lib");
+        PublicAdditionalLibraries.Add(Path.Combine(LibPath, "opencv_world452.lib"));
         PublicDelayLoadDLLs.Add("opencv_world452.dll");
 
         PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING=1"));
