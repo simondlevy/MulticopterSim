@@ -6,7 +6,7 @@
 * MIT License
 */
 
-#include "TinyWhoopPawn.h"
+#include "HackflightModule/pawns/TinyWhoopPawn.h"
 
 
 ATinyWhoopPawn::ATinyWhoopPawn()

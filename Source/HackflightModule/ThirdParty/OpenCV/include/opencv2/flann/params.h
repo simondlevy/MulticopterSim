@@ -32,8 +32,8 @@
 
 //! @cond IGNORED
 
-#include "any.h"
-#include "general.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/any.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/general.h"
 #include <iostream>
 #include <map>
 

@@ -36,7 +36,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "defines.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/defines.h"
 
 
 namespace cvflann

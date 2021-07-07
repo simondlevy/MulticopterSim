@@ -34,8 +34,8 @@
 #include <cstring>
 #include <vector>
 
-#include "general.h"
-#include "nn_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/general.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/nn_index.h"
 
 #ifdef FLANN_SIGNATURE_
 #undef FLANN_SIGNATURE_

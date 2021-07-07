@@ -36,11 +36,11 @@
 #include <cstring>
 #include <cmath>
 
-#include "matrix.h"
-#include "nn_index.h"
-#include "result_set.h"
-#include "logger.h"
-#include "timer.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/matrix.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/nn_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/result_set.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/logger.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/timer.h"
 
 
 namespace cvflann

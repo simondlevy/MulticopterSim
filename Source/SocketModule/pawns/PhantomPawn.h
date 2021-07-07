@@ -12,13 +12,13 @@
 
 #include "../FlightManager.hpp"
 
-#include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Pawn.h>
 
 #include "PhantomPawn.generated.h"
 
 UCLASS(Config=Game)
-class SOCKETMODULE_API APhantomPawn : public APawn {
+class APhantomPawn : public APawn {
 
     private:
 

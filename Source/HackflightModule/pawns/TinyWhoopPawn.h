@@ -13,8 +13,8 @@
 #include "../../MainModule/vehicles/TinyWhoop.hpp"
 #include "../FlightManager.hpp"
 
-#include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Pawn.h>
 
 #include "TinyWhoopPawn.generated.h"
 

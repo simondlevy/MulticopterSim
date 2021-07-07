@@ -10,7 +10,7 @@
 
 #include "../Vehicle.hpp"
 
-#include "../MainModule/dynamics/fixedpitch/QuadXAP.hpp"
+#include "../dynamics/fixedpitch/QuadXAP.hpp"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"

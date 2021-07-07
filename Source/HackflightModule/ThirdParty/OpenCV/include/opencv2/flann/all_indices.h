@@ -32,17 +32,17 @@
 
 //! @cond IGNORED
 
-#include "general.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/general.h"
 
-#include "nn_index.h"
-#include "kdtree_index.h"
-#include "kdtree_single_index.h"
-#include "kmeans_index.h"
-#include "composite_index.h"
-#include "linear_index.h"
-#include "hierarchical_clustering_index.h"
-#include "lsh_index.h"
-#include "autotuned_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/nn_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/kdtree_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/kdtree_single_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/kmeans_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/composite_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/linear_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/hierarchical_clustering_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/lsh_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/autotuned_index.h"
 
 
 namespace cvflann

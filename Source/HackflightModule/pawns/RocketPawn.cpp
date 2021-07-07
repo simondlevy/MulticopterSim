@@ -6,7 +6,7 @@
 * MIT License
 */
 
-#include "RocketPawn.h"
+#include "HackflightModule/pawns/RocketPawn.h"
 
 ARocketPawn::ARocketPawn()
 {

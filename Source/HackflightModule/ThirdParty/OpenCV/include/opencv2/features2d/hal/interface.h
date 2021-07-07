@@ -1,7 +1,7 @@
 #ifndef OPENCV_FEATURE2D_HAL_INTERFACE_H
 #define OPENCV_FEATURE2D_HAL_INTERFACE_H
 
-#include "opencv2/core/cvdef.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/core/cvdef.h"
 //! @addtogroup features2d_hal_interface
 //! @{
 

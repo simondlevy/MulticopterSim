@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 
 DECLARE_LOG_CATEGORY_EXTERN(LogMulticopterSim, Log, All);
 

@@ -13,10 +13,10 @@
 #include "../../MainModule/vehicles/Phantom.hpp"
 #include "../FlightManager.hpp"
 
-#include "EdgeDetectionCamera.hpp"
+#include "../EdgeDetectionCamera.hpp"
 
-#include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Pawn.h>
 
 #include "OpenCVPhantomPawn.generated.h"
 

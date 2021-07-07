@@ -9,7 +9,7 @@
 
 #ifdef __linux__
 
-#include "Joystick.h"
+#include "MainModule/joystick/Joystick.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

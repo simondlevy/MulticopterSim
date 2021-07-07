@@ -16,14 +16,13 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-#include "Classes/Landscape.h"
+#include "Runtime/Landscape/Classes/Landscape.h"
+#include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 
 #include "Utils.hpp"
 #include "Dynamics.hpp"
 #include "FlightManager.hpp"
 #include "Camera.hpp"
-
-#include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 
 #include <stdio.h>
 

@@ -15,6 +15,8 @@ public class MulticopterSimTarget : TargetRules
 	{
 		Type = TargetType.Game;
 
+        DefaultBuildSettings = BuildSettingsVersion.V2;
+
 		ExtraModuleNames.AddRange( new string[] { 
                 "MainModule", 
                 "HackflightModule"

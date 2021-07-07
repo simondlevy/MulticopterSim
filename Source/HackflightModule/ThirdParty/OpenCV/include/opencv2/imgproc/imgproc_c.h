@@ -43,7 +43,7 @@
 #ifndef OPENCV_IMGPROC_IMGPROC_C_H
 #define OPENCV_IMGPROC_IMGPROC_C_H
 
-#include "opencv2/imgproc/types_c.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/imgproc/types_c.h"
 
 #ifdef __cplusplus
 extern "C" {

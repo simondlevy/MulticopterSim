@@ -32,8 +32,8 @@
 
 //! @cond IGNORED
 
-#include "matrix.h"
-#include "random.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/matrix.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/random.h"
 
 namespace cvflann
 {

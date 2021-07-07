@@ -33,8 +33,8 @@
 
 //! @cond IGNORED
 
-#include "dist.h"
-#include "matrix.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/dist.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/matrix.h"
 
 
 namespace cvflann

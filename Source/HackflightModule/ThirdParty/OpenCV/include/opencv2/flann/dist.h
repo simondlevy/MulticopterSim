@@ -43,7 +43,7 @@ typedef unsigned __int64 uint64_t;
 #include <stdint.h>
 #endif
 
-#include "defines.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/defines.h"
 
 #if defined _WIN32 && (defined(_M_ARM) || defined(_M_ARM64))
 # include <Intrin.h>

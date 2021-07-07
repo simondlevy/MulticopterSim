@@ -33,7 +33,7 @@
 
 //! @cond IGNORED
 
-#include "nn_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/nn_index.h"
 
 namespace cvflann
 {

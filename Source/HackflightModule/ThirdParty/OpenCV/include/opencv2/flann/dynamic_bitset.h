@@ -48,7 +48,7 @@ typedef boost::dynamic_bitset<> DynamicBitset;
 
 #include <limits.h>
 
-#include "dist.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/dist.h"
 
 namespace cvflann {
 

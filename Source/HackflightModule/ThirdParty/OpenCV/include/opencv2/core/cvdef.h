@@ -72,7 +72,7 @@ namespace cv { namespace debug_build_guard { } using namespace debug_build_guard
 
 
 #ifdef __OPENCV_BUILD
-#include "cvconfig.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/cvconfig.h"
 #endif
 
 #ifndef __CV_EXPAND
@@ -342,7 +342,7 @@ enum CpuFeatures {
 };
 
 
-#include "cv_cpu_dispatch.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/core/cv_cpu_dispatch.h"
 
 #if !defined(CV_STRONG_ALIGNMENT) && defined(__arm__) && !(defined(__aarch64__) || defined(_M_ARM64))
 // int*, int64* should be propertly aligned pointers on ARMv7

@@ -55,8 +55,8 @@
 #include <math.h>
 #include <stddef.h>
 
-#include "dynamic_bitset.h"
-#include "matrix.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/dynamic_bitset.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/matrix.h"
 
 #ifdef _MSC_VER
 #pragma warning(push)

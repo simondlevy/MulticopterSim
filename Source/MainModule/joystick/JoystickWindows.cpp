@@ -9,7 +9,7 @@
 
 #ifdef _WIN32
 
-#include "Joystick.h"
+#include "MainModule/joystick/Joystick.h"
 #include "../Utils.hpp"
 
 #define WIN32_LEAN_AND_MEAN

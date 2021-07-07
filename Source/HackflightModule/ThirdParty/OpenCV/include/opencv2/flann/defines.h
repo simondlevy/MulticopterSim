@@ -32,7 +32,7 @@
 
 //! @cond IGNORED
 
-#include "config.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/config.h"
 
 #ifdef FLANN_EXPORT
 #undef FLANN_EXPORT

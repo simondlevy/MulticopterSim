@@ -31,9 +31,9 @@
 #ifndef OPENCV_FLANN_NNINDEX_H
 #define OPENCV_FLANN_NNINDEX_H
 
-#include "matrix.h"
-#include "result_set.h"
-#include "params.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/matrix.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/result_set.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/params.h"
 
 //! @cond IGNORED
 

@@ -6,7 +6,7 @@
 * MIT License
 */
 
-#include "OpenCVPhantomPawn.h"
+#include "HackflightModule/pawns/OpenCVPhantomPawn.h"
 
 AOpenCVPhantomPawn::AOpenCVPhantomPawn()
 {

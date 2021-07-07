@@ -5,7 +5,7 @@
 #if defined __OPENCV_BUILD \
 
 #include "cv_cpu_config.h"
-#include "cv_cpu_helper.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/core/cv_cpu_helper.h"
 
 #ifdef CV_CPU_DISPATCH_MODE
 #define CV_CPU_OPTIMIZATION_NAMESPACE __CV_CAT(opt_, CV_CPU_DISPATCH_MODE)

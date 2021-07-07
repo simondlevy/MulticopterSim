@@ -32,9 +32,9 @@
 
 //! @cond IGNORED
 
-#include <hdf5.h>
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/hdf5.h"
 
-#include "matrix.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/matrix.h"
 
 
 namespace cvflann

@@ -33,9 +33,9 @@
 
 //! @cond IGNORED
 
-#include "nn_index.h"
-#include "kdtree_index.h"
-#include "kmeans_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/nn_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/kdtree_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/kmeans_index.h"
 
 namespace cvflann
 {

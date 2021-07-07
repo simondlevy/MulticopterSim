@@ -42,14 +42,14 @@
 #include <map>
 #include <vector>
 
-#include "nn_index.h"
-#include "matrix.h"
-#include "result_set.h"
-#include "heap.h"
-#include "lsh_table.h"
-#include "allocator.h"
-#include "random.h"
-#include "saving.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/nn_index.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/matrix.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/result_set.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/heap.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/lsh_table.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/allocator.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/random.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/saving.h"
 
 #ifdef _MSC_VER
 #pragma warning(push)

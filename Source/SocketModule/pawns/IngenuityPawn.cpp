@@ -6,7 +6,7 @@
 * MIT License
 */
 
-#include "IngenuityPawn.h"
+#include "SocketModule/pawns/IngenuityPawn.h"
 
 AIngenuityPawn::AIngenuityPawn()
 {

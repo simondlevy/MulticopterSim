@@ -14,8 +14,8 @@
 
 #include "../FlightManager.hpp"
 
-#include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Pawn.h>
 
 #include "RocketPawn.generated.h"
 

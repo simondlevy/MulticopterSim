@@ -14,7 +14,7 @@
 
 //! @cond IGNORED
 
-#include "defines.h"
+#include "HackflightModule/ThirdParty/OpenCV/include/opencv2/flann/defines.h"
 #include <stdexcept>
 #include <ostream>
 #include <typeinfo>
