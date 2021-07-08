@@ -7,8 +7,6 @@
  */
 
 
-#ifdef _WIN32
-
 #include "Joystick.h"
 #include "../../MainModule/Utils.hpp"
 
@@ -160,5 +158,3 @@ uint16_t IJoystick::pollProduct(float axes[6], uint8_t & buttons)
 
     return 0x0000; // no error
 }
-
-#endif
