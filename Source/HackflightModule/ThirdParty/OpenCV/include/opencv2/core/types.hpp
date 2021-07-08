@@ -2416,7 +2416,8 @@ template<> inline
 Scalar operator * (const Matx<double, 4, 4>& a, const Scalar& b)
 {
     Matx<double, 4, 1> c(a, b, Matx_MatMulOp());
-    return reinterpret_cast<const Scalar&>(c);
+    // return reinterpret_cast<const Scalar&>(c);
+    return static_cast<const Scalar&>(c); // sdl: avoid warning C4946
 }
 
 
