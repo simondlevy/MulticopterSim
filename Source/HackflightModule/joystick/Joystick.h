@@ -100,9 +100,9 @@ class IJoystick
         // Returns 0 for no error, 1 for missing, product ID if not recognized
         uint16_t pollProduct(float axes[6], uint8_t & buttons);
 
-public:
+    public:
 
-        IJoystick(const char * devname = "/dev/input/js0"); // ignored by Windows
+        IJoystick(void);
 
         uint16_t poll(float axes[6])
         {

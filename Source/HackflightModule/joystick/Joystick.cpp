@@ -16,6 +16,15 @@
 #include <shlwapi.h>
 #include "joystickapi.h"
 
+// XXX Should use a separate calibration program
+static void adjustAxesInterlink(float * axes)
+{
+    axes[0] /= 0.575f;
+    axes[1] /= 0.65f;
+    axes[2] /= 0.58f;
+    axes[3] /= 0.65f;
+}
+
 static void getAxes4(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3)
 {
 	axes[0] = (float)axis0;
@@ -31,20 +40,10 @@ static void getAxes5(float axes[6], uint8_t & naxes, DWORD axis0, DWORD axis1, D
     axes[4] = (float)axis4;
 }
 
-// XXX Should use a separate calibration program
-static void adjustAxesInterlink(float * axes)
+
+
+IJoystick::IJoystick(void)
 {
-    axes[0] /= 0.575f;
-    axes[1] /= 0.65f;
-    axes[2] /= 0.58f;
-    axes[3] /= 0.65f;
-}
-
-
-IJoystick::IJoystick(const char * devname)
-{
-    (void)devname;
-
     JOYCAPS joycaps = {};
 
     _productId = 0;
@@ -158,3 +157,4 @@ uint16_t IJoystick::pollProduct(float axes[6], uint8_t & buttons)
 
     return 0x0000; // no error
 }
+
