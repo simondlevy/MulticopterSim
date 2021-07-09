@@ -26,13 +26,7 @@
 
 #include <stdio.h>
 
-// Windows/Linux compatibility 
-#ifdef _WIN32
 #define SPRINTF sprintf_s
-#else
-#include <wchar.h>
-#define SPRINTF sprintf
-#endif
 
 // A macro for simplifying the declaration of static meshes
 #define DECLARE_STATIC_MESH(structname, assetstr, objname)   \
@@ -440,7 +434,7 @@ class Vehicle {
             // Run the game if a map has been selected
             if (_mapSelected) {
 
-                // Use 1/2/3 keys to switch player-camera view
+                // Use spacebar to switch player-camera view
                 setPlayerCameraView();
 
                 updateKinematics();
