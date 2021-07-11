@@ -6,7 +6,8 @@
 * MIT License
 */
 
-#include <RFTPure.hpp>
+#include <RFT_pure.hpp>
+
 #include "../MainModule/Utils.hpp"
 
 void rft::Board::outbuf(char * msg)
