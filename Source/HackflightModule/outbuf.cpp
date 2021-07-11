@@ -6,7 +6,7 @@
 * MIT License
 */
 
-#include <RoboFirmwareToolkit.hpp>
+#include <RFTPure.hpp>
 #include "../MainModule/Utils.hpp"
 
 void rft::Board::outbuf(char * msg)
