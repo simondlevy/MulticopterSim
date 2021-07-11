@@ -29,12 +29,18 @@ class FHackflightFlightManager : public FFlightManager {
 
     private:
 
+        // State (true=armed)
+        hf::State _state = hf::State(true);
+
         // PID controllers
 		hf::RatePid ratePid = hf::RatePid(0.225, 0.001875, 0.375);
 		hf::YawPid yawPid = hf::YawPid(1.0625, 0.005625);
         hf::LevelPid levelPid = hf::LevelPid(0.20);
         hf::AltitudeHoldPid altHoldPid;
         hf::PositionHoldPid posHoldPid;
+
+        // Mixer
+        hf::Mixer * _mixer = NULL;
 
         // "Board"
         SimBoard _board;
@@ -57,7 +63,9 @@ class FHackflightFlightManager : public FFlightManager {
         FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, SimMotor ** motors, Dynamics * dynamics) 
             : FFlightManager(dynamics) 
         {
-            // Store motors for later
+
+            // Store mixer, motors for later
+            _mixer = mixer;
             for (uint8_t k=0; k<_actuatorCount; ++k) {
                 _motors[k] = motors[k];
             }
@@ -66,7 +74,7 @@ class FHackflightFlightManager : public FFlightManager {
             _receiver = new SimReceiver(UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0));
 
             // Create Hackflight object
-            _hackflight = new hf::HackflightPure(&_board, _receiver, mixer);
+            _hackflight = new hf::HackflightPure();
 
             // Add simulated sensor suite
             _sensors = new SimSensors(_dynamics);
@@ -82,7 +90,7 @@ class FHackflightFlightManager : public FFlightManager {
             _hackflight->addClosedLoopController(&altHoldPid);
 
             // Start Hackflight firmware, indicating already armed
-            _hackflight->begin(true);
+            _hackflight->begin(&_board, _receiver, _mixer);
         }
 
         virtual ~FHackflightFlightManager(void)
@@ -97,7 +105,7 @@ class FHackflightFlightManager : public FFlightManager {
 
             // Update the Hackflight firmware, causing Hackflight's actuator
             // to set the values of the simulated motors
-            _hackflight->update();
+            _hackflight->update(&_board, _receiver, _mixer, &_state);
 
             // Set the time in the simulated board, so it can be retrieved by Hackflight
             _board.set(time);
