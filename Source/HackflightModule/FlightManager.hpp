@@ -15,10 +15,9 @@
 
 // PID controllers
 #include <pidcontrollers/level.hpp>
-#include <pidcontrollers/yaw.hpp>
 #include <pidcontrollers/rate.hpp>
 #include <pidcontrollers/althold.hpp>
-#include <pidcontrollers/poshold.hpp>
+// #include <pidcontrollers/poshold.hpp>
 
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
@@ -33,12 +32,13 @@ class FHackflightFlightManager : public FFlightManager {
         hf::State _state = hf::State(true);
 
         // PID controllers
-		hf::RatePid ratePid = hf::RatePid(0.225, 0.001875, 0.375);
-		hf::YawPid yawPid = hf::YawPid(1.0625, 0.005625);
+		hf::RollRatePid rollRatePid = hf::RollRatePid(0.225, 0.001875, 0.375);
+		hf::PitchRatePid pitchRatePid = hf::PitchRatePid(0.225, 0.001875, 0.375);
+		hf::YawRatePid yawRatePid = hf::YawRatePid(1.0625, 0.005625);
         hf::RollLevelPid rollLevelPid = hf::RollLevelPid(0.20);
         hf::PitchLevelPid pitchLevelPid = hf::PitchLevelPid(0.20);
         hf::AltitudeHoldPid altHoldPid;
-        hf::PositionHoldPid posHoldPid;
+        // hf::PositionHoldPid posHoldPid;
 
         // Mixer
         hf::Mixer * _mixer = NULL;
@@ -84,9 +84,10 @@ class FHackflightFlightManager : public FFlightManager {
             // Add PID controllers for all aux switch positions.
             // Position hold goes first, so it can have access to roll and yaw
             // stick demands before other PID controllers modify them.
-            _hackflight->addClosedLoopController(&posHoldPid);
-            _hackflight->addClosedLoopController(&ratePid);
-            _hackflight->addClosedLoopController(&yawPid);
+            // _hackflight->addClosedLoopController(&posHoldPid);
+            _hackflight->addClosedLoopController(&rollRatePid);
+            _hackflight->addClosedLoopController(&pitchRatePid);
+            _hackflight->addClosedLoopController(&yawRatePid);
             _hackflight->addClosedLoopController(&rollLevelPid);
             _hackflight->addClosedLoopController(&pitchLevelPid);
             _hackflight->addClosedLoopController(&altHoldPid);
