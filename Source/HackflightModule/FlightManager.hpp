@@ -17,7 +17,7 @@
 #include <pidcontrollers/level.hpp>
 #include <pidcontrollers/rate.hpp>
 #include <pidcontrollers/althold.hpp>
-// #include <pidcontrollers/poshold.hpp>
+#include <pidcontrollers/poshold.hpp>
 
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
@@ -38,7 +38,8 @@ class FHackflightFlightManager : public FFlightManager {
         hf::RollLevelPid rollLevelPid = hf::RollLevelPid(0.20);
         hf::PitchLevelPid pitchLevelPid = hf::PitchLevelPid(0.20);
         hf::AltitudeHoldPid altHoldPid;
-        // hf::PositionHoldPid posHoldPid;
+        hf::XPositionHoldPid xPosHoldPid;
+        hf::YPositionHoldPid yPosHoldPid;
 
         // Mixer
         hf::Mixer * _mixer = NULL;
@@ -84,7 +85,8 @@ class FHackflightFlightManager : public FFlightManager {
             // Add PID controllers for all aux switch positions.
             // Position hold goes first, so it can have access to roll and yaw
             // stick demands before other PID controllers modify them.
-            // _hackflight->addClosedLoopController(&posHoldPid);
+            _hackflight->addClosedLoopController(&xPosHoldPid);
+            _hackflight->addClosedLoopController(&yPosHoldPid);
             _hackflight->addClosedLoopController(&rollRatePid);
             _hackflight->addClosedLoopController(&pitchRatePid);
             _hackflight->addClosedLoopController(&yawRatePid);
