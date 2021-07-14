@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <mixers/quad/xap.hpp>
+#include <hf_mixers/quad/xap.hpp>
 
 #include "SimMotor.hpp"
 

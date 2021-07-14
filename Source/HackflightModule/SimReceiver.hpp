@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <receiver.hpp>
+#include <hf_receiver.hpp>
 #include <RFT_debugger.hpp>
 
 #include "joystick/Joystick.h"

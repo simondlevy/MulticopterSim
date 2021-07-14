@@ -10,7 +10,7 @@
 
 #include "../MainModule/Dynamics.hpp"
 
-#include <state.hpp>
+#include <HF_state.hpp>
 
 #include <RFT_sensor.hpp>
 #include <RFT_filters.hpp>
