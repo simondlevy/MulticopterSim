@@ -35,8 +35,7 @@ class FHackflightFlightManager : public FFlightManager {
 		hf::RollRatePid rollRatePid = hf::RollRatePid(0.225, 0.001875, 0.375);
 		hf::PitchRatePid pitchRatePid = hf::PitchRatePid(0.225, 0.001875, 0.375);
 		hf::YawRatePid yawRatePid = hf::YawRatePid(1.0625, 0.005625);
-        hf::RollLevelPid rollLevelPid = hf::RollLevelPid(0.20);
-        hf::PitchLevelPid pitchLevelPid = hf::PitchLevelPid(0.20);
+        hf::LevelPid levelPid = hf::LevelPid(0.20);
         hf::AltitudeHoldPid altHoldPid;
         hf::XPositionHoldPid xPosHoldPid;
         hf::YPositionHoldPid yPosHoldPid;
@@ -90,8 +89,7 @@ class FHackflightFlightManager : public FFlightManager {
             _hackflight->addClosedLoopController(&rollRatePid);
             _hackflight->addClosedLoopController(&pitchRatePid);
             _hackflight->addClosedLoopController(&yawRatePid);
-            _hackflight->addClosedLoopController(&rollLevelPid);
-            _hackflight->addClosedLoopController(&pitchLevelPid);
+            _hackflight->addClosedLoopController(&levelPid);
             _hackflight->addClosedLoopController(&altHoldPid);
 
             // Start Hackflight firmware, indicating already armed
