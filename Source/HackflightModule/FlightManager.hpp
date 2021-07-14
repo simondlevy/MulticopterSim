@@ -37,8 +37,7 @@ class FHackflightFlightManager : public FFlightManager {
 		hf::YawRatePid yawRatePid = hf::YawRatePid(1.0625, 0.005625);
         hf::LevelPid levelPid = hf::LevelPid(0.20);
         hf::AltitudeHoldPid altHoldPid;
-        hf::XPositionHoldPid xPosHoldPid;
-        hf::YPositionHoldPid yPosHoldPid;
+        hf::PositionHoldPid posHoldPid;
 
         // Mixer
         hf::Mixer * _mixer = NULL;
@@ -84,8 +83,7 @@ class FHackflightFlightManager : public FFlightManager {
             // Add PID controllers for all aux switch positions.
             // Position hold goes first, so it can have access to roll and yaw
             // stick demands before other PID controllers modify them.
-            _hackflight->addClosedLoopController(&xPosHoldPid);
-            _hackflight->addClosedLoopController(&yPosHoldPid);
+            _hackflight->addClosedLoopController(&posHoldPid);
             _hackflight->addClosedLoopController(&rollRatePid);
             _hackflight->addClosedLoopController(&pitchRatePid);
             _hackflight->addClosedLoopController(&yawRatePid);
