@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <mixers/thrustvec.hpp>
+#include <hf_mixers/thrustvec.hpp>
 
 #include "../../MainModule/vehicles/Rocket.hpp"
 
