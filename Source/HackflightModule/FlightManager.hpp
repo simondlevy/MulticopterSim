@@ -16,6 +16,7 @@
 // PID controllers
 #include <hf_pidcontrollers/level.hpp>
 #include <hf_pidcontrollers/rate.hpp>
+#include <hf_pidcontrollers/yaw.hpp>
 #include <hf_pidcontrollers/althold.hpp>
 #include <hf_pidcontrollers/poshold.hpp>
 
@@ -32,9 +33,8 @@ class FHackflightFlightManager : public FFlightManager {
         hf::State _state = hf::State(true);
 
         // PID controllers
-		hf::RollRatePid rollRatePid = hf::RollRatePid(0.225, 0.001875, 0.375);
-		hf::PitchRatePid pitchRatePid = hf::PitchRatePid(0.225, 0.001875, 0.375);
-		hf::YawRatePid yawRatePid = hf::YawRatePid(1.0625, 0.005625);
+		hf::RatePid ratePid = hf::RatePid(0.225, 0.001875, 0.375);
+		hf::YawPid yawPid = hf::YawPid(1.0625, 0.005625);
         hf::LevelPid levelPid = hf::LevelPid(0.20);
         hf::AltitudeHoldPid altHoldPid;
         hf::PositionHoldPid posHoldPid;
@@ -84,9 +84,8 @@ class FHackflightFlightManager : public FFlightManager {
             // Position hold goes first, so it can have access to roll and yaw
             // stick demands before other PID controllers modify them.
             _hackflight->addClosedLoopController(&posHoldPid);
-            _hackflight->addClosedLoopController(&rollRatePid);
-            _hackflight->addClosedLoopController(&pitchRatePid);
-            _hackflight->addClosedLoopController(&yawRatePid);
+            _hackflight->addClosedLoopController(&ratePid);
+            _hackflight->addClosedLoopController(&yawPid);
             _hackflight->addClosedLoopController(&levelPid);
             _hackflight->addClosedLoopController(&altHoldPid);
 
