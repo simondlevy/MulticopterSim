@@ -42,16 +42,16 @@ class FHackflightFlightManager : public FFlightManager {
         // Mixer
         hf::Mixer * _mixer = NULL;
 
-        // "Board"
+        // "Board": implements getTime()
         SimBoard _board;
 
-        // "Receiver" (joystick/gamepad)
+        // "Receiver": joystick/gamepad
         SimReceiver * _receiver = NULL;
 
-        // "Sensors"
+        // "Sensors": directly from ground-truth
         SimSensors * _sensors = NULL;
 
-        // "Motors" are passed to mixer so it can modify them
+        // "Motors": passed to mixer so it can modify them
         SimMotor * _motors[100] = {};
 
         // Main firmware
@@ -74,7 +74,7 @@ class FHackflightFlightManager : public FFlightManager {
             _receiver = new SimReceiver(UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0));
 
             // Create Hackflight object
-            _hackflight = new hf::Hackflight();
+            _hackflight = new hf::Hackflight(&_board, _receiver, _mixer);
 
             // Add simulated sensor suite
             _sensors = new SimSensors(_dynamics);
@@ -90,7 +90,7 @@ class FHackflightFlightManager : public FFlightManager {
             _hackflight->addClosedLoopController(&altHoldPid);
 
             // Start Hackflight firmware, indicating already armed
-            _hackflight->begin(&_board, _receiver, _mixer);
+            _hackflight->begin(true);
         }
 
         virtual ~FHackflightFlightManager(void)
@@ -105,7 +105,7 @@ class FHackflightFlightManager : public FFlightManager {
 
             // Update the Hackflight firmware, causing Hackflight's actuator
             // to set the values of the simulated motors
-            _hackflight->update(&_board, _receiver, _mixer, &_state);
+            _hackflight->update();
 
             // Set the time in the simulated board, so it can be retrieved by Hackflight
             _board.set(time);
