@@ -1,5 +1,5 @@
 /*
-* Implemenation of rft::Board::outbuf() for sim
+* Implemenation of rft::Debugger::outbuf() for sim
 *
 * Copyright (C) 2019 Simon D. Levy
 *
@@ -10,7 +10,7 @@
 
 #include "../MainModule/Utils.hpp"
 
-void rft::Board::outbuf(char * msg)
+void rft::Debugger::outbuf(char * msg)
 {
     debugline(msg);
 }
