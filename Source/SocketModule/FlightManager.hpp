@@ -1,6 +1,11 @@
 /*
    MulticopterSim FlightManager class implementation using UDP sockets 
 
+   Acts as a client for a server program running on another address
+
+   Sends joystick demands and vehicle state to server; receives motor
+   values
+
    Copyright(C) 2019 Simon D.Levy
 
    MIT License
@@ -15,20 +20,19 @@ class FSocketFlightManager : public FFlightManager {
 
     private:
 
-		const char * HOST = "127.0.0.1";
-        const short MOTOR_PORT = 5000;
-		const short TELEM_PORT = 5001;
-
         TwoWayUdp * _twoWayUdp = NULL;
 
         bool _running = false;
 
     public:
 
-        FSocketFlightManager(Dynamics * dynamics) : 
+        FSocketFlightManager(Dynamics * dynamics,
+                const char * host="127.0.0.1",
+                const short motorPort=5000,
+                const short telemPort=5001) : 
             FFlightManager(dynamics)
         {
-            _twoWayUdp = new TwoWayUdp(HOST, TELEM_PORT, MOTOR_PORT);
+            _twoWayUdp = new TwoWayUdp(host, telemPort, motorPort);
 
             _running = true;
         }
