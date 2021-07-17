@@ -122,7 +122,7 @@ class MulticopterServer(object):
         while True:
 
             try:
-                data, _ = telemetryServerSocket.recvfrom(8*13)
+                data, _ = telemetryServerSocket.recvfrom(8*17)
             except Exception:
                 self.done = True
                 break
@@ -140,7 +140,7 @@ class MulticopterServer(object):
                 telemetryServerSocket.close()
                 break
 
-            motorvals = self.getMotors(telem[0], telem[1:])
+            motorvals = self.getMotors(telem[0], telem[1:13])
 
             motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
                                      (self.host, self.motor_port))

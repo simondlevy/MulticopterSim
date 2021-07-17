@@ -48,6 +48,7 @@ class LaunchController(object):
 
         return throttle, roll, pitch, yaw
 
+    @staticmethod
     def _constrainAbs(x, lim):
 
         return -lim if x < -lim else (+lim if x > +lim else x)
