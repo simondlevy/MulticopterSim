@@ -43,7 +43,8 @@ public class Multicopter {
                 byte [] telemetryBytes = new byte [8*_telemetry.length];
 
                 try {
-                    DatagramPacket telemetryPacket = new DatagramPacket(telemetryBytes, telemetryBytes.length, _addr, _telemPort);
+                    DatagramPacket telemetryPacket =
+                        new DatagramPacket(telemetryBytes, telemetryBytes.length, _addr, _telemPort);
                     _telemSocket.receive(telemetryPacket);
                 }
                 catch (Exception e) {
@@ -124,7 +125,7 @@ public class Multicopter {
 
             _motorVals = new double [motorCount];
 
-            _telemetry = new double [10];
+            _telemetry = new double [17]; // Time : State : Demands
         }
 
         private int _motorPort;
