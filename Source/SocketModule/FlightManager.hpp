@@ -22,6 +22,9 @@ class FSocketFlightManager : public FFlightManager {
 
         TwoWayUdp * _twoWayUdp = NULL;
 
+        // Time : State : Demands
+        double _output[17] = {};
+
         bool _running = false;
 
     public:
@@ -40,36 +43,37 @@ class FSocketFlightManager : public FFlightManager {
         ~FSocketFlightManager()
         {
             // Send a bogus time value to tell remote server we're done
-            double telemetry[10] = {0};
-            telemetry[0] = -1;
-			_twoWayUdp->send(telemetry, sizeof(telemetry));
+            _output[0] = -1;
+			_twoWayUdp->send(_output, sizeof(_output));
 
             delete _twoWayUdp;
         }
 
-        virtual void getActuators(const double time, double * values) override
+        virtual void getActuators(const double time, double * actuatorValues) override
         {
             // Avoid null-pointer exceptions at startup, freeze after control program halts
             if (!_twoWayUdp|| !_running) {
                 return;
             }
 
-            double telemetry[13] = {};
+            // First output value is time
+            _output[0] = time;
 
-            telemetry[0] = time;
-
+            // Next output values are state
             for (uint8_t k=0; k<12; ++k) {
-                telemetry[k+1] = _dynamics->x(k);
+                _output[k+1] = _dynamics->x(k);
             }
 
-			_twoWayUdp->send(telemetry, sizeof(telemetry));
+            // Last output are open-loop controller demands
 
-			// Get motor values from control program
-			_twoWayUdp->receive(values, 8 * _actuatorCount);
+			_twoWayUdp->send(_output, sizeof(_output));
+
+			// Get motor actuatorValues from control program
+			_twoWayUdp->receive(actuatorValues, 8 * _actuatorCount);
 
 			// Control program sends a -1 to halt
-			if (values[0] == -1) {
-				values[0] = 0;
+			if (actuatorValues[0] == -1) {
+				actuatorValues[0] = 0;
 				_running = false;
 				return;
 			}

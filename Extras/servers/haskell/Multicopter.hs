@@ -46,21 +46,23 @@ runMulticopter controller mixer = withSocketsDo $
     where processMessages telemetryServerSocket motorClientSocket motorClientSockAddr controllerState =
               do 
 
-                  (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 104
+                  (msgIn, _) <- Network.Socket.ByteString.recvFrom telemetryServerSocket 136
 
-                  let v = bytesToDoubles msgIn
+                  let doubles = bytesToDoubles msgIn
 
-                  let t = head v
-                  let vs = makeState (tail v)
+                  let time = head doubles
+                  let vehicleState = makeState (slice 1 13 doubles)
 
-                  let (demands, newControllerState) = controller t vs  demands controllerState
+                  let (demands, newControllerState) = controller time vehicleState  demands controllerState
                   let motors = mixer demands
                   _ <- Network.Socket.ByteString.sendTo
                         motorClientSocket
                         (doublesToBytes [(m1 motors), (m2 motors), (m3 motors), (m4 motors)])
                         motorClientSockAddr
 
-                  processMessages telemetryServerSocket motorClientSocket motorClientSockAddr newControllerState
+                  if time >= 0
+                  then processMessages telemetryServerSocket motorClientSocket motorClientSockAddr newControllerState
+                  else putStrLn "Done"
                       
 
 -- https://stackoverflow.com/questions/20912582/haskell-bytestring-to-float-array
@@ -70,3 +72,7 @@ doublesToBytes = runPut . mapM_ putFloat64le
 
 bytesToDoubles :: ByteString -> [Double]
 bytesToDoubles bs = (fromRight ((runGet $ many getFloat64le) bs))
+
+-- https://stackoverflow.com/questions/4597820/does-haskell-have-list-slices-i-e-python
+slice :: Int -> Int -> [a] -> [a]
+slice from to xs = take (to - from + 1) (drop from xs)
