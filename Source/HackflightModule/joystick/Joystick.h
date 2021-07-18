@@ -143,9 +143,34 @@ class IJoystick
         // Returns 0 for no error, 1 for missing, product ID if not recognized
         uint16_t pollProduct(float axes[6], uint8_t & buttons);
 
+        static bool isValidJoystick(int joystick_id, uint16_t & product_id);
+
     public:
 
-        IJoystick(void);
+        IJoystick(void)
+        {
+            _isGameController = false;
+
+            // Grab the first available joystick
+            for (_joystickId=0; _joystickId<16; _joystickId++) {
+                if (isValidJoystick(_joystickId, _productId)) {
+                    break;
+                }
+            }
+
+            if (_joystickId < 16) {
+
+                switch (_productId) {
+                    case PRODUCT_TARANIS_QX7:
+                    case PRODUCT_TARANIS_X9D:
+                    case PRODUCT_SPEKTRUM:
+                        _isGameController = false;
+                        break;
+                    default: 
+                        _isGameController = true;
+                }
+            }
+        }
 
         uint16_t poll(float axes[6])
         {

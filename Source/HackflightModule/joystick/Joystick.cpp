@@ -13,34 +13,16 @@
 #include <shlwapi.h>
 #include "joystickapi.h"
 
-IJoystick::IJoystick(void)
+bool IJoystick::isValidJoystick(int joystick_id, uint16_t & product_id)
 {
     JOYCAPS joycaps = {};
 
-    _productId = 0;
-
-    _isGameController = false;
-
-    // Grab the first available joystick
-    for (_joystickId=0; _joystickId<16; _joystickId++)
-        if (joyGetDevCaps(_joystickId, &joycaps, sizeof(joycaps)) == JOYERR_NOERROR)
-            break;
-
-    if (_joystickId < 16) {
-
-        _productId = joycaps.wPid;
-
-        switch (_productId) {
-            case PRODUCT_TARANIS_QX7:
-            case PRODUCT_TARANIS_X9D:
-            case PRODUCT_SPEKTRUM:
-                _isGameController = false;
-                break;
-            default: 
-                _isGameController = true;
-        }
-
+    if (joyGetDevCaps(joystick_id, &joycaps, sizeof(joycaps)) == JOYERR_NOERROR) {
+        product_id = joycaps.wPid;
+        return true;
     }
+
+    return false;
 }
 
 uint16_t IJoystick::pollProduct(float axes[6], uint8_t & buttons)
