@@ -13,6 +13,7 @@
 
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
+#include "../MainModule/Joystick.h"
 #include "sockets/TwoWayUdp.hpp"
 #include "SocketCamera.hpp"
 

@@ -14,7 +14,7 @@
 #include <RFT_debugger.hpp>
 
 #include "../MainModule/Joystick.h"
-#include "Keypad.hpp"
+#include "../MainModule/Keypad.hpp"
 
 class SimReceiver : public hf::Receiver {
 

@@ -19,5 +19,7 @@ public class SocketModule : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] 
                 { "Core", "CoreUObject", "Engine", "InputCore", "Landscape" });
+
+        PrivateDependencyModuleNames.AddRange(new string[] { "MainModule" });
     }
 }
