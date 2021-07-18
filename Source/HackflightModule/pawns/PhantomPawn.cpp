@@ -45,4 +45,5 @@ void APhantomPawn::Tick(float DeltaSeconds)
 
     _flightManager->tick();
 
-    Super::Tick(DeltaSeconds); }
+    Super::Tick(DeltaSeconds); 
+}

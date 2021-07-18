@@ -24,6 +24,7 @@ class SimReceiver : public hf::Receiver {
 		static constexpr uint8_t DEFAULT_CHANNEL_MAP[6] = { 0, 1, 2, 3, 4, 5 };
 		static constexpr float DEMAND_SCALE = 1.0f;
 
+        // Joystick (RC transmitter, game controller) or keyboard
         GameInput * _gameInput = NULL;
 
 		// Helps mock up periodic availability of new data frame (output data rate; ODR)
@@ -62,10 +63,10 @@ class SimReceiver : public hf::Receiver {
 
  public:
 
-		SimReceiver(APlayerController * playerController, uint16_t updateFrequency=50)
+		SimReceiver(APawn * pawn, uint16_t updateFrequency=50)
 			: Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
 		{
-            _gameInput = new GameInput(playerController);
+            _gameInput = new GameInput(pawn);
 
 			_deltaT = 1./updateFrequency;
 			_previousTime = 0;

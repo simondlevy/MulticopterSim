@@ -54,9 +54,9 @@ class Keypad {
 
     public:
 
-		Keypad(APlayerController * playerController)
+		Keypad(APawn * pawn)
 		{
-            _playerController = playerController;
+            _playerController = UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0);
         }
 
         void tick(float * rawvals)

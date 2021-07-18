@@ -14,6 +14,10 @@ import time
 import cv2
 
 
+def _debug(msg):
+    print(msg)
+    sys.stdout.flush()
+
 class MulticopterServer(object):
 
     # See Bouabdallah (2004)
@@ -57,7 +61,7 @@ class MulticopterServer(object):
         telemetryServerSocket = MulticopterServer._make_udpsocket()
         telemetryServerSocket.bind((self.host, self.telem_port))
 
-        MulticopterServer.debug('Hit the Play button ...')
+        _debug('Hit the Play button ...')
 
         telemetryThread = Thread(target=self._run_telemetry,
                                  args=(telemetryServerSocket,
@@ -72,7 +76,7 @@ class MulticopterServer(object):
         # This will block (wait) until a client connets
         imageConn, _ = imageServerSocket.accept()
         imageConn.settimeout(1)
-        MulticopterServer.debug('Got a connection!')
+        _debug('Got a connection!')
 
         telemetryThread.start()
 
@@ -110,11 +114,6 @@ class MulticopterServer(object):
 
         return self.done
 
-    @staticmethod
-    def debug(msg):
-        print(msg)
-        sys.stdout.flush()
-
     def _run_telemetry(self, telemetryServerSocket, motorClientSocket):
 
         running = False
@@ -125,6 +124,7 @@ class MulticopterServer(object):
                 data, _ = telemetryServerSocket.recvfrom(8*17)
             except Exception:
                 self.done = True
+                _debug('EXCEPTION')
                 break
 
             telemetryServerSocket.settimeout(.1)
@@ -132,7 +132,7 @@ class MulticopterServer(object):
             telem = np.frombuffer(data)
 
             if not running:
-                MulticopterServer.debug('Running')
+                _debug('Running')
                 running = True
 
             if telem[0] < 0:
@@ -141,6 +141,8 @@ class MulticopterServer(object):
                 break
 
             motorvals = self.getMotors(telem[0], telem[1:13])
+
+            _debug(telem[13:])
 
             motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
                                      (self.host, self.motor_port))

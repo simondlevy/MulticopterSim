@@ -30,6 +30,8 @@ class APhantomPawn : public APawn {
         // Camera
         SocketCamera _camera;
 
+        FSocketFlightManager * _flightManager = NULL;
+
     protected:
 
         // AActor overrides

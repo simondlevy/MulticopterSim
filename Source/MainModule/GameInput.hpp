@@ -22,11 +22,11 @@ class GameInput {
 
  public:
 
-		GameInput(APlayerController * playerController)
+		GameInput(APawn * pawn)
 		{
 			_joystick = new IJoystick();
 
-            _keypad = new Keypad(playerController);
+            _keypad = new Keypad(pawn);
 		}
 
 		void getJoystick(float * rawvals)

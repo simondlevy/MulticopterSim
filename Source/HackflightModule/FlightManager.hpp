@@ -71,7 +71,7 @@ class FHackflightFlightManager : public FFlightManager {
             }
 
             // Pass PlayerController to receiver constructor in case we have no joystick / game-controller
-            _receiver = new SimReceiver(UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0));
+            _receiver = new SimReceiver(pawn);
 
             // Create Hackflight object
             _hackflight = new hf::Hackflight(&_board, _receiver, _mixer);

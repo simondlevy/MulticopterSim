@@ -25,7 +25,9 @@ void AIngenuityPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AIngenuityPawn::BeginPlay()
 {
-    _ingenuity.BeginPlay(new FSocketFlightManager(&_ingenuity.dynamics));
+    _flightManager = new FSocketFlightManager(this, &_ingenuity.dynamics);
+
+    _ingenuity.BeginPlay(_flightManager);
 
     Super::BeginPlay();
 }
@@ -41,6 +43,8 @@ void AIngenuityPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AIngenuityPawn::Tick(float DeltaSeconds)
 {
     _ingenuity.Tick(DeltaSeconds);
+
+    _flightManager->tick();
 
     Super::Tick(DeltaSeconds);
 }

@@ -13,7 +13,7 @@
 
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
-#include "../MainModule/Joystick.h"
+#include "../MainModule/GameInput.hpp"
 #include "sockets/TwoWayUdp.hpp"
 #include "SocketCamera.hpp"
 
@@ -21,21 +21,33 @@ class FSocketFlightManager : public FFlightManager {
 
     private:
 
+        // Socket comms
         TwoWayUdp * _twoWayUdp = NULL;
 
-        // Time : State : Demands
-        double _output[17] = {};
+        // Joystick (RC transmitter, game controller) or keyboard
+        GameInput * _gameInput = NULL;
+
+        static const uint8_t INPUT_SIZE = 4;
+
+        // Values from joystick/keyboard
+        float _inputValues[INPUT_SIZE] = {};
+
+	    // Time : State : Demands
+        double _output[13+INPUT_SIZE] = {};
 
         bool _running = false;
 
     public:
 
-        FSocketFlightManager(Dynamics * dynamics,
+        FSocketFlightManager(APawn * pawn,
+                Dynamics * dynamics,
                 const char * host="127.0.0.1",
                 const short motorPort=5000,
                 const short telemPort=5001) : 
             FFlightManager(dynamics)
         {
+            _gameInput = new GameInput(pawn);
+
             _twoWayUdp = new TwoWayUdp(host, telemPort, motorPort);
 
             _running = true;
@@ -57,6 +69,9 @@ class FSocketFlightManager : public FFlightManager {
                 return;
             }
 
+            // Get demands from joystick or keyboard
+		    _gameInput->getJoystick(_inputValues);
+
             // First output value is time
             _output[0] = time;
 
@@ -65,19 +80,28 @@ class FSocketFlightManager : public FFlightManager {
                 _output[k+1] = _dynamics->x(k);
             }
 
-            // Last output are open-loop controller demands
+            // Last output values are open-loop controller demands
+            for (uint8_t k=0; k<INPUT_SIZE; ++k) {
+                _output[k+12] = _inputValues[k];
+            }
 
+            // Send output values to server
 			_twoWayUdp->send(_output, sizeof(_output));
 
-			// Get motor actuatorValues from control program
+			// Get motor actuatorValues from server
 			_twoWayUdp->receive(actuatorValues, 8 * _actuatorCount);
 
-			// Control program sends a -1 to halt
+			// Server sends a -1 to halt
 			if (actuatorValues[0] == -1) {
 				actuatorValues[0] = 0;
 				_running = false;
 				return;
 			}
+        }
+
+        void tick(void)
+        {
+            _gameInput->getKeypad(_inputValues);
         }
 
 }; // FSocketFlightManager

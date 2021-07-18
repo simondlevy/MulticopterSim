@@ -75,6 +75,7 @@ class FFlightManager : public FThreadedManager {
             }
         }
 
+
     public:
 
         ~FFlightManager(void)
