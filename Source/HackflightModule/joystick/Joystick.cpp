@@ -16,30 +16,6 @@
 #include <shlwapi.h>
 #include "joystickapi.h"
 
-// XXX Should use a separate calibration program
-static void adjustAxesInterlink(float * axes)
-{
-    axes[0] /= 0.575f;
-    axes[1] /= 0.65f;
-    axes[2] /= 0.58f;
-    axes[3] /= 0.65f;
-}
-
-static void getAxes4(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3)
-{
-	axes[0] = (float)axis0;
-	axes[1] = (float)axis1;
-	axes[2] = (float)axis2;
-	axes[3] = (float)axis3;
-}
-
-static void getAxes5(float axes[6], uint8_t & naxes, DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4)
-{
-    naxes = 5;
-	getAxes4(axes, axis0, axis1, axis2, axis3);
-    axes[4] = (float)axis4;
-}
-
 
 
 IJoystick::IJoystick(void)
@@ -71,26 +47,6 @@ IJoystick::IJoystick(void)
 
     }
 }
-
-// Convert InterLink aux switches to unique gamepad buttons
-static void getAuxInterlink(float * axes, uint8_t buttons, uint8_t aux1, uint8_t aux2, float auxMid)
-{
-	axes[aux1] = -1;
-	axes[aux2] = (buttons & 0x01) ? -1.f : +1.f;
-
-	switch (buttons) {
-
-	case 3:
-	case 2:
-		axes[aux1] = auxMid;
-		break;
-
-	case 19:
-	case 18:
-		axes[aux1] = 1;
-	}
-}
-
 
 uint16_t IJoystick::pollProduct(float axes[6], uint8_t & buttons)
 {   
