@@ -1,0 +1,42 @@
+/*
+   Input via joystick and/or keypad
+
+   Joystick runs on its own thread; keypad runs on
+   main thread
+
+   Copyright(C) 2021 Simon D.Levy
+
+   MIT License
+   */
+
+#pragma once
+
+#include "Joystick.h"
+#include "Keypad.hpp"
+
+class GameInput {
+
+		IJoystick * _joystick = NULL;
+
+        Keypad * _keypad = NULL;
+
+ public:
+
+		GameInput(APlayerController * playerController)
+		{
+			_joystick = new IJoystick();
+
+            _keypad = new Keypad(playerController);
+		}
+
+		void getJoystick(float * rawvals)
+		{
+		    _joystick->poll(rawvals);
+ 		}
+
+        void getKeypad(float * rawvals)
+        {
+            _keypad->tick(rawvals);
+        }
+
+}; // class GameInput

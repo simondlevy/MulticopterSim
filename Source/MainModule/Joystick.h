@@ -1,5 +1,8 @@
 /*
- * General support for joysticks and other game controllers
+ * Support for joysticks and other game controllers
+ *
+ * We'd like this to be an .hpp file, but UE4 requires it
+ * to be .h
  *
  * Copyright (C) 2021 Simon D. Levy
  *

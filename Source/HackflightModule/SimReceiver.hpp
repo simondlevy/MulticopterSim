@@ -13,8 +13,7 @@
 #include <hf_receiver.hpp>
 #include <RFT_debugger.hpp>
 
-#include "../MainModule/Joystick.h"
-#include "../MainModule/Keypad.hpp"
+#include "../MainModule/GameInput.hpp"
 
 class SimReceiver : public hf::Receiver {
 
@@ -25,11 +24,7 @@ class SimReceiver : public hf::Receiver {
 		static constexpr uint8_t DEFAULT_CHANNEL_MAP[6] = { 0, 1, 2, 3, 4, 5 };
 		static constexpr float DEMAND_SCALE = 1.0f;
 
-        // We use a joystick (game controller) if one is available
-		IJoystick * _joystick = NULL;
-
-        // Otherwise, use use the numeric keypad
-        Keypad * _keypad = NULL;
+        GameInput * _gameInput = NULL;
 
 		// Helps mock up periodic availability of new data frame (output data rate; ODR)
 		double _deltaT;
@@ -70,9 +65,7 @@ class SimReceiver : public hf::Receiver {
 		SimReceiver(APlayerController * playerController, uint16_t updateFrequency=50)
 			: Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
 		{
-			_joystick = new IJoystick();
-
-            _keypad = new Keypad(playerController);
+            _gameInput = new GameInput(playerController);
 
 			_deltaT = 1./updateFrequency;
 			_previousTime = 0;
@@ -80,12 +73,12 @@ class SimReceiver : public hf::Receiver {
 
 		void poll(void)
 		{
-		    _joystick->poll(rawvals);
+		    _gameInput->getJoystick(rawvals);
  		}
 
         void tick(void)
         {
-            _keypad->tick(rawvals);
+            _gameInput->getKeypad(rawvals);
         }
 
 }; // class SimReceiver
