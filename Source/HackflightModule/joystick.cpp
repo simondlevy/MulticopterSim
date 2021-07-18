@@ -7,7 +7,7 @@
  */
 
 
-#include "Joystick.h"
+#include "../MainModule/Joystick.h"
 
 #include <shlwapi.h>
 #include "joystickapi.h"
