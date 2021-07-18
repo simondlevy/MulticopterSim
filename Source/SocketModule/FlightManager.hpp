@@ -24,12 +24,12 @@ class FSocketFlightManager : public FFlightManager {
         // Socket comms
         TwoWayUdp * _twoWayUdp = NULL;
 
-        // Joystick (RC transmitter, game controller) or keyboard
+        // Joystick (RC transmitter, game controller) or keypad
         GameInput * _gameInput = NULL;
 
         static const uint8_t INPUT_SIZE = 4;
 
-        // Values from joystick/keyboard
+        // Values from joystick/keypad
         float _inputValues[INPUT_SIZE] = {};
 
 	    // Time : State : Demands
@@ -69,7 +69,7 @@ class FSocketFlightManager : public FFlightManager {
                 return;
             }
 
-            // Get demands from joystick or keyboard
+            // Get demands from joystick
 		    _gameInput->getJoystick(_inputValues);
 
             // First output value is time
@@ -82,7 +82,7 @@ class FSocketFlightManager : public FFlightManager {
 
             // Last output values are open-loop controller demands
             for (uint8_t k=0; k<INPUT_SIZE; ++k) {
-                _output[k+12] = _inputValues[k];
+                _output[k+13] = _inputValues[k];
             }
 
             // Send output values to server
@@ -101,6 +101,7 @@ class FSocketFlightManager : public FFlightManager {
 
         void tick(void)
         {
+            // Get demands from keypad
             _gameInput->getKeypad(_inputValues);
         }
 

@@ -142,7 +142,7 @@ class MulticopterServer(object):
 
             motorvals = self.getMotors(telem[0], telem[1:13])
 
-            _debug(telem[13:])
+            _debug('%+3.3f  %+3.3f  %+3.3f  %+3.3f' % tuple(telem[13:]))
 
             motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
                                      (self.host, self.motor_port))
