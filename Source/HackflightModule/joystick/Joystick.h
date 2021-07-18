@@ -140,9 +140,17 @@ class IJoystick
             }
         }
 
-        void pollProduct(float axes[6], uint8_t & buttons);
-
         static bool isValidJoystick(int joystick_id, uint16_t & product_id);
+
+        static void readJoystick(
+                int joystick_id,
+                uint32_t & xpos,
+                uint32_t & ypos,
+                uint32_t & zpos, 
+                uint32_t & rpos,
+                uint32_t & upos,
+                uint32_t & vpos, 
+                uint8_t & buttons);
 
     public:
 
@@ -173,10 +181,71 @@ class IJoystick
 
         void poll(float axes[6])
         {
+            uint32_t xpos = 0; 
+            uint32_t ypos = 0;
+            uint32_t zpos = 0;
+            uint32_t rpos = 0;
+            uint32_t upos = 0;
+            uint32_t vpos = 0; 
+
             uint8_t buttons = 0;
 
-            pollProduct(axes, buttons);
+            readJoystick(_joystickId, xpos, ypos, zpos, rpos, upos, vpos, buttons);
 
+            // axes: 0=Throttle 1=Roll 2=Pitch 3=Yaw 4=Aux
+
+            uint8_t naxes = 4;
+
+            switch (_productId) {
+
+                case PRODUCT_SPEKTRUM:
+                    getAxes5(axes, naxes, ypos, zpos, vpos, xpos, upos);
+                    break;
+
+                case PRODUCT_TARANIS_QX7:
+                case PRODUCT_TARANIS_X9D:
+                    getAxes5(axes, naxes, xpos, ypos, zpos, vpos, rpos);
+                    break;
+
+                case PRODUCT_PS3_CLONE:      
+                case PRODUCT_PS4:
+                    getAxes4(axes, ypos, zpos, rpos, xpos);
+                    break;
+
+                case PRODUCT_F310:
+                    getAxes4(axes, ypos, zpos, rpos, xpos);
+                    break;
+
+                case PRODUCT_XBOX_ONE:
+                case PRODUCT_XBOX360:
+                case PRODUCT_XBOX360_CLONE:
+                case PRODUCT_XBOX360_CLONE2:
+                case PRODUCT_XBOX360_WIRELESS:
+                    getAxes4(axes, ypos, upos, rpos, xpos);
+                    break;
+
+                case PRODUCT_EXTREMEPRO3D:  
+                    getAxes4(axes, zpos, xpos, ypos, rpos);
+                    break;
+
+                case PRODUCT_INTERLINK:
+                    getAxes4(axes, zpos, xpos, ypos, rpos);
+                    getAuxInterlink(axes, buttons, AX_AU1, AX_AU2, AUX1_MID);
+                    break;
+
+                default: // failed
+                    return;
+            }
+
+            // Normalize the axes to demands to [-1,+1]
+            for (uint8_t k=0; k<naxes; ++k) {
+                axes[k] = axes[k] / 32767 - 1;
+            }
+
+            if (_productId == PRODUCT_INTERLINK) {
+                adjustAxesInterlink(axes);
+            }
+ 
             // Invert throttle, pitch axes on game controllers
             if (_isGameController) {
                 axes[AX_THR] *= -1;
