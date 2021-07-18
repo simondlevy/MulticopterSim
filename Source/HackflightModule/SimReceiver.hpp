@@ -78,11 +78,9 @@ class SimReceiver : public hf::Receiver {
 			_previousTime = 0;
 		}
 
-		uint16_t update(void)
+		void poll(void)
 		{
-			// Joystick::poll() returns zero (okay) or a postive value (error)
-			return _joystick->poll(rawvals);
-
+		    _joystick->poll(rawvals);
  		}
 
         void tick(void)

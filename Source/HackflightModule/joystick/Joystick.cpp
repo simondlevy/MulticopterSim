@@ -25,7 +25,7 @@ bool IJoystick::isValidJoystick(int joystick_id, uint16_t & product_id)
     return false;
 }
 
-uint16_t IJoystick::pollProduct(float axes[6], uint8_t & buttons)
+void IJoystick::pollProduct(float axes[6], uint8_t & buttons)
 {   
     JOYINFOEX joyState;
     joyState.dwSize=sizeof(joyState);
@@ -73,8 +73,8 @@ uint16_t IJoystick::pollProduct(float axes[6], uint8_t & buttons)
             getAuxInterlink(axes, (uint8_t)joyState.dwButtons, AX_AU1, AX_AU2, AUX1_MID);
             break;
 
-        default:
-            return _productId ? _productId : 0x0001;
+        default: // failed
+            return;
     }
 
     // Normalize the axes to demands to [-1,+1]
@@ -87,7 +87,5 @@ uint16_t IJoystick::pollProduct(float axes[6], uint8_t & buttons)
     }
 
     buttons = (uint8_t)joyState.dwButtons;
-
-    return 0x0000; // no error
 }
 

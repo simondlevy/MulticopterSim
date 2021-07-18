@@ -100,8 +100,8 @@ class FHackflightFlightManager : public FFlightManager {
 
         virtual void getActuators(const double time, double * values) override
         {
-            // Update the "receiver" (joystick or game controller)
-            _receiver->update();
+            // Poll the "receiver" (joystick or game controller)
+            _receiver->poll();
 
             // Update the Hackflight firmware, causing Hackflight's actuator
             // to set the values of the simulated motors

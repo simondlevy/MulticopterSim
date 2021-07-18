@@ -140,8 +140,7 @@ class IJoystick
             }
         }
 
-        // Returns 0 for no error, 1 for missing, product ID if not recognized
-        uint16_t pollProduct(float axes[6], uint8_t & buttons);
+        void pollProduct(float axes[6], uint8_t & buttons);
 
         static bool isValidJoystick(int joystick_id, uint16_t & product_id);
 
@@ -172,11 +171,11 @@ class IJoystick
             }
         }
 
-        uint16_t poll(float axes[6])
+        void poll(float axes[6])
         {
             uint8_t buttons = 0;
 
-            uint16_t status = pollProduct(axes, buttons);
+            pollProduct(axes, buttons);
 
             // Invert throttle, pitch axes on game controllers
             if (_isGameController) {
@@ -197,7 +196,5 @@ class IJoystick
                 case PRODUCT_XBOX360_WIRELESS:
                     buttonsToAxes(buttons, 8, 2, 1, 4, axes);
             }
-
-            return status;
         }
 };
