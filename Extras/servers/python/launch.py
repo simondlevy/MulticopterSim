@@ -48,7 +48,7 @@ class LaunchCopter(MulticopterServer):
         if len(nonzero) > 0 and np.mean(nonzero) > 390 and self.time > 5:
             self.target = 30
 
-    def getMotors(self, t, state):
+    def getMotors(self, t, state, _stickDemands):
 
         # Track current time to share it with handleImage()
         self.time = t
@@ -58,7 +58,8 @@ class LaunchCopter(MulticopterServer):
         z = -state[MulticopterServer.STATE_Z]
         dzdt = -state[MulticopterServer.STATE_DZ]
 
-        # Get demands U [throttle, roll, pitch, yaw] from PID controller
+        # Get demands U [throttle, roll, pitch, yaw] from PID controller,
+        # ignoring stick demands
         u = self.ctrl.getDemands(self.target, z, dzdt, t)
 
         # Use mixer to convert demands U into motor values Omega
