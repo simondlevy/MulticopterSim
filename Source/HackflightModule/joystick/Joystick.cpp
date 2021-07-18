@@ -10,7 +10,6 @@
 #include "Joystick.h"
 #include "../../MainModule/Utils.hpp"
 
-#undef TEXT
 #include <shlwapi.h>
 #include "joystickapi.h"
 
