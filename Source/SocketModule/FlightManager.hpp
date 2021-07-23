@@ -14,7 +14,10 @@
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
 #include "../MainModule/GameInput.hpp"
-#include "sockets/TwoWayUdp.hpp"
+
+#include "sockets/UdpClientSocket.hpp"
+#include "sockets/UdpServerSocket.hpp"
+
 #include "SocketCamera.hpp"
 
 class FSocketFlightManager : public FFlightManager {
