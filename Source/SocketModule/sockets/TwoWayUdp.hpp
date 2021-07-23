@@ -20,7 +20,8 @@ class TwoWayUdp {
 
     public:
 
-        TwoWayUdp(const char * host, const short client_port, const short server_port, uint32_t timeout_msec=0) 
+        TwoWayUdp(const char * host, const short client_port,
+                const short server_port, uint32_t timeout_msec=0) 
         {
             _client = new UdpClientSocket(host, client_port);
             _server = new UdpServerSocket(server_port, timeout_msec);

@@ -22,7 +22,8 @@ class FSocketFlightManager : public FFlightManager {
     private:
 
         // Socket comms
-        TwoWayUdp * _twoWayUdp = NULL;
+        UdpClientSocket * _telemClient = NULL;
+        UdpServerSocket * _motorServer = NULL;
 
         // Joystick (RC transmitter, game controller) or keypad
         GameInput * _gameInput = NULL;
@@ -48,7 +49,8 @@ class FSocketFlightManager : public FFlightManager {
         {
             _gameInput = new GameInput(pawn);
 
-            _twoWayUdp = new TwoWayUdp(host, telemPort, motorPort);
+            _telemClient = new UdpClientSocket(host, telemPort);
+            _motorServer = new UdpServerSocket(motorPort, 0); // 0 timeout msec
 
             _running = true;
         }
@@ -57,15 +59,20 @@ class FSocketFlightManager : public FFlightManager {
         {
             // Send a bogus time value to tell remote server we're done
             _output[0] = -1;
-			_twoWayUdp->send(_output, sizeof(_output));
+            if (_telemClient) {
+                _telemClient->sendData(_output, sizeof(_output));
+            }
 
-            delete _twoWayUdp;
+            delete _telemClient;
+            delete _motorServer;
         }
 
-        virtual void getActuators(const double time, double * actuatorValues) override
+        virtual void getActuators(const double time,
+                double * actuatorValues) override
         {
-            // Avoid null-pointer exceptions at startup, freeze after control program halts
-            if (!_twoWayUdp|| !_running) {
+            // Avoid null-pointer exceptions at startup, freeze after control
+            // program halts
+            if (!_telemClient || !_motorServer || !_running) {
                 return;
             }
 
@@ -86,10 +93,10 @@ class FSocketFlightManager : public FFlightManager {
             }
 
             // Send output values to server
-			_twoWayUdp->send(_output, sizeof(_output));
+			_telemClient->sendData(_output, sizeof(_output));
 
 			// Get motor actuatorValues from server
-			_twoWayUdp->receive(actuatorValues, 8 * _actuatorCount);
+			_motorServer->receiveData(actuatorValues, 8 * _actuatorCount);
 
 			// Server sends a -1 to halt
 			if (actuatorValues[0] == -1) {

@@ -28,13 +28,15 @@ class UdpSocket : public Socket {
 
         void sendData(void * buf, size_t len)
         {
-            sendto(_sock, (const char *)buf, (int)len, 0, (struct sockaddr *) &_si_other, (int)_slen);
+            sendto(_sock, (const char *)buf, (int)len, 0,
+                    (struct sockaddr *) &_si_other, (int)_slen);
 
         }
 
         bool receiveData(void * buf, size_t len)
         {
-            return recvfrom(_sock, (char *)buf, (int)len, 0, (struct sockaddr *) &_si_other, &_slen) == (RECVSIZE)len;
+            return recvfrom(_sock, (char *)buf, (int)len, 0,
+                    (struct sockaddr *) &_si_other, &_slen) == (RECVSIZE)len;
         }
 
         static UdpSocket * free(UdpSocket * socket)
