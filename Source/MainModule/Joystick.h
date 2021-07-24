@@ -46,7 +46,7 @@ class IJoystick
         static const uint16_t PRODUCT_F310             = 0xc216;
         static const uint16_t PRODUCT_PS4              = 0x09cc;
 
-        static constexpr float AUX1_MID = 0.3f; // positve but less than 0.5
+        static constexpr double AUX1_MID = 0.3f; // positve but less than 0.5
 
         uint16_t _productId = 0;
 
@@ -54,28 +54,29 @@ class IJoystick
 
         bool _isGameController = false;
 
-        // XXX Should use a separate calibration program
-        static void adjustAxesInterlink(float * axes)
+        static void getAxes4(double axes[6],
+                             DWORD axis0,
+                             DWORD axis1,
+                             DWORD axis2,
+                             DWORD axis3)
         {
-            axes[0] /= 0.575f;
-            axes[1] /= 0.65f;
-            axes[2] /= 0.58f;
-            axes[3] /= 0.65f;
+            axes[0] = (double)axis0;
+            axes[1] = (double)axis1;
+            axes[2] = (double)axis2;
+            axes[3] = (double)axis3;
         }
 
-        static void getAxes4(float axes[6], DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3)
-        {
-            axes[0] = (float)axis0;
-            axes[1] = (float)axis1;
-            axes[2] = (float)axis2;
-            axes[3] = (float)axis3;
-        }
-
-        static void getAxes5(float axes[6], uint8_t & naxes, DWORD axis0, DWORD axis1, DWORD axis2, DWORD axis3, DWORD axis4)
+        static void getAxes5(double axes[6],
+                             uint8_t & naxes,
+                             DWORD axis0,
+                             DWORD axis1,
+                             DWORD axis2,
+                             DWORD axis3,
+                             DWORD axis4)
         {
             naxes = 5;
             getAxes4(axes, axis0, axis1, axis2, axis3);
-            axes[4] = (float)axis4;
+            axes[4] = (double)axis4;
         }
 
     protected:
@@ -91,10 +92,15 @@ class IJoystick
             AX_NIL
         };
 
-        void buttonsToAxes(uint8_t buttons, uint8_t top, uint8_t rgt, uint8_t bot, uint8_t lft, float * axes)
+        void buttonsToAxes(uint8_t buttons,
+                           uint8_t top,
+                           uint8_t rgt,
+                           uint8_t bot,
+                           uint8_t lft,
+                           double * axes)
         {
-            static float _aux1 = 0;
-            static float _aux2 = -1;
+            static double _aux1 = 0;
+            static double _aux2 = -1;
 
             static bool _down;
 
@@ -109,7 +115,9 @@ class IJoystick
 
                     // Other buttons set AUX1
                     else {
-                        _aux1 = (buttons == top) ? -1 : (buttons == rgt ? AUX1_MID : +1);
+                        _aux1 = (buttons == top) ?
+                                -1 :
+                                (buttons == rgt ? AUX1_MID : +1);
                     }
 
                     _down = true;
@@ -122,25 +130,6 @@ class IJoystick
 
             axes[AX_AU1] = _aux1;
             axes[AX_AU2] = _aux2;
-        }
-
-        // Convert InterLink aux switches to unique gamepad buttons
-        static void getAuxInterlink(float * axes, uint8_t buttons, uint8_t aux1, uint8_t aux2, float auxMid)
-        {
-            axes[aux1] = -1;
-            axes[aux2] = (buttons & 0x01) ? -1.f : +1.f;
-
-            switch (buttons) {
-
-            case 3:
-            case 2:
-                axes[aux1] = auxMid;
-                break;
-
-            case 19:
-            case 18:
-                axes[aux1] = 1;
-            }
         }
 
         static bool isValidJoystick(int joystick_id, uint16_t & product_id);
@@ -182,7 +171,7 @@ class IJoystick
             }
         }
 
-        void poll(float axes[6])
+        void poll(double axes[6])
         {
             uint32_t xpos = 0; 
             uint32_t ypos = 0;
@@ -193,7 +182,8 @@ class IJoystick
 
             uint8_t buttons = 0;
 
-            readJoystick(_joystickId, xpos, ypos, zpos, rpos, upos, vpos, buttons);
+            readJoystick(_joystickId,
+                    xpos, ypos, zpos, rpos, upos, vpos, buttons);
 
             // axes: 0=Throttle 1=Roll 2=Pitch 3=Yaw 4=Aux
 
@@ -231,11 +221,6 @@ class IJoystick
                     getAxes4(axes, zpos, xpos, ypos, rpos);
                     break;
 
-                case PRODUCT_INTERLINK:
-                    getAxes4(axes, zpos, xpos, ypos, rpos);
-                    getAuxInterlink(axes, buttons, AX_AU1, AX_AU2, AUX1_MID);
-                    break;
-
                 default: // failed
                     return;
             }
@@ -245,10 +230,6 @@ class IJoystick
                 axes[k] = axes[k] / 32767 - 1;
             }
 
-            if (_productId == PRODUCT_INTERLINK) {
-                adjustAxesInterlink(axes);
-            }
- 
             // Invert throttle, pitch axes on game controllers
             if (_isGameController) {
                 axes[AX_THR] *= -1;

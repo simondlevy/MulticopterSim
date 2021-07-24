@@ -114,8 +114,8 @@ class you can run different kinds of machine-vision algorithms.
 
 # Support for other programming languages / packages
 
-MulticopterSim supports other programming languages via the SocketModule.  To
-use this module, do the following:
+MulticopterSim supports other programming languages via the SocketModule.  
+An Python example is provided. To use this module, do the following:
 
 1. Double-click <b>use_socket.bat</b>
 
@@ -131,30 +131,8 @@ to build the project.
 <b>Content/C++ Classes/SocketModule/pawns</b> folder and drag one of the
 vehicle pawns into the map.  
 
-Then follow the directions below for your language:
-
-## Python
-
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/python) contains an example of how
-you can control MulticopterSim from a Python program running on your computer or another computer.
-
-## Java
-
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/java) contains an example of how
-you can control MulticopterSim from a Java program running on your computer or another computer.
-
-## Haskell
-
-[This
-folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/haskell)
-contains an example of how you can control MulticopterSim from a Haskell program
-running on your computer or another computer.
-
-
-## Matlab
-
-[This folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/servers/matlab) contains an example of how
-you can control MulticopterSim from a Matlab session running on your computer or another computer.
+Then follow the directions in
+[this folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/python).
 
 # Design principles
 

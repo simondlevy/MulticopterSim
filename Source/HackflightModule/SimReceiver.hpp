@@ -32,6 +32,8 @@ class SimReceiver : public hf::Receiver {
         double _deltaT = 0;
 		double _previousTime = 0;
 
+        double joyvals[4] = {};
+
     protected:
 
 		virtual bool inArmedState(void) override
@@ -63,11 +65,20 @@ class SimReceiver : public hf::Receiver {
         {
         }
 
+        // Sim works with double-precision floats, so we need to
+        // copy demands to floating-point values for Hackflight
+        void d2f()
+        {
+            for (uint8_t i=0; i<4; ++i) {
+                rawvals[i] = joyvals[i];
+            }
+        }
+
     public:
 
-		SimReceiver(APawn * pawn, uint16_t updateFrequency=50)
-			: Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
-		{
+        SimReceiver(APawn * pawn, uint16_t updateFrequency=50)
+            : Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
+        {
             _gameInput = new GameInput(pawn);
 
 			_deltaT = 1./updateFrequency;
@@ -76,12 +87,15 @@ class SimReceiver : public hf::Receiver {
 
 		void poll(void)
 		{
-		    _gameInput->getJoystick(rawvals);
- 		}
+		    _gameInput->getJoystick(joyvals);
+            d2f();
+
+        }
 
         void tick(void)
         {
-            _gameInput->getKeypad(rawvals);
+            _gameInput->getKeypad(joyvals);
+            d2f();
         }
 
 }; // class SimReceiver

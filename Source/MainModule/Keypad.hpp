@@ -1,7 +1,7 @@
 /*
    Numeric keypad control for flight axes
 
-   Maintains floating-point values in [-1,+1]
+   Maintains doubleing-point values in [-1,+1]
 
    Copyright(C) 2021 Simon D.Levy
 
@@ -16,11 +16,11 @@ class Keypad {
 
     private:
 
-        static constexpr float STEP = .001;
+        static constexpr double STEP = .001;
 
         static const uint8_t AXES = 4;
 
-        float _rawvals[AXES] = {};
+        double _rawvals[AXES] = {};
 
         APlayerController * _playerController = NULL;
 
@@ -34,18 +34,18 @@ class Keypad {
             return _playerController->IsInputKeyDown(key);
         }
 
-        static const float max(float a, float b)
+        static const double max(double a, double b)
         {
             return a > b ? a : b;
         }
 
-        static const float min(float a, float b)
+        static const double min(double a, double b)
         {
             return a < b ? a : b;
         }
 
 
-        static void constrain(float & value, int8_t inc)
+        static void constrain(double & value, int8_t inc)
         {
             value += inc * STEP;
 
@@ -56,10 +56,11 @@ class Keypad {
 
 		Keypad(APawn * pawn)
 		{
-            _playerController = UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0);
+            _playerController =
+                UGameplayStatics::GetPlayerController(pawn->GetWorld(), 0);
         }
 
-        void tick(float * rawvals)
+        void tick(double * rawvals)
         {
             if (hitEitherKey(EKeys::Nine, EKeys::NumPadNine)) {
                 constrain(_rawvals[0], +1);

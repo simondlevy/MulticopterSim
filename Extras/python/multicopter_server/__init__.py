@@ -18,6 +18,7 @@ def _debug(msg):
     print(msg)
     sys.stdout.flush()
 
+
 class MulticopterServer(object):
 
     # See Bouabdallah (2004)
@@ -38,14 +39,16 @@ class MulticopterServer(object):
             self,
             host='127.0.0.1',
             motor_port=5000,
-            telem_port=5001,
+            telemetry_port=5001,
+            demands_port=5002,
             image_port=5003,
             image_rows=480,
             image_cols=640):
 
         self.host = host
         self.motor_port = motor_port
-        self.telem_port = telem_port
+        self.telemetry_port = telemetry_port
+        self.demands_port = demands_port
         self.image_port = image_port
         self.image_rows = image_rows
         self.image_cols = image_cols
@@ -56,17 +59,20 @@ class MulticopterServer(object):
 
     def start(self):
 
-        # Telemetry in and motors out run on their own thread
         motorClientSocket = MulticopterServer._make_udpsocket()
+
         telemetryServerSocket = MulticopterServer._make_udpsocket()
-        telemetryServerSocket.bind((self.host, self.telem_port))
+        telemetryServerSocket.bind((self.host, self.telemetry_port))
+
+        demandsServerSocket = MulticopterServer._make_udpsocket()
+        demandsServerSocket.bind((self.host, self.demands_port))
 
         _debug('Hit the Play button ...')
 
-        telemetryThread = Thread(target=self._run_telemetry,
-                                 args=(telemetryServerSocket,
-                                       motorClientSocket))
-                                       
+        thread = Thread(target=self._run_threadetry,
+                        args=(telemetryServerSocket,
+                              demandsServerSocket,
+                              motorClientSocket))
 
         # Serve a socket with a maximum of one client
         imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -78,7 +84,7 @@ class MulticopterServer(object):
         imageConn.settimeout(1)
         _debug('Got a connection!')
 
-        telemetryThread.start()
+        thread.start()
 
         while not self.done:
 
@@ -114,37 +120,43 @@ class MulticopterServer(object):
 
         return self.done
 
-    def _run_telemetry(self, telemetryServerSocket, motorClientSocket):
+    def _run_threadetry(self,
+                        telemetryServerSocket,
+                        demandsServerSocket,
+                        motorClientSocket):
 
         running = False
 
         while True:
 
             try:
-                data, _ = telemetryServerSocket.recvfrom(8*17)
+                telemetry_bytes, _ = telemetryServerSocket.recvfrom(8*13)
+                demands_bytes, _ = demandsServerSocket.recvfrom(8*4)
             except Exception:
                 self.done = True
                 _debug('EXCEPTION')
                 break
 
             telemetryServerSocket.settimeout(.1)
+            demandsServerSocket.settimeout(.1)
 
-            telem = np.frombuffer(data)
+            telemetry = np.frombuffer(telemetry_bytes)
+            demands = np.frombuffer(demands_bytes)
 
             if not running:
                 _debug('Running')
                 running = True
 
-            if telem[0] < 0:
+            if telemetry[0] < 0:
                 motorClientSocket.close()
                 telemetryServerSocket.close()
+                demandsServerSocket.close()
                 break
 
-            motorvals = self.getMotors(telem[0], telem[1:13], telem[13:])
+            motorvals = self.getMotors(telemetry[0], telemetry[1:13], demands)
 
             motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
                                      (self.host, self.motor_port))
-
 
             time.sleep(.001)
 

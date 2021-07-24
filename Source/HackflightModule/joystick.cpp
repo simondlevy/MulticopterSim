@@ -17,7 +17,8 @@ bool IJoystick::isValidJoystick(int joystick_id, uint16_t & product_id)
 {
     JOYCAPS joycaps = {};
 
-    if (joyGetDevCaps(joystick_id, &joycaps, sizeof(joycaps)) == JOYERR_NOERROR) {
+    if (joyGetDevCaps(joystick_id,
+                &joycaps, sizeof(joycaps)) == JOYERR_NOERROR) {
         product_id = joycaps.wPid;
         return true;
     }
@@ -36,8 +37,9 @@ void IJoystick::readJoystick(
         uint8_t & buttons)
 {   
     JOYINFOEX joyState;
-    joyState.dwSize=sizeof(joyState);
-    joyState.dwFlags=JOY_RETURNALL | JOY_RETURNPOVCTS | JOY_RETURNCENTERED | JOY_USEDEADZONE;
+    joyState.dwSize = sizeof(joyState);
+    joyState.dwFlags =
+        JOY_RETURNALL | JOY_RETURNPOVCTS | JOY_RETURNCENTERED | JOY_USEDEADZONE;
     joyGetPosEx(joystick_id, &joyState);
 
     xpos = joyState.dwXpos; 
