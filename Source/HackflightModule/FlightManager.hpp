@@ -60,8 +60,8 @@ class FHackflightFlightManager : public FFlightManager {
     public:
 
         // Constructor
-        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, SimMotor ** motors, Dynamics * dynamics) 
-            : FFlightManager(dynamics) 
+        FHackflightFlightManager(APawn * pawn, hf::Mixer * mixer, SimMotor **
+                motors, Dynamics * dynamics) : FFlightManager(dynamics) 
         {
 
             // Store mixer, motors for later
@@ -70,7 +70,8 @@ class FHackflightFlightManager : public FFlightManager {
                 _motors[k] = motors[k];
             }
 
-            // Pass PlayerController to receiver constructor in case we have no joystick / game-controller
+            // Pass PlayerController to receiver constructor in case we have no
+            // joystick / game-controller
             _receiver = new SimReceiver(pawn);
 
             // Create Hackflight object

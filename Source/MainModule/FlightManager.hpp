@@ -58,7 +58,8 @@ class FFlightManager : public FThreadedManager {
             _running = true;
         }
 
-        // Called repeatedly on worker thread to compute dynamics and run flight controller (PID)
+        // Called repeatedly on worker thread to compute dynamics and run
+        // flight controller (PID)
         void performTask(double currentTime)
         {
             if (_running) {
@@ -66,8 +67,9 @@ class FFlightManager : public FThreadedManager {
                 // Update dynamics
                 _dynamics->update(_actuatorValues, currentTime - _previousTime);
 
-                // PID controller: update the flight manager (e.g., HackflightManager) with
-                // the dynamics state, getting back the actuator values
+                // PID controller: update the flight manager (e.g.,
+                // HackflightManager) with the dynamics state, getting back the
+                // actuator values
                 this->getActuators(currentTime, _actuatorValues);
 
                 // Track previous time for deltaT

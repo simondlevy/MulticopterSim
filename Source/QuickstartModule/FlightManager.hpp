@@ -36,7 +36,10 @@ class FQuickstartFlightManager : public FFlightManager {
 
             public: 
 
-                AltitudeController(double Kp_z=1.0, double Kp_dz=1.0, double Ki_dz=0, double windupMax=0) {
+                AltitudeController(double Kp_z=1.0,
+                                   double Kp_dz=1.0,
+                                   double Ki_dz=0,
+                                   double windupMax=0) {
 
                     _Kp_z = Kp_z;
                     _Kp_dz = Kp_dz;
@@ -47,14 +50,19 @@ class FQuickstartFlightManager : public FFlightManager {
                     _errorIntegral = 0;
                 }
 
-                double getThrottle(double target, double t, double z, double dzdt)
+                double getThrottle(double target,
+                                   double t,
+                                   double z,
+                                   double dzdt)
                 {
                     // Compute dzdt setpoint and error
                     double dzdt_target = (target - z) * _Kp_z;
                     double dzdt_error = dzdt_target - dzdt;
 
                     // Update error integral and error derivative
-                    _errorIntegral = constrainAbs(_errorIntegral + dzdt_error * (t-_tprev), _windupMax);
+                    _errorIntegral = 
+                        constrainAbs(_errorIntegral + dzdt_error * (t-_tprev),
+                                     _windupMax);
                         
                     // Track time
                     _tprev = t;
