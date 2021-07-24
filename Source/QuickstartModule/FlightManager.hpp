@@ -21,15 +21,15 @@ class FQuickstartFlightManager : public FFlightManager {
 
             private:
 
-                double _Kp_z=0;
-                double _Kp_dz=0;
-                double _Ki_dz=0;
-                double _windupMax=0;
+                float _Kp_z=0;
+                float _Kp_dz=0;
+                float _Ki_dz=0;
+                float _windupMax=0;
 
-                double _errorIntegral = 0;
-                double _tprev = 0;
+                float _errorIntegral = 0;
+                float _tprev = 0;
 
-                static double constrainAbs(double x, double lim) {
+                static float constrainAbs(float x, float lim) {
 
                     return x < -lim ? -lim : (x > +lim ? +lim : x);
                 }
@@ -50,14 +50,16 @@ class FQuickstartFlightManager : public FFlightManager {
                     _errorIntegral = 0;
                 }
 
-                double getThrottle(double target,
-                                   double t,
-                                   double z,
-                                   double dzdt)
+                float getThrottle(double target,
+                                  double t,
+                                  double z,
+                                  double dzdt)
                 {
+                    debugline("%3.3f", z);
+
                     // Compute dzdt setpoint and error
-                    double dzdt_target = (target - z) * _Kp_z;
-                    double dzdt_error = dzdt_target - dzdt;
+                    float dzdt_target = (target - z) * _Kp_z;
+                    float dzdt_error = dzdt_target - dzdt;
 
                     // Update error integral and error derivative
                     _errorIntegral = 
@@ -91,7 +93,7 @@ class FQuickstartFlightManager : public FFlightManager {
 
         virtual void getActuators(const double time, double * values) override
         {
-            double throttle = _altitudeController.getThrottle(
+            float throttle = _altitudeController.getThrottle(
                     ALTITUDE_TARGET, 
                     time,
                     -_dynamics->x(Dynamics::STATE_Z),
