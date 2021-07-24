@@ -66,8 +66,9 @@ class FSocketFlightManager : public FFlightManager {
                 _telemClient->sendData(_output, sizeof(_output));
             }
 
-            delete _telemClient;
-            delete _motorServer;
+            // Close sockets
+            UdpClientSocket::free(_telemClient);
+            UdpServerSocket::free(_motorServer);
         }
 
         virtual void getActuators(const double time,
