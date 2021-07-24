@@ -39,7 +39,7 @@ class MulticopterServer(object):
             host='127.0.0.1',
             motor_port=5000,
             telem_port=5001,
-            image_port=5002,
+            image_port=5003,
             image_rows=480,
             image_cols=640):
 

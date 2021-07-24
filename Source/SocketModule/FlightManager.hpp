@@ -26,18 +26,17 @@ class FSocketFlightManager : public FFlightManager {
 
         // Socket comms
         UdpClientSocket * _telemClient = NULL;
+        UdpClientSocket * _demandsClient = NULL;
         UdpServerSocket * _motorServer = NULL;
 
         // Joystick (RC transmitter, game controller) or keypad
         GameInput * _gameInput = NULL;
 
-        static const uint8_t INPUT_SIZE = 4;
-
         // Values from joystick/keypad
-        float _inputValues[INPUT_SIZE] = {};
+        float _inputValues[4] = {};
 
 	    // Time : State : Demands
-        double _output[13+INPUT_SIZE] = {};
+        double _output[17] = {};
 
         bool _running = false;
 
@@ -47,13 +46,14 @@ class FSocketFlightManager : public FFlightManager {
                 Dynamics * dynamics,
                 const char * host="127.0.0.1",
                 const short motorPort=5000,
-                const short telemPort=5001) : 
+                const short telemPort=5001,
+                const short deamndsPort=5002) : 
             FFlightManager(dynamics)
         {
             _gameInput = new GameInput(pawn);
 
             _telemClient = new UdpClientSocket(host, telemPort);
-            _motorServer = new UdpServerSocket(motorPort, 0); // 0 timeout msec
+            _motorServer = new UdpServerSocket(motorPort);
 
             _running = true;
         }
@@ -92,7 +92,7 @@ class FSocketFlightManager : public FFlightManager {
             }
 
             // Last output values are open-loop controller demands
-            for (uint8_t k=0; k<INPUT_SIZE; ++k) {
+            for (uint8_t k=0; k<4; ++k) {
                 _output[k+13] = _inputValues[k];
             }
 
