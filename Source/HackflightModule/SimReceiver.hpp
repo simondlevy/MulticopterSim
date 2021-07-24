@@ -29,8 +29,8 @@ class SimReceiver : public hf::Receiver {
 
         // Helps mock up periodic availability of new data frame (output data
         // rate; ODR)
-        double _deltaT;
-		double _previousTime;
+        double _deltaT = 0;
+		double _previousTime = 0;
 
     protected:
 
