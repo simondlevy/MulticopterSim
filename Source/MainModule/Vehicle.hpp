@@ -57,7 +57,8 @@ class Vehicle {
         float rotorStartAngle(float rotorX, float rotorY)
         {
             FVector vehicleCenter = _pawn->GetActorLocation();
-            double theta = -atan2((rotorY - vehicleCenter.Y), (rotorX - vehicleCenter.X));
+            double theta = -atan2((rotorY - vehicleCenter.Y),
+                                  (rotorX - vehicleCenter.X));
             return FMath::RadiansToDegrees(M_PI / 2 - theta) + 57.5;
         }
 
@@ -78,7 +79,8 @@ class Vehicle {
         // Useful approximation to infinity for tracing rays
         static constexpr float INF = 1e9;
 
-        // Time during which velocity will be set to zero during final phase oflanding
+        // Time during which velocity will be set to zero during final phase
+        // oflanding
         static constexpr float SETTLING_TIME = 1.0;
 
         // UE4 objects that must be built statically
@@ -109,18 +111,20 @@ class Vehicle {
         // Starting location, for kinematic offset
         FVector _startLocation = {};
 
-        // Retrieves kinematics from dynamics computed in another thread, returning true if vehicle is airborne, false otherwise.
+        // Retrieves kinematics from dynamics computed in another thread,
+        // returning true if vehicle is airborne, false otherwise.
         void updateKinematics(void)
         {
             // Set vehicle pose in animation
             _pawn->SetActorLocation(_startLocation +
                 100 * FVector(_dynamics->x(Dynamics::STATE_X), 
                               _dynamics->x(Dynamics::STATE_Y),
-                              -_dynamics->x(Dynamics::STATE_Z))); // Negate Z for NED
+                              -_dynamics->x(Dynamics::STATE_Z))); // for NED
             _pawn->SetActorRotation(
-                    FMath::RadiansToDegrees(FRotator(_dynamics->x(Dynamics::STATE_THETA),
-                                                     _dynamics->x(Dynamics::STATE_PSI),
-                                                     _dynamics->x(Dynamics::STATE_PHI))));
+                    FMath::RadiansToDegrees(
+                        FRotator(_dynamics->x(Dynamics::STATE_THETA),
+                            _dynamics->x(Dynamics::STATE_PSI),
+                            _dynamics->x(Dynamics::STATE_PHI))));
         }
 
         void grabImages(void)
@@ -132,30 +136,36 @@ class Vehicle {
 
         void buildPlayerCameras(float distanceMeters, float elevationMeters)
         {
-            _bodyHorizontalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("BodyHorizontalSpringArm"));
+            _bodyHorizontalSpringArm =
+                _pawn->CreateDefaultSubobject<USpringArmComponent>(
+                        TEXT("BodyHorizontalSpringArm"));
             _bodyHorizontalSpringArm->SetupAttachment(_frameMeshComponent);
-            _bodyHorizontalSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+            _bodyHorizontalSpringArm->SetRelativeLocationAndRotation(
+                    FVector::ZeroVector, FRotator::ZeroRotator);
             _bodyHorizontalSpringArm->TargetArmLength = 0;
             _bodyHorizontalSpringArm->bEnableCameraLag = false;
-            //_bodyHorizontalSpringArm->bAbsoluteRotation = false; // XXX if needed, use _bodyHorizontalSpringArm->SetAbsolute()
             _bodyHorizontalSpringArm->bInheritPitch = false;
             _bodyHorizontalSpringArm->bInheritRoll = false;
 
             _playerCameraFollowMeters = distanceMeters;
             _playerCameraElevationMeters = elevationMeters;
 
-            _playerCameraSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("PlayerCameraSpringArm"));
+            _playerCameraSpringArm =
+                _pawn->CreateDefaultSubobject<USpringArmComponent>(
+                        TEXT("PlayerCameraSpringArm"));
             _playerCameraSpringArm->SetupAttachment(_bodyHorizontalSpringArm);
 
             _playerCameraSpringArm->bEnableCameraLag = false;
-            //_playerCameraSpringArm->bAbsoluteRotation = false; // XXX if needed, use _playerCameraSpringArm->SetAbsolute()
             _playerCameraSpringArm->bInheritYaw = true;
             _playerCameraSpringArm->bInheritPitch = false;
             _playerCameraSpringArm->bInheritRoll = false;
             _playerCameraSpringArm->bEnableCameraRotationLag = true;
 
-            _playerCamera = _pawn->CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
-            _playerCamera->SetupAttachment(_playerCameraSpringArm, USpringArmComponent::SocketName);
+            _playerCamera =
+                _pawn->CreateDefaultSubobject<UCameraComponent>(
+                        TEXT("PlayerCamera"));
+            _playerCamera->SetupAttachment(_playerCameraSpringArm,
+                                          USpringArmComponent::SocketName);
         }
 
 
@@ -169,19 +179,25 @@ class Vehicle {
             case VIEW_FRONT:
                 _playerController->SetViewTargetWithBlend(_pawn);
                 _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-                _playerCameraSpringArm->TargetArmLength = -30; // empircally determined to be far enough ahead of vehicle
+
+                // empircally determined to be far enough ahead of vehicle
+                _playerCameraSpringArm->TargetArmLength = -30; 
 
                 _bodyHorizontalSpringArm->bInheritYaw = true;
                 break;
             case VIEW_GROUND:
-                if (_groundCamera) _playerController->SetViewTargetWithBlend(_groundCamera);
+                if (_groundCamera) {
+                    _playerController->SetViewTargetWithBlend(_groundCamera);
+                }
                 break;
             default:
                 _playerController->SetViewTargetWithBlend(_pawn);
-                _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector(-_playerCameraFollowMeters, 0, 
-                            _playerCameraElevationMeters) * 100,
+                _playerCameraSpringArm->SetRelativeLocationAndRotation(
+                        FVector(-_playerCameraFollowMeters, 0, 
+                                _playerCameraElevationMeters) * 100,
                     FRotator::ZeroRotator);;
-                _playerCameraSpringArm->TargetArmLength = _playerCameraFollowMeters * 100;
+                _playerCameraSpringArm->TargetArmLength =
+                    _playerCameraFollowMeters * 100;
 
                 _bodyHorizontalSpringArm->bInheritYaw = false;
             }
@@ -221,7 +237,8 @@ class Vehicle {
                 rotorsum += _flightManager->actuatorValue(j);
             }
 
-            // Rotate rotors. For visual effect, we can ignore actual rotor values, and just keep increasing the rotation.
+            // Rotate rotors. For visual effect, we can ignore actual rotor
+            // values, and just keep increasing the rotation.
             if (rotorsum > 0) {
                 rotateRotors(_rotorDirections);
             }
@@ -237,11 +254,14 @@ class Vehicle {
             }
             smoothedRotorMean /= _rotorBuffer->Capacity();
 
-            // Use the mean rotor value to modulate the pitch and voume of the rotor sound
+            // Use the mean rotor value to modulate the pitch and voume of the
+            // rotor sound
             if (_audioComponent) {
 
-                _audioComponent->SetFloatParameter(FName("pitch"), smoothedRotorMean);
-                _audioComponent->SetFloatParameter(FName("volume"), smoothedRotorMean);
+                _audioComponent->SetFloatParameter(FName("pitch"),
+                                                   smoothedRotorMean);
+                _audioComponent->SetFloatParameter(FName("volume"),
+                                                   smoothedRotorMean);
             }
         }
 
@@ -253,59 +273,81 @@ class Vehicle {
             _pawn = pawn;
             _frameMesh = frameMesh;
 
-            _frameMeshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
+            _frameMeshComponent =
+                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(
+                        TEXT("FrameMesh"));
             _frameMeshComponent->SetStaticMesh(_frameMesh);
-            _frameMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+            _frameMeshComponent->SetCollisionResponseToAllChannels(
+                    ECollisionResponse::ECR_Overlap);
             
             _pawn->SetRootComponent(_frameMeshComponent);
 
             _rotorCount = 0;
         }
 
-        void buildFull(APawn* pawn, UStaticMesh* frameMesh, float chaseCameraDistanceMeters=1.5, 
+        void buildFull(APawn* pawn,
+                       UStaticMesh* frameMesh,
+                       float chaseCameraDistanceMeters=1.5, 
                 float chaseCameraElevationMeters=0.5)
         {
             build(pawn, frameMesh);
 
             // Build the player-view cameras
-            buildPlayerCameras(chaseCameraDistanceMeters, chaseCameraElevationMeters);
+            buildPlayerCameras(chaseCameraDistanceMeters,
+                               chaseCameraElevationMeters);
 
             // Get sound cue from Contents
-            static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(TEXT("/Game/MulticopterSim/Audio/MotorSoundCue"));
+            static ConstructorHelpers::FObjectFinder<USoundCue> soundCue(
+                    TEXT("/Game/MulticopterSim/Audio/MotorSoundCue"));
 
             // Store a reference to the Cue asset - we'll need it later.
             _soundCue = soundCue.Object;
 
-            // Create an audio component, which wraps the sound cue, and allows us to ineract with it and its parameters from code
-            _audioComponent = _pawn->CreateDefaultSubobject<UAudioComponent>(TEXT("RotorAudioComp"));
+            // Create an audio component, which wraps the sound cue, and allows
+            // us to ineract with it and its parameters from code
+            _audioComponent =
+                _pawn->CreateDefaultSubobject<UAudioComponent>(
+                        TEXT("RotorAudioComp"));
 
             if (_audioComponent) {
 
                 // Set the audio component's volume to zero
                 _audioComponent->SetFloatParameter(FName("volume"), 0);
 
-                // Attach the sound to the pawn's root, the sound follows the pawn around
+                // Attach the sound to the pawn's root, the sound follows the
+                // pawn around
                 _audioComponent->SetupAttachment(_pawn->GetRootComponent());
             }
 
             // Create a spring-arm for the gimbal
-            _gimbalSpringArm = _pawn->CreateDefaultSubobject<USpringArmComponent>(TEXT("GimbalSpringArm"));
+            _gimbalSpringArm =
+                _pawn->CreateDefaultSubobject<USpringArmComponent>(
+                        TEXT("GimbalSpringArm"));
             _gimbalSpringArm->SetupAttachment(_pawn->GetRootComponent());
             _gimbalSpringArm->TargetArmLength = 0.f;
         }
 
-        void addMesh(UStaticMesh* mesh, const char* name, const FVector& location, const FRotator rotation, const FVector& scale)
+        void addMesh(UStaticMesh* mesh,
+                     const char* name,
+                     const FVector& location,
+                     const FRotator rotation,
+                     const FVector& scale)
         {
             UStaticMeshComponent* meshComponent =
-                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
+                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(
+                        FName(name));
             meshComponent->SetStaticMesh(mesh);
-            meshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
+            meshComponent->SetupAttachment(_frameMeshComponent,
+                                           USpringArmComponent::SocketName);
             meshComponent->AddRelativeLocation(location * 100); // m => cm
             meshComponent->AddLocalRotation(rotation);
             meshComponent->SetRelativeScale3D(scale);
         }
 
-        void addMesh(UStaticMesh* mesh, const char* name, const FVector& location, const FRotator rotation)
+        void addMesh(UStaticMesh* mesh,
+                     const char* name,
+                     const FVector& location,
+                     const FRotator rotation)
         {
             addMesh(mesh, name, location, rotation, FVector(1, 1, 1));
         }
@@ -350,22 +392,27 @@ class Vehicle {
         {
             _flightManager = flightManager;
 
-            // Player controller is useful for getting keyboard events, switching cameas, etc.
-            _playerController = UGameplayStatics::GetPlayerController(_pawn->GetWorld(), 0);
+            // Player controller is useful for getting keyboard events,
+            // switching cameas, etc.
+            _playerController =
+                UGameplayStatics::GetPlayerController(_pawn->GetWorld(), 0);
 
             // Change view to player camera on start
             _playerController->SetViewTargetWithBlend(_pawn);
 
 
             // Check landscape for world parameters
-            for (TActorIterator<ALandscape> LandscapeItr(_pawn->GetWorld()); LandscapeItr; ++LandscapeItr) {
+            for (TActorIterator<ALandscape> LandscapeItr(_pawn->GetWorld());
+                 LandscapeItr;
+                 ++LandscapeItr) {
 
                 for (FName Tag : LandscapeItr->Tags) {
 
                     FString tag = Tag.ToString();
                     if (tag.Contains("g=") && tag.Contains("rho=")) {
                         float g = 0, rho = 0;
-                        if (sscanf_s(TCHAR_TO_ANSI(*tag), "g=%f rho=%f", &g, &rho) == 2) {
+                        if (sscanf_s(TCHAR_TO_ANSI(*tag),
+                                    "g=%f rho=%f", &g, &rho) == 2) {
                             _dynamics->setWorldParams(g, rho);
                         }
                     }
@@ -384,8 +431,8 @@ class Vehicle {
             // Disable built-in physics
             _frameMeshComponent->SetSimulatePhysics(false);
 
-            // Start the audio for the rotors Note that because the
-            // Cue Asset is set to loop the sound, once we start playing the sound, it
+            // Start the audio for the rotors Note that because the Cue Asset
+            // is set to loop the sound, once we start playing the sound, it
             // will play continiously...
             if (_audioComponent) {
                 _audioComponent->Play();
@@ -397,7 +444,8 @@ class Vehicle {
             // Get vehicle ground-truth location for kinematic offset
             _startLocation = _pawn->GetActorLocation();
 
-            // AGL offset will be set to a positve value the first time agl() is called
+            // AGL offset will be set to a positve value the first time agl()
+            // is called
             _aglOffset = 0;
 
             // Get vehicle ground-truth rotation to initialize flight manager
@@ -412,7 +460,9 @@ class Vehicle {
 
             // Find the first cine camera in the viewport
             _groundCamera = NULL;
-            for (TActorIterator<ACameraActor> cameraItr(_pawn->GetWorld()); cameraItr; ++cameraItr) {
+            for (TActorIterator<ACameraActor> cameraItr(_pawn->GetWorld());
+                 cameraItr;
+                 ++cameraItr) {
 
                 ACameraActor * cameraActor = *cameraItr;
                 if (cameraActor->GetName().StartsWith("CineCamera")) {
@@ -456,7 +506,9 @@ class Vehicle {
         {
             if (_groundCamera) {
                 _groundCamera->SetActorRotation(
-                        UKismetMathLibrary::FindLookAtRotation(_groundCamera->GetActorLocation(), _pawn->GetActorLocation()));
+                        UKismetMathLibrary::FindLookAtRotation(
+                            _groundCamera->GetActorLocation(),
+                            _pawn->GetActorLocation()));
             }
 
             // avoid registering multiple spacebar presses
@@ -492,10 +544,9 @@ class Vehicle {
             FVector startPoint = _pawn->GetActorLocation();
             startPoint.Z += 100;
             // End at a point an "infinite" distance below the start point
-            FVector endPoint = FVector(startPoint.X, startPoint.Y, startPoint.Z - INF);
-
-            //drawHorizontal(startPoint);
-            //drawLine(startPoint, endPoint);
+            FVector endPoint = FVector(startPoint.X,
+                                       startPoint.Y,
+                                       startPoint.Z - INF);
 
             float d = getImpactDistance(startPoint, endPoint);
 
@@ -508,18 +559,22 @@ class Vehicle {
         }
 
         // Returns distance to mesh between points, or -1 if none found.
-        // Eventually we may want to be able to specifiy an actor or actors to include or exclude
-        // (other than the vehicle itself).
+        // Eventually we may want to be able to specifiy an actor or actors to
+        // include or exclude (other than the vehicle itself).
         float getImpactDistance(FVector startPoint, FVector endPoint)
         {
-            // Currently, the only collisions we ignore are with the pawn itself
+            // Currently, the only collisions we ignore are with the pawn
+            // itself
             TArray<AActor*> actorsToIgnore;
             actorsToIgnore.Add(_pawn);
-            FCollisionQueryParams traceParams(FName(TEXT("Distance Trace")), true, actorsToIgnore[0]);
+            FCollisionQueryParams traceParams(FName(TEXT("Distance Trace")),
+                                              true, 
+                                              actorsToIgnore[0]);
             traceParams.AddIgnoredActors(actorsToIgnore);
 
             FHitResult OutHit;
-            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endPoint, ECC_Visibility, traceParams)) {
+            if (_pawn->GetWorld()->LineTraceSingleByChannel(OutHit,
+                        startPoint, endPoint, ECC_Visibility, traceParams)) {
                 if (OutHit.bBlockingHit) {
                     FVector impactPoint = OutHit.ImpactPoint;
                     return (startPoint.Z - impactPoint.Z) / 100;
@@ -538,7 +593,8 @@ class Vehicle {
 
         void drawLine(FVector point1, FVector point2)
         {
-            DrawDebugLine(_pawn->GetWorld(), point1, point2, FColor::Green, false, .1, 0, 0.5);
+            DrawDebugLine(_pawn->GetWorld(), point1, point2, FColor::Green,
+                          false, .1,0, 0.5);
         }
 
         void PostInitializeComponents()
@@ -562,19 +618,33 @@ class Vehicle {
             return _frameMeshComponent;
         }
 
-        UStaticMeshComponent * addComponent(UStaticMesh * mesh, FName name, float x=0, float y=0, float z=0, float yaw_angle=0)
+        UStaticMeshComponent * addComponent(UStaticMesh * mesh,
+                                            FName name,
+                                            float x=0,
+                                            float y=0,
+                                            float z=0,
+                                            float yaw_angle=0)
         {
-            UStaticMeshComponent* meshComponent = _pawn->CreateDefaultSubobject<UStaticMeshComponent>(name);
+            UStaticMeshComponent* meshComponent =
+                _pawn->CreateDefaultSubobject<UStaticMeshComponent>(name);
             meshComponent->SetStaticMesh(mesh);
-            meshComponent->SetupAttachment(_frameMeshComponent, USpringArmComponent::SocketName);
-            meshComponent->AddRelativeLocation(FVector(x, y, z) * 100); // m => cm
+            meshComponent->SetupAttachment(_frameMeshComponent,
+                                           USpringArmComponent::SocketName);
+
+            // m => cm
+            meshComponent->AddRelativeLocation(FVector(x, y, z) * 100);
+
             meshComponent->SetRelativeRotation(FRotator(0, yaw_angle, 0));
+
             return meshComponent;
         }
 
-        UStaticMeshComponent * addRotor(UStaticMesh* rotorMesh, float x, float y, float z, float angle)
+        UStaticMeshComponent * addRotor(UStaticMesh* rotorMesh,
+                float x, float y, float z, float angle)
         {
-            UStaticMeshComponent * rotorMeshComponent = addComponent(rotorMesh, makeName("Rotor", _rotorCount, "Mesh"), x, y, z, angle);
+            UStaticMeshComponent * rotorMeshComponent =
+                addComponent(rotorMesh, makeName("Rotor", _rotorCount, "Mesh"),
+                        x, y, z, angle);
             _rotorMeshComponents[_rotorCount] = rotorMeshComponent;
             _rotorCount++;
             return rotorMeshComponent;
@@ -587,7 +657,9 @@ class Vehicle {
 
         virtual void setRotorRotation(uint8_t index, float angle)
         {
-            _rotorMeshComponents[index]->SetRelativeRotation(FRotator(0, angle, 0));
+            _rotorMeshComponents[index]->SetRelativeRotation(FRotator(0,
+                                                                      angle,
+                                                                      0));
         }
 
 }; // class Vehicle
