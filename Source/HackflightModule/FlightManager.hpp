@@ -107,7 +107,8 @@ class FHackflightFlightManager : public FFlightManager {
             // to set the values of the simulated motors
             _hackflight->update();
 
-            // Set the time in the simulated board, so it can be retrieved by Hackflight
+            // Set the time in the simulated board, so it can be retrieved by
+            // Hackflight
             _board.set(time);
 
             //  Get the new motor values

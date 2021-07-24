@@ -35,7 +35,7 @@ class SimBoard : public rft::Board {
 		{ 
 		}
 
-        void set(const double time)
+        void set(const float time)
         {
             _currentTime = time;
         }
