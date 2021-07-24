@@ -27,8 +27,9 @@ class SimReceiver : public hf::Receiver {
         // Joystick (RC transmitter, game controller) or keyboard
         GameInput * _gameInput = NULL;
 
-		// Helps mock up periodic availability of new data frame (output data rate; ODR)
-		double _deltaT;
+        // Helps mock up periodic availability of new data frame (output data
+        // rate; ODR)
+        double _deltaT;
 		double _previousTime;
 
     protected:
@@ -40,7 +41,8 @@ class SimReceiver : public hf::Receiver {
 
 		virtual uint8_t getModeIndex(void) override
 		{
-			return 0; // XXX Receiver::getAux1State();  // With only five channels, we use Aux1 for Aux2
+			// With only five channels, we use Aux1 for Aux2
+            return 0; // XXX Receiver::getAux1State();  
 		}
 
    		bool gotNewFrame(void) override
@@ -61,7 +63,7 @@ class SimReceiver : public hf::Receiver {
         {
         }
 
- public:
+    public:
 
 		SimReceiver(APawn * pawn, uint16_t updateFrequency=50)
 			: Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
