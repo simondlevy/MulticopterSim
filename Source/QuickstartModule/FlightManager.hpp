@@ -36,10 +36,10 @@ class FQuickstartFlightManager : public FFlightManager {
 
             public: 
 
-                AltitudeController(double Kp_z=1.0,
-                                   double Kp_dz=1.0,
-                                   double Ki_dz=0,
-                                   double windupMax=0) {
+                AltitudeController(float Kp_z=1.0,
+                                   float Kp_dz=1.0,
+                                   float Ki_dz=0,
+                                   float windupMax=0) {
 
                     _Kp_z = Kp_z;
                     _Kp_dz = Kp_dz;
@@ -50,10 +50,10 @@ class FQuickstartFlightManager : public FFlightManager {
                     _errorIntegral = 0;
                 }
 
-                float getThrottle(double target,
-                                  double t,
-                                  double z,
-                                  double dzdt)
+                float getThrottle(float target,
+                                  float t,
+                                  float z,
+                                  float dzdt)
                 {
                     debugline("%3.3f", z);
 
