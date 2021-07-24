@@ -6,10 +6,12 @@
  * Based on:
  *
  *   @inproceedings{DBLP:conf/icra/BouabdallahMS04,
- *     author    = {Samir Bouabdallah and Pierpaolo Murrieri and Roland Siegwart},
+ *     author    = {Samir Bouabdallah and Pierpaolo Murrieri and Roland
+                    Siegwart},
  *     title     = {Design and Control of an Indoor Micro Quadrotor},
- *     booktitle = {Proceedings of the 2004 {IEEE} International Conference on Robotics and
- *                 Automation, {ICRA} 2004, April 26 - May 1, 2004, New Orleans, LA, {USA}},
+ *     booktitle = {Proceedings of the 2004 {IEEE} International Conference on
+                    Robotics and Automation, {ICRA} 2004, April 26 - May 1,
+                    2004, New Orleans, LA, {USA}},
  *     pages     = {4393--4398},
  *     year      = {2004},
  *     crossref  = {DBLP:conf/icra/2004},
@@ -39,7 +41,8 @@ class Dynamics {
 
     public:
 
-        static const uint8_t MAX_ROTORS = 20; // arbitrary; avoids dynamic allocation
+        // arbitrary; avoids dynamic allocation
+        static const uint8_t MAX_ROTORS = 20; 
 
     private:
 
@@ -99,7 +102,9 @@ class Dynamics {
         Dynamics(uint8_t actuatorCount, vehicle_params_t & vparams)
         {
             _actuatorCount = actuatorCount;
-            _rotorCount = actuatorCount; // can be overridden for thrust-vectoring
+
+            // can be overridden for thrust-vectoring
+            _rotorCount = actuatorCount; 
 
             memcpy(&_vparams, &vparams, sizeof(vehicle_params_t));
 
@@ -129,7 +134,9 @@ class Dynamics {
         }
 
         // bodyToInertial method optimized for body X=Y=0
-        static void bodyZToInertial(double bodyZ, const double rotation[3], double inertial[3])
+        static void bodyZToInertial(double bodyZ,
+                                    const double rotation[3],
+                                    double inertial[3])
         {
             double phi = rotation[0];
             double theta = rotation[1];
@@ -142,7 +149,8 @@ class Dynamics {
             double cps = cos(psi);
             double sps = sin(psi);
 
-            // This is the rightmost column of the body-to-inertial rotation matrix
+            // This is the rightmost column of the body-to-inertial rotation
+            // matrix
             double R[3] = { sph * sps + cph * cps * sth,
                 cph * sps * sth - cps * sph,
                 cph * cth };
@@ -162,9 +170,11 @@ class Dynamics {
         // quad, hexa, octo, etc.
         uint8_t _rotorCount = 0;
 
-        // For coaxials we have five actuators: two rotors, plus collective pitch, cyclic roll, and cyclic pitch.
-        // For thrust vectoring, we have four actuators: two rotors and two servos.
-        // For standard multirotors (e.g., quadcopter), actuatorCount = rotorCount.
+        // For coaxials we have five actuators: two rotors, plus collective
+        // pitch, cyclic roll, and cyclic pitch.  For thrust vectoring, we have
+        // four actuators: two rotors and two servos.
+        // For standard multirotors (e.g., quadcopter), actuatorCount =
+        // rotorCount.
         uint8_t _actuatorCount = 0;
 
         /**
@@ -177,7 +187,12 @@ class Dynamics {
          * @param u3 pitch force
          * @param u4 yaw force
          */
-        void computeStateDerivative(double accelNED[3], double netz, double omega, double u2, double u3, double u4)
+        void computeStateDerivative(double accelNED[3],
+                                    double netz,
+                                    double omega,
+                                    double u2,
+                                    double u3,
+                                    double u4)
         {
             double phidot = _x[STATE_PHI_DOT];
             double thedot = _x[STATE_THETA_DOT];
@@ -188,28 +203,50 @@ class Dynamics {
             double Iz = _vparams.Iz;
             double Jr = _vparams.Jr;
 
-            _dxdt[0] = _x[STATE_X_DOT];                                                            // x'
-            _dxdt[1] = accelNED[0];                                                                // x''
-            _dxdt[2] = _x[STATE_Y_DOT];                                                            // y'
-            _dxdt[3] = accelNED[1];                                                                // y''
-            _dxdt[4] = _x[STATE_Z_DOT];                                                            // z'
-            _dxdt[5] = netz;                                                                       // z''
-            _dxdt[6] = phidot;                                                                     // phi'
-            _dxdt[7] = psidot * thedot * (Iy - Iz) / Ix - Jr / Ix * thedot * omega + u2 / Ix;    // phi''
-            _dxdt[8] = thedot;                                                                     // theta'
-            _dxdt[9] = -(psidot * phidot * (Iz - Ix) / Iy + Jr / Iy * phidot * omega + u3 / Iy); // theta''
-            _dxdt[10] = psidot;                                                                    // psi'
-            _dxdt[11] = thedot * phidot * (Ix - Iy) / Iz + u4 / Iz;                               // psi''
+            // x'
+            _dxdt[0] = _x[STATE_X_DOT];
+            
+            // x''
+            _dxdt[1] = accelNED[0];
+
+            // y'
+            _dxdt[2] = _x[STATE_Y_DOT];                                                     
+            // y''
+            _dxdt[3] = accelNED[1];
+
+            // z'
+            _dxdt[4] = _x[STATE_Z_DOT];                                                     
+            // z''
+            _dxdt[5] = netz;                                                                       
+            // phi'
+            _dxdt[6] = phidot;                                                                    
+            // phi''
+            _dxdt[7] = psidot * thedot * (Iy - Iz) / Ix - Jr / Ix * thedot *
+                omega + u2 / Ix;
+
+            // theta'
+            _dxdt[8] = thedot;                                                                    
+            // theta''
+            _dxdt[9] = -(psidot * phidot * (Iz - Ix) / Iy + Jr / Iy * phidot *
+                    omega + u3 / Iy);
+
+            // psi'
+            _dxdt[10] = psidot;                                                 
+
+            // psi''
+            _dxdt[11] = thedot * phidot * (Ix - Iy) / Iz + u4 / Iz; 
         }
 
 
     public:
 
         /**
-         * Initializes kinematic pose, with flag for whether we're airbone (helps with testing gravity).
+         * Initializes kinematic pose, with flag for whether we're airbone
+         * (helps with testing gravity).
          *
          * @param rotation initial rotation
-         * @param airborne allows us to start on the ground (default) or in the air (e.g., gravity test)
+         * @param airborne allows us to start on the ground (default) or in the
+         * air (e.g., gravity test)
          */
         void init(double rotation[3], bool airborne = false)
         {
@@ -251,7 +288,10 @@ class Dynamics {
         // Different for each vehicle
         virtual int8_t getRotorDirection(uint8_t i) = 0;
         virtual double getThrustCoefficient(double * actuators) = 0;
-        virtual void computeRollAndPitch(double * actuators, double * omegas2, double & roll, double & pitch) = 0;
+        virtual void computeRollAndPitch(double * actuators,
+                                         double * omegas2,
+                                         double & roll,
+                                         double & pitch) = 0;
 
         /**
          * Gets actuator count set by constructor.
@@ -284,12 +324,13 @@ class Dynamics {
         /**
          * Updates state.
          *
-         * @param actuators values in interval [0,1] (rotors) or [-0.5,+0.5] (servos)
+         * @param actuators values in interval [0,1] (rotors) or [-0.5,+0.5]
+                  (servos)
          * @param dt time in seconds since previous update
          */
         void update(double * actuators, double dt) 
         {
-            // Implement Equation 6 ------------------------------------------------------------------------------------------------------
+            // Implement Equation 6 -------------------------------------------
 
             // Radians per second of rotors, and squared radians per second
             double omegas[MAX_ROTORS] = {};
@@ -304,25 +345,25 @@ class Dynamics {
                 // Thrust is squared rad/sec scaled by air density
                 omegas2[i] = _wparams.rho * omegas[i] * omegas[i]; 
 
-                // Thrust coefficient is constant for fixed-pitch rotors, variable for collective-pitch
+                // Thrust coefficient is constant for fixed-pitch rotors,
+                // variable for collective-pitch
                 u1 += getThrustCoefficient(actuators) * omegas2[i];                  
 
-                // Newton's Third Law (action/reaction) tells us that yaw is opposite to net rotor spin
+                // Newton's Third Law (action/reaction) tells us that yaw is
+                // opposite to net rotor spin
                 u4 += _vparams.d * omegas2[i] * -getRotorDirection(i);
                 omega += omegas[i] * -getRotorDirection(i);
             }
             
-            // Compute roll, pitch, yaw forces (different method for fixed-pitch blades vs. variable-pitch)
+            // Compute roll, pitch, yaw forces (different method for
+            // fixed-pitch blades vs. variable-pitch)
             double u2 = 0, u3 = 0;
             computeRollAndPitch(actuators, omegas2, u2, u3);
 
-            // -----------------------------------------------------------------------------------------------------------------------------
+            // ----------------------------------------------------------------
 
-            // XXX for Ingenuity demo
-            // debugline("AGL = %2.2fm    RPM = %d", -_x[STATE_Z], (int)(actuator * _vparams.maxrpm));
-
-            // Use the current Euler angles to rotate the orthogonal thrust vector into the inertial frame.
-            // Negate to use NED.
+            // Use the current Euler angles to rotate the orthogonal thrust
+            // vector into the inertial frame.  Negate to use NED.
             double euler[3] = { _x[6], _x[8], _x[10] };
             double accelNED[3] = {};
             bodyZToInertial(-u1 / _vparams.m, euler, accelNED);
@@ -348,7 +389,8 @@ class Dynamics {
                 }
             }
 
-            // If we're not airborne, we become airborne when downward acceleration has become negative
+            // If we're not airborne, we become airborne when downward
+            // acceleration has become negative
             else {
                 _airborne = netz < 0;
             }
@@ -359,12 +401,14 @@ class Dynamics {
                 // Compute the state derivatives using Equation 12
                 computeStateDerivative(accelNED, netz, omega, u2, u3, u4);
 
-                // Compute state as first temporal integral of first temporal derivative
+                // Compute state as first temporal integral of first temporal
+                // derivative
                 for (uint8_t i = 0; i < 12; ++i) {
                     _x[i] += dt * _dxdt[i];
                 }
 
-                // Once airborne, inertial-frame acceleration is same as NED acceleration
+                // Once airborne, inertial-frame acceleration is same as NED
+                // acceleration
                 _inertialAccel[0] = accelNED[0];
                 _inertialAccel[1] = accelNED[1];
                 _inertialAccel[2] = accelNED[2];
