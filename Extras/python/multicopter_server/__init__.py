@@ -40,15 +40,13 @@ class MulticopterServer(object):
             host='127.0.0.1',
             motor_port=5000,
             telemetry_port=5001,
-            demands_port=5002,
-            image_port=5003,
+            image_port=5002,
             image_rows=480,
             image_cols=640):
 
         self.host = host
         self.motor_port = motor_port
         self.telemetry_port = telemetry_port
-        self.demands_port = demands_port
         self.image_port = image_port
         self.image_rows = image_rows
         self.image_cols = image_cols
@@ -64,14 +62,10 @@ class MulticopterServer(object):
         telemetryServerSocket = MulticopterServer._make_udpsocket()
         telemetryServerSocket.bind((self.host, self.telemetry_port))
 
-        demandsServerSocket = MulticopterServer._make_udpsocket()
-        demandsServerSocket.bind((self.host, self.demands_port))
-
         _debug('Hit the Play button ...')
 
         thread = Thread(target=self._run_threadetry,
                         args=(telemetryServerSocket,
-                              demandsServerSocket,
                               motorClientSocket))
 
         # Serve a socket with a maximum of one client
@@ -122,7 +116,6 @@ class MulticopterServer(object):
 
     def _run_threadetry(self,
                         telemetryServerSocket,
-                        demandsServerSocket,
                         motorClientSocket):
 
         running = False
@@ -130,18 +123,15 @@ class MulticopterServer(object):
         while True:
 
             try:
-                telemetry_bytes, _ = telemetryServerSocket.recvfrom(8*13)
-                demands_bytes, _ = demandsServerSocket.recvfrom(8*4)
+                telemetry_bytes, _ = telemetryServerSocket.recvfrom(8*17)
             except Exception:
                 self.done = True
                 _debug('EXCEPTION')
                 break
 
             telemetryServerSocket.settimeout(.1)
-            demandsServerSocket.settimeout(.1)
 
             telemetry = np.frombuffer(telemetry_bytes)
-            demands = np.frombuffer(demands_bytes)
 
             if not running:
                 _debug('Running')
@@ -150,10 +140,11 @@ class MulticopterServer(object):
             if telemetry[0] < 0:
                 motorClientSocket.close()
                 telemetryServerSocket.close()
-                demandsServerSocket.close()
                 break
 
-            motorvals = self.getMotors(telemetry[0], telemetry[1:13], demands)
+            motorvals = self.getMotors(telemetry[0],     # time
+                                       telemetry[1:13],  # vehicle state
+                                       telemetry[13:])   # demands
 
             motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
                                      (self.host, self.motor_port))

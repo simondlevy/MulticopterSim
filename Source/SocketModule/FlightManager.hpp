@@ -26,17 +26,13 @@ class FSocketFlightManager : public FFlightManager {
 
         // Socket comms
         UdpClientSocket * _telemClient = NULL;
-        UdpClientSocket * _demandsClient = NULL;
         UdpServerSocket * _motorServer = NULL;
 
         // Joystick (RC transmitter, game controller) or keypad
         GameInput * _gameInput = NULL;
 
-        // Values from joystick/keypad
-        double _stickDemands[4] = {};
-
-	    // Time : State
-        double _telemetry[13] = {};
+	    // Time : State : Demands
+        double _telemetry[17] = {};
 
         bool _running = false;
 
@@ -46,14 +42,12 @@ class FSocketFlightManager : public FFlightManager {
                 Dynamics * dynamics,
                 const char * host="127.0.0.1",
                 const short motorPort=5000,
-                const short telemPort=5001,
-                const short demandsPort=5002) : 
+                const short telemPort=5001) : 
             FFlightManager(dynamics)
         {
             _gameInput = new GameInput(pawn);
 
             _telemClient = new UdpClientSocket(host, telemPort);
-            _demandsClient = new UdpClientSocket(host, demandsPort);
             _motorServer = new UdpServerSocket(motorPort);
 
             _running = true;
@@ -69,7 +63,6 @@ class FSocketFlightManager : public FFlightManager {
 
             // Close sockets
             UdpClientSocket::free(_telemClient);
-            UdpClientSocket::free(_demandsClient);
             UdpServerSocket::free(_motorServer);
         }
 
@@ -78,10 +71,8 @@ class FSocketFlightManager : public FFlightManager {
         {
             // Avoid null-pointer exceptions at startup, freeze after control
             // program halts
-            if (!(_telemClient &&
-                  _demandsClient &&
-                  _motorServer &&
-                  _running)) { return;
+            if (!(_telemClient && _motorServer && _running)) {
+                return;
             }
 
             // First output value is time
@@ -92,14 +83,11 @@ class FSocketFlightManager : public FFlightManager {
                 _telemetry[k+1] = _dynamics->x(k);
             }
 
+            // Remaining values are stick demands
+            _gameInput->getJoystick(&_telemetry[13]);
+
             // Send telemetry values to server
             _telemClient->sendData(_telemetry, sizeof(_telemetry));
-
-            // Get demands from joystick
-            _gameInput->getJoystick(_stickDemands);
-
-            // Send joystick values to server
-            _demandsClient->sendData(_stickDemands, sizeof(_stickDemands));
 
             // Get motor actuatorValues from server
             _motorServer->receiveData(actuatorValues, 8 * _actuatorCount);
@@ -115,7 +103,7 @@ class FSocketFlightManager : public FFlightManager {
         void tick(void)
         {
             // Get demands from keypad
-            _gameInput->getKeypad(_stickDemands);
+            _gameInput->getKeypad(&_telemetry[13]);
         }
 
 }; // FSocketFlightManager
