@@ -37,17 +37,19 @@ writing is UE4.26.1. To install UE4, follow these [instructions](https://docs.un
 1. Clone this repostitory (MulticopterSim) into your
 <b>Documents/Unreal Projects</b> folder, first creating that folder if it
 doesn't exist.
+
+2. Double-click <b>use_quickstart.bat</b>
    
-2. Right-click on the <b>MulticopterSim.uproject</b> 
+3. Right-click on the <b>MulticopterSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
-3. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
+4. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
 you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
 to build the project.
 
-4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+5. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
-5. In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
+6. In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
 <b>Content/C++ Classes/QuickstartModule/pawns</b> folder and drag one of the
 vehicle pawns into the map. Click the play button and you'll see the vehicle
 take off to an altitude of 10 meters.  You can use the spacebar to switch your
