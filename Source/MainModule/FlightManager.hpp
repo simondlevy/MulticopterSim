@@ -16,11 +16,12 @@ class FFlightManager : public FThreadedManager {
     private:
 
         // Current actuator values from getActuators() method
-        double * _actuatorValues = NULL; 
-        
+        double _actuatorValues[100] = {}; 
+
         // For computing deltaT
         double   _previousTime = 0;
 
+        // Helps synchronize threads
         bool _running = false;
 
         /**
@@ -32,7 +33,7 @@ class FFlightManager : public FThreadedManager {
          *
          */
         virtual void getActuators(const double time, double * values)  = 0;
-        
+
     protected:
 
         uint8_t _actuatorCount = 0;
@@ -46,35 +47,27 @@ class FFlightManager : public FThreadedManager {
             // Constant
             _actuatorCount = dynamics->actuatorCount();
 
-            // Allocate array for actuator values
-            _actuatorValues = new double[_actuatorCount];
-
             // Store dynamics for performTask()
             _dynamics = dynamics;
 
             // For periodic update
             _previousTime = 0;
-
-            _running = true;
         }
 
         // Called repeatedly on worker thread to compute dynamics and run
         // flight controller (PID)
         void performTask(double currentTime)
         {
-            if (_running) {
+            // Update dynamics
+            _dynamics->update(_actuatorValues, currentTime - _previousTime);
 
-                // Update dynamics
-                _dynamics->update(_actuatorValues, currentTime - _previousTime);
+            // PID controller: update the flight manager (e.g.,
+            // HackflightManager) with the dynamics state, getting back the
+            // actuator values
+            this->getActuators(currentTime, _actuatorValues);
 
-                // PID controller: update the flight manager (e.g.,
-                // HackflightManager) with the dynamics state, getting back the
-                // actuator values
-                this->getActuators(currentTime, _actuatorValues);
-
-                // Track previous time for deltaT
-                _previousTime = currentTime;
-            }
+            // Track previous time for deltaT
+            _previousTime = currentTime;
         }
 
 
@@ -88,11 +81,6 @@ class FFlightManager : public FThreadedManager {
         double actuatorValue(uint8_t index)
         {
             return _actuatorValues[index];
-        }
-
-        void stop(void)
-        {
-            _running = false;
         }
 
 }; // class FFlightManager

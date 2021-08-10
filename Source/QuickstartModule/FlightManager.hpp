@@ -11,73 +11,20 @@
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
 
+#include "AltitudeController.hpp"
+
 class FQuickstartFlightManager : public FFlightManager {
 
     private:
 
         Dynamics * _dynamics = NULL;
 
-        class AltitudeController {
-
-            private:
-
-                float _Kp_z=0;
-                float _Kp_dz=0;
-                float _Ki_dz=0;
-                float _windupMax=0;
-
-                float _errorIntegral = 0;
-                float _tprev = 0;
-
-                static float constrainAbs(float x, float lim) {
-
-                    return x < -lim ? -lim : (x > +lim ? +lim : x);
-                }
-
-            public: 
-
-                AltitudeController(float Kp_z=1.0,
-                                   float Kp_dz=1.0,
-                                   float Ki_dz=0,
-                                   float windupMax=0) {
-
-                    _Kp_z = Kp_z;
-                    _Kp_dz = Kp_dz;
-                    _Ki_dz = Ki_dz;
-                    _windupMax = windupMax;
-
-                    _tprev = 0;
-                    _errorIntegral = 0;
-                }
-
-                float getThrottle(float target,
-                                  float t,
-                                  float z,
-                                  float dzdt)
-                {
-                    debugline("%3.3f", z);
-
-                    // Compute dzdt setpoint and error
-                    float dzdt_target = (target - z) * _Kp_z;
-                    float dzdt_error = dzdt_target - dzdt;
-
-                    // Update error integral and error derivative
-                    _errorIntegral = 
-                        constrainAbs(_errorIntegral + dzdt_error * (t-_tprev),
-                                     _windupMax);
-                        
-                    // Track time
-                    _tprev = t;
-
-                    // Compute control u
-                    return _Kp_dz * dzdt_error + _Ki_dz * _errorIntegral;
-                }
-
-        }; // class AltitudeController
-
         AltitudeController _altitudeController;
 
         static constexpr double ALTITUDE_TARGET = 10;
+
+        // Helps synchronize threads
+        bool _running = false;
 
     public:
 
@@ -85,6 +32,8 @@ class FQuickstartFlightManager : public FFlightManager {
             : FFlightManager(dynamics)
         {
             _dynamics = dynamics;
+
+            _running = true;
         }
 
         ~FQuickstartFlightManager()
@@ -93,6 +42,10 @@ class FQuickstartFlightManager : public FFlightManager {
 
         virtual void getActuators(const double time, double * values) override
         {
+            if (!_running) {
+                return;
+            }
+
             float throttle = _altitudeController.getThrottle(
                     ALTITUDE_TARGET, 
                     time,

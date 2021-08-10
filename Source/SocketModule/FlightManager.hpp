@@ -34,6 +34,7 @@ class FSocketFlightManager : public FFlightManager {
 	    // Time : State : Demands
         double _telemetry[17] = {};
 
+        // Helps synchronize threads
         bool _running = false;
 
     public:

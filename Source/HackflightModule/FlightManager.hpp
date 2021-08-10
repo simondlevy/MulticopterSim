@@ -57,6 +57,9 @@ class FHackflightFlightManager : public FFlightManager {
         // Main firmware
         hf::Hackflight * _hackflight = NULL;
 
+        // Helps synchronize threads
+        bool _running = false;
+
     public:
 
         // Constructor
@@ -92,15 +95,32 @@ class FHackflightFlightManager : public FFlightManager {
 
             // Start Hackflight firmware, indicating already armed
             _hackflight->begin(true);
+
+            _running = true;
         }
 
         virtual ~FHackflightFlightManager(void)
         {
+            _running = false;
+
+            /*
+            delete _receiver;
+            delete _sensors;
             delete _hackflight;
+
+            _receiver = NULL;
+            _sensors = NULL;
+            _hackflight = NULL;
+            */
         }
 
+        // Runs on fast thread
         virtual void getActuators(const double time, double * values) override
         {
+            if (!(_receiver && _sensors && _hackflight && _running)) {
+                return;
+            }
+
             // Poll the "receiver" (joystick or game controller)
             _receiver->poll();
 
@@ -118,6 +138,7 @@ class FHackflightFlightManager : public FFlightManager {
             }
         }
 
+        // Runs on main thread
         void tick(void)
         {
             _receiver->tick();
