@@ -77,7 +77,8 @@ class FFlightManager : public FThreadedManager {
         {
         }
 
-        // Called by VehiclePawn::Tick() method to get actuator value for animation and sound
+        // Called by VehiclePawn::Tick() method to get actuator value for
+        // animation and sound
         double actuatorValue(uint8_t index)
         {
             return _actuatorValues[index];

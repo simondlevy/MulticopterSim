@@ -46,7 +46,7 @@ class FHackflightFlightManager : public FFlightManager {
         SimBoard _board;
 
         // "Receiver": joystick/gamepad
-        SimReceiver * _receiver = NULL;
+        SimReceiver _receiver;
 
         // "Sensors": directly from ground-truth
         SimSensors * _sensors = NULL;
@@ -75,10 +75,10 @@ class FHackflightFlightManager : public FFlightManager {
 
             // Pass PlayerController to receiver constructor in case we have no
             // joystick / game-controller
-            _receiver = new SimReceiver(pawn);
+            //_receiver = new SimReceiver(pawn);
 
             // Create Hackflight object
-            _hackflight = new hf::Hackflight(&_board, _receiver, _mixer);
+            _hackflight = new hf::Hackflight(&_board, &_receiver, _mixer);
 
             // Add simulated sensor suite
             _sensors = new SimSensors(_dynamics);
@@ -117,16 +117,16 @@ class FHackflightFlightManager : public FFlightManager {
         // Runs on fast thread
         virtual void getActuators(const double time, double * values) override
         {
-            if (!(_receiver && _sensors && _hackflight && _running)) {
+            if (!(/*_receiver && */_sensors && _hackflight && _running)) {
                 return;
             }
 
             // Poll the "receiver" (joystick or game controller)
-            _receiver->poll();
+            //_receiver->poll();
 
             // Update the Hackflight firmware, causing Hackflight's actuator
             // to set the values of the simulated motors
-            _hackflight->update();
+            //_hackflight->update();
 
             // Set the time in the simulated board, so it can be retrieved by
             // Hackflight
@@ -134,14 +134,14 @@ class FHackflightFlightManager : public FFlightManager {
 
             //  Get the new motor values
             for (uint8_t i=0; i < _actuatorCount; ++i) {
-                values[i] = _motors[i]->getValue();
+                //values[i] = _motors[i]->getValue();
             }
         }
 
         // Runs on main thread
         void tick(void)
         {
-            _receiver->tick();
+            //_receiver->tick();
         }
 
 }; // HackflightFlightManager

@@ -17,8 +17,6 @@ class FQuickstartFlightManager : public FFlightManager {
 
     private:
 
-        Dynamics * _dynamics = NULL;
-
         AltitudeController _altitudeController;
 
         static constexpr double ALTITUDE_TARGET = 10;
@@ -31,8 +29,6 @@ class FQuickstartFlightManager : public FFlightManager {
         FQuickstartFlightManager(Dynamics * dynamics)
             : FFlightManager(dynamics)
         {
-            _dynamics = dynamics;
-
             _running = true;
         }
 
