@@ -50,6 +50,8 @@ class FHackflightFlightManager : public FFlightManager {
         // Runs on fast thread
         virtual void getActuators(const double time, double * values) override
         {
+            // Poll the "receiver" (joystick or game controller)
+            _receiver->poll();
         }
 
         void tick(void)
