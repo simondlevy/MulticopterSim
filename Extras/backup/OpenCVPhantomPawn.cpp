@@ -25,7 +25,11 @@ void AOpenCVPhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void AOpenCVPhantomPawn::BeginPlay()
 {
-    _flightManager = new FHackflightFlightManager(this, &_mixer.mixer, _mixer.motors, &_phantom.dynamics);
+    _flightManager = new FHackflightFlightManager(
+           /* this,
+            &_mixer.mixer,
+            _mixer.motors,*/
+            &_phantom.dynamics);
 
     _phantom.BeginPlay(_flightManager);
 

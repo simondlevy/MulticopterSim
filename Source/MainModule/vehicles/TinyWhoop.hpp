@@ -128,7 +128,7 @@ class TinyWhoop {
 
         void EndPlay(void)
         {
-            FThreadedManager::stopThread((FThreadedManager **)&_flightManager);
+            FFlightManager::stopThread(&_flightManager);
         }
 
         void Tick(float DeltaSeconds)

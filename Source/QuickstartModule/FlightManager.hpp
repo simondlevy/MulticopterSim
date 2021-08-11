@@ -22,14 +22,14 @@ class FQuickstartFlightManager : public FFlightManager {
         static constexpr double ALTITUDE_TARGET = 10;
 
         // Helps synchronize threads
-        bool _running = false;
+        //bool _running = false;
 
     public:
 
         FQuickstartFlightManager(Dynamics * dynamics)
             : FFlightManager(dynamics)
         {
-            _running = true;
+            //_running = true;
         }
 
         ~FQuickstartFlightManager()
@@ -38,9 +38,10 @@ class FQuickstartFlightManager : public FFlightManager {
 
         virtual void getActuators(const double time, double * values) override
         {
+            /*
             if (!_running) {
                 return;
-            }
+            }*/
 
             float throttle = _altitudeController.getThrottle(
                     ALTITUDE_TARGET, 

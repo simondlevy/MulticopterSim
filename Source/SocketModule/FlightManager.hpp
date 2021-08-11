@@ -34,8 +34,8 @@ class FSocketFlightManager : public FFlightManager {
 	    // Time : State : Demands
         double _telemetry[17] = {};
 
-        // Helps synchronize threads
-        bool _running = false;
+        // Guards socket comms
+        bool _connected = false;
 
     public:
 
@@ -51,7 +51,7 @@ class FSocketFlightManager : public FFlightManager {
             _telemClient = new UdpClientSocket(host, telemPort);
             _motorServer = new UdpServerSocket(motorPort);
 
-            _running = true;
+            _connected = true;
         }
 		
         ~FSocketFlightManager()
@@ -67,12 +67,11 @@ class FSocketFlightManager : public FFlightManager {
             UdpServerSocket::free(_motorServer);
         }
 
-        virtual void getActuators(const double time,
-                double * actuatorValues) override
+        virtual void getActuators(const double time, double * values) override
         {
             // Avoid null-pointer exceptions at startup, freeze after control
             // program halts
-            if (!(_telemClient && _motorServer && _running)) {
+            if (!(_telemClient && _motorServer && _connected)) {
                 return;
             }
 
@@ -90,13 +89,13 @@ class FSocketFlightManager : public FFlightManager {
             // Send telemetry values to server
             _telemClient->sendData(_telemetry, sizeof(_telemetry));
 
-            // Get motor actuatorValues from server
-            _motorServer->receiveData(actuatorValues, 8 * _actuatorCount);
+            // Get motor values from server
+            _motorServer->receiveData(values, 8 * _actuatorCount);
 
             // Server sends a -1 to halt
-            if (actuatorValues[0] == -1) {
-				actuatorValues[0] = 0;
-				_running = false;
+            if (values[0] == -1) {
+				values[0] = 0;
+				_connected = false;
 				return;
 			}
         }
