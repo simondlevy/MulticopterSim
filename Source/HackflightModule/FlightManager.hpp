@@ -11,6 +11,20 @@
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
 
+#include <HF_pure.hpp>
+
+// PID controllers
+#include <hf_pidcontrollers/level.hpp>
+#include <hf_pidcontrollers/rate.hpp>
+#include <hf_pidcontrollers/yaw.hpp>
+#include <hf_pidcontrollers/althold.hpp>
+#include <hf_pidcontrollers/poshold.hpp>
+
+#include "SimReceiver.hpp"
+#include "SimBoard.hpp"
+#include "SimSensors.hpp"
+#include "SimMotor.hpp"
+
 class FHackflightFlightManager : public FFlightManager {
 
     public:
