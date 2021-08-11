@@ -16,7 +16,7 @@ class FHackflightFlightManager : public FFlightManager {
     public:
 
         // Constructor
-        FHackflightFlightManager(Dynamics * dynamics) 
+        FHackflightFlightManager(APawn * pawn, Dynamics * dynamics) 
             : FFlightManager(dynamics) 
         {
 
