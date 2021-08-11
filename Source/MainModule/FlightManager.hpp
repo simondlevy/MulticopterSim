@@ -21,9 +21,6 @@ class FFlightManager : public FThreadedManager {
         // For computing deltaT
         double   _previousTime = 0;
 
-        // Helps synchronize threads
-        bool _running = false;
-
         /**
          * Flight-control method running repeatedly on its own thread.  
          * Override this method to implement your own flight controller.
