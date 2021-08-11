@@ -27,13 +27,20 @@
 
 class FHackflightFlightManager : public FFlightManager {
 
+    private:
+
+        // "Receiver": joystick/gamepad
+        SimReceiver * _receiver = NULL;
+
     public:
 
         // Constructor
         FHackflightFlightManager(APawn * pawn, Dynamics * dynamics) 
             : FFlightManager(dynamics) 
         {
-
+            // Pass PlayerController to receiver constructor in case we have no
+            // joystick / game-controller
+            _receiver = new SimReceiver(pawn);
         }
 
         ~FHackflightFlightManager(void)
