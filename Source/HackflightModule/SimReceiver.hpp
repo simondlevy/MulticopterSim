@@ -23,7 +23,7 @@ class SimReceiver : public hf::Receiver {
 		static constexpr float DEMAND_SCALE = 1.0f;
 
         // Joystick (RC transmitter, game controller) or keyboard
-        //GameInput * _gameInput = NULL;
+        GameInput * _gameInput = NULL;
 
         // Helps mock up periodic availability of new data frame (output data
         // rate; ODR)
@@ -74,10 +74,10 @@ class SimReceiver : public hf::Receiver {
 
     public:
 
-        SimReceiver(/*APawn * pawn,*/ uint16_t updateFrequency=50)
+        SimReceiver(APawn * pawn, uint16_t updateFrequency=50)
             : Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
         {
-            //_gameInput = new GameInput(pawn);
+            _gameInput = new GameInput(pawn);
 
 			_deltaT = 1./updateFrequency;
 			_previousTime = 0;
@@ -85,14 +85,14 @@ class SimReceiver : public hf::Receiver {
 
 		void poll(void)
 		{
-		    //_gameInput->getJoystick(joyvals);
+		    _gameInput->getJoystick(joyvals);
             d2f();
 
         }
 
         void tick(void)
         {
-            //_gameInput->getKeypad(joyvals);
+            _gameInput->getKeypad(joyvals);
             d2f();
         }
 
