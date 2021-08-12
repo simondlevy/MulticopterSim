@@ -58,8 +58,6 @@ class FHackflightFlightManager : public FFlightManager {
 
         void tick(void)
         {
-            // Get demands from keypad
-            _gameInput->getKeypad(_joyvals);
         }
 
 }; // FHackflightFlightManager
