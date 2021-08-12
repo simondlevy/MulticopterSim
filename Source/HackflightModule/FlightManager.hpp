@@ -18,7 +18,7 @@
 #include "../SocketModule/sockets/UdpClientSocket.hpp"
 #include "../SocketModule/sockets/UdpServerSocket.hpp"
 
-class FSocketFlightManager : public FFlightManager {
+class FHackflightFlightManager : public FFlightManager {
 
     private:
 
@@ -37,7 +37,7 @@ class FSocketFlightManager : public FFlightManager {
 
     public:
 
-        FSocketFlightManager(APawn * pawn,
+        FHackflightFlightManager(APawn * pawn,
                 Dynamics * dynamics,
                 const char * host="127.0.0.1",
                 const short motorPort=5000,
@@ -52,7 +52,7 @@ class FSocketFlightManager : public FFlightManager {
             _connected = true;
         }
 		
-        ~FSocketFlightManager()
+        ~FHackflightFlightManager()
         {
             // Send a bogus time value to tell remote server we're done
             _telemetry[0] = -1;
@@ -104,4 +104,4 @@ class FSocketFlightManager : public FFlightManager {
             _gameInput->getKeypad(&_telemetry[13]);
         }
 
-}; // FSocketFlightManager
+}; // FHackflightFlightManager
