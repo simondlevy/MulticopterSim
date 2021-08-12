@@ -15,9 +15,6 @@
 #include "../MainModule/Dynamics.hpp"
 #include "../MainModule/GameInput.hpp"
 
-#include "../SocketModule/sockets/UdpClientSocket.hpp"
-#include "../SocketModule/sockets/UdpServerSocket.hpp"
-
 class FHackflightFlightManager : public FFlightManager {
 
     private:
@@ -33,12 +30,8 @@ class FHackflightFlightManager : public FFlightManager {
 
     public:
 
-        FHackflightFlightManager(APawn * pawn,
-                Dynamics * dynamics,
-                const char * host="127.0.0.1",
-                const short motorPort=5000,
-                const short telemPort=5001) : 
-            FFlightManager(dynamics)
+        FHackflightFlightManager(APawn * pawn, Dynamics * dynamics)
+            : FFlightManager(dynamics)
         {
             _gameInput = new GameInput(pawn);
 
