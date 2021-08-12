@@ -18,8 +18,6 @@
 #include "sockets/UdpClientSocket.hpp"
 #include "sockets/UdpServerSocket.hpp"
 
-#include "SocketCamera.hpp"
-
 class FSocketFlightManager : public FFlightManager {
 
     private:

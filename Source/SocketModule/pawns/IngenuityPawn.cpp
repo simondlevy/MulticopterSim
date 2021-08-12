@@ -11,8 +11,6 @@
 AIngenuityPawn::AIngenuityPawn()
 {
     _ingenuity.build(this);
-
-    _ingenuity.addCamera(&_camera);
 }
 
 void AIngenuityPawn::PostInitializeComponents()

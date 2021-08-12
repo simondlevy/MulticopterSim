@@ -27,9 +27,6 @@ class AIngenuityPawn : public APawn {
         // Helper class
         Ingenuity _ingenuity;
 
-        // Camera
-        SocketCamera _camera = SocketCamera(Camera::X+.25, Camera::Y, Camera::Z+.60);
-
         FSocketFlightManager * _flightManager = NULL;
 
     protected:

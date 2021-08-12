@@ -27,8 +27,6 @@ class APhantomPawn : public APawn {
         // Helper class
         Phantom _phantom;
 
-        // Camera
-        SocketCamera _camera;
 
         FSocketFlightManager * _flightManager = NULL;
 
