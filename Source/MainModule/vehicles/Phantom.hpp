@@ -100,7 +100,7 @@ class Phantom {
 
         void addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy)
         {
-            vehicle.addRotor(mesh, dx*0.12, dy*0.12, 0.17);
+            vehicle.addRotor(mesh, dx*0.12, dy*0.12, 0.16);
         }
 
 }; // class Phantom 
