@@ -23,7 +23,6 @@ class FHackflightFlightManager : public FFlightManager {
     private:
 
         // Socket comms
-        UdpClientSocket * _telemClient = NULL;
         UdpServerSocket * _motorServer = NULL;
 
         // Joystick (RC transmitter, game controller) or keypad
@@ -46,7 +45,6 @@ class FHackflightFlightManager : public FFlightManager {
         {
             _gameInput = new GameInput(pawn);
 
-            _telemClient = new UdpClientSocket(host, telemPort);
             _motorServer = new UdpServerSocket(motorPort);
 
             _connected = true;
@@ -56,12 +54,8 @@ class FHackflightFlightManager : public FFlightManager {
         {
             // Send a bogus time value to tell remote server we're done
             _telemetry[0] = -1;
-            if (_telemClient) {
-                _telemClient->sendData(_telemetry, sizeof(_telemetry));
-            }
 
             // Close sockets
-            UdpClientSocket::free(_telemClient);
             UdpServerSocket::free(_motorServer);
         }
 
@@ -69,7 +63,7 @@ class FHackflightFlightManager : public FFlightManager {
         {
             // Avoid null-pointer exceptions at startup, freeze after control
             // program halts
-            if (!(_telemClient && _motorServer && _connected)) {
+            if (!(_motorServer && _connected)) {
                 return;
             }
 
@@ -83,9 +77,6 @@ class FHackflightFlightManager : public FFlightManager {
 
             // Remaining values are stick demands
             _gameInput->getJoystick(&_telemetry[13]);
-
-            // Send telemetry values to server
-            _telemClient->sendData(_telemetry, sizeof(_telemetry));
 
             // Get motor values from server
             _motorServer->receiveData(values, 8 * _actuatorCount);
