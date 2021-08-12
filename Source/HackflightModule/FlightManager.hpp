@@ -80,13 +80,6 @@ class FHackflightFlightManager : public FFlightManager {
 
             // Get motor values from server
             _motorServer->receiveData(values, 8 * _actuatorCount);
-
-            // Server sends a -1 to halt
-            if (values[0] == -1) {
-				values[0] = 0;
-				_connected = false;
-				return;
-			}
         }
 
         void tick(void)
