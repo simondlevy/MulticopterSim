@@ -22,9 +22,6 @@ class FHackflightFlightManager : public FFlightManager {
 
     private:
 
-        // Socket comms
-        UdpServerSocket * _motorServer = NULL;
-
         // Joystick (RC transmitter, game controller) or keypad
         GameInput * _gameInput = NULL;
 
@@ -32,7 +29,7 @@ class FHackflightFlightManager : public FFlightManager {
         double _telemetry[17] = {};
 
         // Guards socket comms
-        bool _connected = false;
+        bool _ready = false;
 
     public:
 
@@ -45,25 +42,20 @@ class FHackflightFlightManager : public FFlightManager {
         {
             _gameInput = new GameInput(pawn);
 
-            _motorServer = new UdpServerSocket(motorPort);
-
-            _connected = true;
+            _ready = true;
         }
 		
         ~FHackflightFlightManager()
         {
             // Send a bogus time value to tell remote server we're done
             _telemetry[0] = -1;
-
-            // Close sockets
-            UdpServerSocket::free(_motorServer);
         }
 
         virtual void getActuators(const double time, double * values) override
         {
             // Avoid null-pointer exceptions at startup, freeze after control
             // program halts
-            if (!(_motorServer && _connected)) {
+            if (!_ready) {
                 return;
             }
 
@@ -77,9 +69,6 @@ class FHackflightFlightManager : public FFlightManager {
 
             // Remaining values are stick demands
             _gameInput->getJoystick(&_telemetry[13]);
-
-            // Get motor values from server
-            _motorServer->receiveData(values, 8 * _actuatorCount);
         }
 
         void tick(void)
