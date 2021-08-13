@@ -23,9 +23,6 @@ class FHackflightFlightManager : public FFlightManager {
         // Joystick (RC transmitter, game controller) or keypad
         SimReceiver * _receiver = NULL;
         
-	    // Time : State : Demands
-        double _joyvals[4] = {};
-
         // Guards socket comms
         bool _ready = false;
 
