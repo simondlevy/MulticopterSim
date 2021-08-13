@@ -54,6 +54,9 @@ class SimReceiver : public hf::Receiver {
         // copy demands to floating-point values for Hackflight
         void d2f()
         {
+            for (uint8_t i=0; i<4; ++i) {
+                rawvals[i] = _joyvals[i];
+            }
         }
 
     public:
@@ -67,7 +70,7 @@ class SimReceiver : public hf::Receiver {
 		void poll(void)
 		{
 		    _gameInput->getJoystick(_joyvals);
-            //d2f();
+            d2f();
 
         }
 
