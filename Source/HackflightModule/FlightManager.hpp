@@ -24,6 +24,9 @@
 #include <hf_pidcontrollers/poshold.hpp>
 
 #include "SimReceiver.hpp"
+#include "SimBoard.hpp"
+#include "SimSensors.hpp"
+#include "SimMotor.hpp"
 
 class FHackflightFlightManager : public FFlightManager {
 
@@ -36,8 +39,23 @@ class FHackflightFlightManager : public FFlightManager {
         hf::AltitudeHoldPid _altHoldPid;
         hf::PositionHoldPid _posHoldPid;
 
-        // Joystick (RC transmitter, game controller) or keypad
+        // Mixer
+        hf::Mixer * _mixer = NULL;
+
+        // "Board": implements getTime()
+        SimBoard _board;
+
+        // "Receiver": joystick/gamepad
         SimReceiver * _receiver = NULL;
+
+        // "Sensors": directly from ground-truth
+        SimSensors * _sensors = NULL;
+
+        // "Motors": passed to mixer so it can modify them
+        SimMotor * _motors[100] = {};
+
+        // Main firmware
+        hf::Hackflight * _hackflight = NULL;
         
         // Guards socket comms
         bool _ready = false;
