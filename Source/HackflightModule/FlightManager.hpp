@@ -79,6 +79,9 @@ class FHackflightFlightManager : public FFlightManager {
             // joystick / game-controller
             _receiver = new SimReceiver(pawn);
 
+            // Create Hackflight object
+            _hackflight = new hf::Hackflight(&_board, _receiver, _mixer);
+
             _ready = true;
         }
 
