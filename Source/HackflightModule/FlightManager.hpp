@@ -69,11 +69,19 @@ class FHackflightFlightManager : public FFlightManager {
                 Dynamics * dynamics)
             : FFlightManager(dynamics)
         {
+            // Store mixer, motors for later
+            _mixer = mixer;
+            for (uint8_t k=0; k<_actuatorCount; ++k) {
+                _motors[k] = motors[k];
+            }
+
+            // Pass PlayerController to receiver constructor in case we have no
+            // joystick / game-controller
             _receiver = new SimReceiver(pawn);
 
             _ready = true;
         }
-		
+
         ~FHackflightFlightManager()
         {
         }
