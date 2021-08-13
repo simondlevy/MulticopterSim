@@ -22,8 +22,8 @@ class FHackflightFlightManager : public FFlightManager {
     private:
 
         // Joystick (RC transmitter, game controller) or keypad
-        GameInput * _gameInput = NULL;
-
+        SimReceiver * _receiver = NULL;
+        
 	    // Time : State : Demands
         double _joyvals[4] = {};
 
@@ -35,7 +35,7 @@ class FHackflightFlightManager : public FFlightManager {
         FHackflightFlightManager(APawn * pawn, Dynamics * dynamics)
             : FFlightManager(dynamics)
         {
-            _gameInput = new GameInput(pawn);
+            _receiver = new SimReceiver(pawn);
 
             _ready = true;
         }
@@ -52,8 +52,7 @@ class FHackflightFlightManager : public FFlightManager {
                 return;
             }
 
-            // Remaining values are stick demands
-            _gameInput->getJoystick(_joyvals);
+            _receiver->poll();
         }
 
         void tick(void)

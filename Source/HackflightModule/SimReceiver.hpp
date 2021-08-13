@@ -25,12 +25,8 @@ class SimReceiver : public hf::Receiver {
         // Joystick (RC transmitter, game controller) or keyboard
         GameInput * _gameInput = NULL;
 
-        // Helps mock up periodic availability of new data frame (output data
-        // rate; ODR)
-        double _deltaT = 0;
-		double _previousTime = 0;
+        double _joyvals[4] = {};
 
-        double joyvals[4] = {};
 
     protected:
 
@@ -47,15 +43,6 @@ class SimReceiver : public hf::Receiver {
 
    		bool gotNewFrame(void) override
 		{
-			// Get a high-fidelity current time value from the OS
-			double currentTime = FPlatformTime::Seconds();
-
-			if (currentTime-_previousTime > _deltaT) {
-				_previousTime = currentTime;
-				static uint32_t count;
-				return true;
-			}
-
 			return false;
 		}
 
@@ -67,9 +54,6 @@ class SimReceiver : public hf::Receiver {
         // copy demands to floating-point values for Hackflight
         void d2f()
         {
-            for (uint8_t i=0; i<4; ++i) {
-                rawvals[i] = joyvals[i];
-            }
         }
 
     public:
@@ -78,22 +62,19 @@ class SimReceiver : public hf::Receiver {
             : Receiver(DEFAULT_CHANNEL_MAP, DEMAND_SCALE)
         {
             _gameInput = new GameInput(pawn);
-
-			_deltaT = 1./updateFrequency;
-			_previousTime = 0;
 		}
 
 		void poll(void)
 		{
-		    _gameInput->getJoystick(joyvals);
-            d2f();
+		    _gameInput->getJoystick(_joyvals);
+            //d2f();
 
         }
 
         void tick(void)
         {
-            _gameInput->getKeypad(joyvals);
-            d2f();
+            //_gameInput->getKeypad(joyvals);
+            //d2f();
         }
 
 }; // class SimReceiver
