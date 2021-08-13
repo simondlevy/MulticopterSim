@@ -85,6 +85,15 @@ class FHackflightFlightManager : public FFlightManager {
             // Add simulated sensor suite
             _sensors = new SimSensors(_dynamics);
             _hackflight->addSensor(_sensors);
+ 
+            // Add PID controllers for all aux switch positions.
+            // Position hold goes first, so it can have access to roll and yaw
+            // stick demands before other PID controllers modify them.
+            _hackflight->addClosedLoopController(&_posHoldPid);
+            _hackflight->addClosedLoopController(&_ratePid);
+            _hackflight->addClosedLoopController(&_yawPid);
+            _hackflight->addClosedLoopController(&_levelPid);
+            _hackflight->addClosedLoopController(&_altHoldPid);
 
             _ready = true;
         }
