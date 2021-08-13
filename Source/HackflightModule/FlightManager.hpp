@@ -13,7 +13,6 @@
 
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
-#include "../MainModule/GameInput.hpp"
 
 #include "SimReceiver.hpp"
 
