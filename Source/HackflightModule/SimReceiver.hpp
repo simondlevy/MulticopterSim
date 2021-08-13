@@ -76,8 +76,8 @@ class SimReceiver : public hf::Receiver {
 
         void tick(void)
         {
-            //_gameInput->getKeypad(joyvals);
-            //d2f();
+            _gameInput->getKeypad(_joyvals);
+            d2f();
         }
 
 }; // class SimReceiver
