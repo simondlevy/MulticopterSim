@@ -82,6 +82,10 @@ class FHackflightFlightManager : public FFlightManager {
             // Create Hackflight object
             _hackflight = new hf::Hackflight(&_board, _receiver, _mixer);
 
+            // Add simulated sensor suite
+            _sensors = new SimSensors(_dynamics);
+            _hackflight->addSensor(_sensors);
+
             _ready = true;
         }
 
