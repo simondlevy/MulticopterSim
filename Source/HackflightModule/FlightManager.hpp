@@ -30,11 +30,11 @@ class FHackflightFlightManager : public FFlightManager {
     private:
 
         // PID controllers
-		hf::RatePid ratePid = hf::RatePid(0.225, 0.001875, 0.375);
-		hf::YawPid yawPid = hf::YawPid(1.0625, 0.005625);
-        hf::LevelPid levelPid = hf::LevelPid(0.20);
-        hf::AltitudeHoldPid altHoldPid;
-        hf::PositionHoldPid posHoldPid;
+		hf::RatePid _ratePid = hf::RatePid(0.225, 0.001875, 0.375);
+		hf::YawPid _yawPid = hf::YawPid(1.0625, 0.005625);
+        hf::LevelPid _levelPid = hf::LevelPid(0.20);
+        hf::AltitudeHoldPid _altHoldPid;
+        hf::PositionHoldPid _posHoldPid;
 
         // Joystick (RC transmitter, game controller) or keypad
         SimReceiver * _receiver = NULL;
@@ -44,7 +44,11 @@ class FHackflightFlightManager : public FFlightManager {
 
     public:
 
-        FHackflightFlightManager(APawn * pawn, Dynamics * dynamics)
+        FHackflightFlightManager(
+                APawn * pawn,
+                hf::Mixer * mixer,
+                SimMotor ** motors,
+                Dynamics * dynamics)
             : FFlightManager(dynamics)
         {
             _receiver = new SimReceiver(pawn);
