@@ -43,7 +43,7 @@ class SimReceiver : public hf::Receiver {
 
    		bool gotNewFrame(void) override
 		{
-			return false;
+			return true;
 		}
 
         virtual void readRawvals(void) override
