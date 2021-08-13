@@ -95,6 +95,9 @@ class FHackflightFlightManager : public FFlightManager {
             _hackflight->addClosedLoopController(&_levelPid);
             _hackflight->addClosedLoopController(&_altHoldPid);
 
+            // Start Hackflight firmware, indicating already armed
+            _hackflight->begin(true);
+
             _ready = true;
         }
 
