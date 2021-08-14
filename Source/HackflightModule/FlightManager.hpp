@@ -124,6 +124,10 @@ class FHackflightFlightManager : public FFlightManager {
             // Hackflight
             _board.set(time);
 
+            //  Get the new motor values
+            for (uint8_t i=0; i < _actuatorCount; ++i) {
+                values[i] = _motors[i]->getValue();
+            }
         }
 
         void tick(void)
