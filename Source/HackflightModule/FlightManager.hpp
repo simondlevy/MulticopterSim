@@ -119,6 +119,11 @@ class FHackflightFlightManager : public FFlightManager {
             // Update the Hackflight firmware, causing Hackflight's actuator
             // to set the values of the simulated motors
             _hackflight->update();
+
+            // Set the time in the simulated board, so it can be retrieved by
+            // Hackflight
+            _board.set(time);
+
         }
 
         void tick(void)
