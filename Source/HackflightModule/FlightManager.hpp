@@ -113,7 +113,12 @@ class FHackflightFlightManager : public FFlightManager {
                 return;
             }
 
+            // Poll the "receiver" (joystick or game controller)
             _receiver->poll();
+
+            // Update the Hackflight firmware, causing Hackflight's actuator
+            // to set the values of the simulated motors
+            _hackflight->update();
         }
 
         void tick(void)
