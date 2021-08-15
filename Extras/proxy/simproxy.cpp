@@ -10,8 +10,9 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "../../Source/SocketModule/sockets/TwoWayUdp.hpp"
-#include "../../Source/SocketModule/sockets/TcpClientSocket.hpp"
+#include "../../Source/SocketModule/sockets/UdpClientSocket.hpp"
+#include "../../Source/SocketModule/sockets/UdpServerSocket.hpp"
+//#include "../../Source/SocketModule/sockets/TcpClientSocket.hpp"
 
 #include "../../Source/MainModule/dynamics/fixedpitch/QuadXAP.hpp"
 
@@ -19,7 +20,7 @@
 static const char * HOST = "127.0.0.1"; // localhost
 static uint16_t  MOTOR_PORT = 5000;
 static uint16_t  TELEM_PORT = 5001;
-static uint16_t  IMAGE_PORT = 5002;
+//static uint16_t  IMAGE_PORT = 5002;
 
 // Image size
 static uint16_t IMAGE_ROWS = 480;
@@ -71,11 +72,14 @@ int main(int argc, char ** argv)
     // Loop forever, waiting for clients
     while (true) {
 
-        // Create two-way comms for telemetry out, motors in
-        TwoWayUdp twoWayUdp = TwoWayUdp(HOST, TELEM_PORT, MOTOR_PORT);
+        // Create sockets for telemetry out, motors in
+        UdpClientSocket telemClient =
+            UdpClientSocket(HOST, TELEM_PORT);
+        UdpServerSocket motorServer =
+            UdpServerSocket(MOTOR_PORT);
 
         // Create one-way server for images out
-        TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
+        //TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
 
         // Create quadcopter dynamics model
         QuadXAPDynamics dynamics = QuadXAPDynamics(vparams, fparams);
@@ -86,7 +90,7 @@ int main(int argc, char ** argv)
         dynamics.init(rotation);
 
         // Open image socket's connection to host
-        imageSocket.openConnection();
+        //imageSocket.openConnection();
 
         // Loop forever, communicating with client
         while (true) {
@@ -101,17 +105,22 @@ int main(int argc, char ** argv)
             }
 
             // Send telemetry data
-            twoWayUdp.send(telemetry, sizeof(telemetry));
+            telemClient.sendData(telemetry, sizeof(telemetry));
 
             // Send image data
-            imageSocket.sendData(image, sizeof(image));
+            //imageSocket.sendData(image, sizeof(image));
 
             // Get incoming motor values
             double motorvals[4] = {};
-            twoWayUdp.receive(motorvals, sizeof(motorvals));
+            motorServer.receiveData(motorvals, sizeof(motorvals));
 
             printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
-                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], dynamics.x(Dynamics::STATE_Z));
+                    time,
+                    motorvals[0],
+                    motorvals[1],
+                    motorvals[2],
+                    motorvals[3],
+                    dynamics.x(Dynamics::STATE_Z));
 
             // Update dynamics with motor values
             dynamics.update(motorvals, DELTA_T);
