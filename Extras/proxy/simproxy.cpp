@@ -23,8 +23,8 @@ static uint16_t  TELEM_PORT = 5001;
 //static uint16_t  IMAGE_PORT = 5002;
 
 // Image size
-static uint16_t IMAGE_ROWS = 480;
-static uint16_t IMAGE_COLS = 640;
+//static uint16_t IMAGE_ROWS = 480;
+//static uint16_t IMAGE_COLS = 640;
 
 // Time constant
 static const double DELTA_T = 0.001;
@@ -56,6 +56,7 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
 
 int main(int argc, char ** argv)
 {
+    /*
     // Allocate image bytes (rows * cols * rgba)
     uint8_t image[IMAGE_ROWS * IMAGE_COLS * 4];
 
@@ -68,6 +69,7 @@ int main(int argc, char ** argv)
             image[(j*IMAGE_COLS+l)*4] = 255;
         }
     }
+    */
 
     // Loop forever, waiting for clients
     while (true) {
@@ -95,14 +97,22 @@ int main(int argc, char ** argv)
         // Loop forever, communicating with client
         while (true) {
 
-            // Time + 12D state vector (Bouabdallah 2004)
-            double telemetry[13] = {0};
+            // To be sent to client
+            double telemetry[17] = {0};
 
-            // Fill outgoing telemetry data
+            // First value is time
             telemetry[0] = time;
+
+            // Next 12 values are 12D state vector
             for (uint8_t k=0; k<12; ++k) {
                 telemetry[k+1] = dynamics.x(k);
             }
+
+            // Last four values are receiver demands
+            telemetry[13] = 0.1;
+            telemetry[14] = 0.2;
+            telemetry[15] = 0.3;
+            telemetry[16] = 0.4;
 
             // Send telemetry data
             telemClient.sendData(telemetry, sizeof(telemetry));
