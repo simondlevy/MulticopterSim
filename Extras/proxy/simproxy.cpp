@@ -10,8 +10,9 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "../../Source/SocketModule/sockets/TwoWayUdp.hpp"
-#include "../../Source/SocketModule/sockets/TcpClientSocket.hpp"
+#include "../../Source/SocketModule/sockets/UdpClientSocket.hpp"
+#include "../../Source/SocketModule/sockets/UdpServerSocket.hpp"
+//#include "../../Source/SocketModule/sockets/TcpClientSocket.hpp"
 
 #include "../../Source/MainModule/dynamics/fixedpitch/QuadXAP.hpp"
 
@@ -19,11 +20,11 @@
 static const char * HOST = "127.0.0.1"; // localhost
 static uint16_t  MOTOR_PORT = 5000;
 static uint16_t  TELEM_PORT = 5001;
-static uint16_t  IMAGE_PORT = 5002;
+//static uint16_t  IMAGE_PORT = 5002;
 
 // Image size
-static uint16_t IMAGE_ROWS = 480;
-static uint16_t IMAGE_COLS = 640;
+//static uint16_t IMAGE_ROWS = 480;
+//static uint16_t IMAGE_COLS = 640;
 
 // Time constant
 static const double DELTA_T = 0.001;
@@ -55,6 +56,7 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
 
 int main(int argc, char ** argv)
 {
+    /*
     // Allocate image bytes (rows * cols * rgba)
     uint8_t image[IMAGE_ROWS * IMAGE_COLS * 4];
 
@@ -67,15 +69,19 @@ int main(int argc, char ** argv)
             image[(j*IMAGE_COLS+l)*4] = 255;
         }
     }
+    */
 
     // Loop forever, waiting for clients
     while (true) {
 
-        // Create two-way comms for telemetry out, motors in
-        TwoWayUdp twoWayUdp = TwoWayUdp(HOST, TELEM_PORT, MOTOR_PORT);
+        // Create sockets for telemetry out, motors in
+        UdpClientSocket telemClient =
+            UdpClientSocket(HOST, TELEM_PORT);
+        UdpServerSocket motorServer =
+            UdpServerSocket(MOTOR_PORT);
 
         // Create one-way server for images out
-        TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
+        //TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
 
         // Create quadcopter dynamics model
         QuadXAPDynamics dynamics = QuadXAPDynamics(vparams, fparams);
@@ -86,32 +92,45 @@ int main(int argc, char ** argv)
         dynamics.init(rotation);
 
         // Open image socket's connection to host
-        imageSocket.openConnection();
+        //imageSocket.openConnection();
 
         // Loop forever, communicating with client
         while (true) {
 
-            // Time + 12D state vector (Bouabdallah 2004)
-            double telemetry[13] = {0};
+            // To be sent to client
+            double telemetry[17] = {0};
 
-            // Fill outgoing telemetry data
+            // First value is time
             telemetry[0] = time;
+
+            // Next 12 values are 12D state vector
             for (uint8_t k=0; k<12; ++k) {
                 telemetry[k+1] = dynamics.x(k);
             }
 
+            // Last four values are receiver demands
+            telemetry[13] = 0.1;
+            telemetry[14] = 0.2;
+            telemetry[15] = 0.3;
+            telemetry[16] = 0.4;
+
             // Send telemetry data
-            twoWayUdp.send(telemetry, sizeof(telemetry));
+            telemClient.sendData(telemetry, sizeof(telemetry));
 
             // Send image data
-            imageSocket.sendData(image, sizeof(image));
+            //imageSocket.sendData(image, sizeof(image));
 
             // Get incoming motor values
             double motorvals[4] = {};
-            twoWayUdp.receive(motorvals, sizeof(motorvals));
+            motorServer.receiveData(motorvals, sizeof(motorvals));
 
             printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
-                    time, motorvals[0], motorvals[1], motorvals[2], motorvals[3], dynamics.x(Dynamics::STATE_Z));
+                    time,
+                    motorvals[0],
+                    motorvals[1],
+                    motorvals[2],
+                    motorvals[3],
+                    dynamics.x(Dynamics::STATE_Z));
 
             // Update dynamics with motor values
             dynamics.update(motorvals, DELTA_T);
