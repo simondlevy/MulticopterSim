@@ -35,6 +35,9 @@ class FSocketFlightManager : public FFlightManager {
         // Guards socket comms
         bool _connected = false;
 
+        // Helps remind us to turn on the transmitter
+        bool _gotReceiverSignal = false;
+
     public:
 
         FSocketFlightManager(APawn * pawn,
@@ -81,8 +84,14 @@ class FSocketFlightManager : public FFlightManager {
                 _telemetry[k+1] = _dynamics->x(k);
             }
 
+            if (!_gotReceiverSignal) {
+                debugline("Did you turn on the transmitter?");
+            }
+
             // Remaining values are stick demands
             _gameInput->getJoystick(&_telemetry[13]);
+
+            _gotReceiverSignal = true;
 
             // Send telemetry values to server
             _telemClient->sendData(_telemetry, sizeof(_telemetry));

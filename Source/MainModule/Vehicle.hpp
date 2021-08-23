@@ -232,20 +232,22 @@ class Vehicle {
         virtual void animateActuators(void)
         {
             // Compute the sum of the rotor values
-            float rotorsum = 0;
+            float rotorSum = 0;
             for (uint8_t j = 0; j < _nrotors; ++j) {
-                rotorsum += _flightManager->actuatorValue(j);
+                rotorSum += _flightManager->actuatorValue(j);
             }
+
+            debugline("%f", rotorSum);
 
             // Rotate rotors. For visual effect, we can ignore actual rotor
             // values, and just keep increasing the rotation.
-            if (rotorsum > 0) {
+            if (rotorSum > 0) {
                 rotateRotors(_rotorDirections);
             }
 
             // Add mean to circular buffer for moving average
             _bufferIndex = _rotorBuffer->GetNextIndex(_bufferIndex);
-            (*_rotorBuffer)[_bufferIndex] = rotorsum / _nrotors;
+            (*_rotorBuffer)[_bufferIndex] = rotorSum / _nrotors;
 
             // Compute the mean rotor value over the buffer frames
             float smoothedRotorMean = 0;
