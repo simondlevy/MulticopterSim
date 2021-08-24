@@ -97,7 +97,7 @@ class FHackflightFlightManager : public FFlightManager {
             // stick demands before other PID controllers modify them.
             // _hackflight->addClosedLoopController(&_posHoldPid);
             _hackflight->addClosedLoopController(&_ratePid);
-            // _hackflight->addClosedLoopController(&_yawPid);
+            _hackflight->addClosedLoopController(&_yawPid);
             // _hackflight->addClosedLoopController(&_levelPid);
             _hackflight->addClosedLoopController(&_altHoldPid);
 
