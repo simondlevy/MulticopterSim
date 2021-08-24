@@ -25,10 +25,12 @@
 
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
-#include "SimGyrometer.hpp"
-#include "SimQuaternion.hpp"
-#include "SimAltimeter.hpp"
 #include "SimMotor.hpp"
+
+#include "sensors/SimGyrometer.hpp"
+#include "sensors/SimQuaternion.hpp"
+#include "sensors/SimAltimeter.hpp"
+// #include "sensors/SimOpticalFlow.hpp"
 
 class FHackflightFlightManager : public FFlightManager {
 

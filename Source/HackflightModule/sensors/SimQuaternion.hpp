@@ -1,5 +1,8 @@
 /*
-   Simulate altimeter using vehicle kinematics
+   Simulate quaternion "sensor" using vehicle kinematics
+
+   We go directly from the Euler angles in the kinematics to the Euler angles in the
+   vehicle state.
 
    Copyright(C) 2019 Simon D.Levy
 
@@ -15,7 +18,7 @@
 #include <RFT_sensor.hpp>
 #include <RFT_filters.hpp>
 
-class SimAltimeter : public rft::Sensor {
+class SimQuaternion : public rft::Sensor {
 
     protected:
 
@@ -24,18 +27,20 @@ class SimAltimeter : public rft::Sensor {
 
         virtual void modifyState(rft::State * state, float time) override
         {
+            (void)time;
+
             hf::State * hfstate = (hf::State *)state;
 
-            // Negate for NED => ENU conversion
-            hfstate->x[hf::State::Z] = -_dynamics->x(hf::State::Z);
-            hfstate->x[hf::State::DZ] = -_dynamics->x(hf::State::DZ);
+            hfstate->x[hf::State::PHI] = _dynamics->x(hf::State::PHI);
+            hfstate->x[hf::State::THETA] = _dynamics->x(hf::State::THETA);
+            hfstate->x[hf::State::PSI] = _dynamics->x(hf::State::PSI);
         }
 
     public:
 
-        SimAltimeter(Dynamics * dynamics)
+        SimQuaternion(Dynamics * dynamics)
         {
             _dynamics = dynamics;
         }
 
-}; // class SimSensor
+}; // class SimQuaternion

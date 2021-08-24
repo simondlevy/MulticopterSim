@@ -1,8 +1,5 @@
 /*
-   Simulate quaternion "sensor" using vehicle kinematics
-
-   We go directly from the Euler angles in the kinematics to the Euler angles in the
-   vehicle state.
+   Simulate gyrometer using vehicle kinematics
 
    Copyright(C) 2019 Simon D.Levy
 
@@ -18,7 +15,7 @@
 #include <RFT_sensor.hpp>
 #include <RFT_filters.hpp>
 
-class SimQuaternion : public rft::Sensor {
+class SimGyrometer : public rft::Sensor {
 
     protected:
 
@@ -31,16 +28,17 @@ class SimQuaternion : public rft::Sensor {
 
             hf::State * hfstate = (hf::State *)state;
 
-            hfstate->x[hf::State::PHI] = _dynamics->x(hf::State::PHI);
-            hfstate->x[hf::State::THETA] = _dynamics->x(hf::State::THETA);
-            hfstate->x[hf::State::PSI] = _dynamics->x(hf::State::PSI);
+            // Negate for NED => ENU conversion
+            hfstate->x[hf::State::DPHI] = _dynamics->x(hf::State::DPHI); 
+            hfstate->x[hf::State::DTHETA] = _dynamics->x(hf::State::DTHETA); 
+            hfstate->x[hf::State::DPSI] = _dynamics->x(hf::State::DPSI); 
         }
 
     public:
 
-        SimQuaternion(Dynamics * dynamics)
+        SimGyrometer(Dynamics * dynamics)
         {
             _dynamics = dynamics;
         }
 
-}; // class SimSensor
+}; // class SimGyrometer

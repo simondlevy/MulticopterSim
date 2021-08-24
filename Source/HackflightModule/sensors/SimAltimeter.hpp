@@ -1,5 +1,5 @@
 /*
-   Simulate gyrometer using vehicle kinematics
+   Simulate altimeter using vehicle kinematics
 
    Copyright(C) 2019 Simon D.Levy
 
@@ -15,7 +15,7 @@
 #include <RFT_sensor.hpp>
 #include <RFT_filters.hpp>
 
-class SimGyrometer : public rft::Sensor {
+class SimAltimeter : public rft::Sensor {
 
     protected:
 
@@ -24,21 +24,18 @@ class SimGyrometer : public rft::Sensor {
 
         virtual void modifyState(rft::State * state, float time) override
         {
-            (void)time;
-
             hf::State * hfstate = (hf::State *)state;
 
             // Negate for NED => ENU conversion
-            hfstate->x[hf::State::DPHI] = _dynamics->x(hf::State::DPHI); 
-            hfstate->x[hf::State::DTHETA] = _dynamics->x(hf::State::DTHETA); 
-            hfstate->x[hf::State::DPSI] = _dynamics->x(hf::State::DPSI); 
+            hfstate->x[hf::State::Z] = -_dynamics->x(hf::State::Z);
+            hfstate->x[hf::State::DZ] = -_dynamics->x(hf::State::DZ);
         }
 
     public:
 
-        SimGyrometer(Dynamics * dynamics)
+        SimAltimeter(Dynamics * dynamics)
         {
             _dynamics = dynamics;
         }
 
-}; // class SimSensor
+}; // class SimAltimeter
