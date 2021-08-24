@@ -15,6 +15,7 @@
 
 #include "hackflight.h"
 
+// Used by Copilot
 double copilot_receiverThrottle = 0;
 double copilot_altimeterZ = 0;
 double copilot_time = 0;
@@ -29,6 +30,7 @@ double copilot_quaternionX = 0;
 double copilot_quaternionY = 0;
 double copilot_quaternionZ = 0;
 
+// Called by Copilot
 void copilot_runMotors(double m1, double m2, double m3, double m4)
 {
 }
@@ -44,6 +46,9 @@ FCopilotFlightManager::~FCopilotFlightManager()
 
 void FCopilotFlightManager::getActuators(const double time, double * values)
 {
+    // Call Copilot
+    step();
+
     for (uint8_t i=0; i<_dynamics->rotorCount(); ++i) {
         values[i] = 0.6;
     }
