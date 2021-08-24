@@ -237,8 +237,6 @@ class Vehicle {
                 rotorSum += _flightManager->actuatorValue(j);
             }
 
-            debugline("%f", rotorSum);
-
             // Rotate rotors. For visual effect, we can ignore actual rotor
             // values, and just keep increasing the rotation.
             if (rotorSum > 0) {

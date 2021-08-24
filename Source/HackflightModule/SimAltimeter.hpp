@@ -24,8 +24,6 @@ class SimAltimeter : public rft::Sensor {
 
         virtual void modifyState(rft::State * state, float time) override
         {
-            (void)time;
-
             hf::State * hfstate = (hf::State *)state;
 
             // Negate for NED => ENU conversion
