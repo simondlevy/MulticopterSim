@@ -26,6 +26,7 @@
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
 #include "SimGyrometer.hpp"
+#include "SimQuaternion.hpp"
 #include "SimAltimeter.hpp"
 #include "SimMotor.hpp"
 
@@ -51,6 +52,7 @@ class FHackflightFlightManager : public FFlightManager {
 
         // "Sensors": directly from ground-truth
         SimGyrometer * _gyrometer = NULL;
+        SimQuaternion * _quaternion = NULL;
         SimAltimeter * _altimeter = NULL;
 
         // "Motors": passed to mixer so it can modify them
@@ -85,11 +87,13 @@ class FHackflightFlightManager : public FFlightManager {
             _hackflight = new hf::Hackflight(&_board, _receiver, _mixer);
 
             // Create simulated sensors
-            _altimeter = new SimAltimeter(_dynamics);
             _gyrometer = new SimGyrometer(_dynamics);
+            _quaternion = new SimQuaternion(_dynamics);
+            _altimeter = new SimAltimeter(_dynamics);
 
             // Add simulated sensors
             _hackflight->addSensor(_gyrometer);
+            _hackflight->addSensor(_quaternion);
             _hackflight->addSensor(_altimeter);
  
             // Add PID controllers for all aux switch positions.
@@ -98,7 +102,7 @@ class FHackflightFlightManager : public FFlightManager {
             // _hackflight->addClosedLoopController(&_posHoldPid);
             _hackflight->addClosedLoopController(&_ratePid);
             _hackflight->addClosedLoopController(&_yawPid);
-            // _hackflight->addClosedLoopController(&_levelPid);
+            _hackflight->addClosedLoopController(&_levelPid);
             _hackflight->addClosedLoopController(&_altHoldPid);
 
             // Start Hackflight firmware, indicating already armed

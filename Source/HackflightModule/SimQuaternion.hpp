@@ -1,5 +1,8 @@
 /*
-   Simulate sensors using vehicle dynamics
+   Simulate quaternion "sensor" using vehicle kinematics
+
+   We go directly from the Euler angles in the kinematics to the Euler angles in the
+   vehicle state.
 
    Copyright(C) 2019 Simon D.Levy
 
@@ -15,7 +18,7 @@
 #include <RFT_sensor.hpp>
 #include <RFT_filters.hpp>
 
-class SimSensors : public rft::Sensor {
+class SimQuaternion : public rft::Sensor {
 
     protected:
 
@@ -28,19 +31,14 @@ class SimSensors : public rft::Sensor {
 
             hf::State * hfstate = (hf::State *)state;
 
-            // Use vehicle state to modify Hackflight state values
-            for (uint8_t k=0; k<Dynamics::STATE_SIZE; ++k) {
-                hfstate->x[k] = _dynamics->x(k);
-            }
-
-            // Negate for NED => ENU conversion
-            hfstate->x[hf::State::Z] *= -1;
-            hfstate->x[hf::State::DZ] *= -1;
+            hfstate->x[hf::State::PHI] = _dynamics->x(hf::State::PHI);
+            hfstate->x[hf::State::THETA] = _dynamics->x(hf::State::THETA);
+            hfstate->x[hf::State::PSI] = _dynamics->x(hf::State::PSI);
         }
 
     public:
 
-        SimSensors(Dynamics * dynamics)
+        SimQuaternion(Dynamics * dynamics)
         {
             _dynamics = dynamics;
         }
