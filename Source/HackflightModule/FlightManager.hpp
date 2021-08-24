@@ -25,7 +25,8 @@
 
 #include "SimReceiver.hpp"
 #include "SimBoard.hpp"
-#include "SimSensors.hpp"
+#include "SimGyrometer.hpp"
+#include "SimAltimeter.hpp"
 #include "SimMotor.hpp"
 
 class FHackflightFlightManager : public FFlightManager {
@@ -49,7 +50,8 @@ class FHackflightFlightManager : public FFlightManager {
         SimReceiver * _receiver = NULL;
 
         // "Sensors": directly from ground-truth
-        SimSensors * _sensors = NULL;
+        SimGyrometer * _gyrometer = NULL;
+        SimAltimeter * _altimeter = NULL;
 
         // "Motors": passed to mixer so it can modify them
         SimMotor * _motors[100] = {};
@@ -82,17 +84,21 @@ class FHackflightFlightManager : public FFlightManager {
             // Create Hackflight object
             _hackflight = new hf::Hackflight(&_board, _receiver, _mixer);
 
-            // Add simulated sensor suite
-            _sensors = new SimSensors(_dynamics);
-            _hackflight->addSensor(_sensors);
+            // Create simulated sensors
+            _altimeter = new SimAltimeter(_dynamics);
+            _gyrometer = new SimGyrometer(_dynamics);
+
+            // Add simulated sensors
+            _hackflight->addSensor(_gyrometer);
+            _hackflight->addSensor(_altimeter);
  
             // Add PID controllers for all aux switch positions.
             // Position hold goes first, so it can have access to roll and yaw
             // stick demands before other PID controllers modify them.
-            _hackflight->addClosedLoopController(&_posHoldPid);
+            // _hackflight->addClosedLoopController(&_posHoldPid);
             _hackflight->addClosedLoopController(&_ratePid);
-            _hackflight->addClosedLoopController(&_yawPid);
-            _hackflight->addClosedLoopController(&_levelPid);
+            // _hackflight->addClosedLoopController(&_yawPid);
+            // _hackflight->addClosedLoopController(&_levelPid);
             _hackflight->addClosedLoopController(&_altHoldPid);
 
             // Start Hackflight firmware, indicating already armed
