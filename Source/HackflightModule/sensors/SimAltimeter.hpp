@@ -19,7 +19,8 @@ class SimAltimeter : public rft::Sensor {
 
     protected:
 
-        // We do all dynamcics => state conversion; subclasses just return sensor values
+        // We do all dynamcics => state conversion; subclasses just return
+        // sensor values
         Dynamics * _dynamics = NULL;
 
         virtual void modifyState(rft::State * state, float time) override
