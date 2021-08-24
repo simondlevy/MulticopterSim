@@ -6,11 +6,6 @@
    MIT License
 */
 
-#pragma once
-
-#include "../MainModule/FlightManager.hpp"
-#include "../MainModule/Dynamics.hpp"
-
 #include "FlightManager.h"
 
 #include "hackflight.h"
@@ -48,9 +43,10 @@ void copilot_runMotors(double m1, double m2, double m3, double m4)
     _m4 = m4;
 }
 
-FCopilotFlightManager::FCopilotFlightManager(Dynamics * dynamics)
+FCopilotFlightManager::FCopilotFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
 {
+    _gameInput = new GameInput(pawn);
 }
 
 FCopilotFlightManager::~FCopilotFlightManager()
@@ -59,9 +55,22 @@ FCopilotFlightManager::~FCopilotFlightManager()
 
 void FCopilotFlightManager::getActuators(const double time, double * values)
 {
-    // Call Copilot
+    // Get the "receiver" values
+    double joyvals[4] = {};
+    _gameInput->getJoystick(joyvals);
+    copilot_receiverThrottle = joyvals[0];
+    copilot_receiverRoll     = joyvals[1];
+    copilot_receiverPitch    = joyvals[2];
+    copilot_receiverYaw      = joyvals[3];
+
+
+    // Get the sensor values
+
+
+    // Call Copilot, which will call copilot_runMotors()
     step();
 
+    // Fill the motor values with values from copilot_runMotors()
     values[0] = _m1;
     values[1] = _m2;
     values[2] = _m3;

@@ -10,16 +10,18 @@
 
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
-
-#include "hackflight.h"
-
+#include "../MainModule/GameInput.hpp"
 
 class FCopilotFlightManager : public FFlightManager {
 
+    private:
+
+        // Joystick (RC transmitter, game controller) or keypad
+        GameInput * _gameInput = NULL;
 
     public:
 
-        FCopilotFlightManager(Dynamics * dynamics);
+        FCopilotFlightManager(APawn * pawn, Dynamics * dynamics);
 
         ~FCopilotFlightManager();
 

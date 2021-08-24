@@ -23,7 +23,7 @@ void APhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void APhantomPawn::BeginPlay()
 {
-    _phantom.BeginPlay(new FCopilotFlightManager(&_phantom.dynamics));
+    _phantom.BeginPlay(new FCopilotFlightManager(this, &_phantom.dynamics));
 
     Super::BeginPlay();
 }
