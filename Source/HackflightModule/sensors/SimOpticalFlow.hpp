@@ -1,5 +1,5 @@
 /*
-   Simulate optical flow using vehicle kinematics
+   Simulate gyrometer using vehicle kinematics
 
    Copyright(C) 2019 Simon D.Levy
 
@@ -34,7 +34,7 @@ class SimOpticalFlow : public rft::Sensor {
 
     public:
 
-        SimGyrometer(Dynamics * dynamics)
+        SimOpticalFlow(Dynamics * dynamics)
         {
             _dynamics = dynamics;
         }

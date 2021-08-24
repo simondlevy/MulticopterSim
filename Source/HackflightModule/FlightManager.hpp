@@ -30,7 +30,7 @@
 #include "sensors/SimGyrometer.hpp"
 #include "sensors/SimQuaternion.hpp"
 #include "sensors/SimAltimeter.hpp"
-// #include "sensors/SimOpticalFlow.hpp"
+#include "sensors/SimOpticalFlow.hpp"
 
 class FHackflightFlightManager : public FFlightManager {
 
@@ -56,6 +56,7 @@ class FHackflightFlightManager : public FFlightManager {
         SimGyrometer * _gyrometer = NULL;
         SimQuaternion * _quaternion = NULL;
         SimAltimeter * _altimeter = NULL;
+        SimOpticalFlow * _opticflow = NULL;
 
         // "Motors": passed to mixer so it can modify them
         SimMotor * _motors[100] = {};
@@ -92,16 +93,18 @@ class FHackflightFlightManager : public FFlightManager {
             _gyrometer = new SimGyrometer(_dynamics);
             _quaternion = new SimQuaternion(_dynamics);
             _altimeter = new SimAltimeter(_dynamics);
+            _opticflow = new SimOpticalFlow(_dynamics);
 
             // Add simulated sensors
             _hackflight->addSensor(_gyrometer);
             _hackflight->addSensor(_quaternion);
             _hackflight->addSensor(_altimeter);
+            _hackflight->addSensor(_opticflow);
  
             // Add PID controllers for all aux switch positions.
             // Position hold goes first, so it can have access to roll and yaw
             // stick demands before other PID controllers modify them.
-            // _hackflight->addClosedLoopController(&_posHoldPid);
+            _hackflight->addClosedLoopController(&_posHoldPid);
             _hackflight->addClosedLoopController(&_ratePid);
             _hackflight->addClosedLoopController(&_yawPid);
             _hackflight->addClosedLoopController(&_levelPid);
