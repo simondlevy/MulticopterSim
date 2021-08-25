@@ -10,7 +10,7 @@
 
 #include "../../MainModule/vehicles/Phantom.hpp"
 
-#include "../FlightManager.h"
+#include "../FlightManager.hpp"
 
 #include <CoreMinimal.h>
 #include <GameFramework/Pawn.h>
