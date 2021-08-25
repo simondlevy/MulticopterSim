@@ -8,7 +8,7 @@
 
 #include "PhantomPawn.h"
 
-#include "../FlightManager.hpp"
+#include "../FlightManager.h"
 
 APhantomPawn::APhantomPawn()
 {
