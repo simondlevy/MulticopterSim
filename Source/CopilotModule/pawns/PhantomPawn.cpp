@@ -8,6 +8,8 @@
 
 #include "PhantomPawn.h"
 
+#include "../FlightManager.hpp"
+
 APhantomPawn::APhantomPawn()
 {
     _phantom.build(this);
