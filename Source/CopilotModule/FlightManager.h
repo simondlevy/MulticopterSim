@@ -15,11 +15,9 @@ class FCopilotFlightManager : public FFlightManager {
 
         // Joystick (RC transmitter, game controller) or keypad
         GameInput * _gameInput = NULL;
+        double _joyvals[4] = {};
 
-	    // Time : State : Demands
-        double _telemetry[17] = {};
-
-        // Guards socket comms
+        // Guards thread
         bool _connected = false;
 
     public:

@@ -28,11 +28,11 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
     }
 
     // Remaining values are stick demands
-    _gameInput->getJoystick(&_telemetry[13]);
+    _gameInput->getJoystick(_joyvals);
 }
 
 void FCopilotFlightManager::tick(void)
 {
     // Get demands from keypad
-    _gameInput->getKeypad(&_telemetry[13]);
+    _gameInput->getKeypad(_joyvals);
 }
