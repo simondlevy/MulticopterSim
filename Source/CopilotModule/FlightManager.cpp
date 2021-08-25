@@ -10,7 +10,12 @@
 
 #include "hackflight.h"
 
-// Used by Copilot
+#include "../MainModule/Dynamics.hpp"
+
+// Used by Copilot ---------------------------------
+
+double copilot_time = 0;
+
 double copilot_receiverThrottle = 0;
 double copilot_receiverRoll = 0;
 double copilot_receiverPitch = 0;
@@ -18,17 +23,11 @@ double copilot_receiverYaw = 0;
 
 double copilot_altimeterZ = 0;
 
-double copilot_time = 0;
-
 double copilot_gyrometerX = 0;
 double copilot_gyrometerY = 0;
 double copilot_gyrometerZ = 0;
 
-double copilot_quaternionW = 0;
-double copilot_quaternionX = 0;
-double copilot_quaternionY = 0;
-double copilot_quaternionZ = 0;
-
+// Sent by Copilot to copilot_runMotors() -----------
 static double _m1;
 static double _m2;
 static double _m3;
@@ -55,7 +54,10 @@ FCopilotFlightManager::~FCopilotFlightManager()
 
 void FCopilotFlightManager::getActuators(const double time, double * values)
 {
-    // Get the "receiver" values
+    // Set the current time
+    copilot_time = time; 
+
+    // Get the receiver values
     double joyvals[4] = {};
     _gameInput->getJoystick(joyvals);
     copilot_receiverThrottle = joyvals[0];
@@ -63,8 +65,12 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
     copilot_receiverPitch    = joyvals[2];
     copilot_receiverYaw      = joyvals[3];
 
+    // Get the gyrometer values
+    copilot_gyrometerX = _dynamics->x(Dynamics::STATE_PHI_DOT); 
+    copilot_gyrometerY = _dynamics->x(Dynamics::STATE_THETA_DOT); 
+    copilot_gyrometerZ = _dynamics->x(Dynamics::STATE_PSI_DOT); 
 
-    // Get the sensor values
+    // Get the altimeter values
 
 
     // Call Copilot, which will call copilot_runMotors()
