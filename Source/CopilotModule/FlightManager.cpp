@@ -82,6 +82,9 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
 
     // Share the altimeter value, negating for NED
     copilot_altimeterZ = -_dynamics->x(Dynamics::STATE_Z); 
+
+    // Run Copilot
+    step();
 }
 
 void FCopilotFlightManager::tick(void)
