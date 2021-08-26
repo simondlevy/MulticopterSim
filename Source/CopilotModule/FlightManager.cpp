@@ -26,10 +26,10 @@ double copilot_gyrometerY = 0;
 double copilot_gyrometerZ = 0;
 
 // Sent by Copilot to copilot_runMotors() -----------
-static double _m1 = 0.6;
-static double _m2 = 0.6;
-static double _m3 = 0.6;
-static double _m4 = 0.6;
+static double _m1;
+static double _m2;
+static double _m3;
+static double _m4;
 
 // Called by Copilot
 void copilot_runMotors(double m1, double m2, double m3, double m4)
@@ -93,6 +93,6 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
 
 void FCopilotFlightManager::tick(void)
 {
-    // Get demands from keypad
+     // Get demands from keypad
     _gameInput->getKeypad(_joyvals);
 }

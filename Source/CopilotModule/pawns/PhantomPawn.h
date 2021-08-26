@@ -9,6 +9,7 @@
 #pragma once
 
 #include "../../MainModule/vehicles/Phantom.hpp"
+#include "../FlightManager.h"
 
 #include <CoreMinimal.h>
 #include <GameFramework/Pawn.h>
@@ -24,6 +25,8 @@ class APhantomPawn : public APawn {
 
         // Helper class
         Phantom _phantom;
+
+        FCopilotFlightManager * _flightManager = NULL;
 
     protected:
 

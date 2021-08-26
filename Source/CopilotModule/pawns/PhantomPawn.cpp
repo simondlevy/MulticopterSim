@@ -8,8 +8,6 @@
 
 #include "PhantomPawn.h"
 
-#include "../FlightManager.h"
-
 APhantomPawn::APhantomPawn()
 {
     _phantom.build(this);
@@ -25,7 +23,9 @@ void APhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void APhantomPawn::BeginPlay()
 {
-    _phantom.BeginPlay(new FCopilotFlightManager(this, &_phantom.dynamics));
+    _flightManager = new FCopilotFlightManager(this, &_phantom.dynamics);
+
+    _phantom.BeginPlay(_flightManager);
 
     Super::BeginPlay();
 }
@@ -43,6 +43,6 @@ void APhantomPawn::Tick(float DeltaSeconds)
     _phantom.Tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
+
+    _flightManager->tick();
 }
-
-
