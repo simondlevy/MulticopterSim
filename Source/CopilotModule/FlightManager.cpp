@@ -34,12 +34,10 @@ static double _m4 = 0.6;
 // Called by Copilot
 void copilot_runMotors(double m1, double m2, double m3, double m4)
 {
-    /*
     _m1 = m1;
     _m2 = m2;
     _m3 = m3;
     _m4 = m4;
-    */
 }
 
 
@@ -83,8 +81,14 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
     // Share the altimeter value, negating for NED
     copilot_altimeterZ = -_dynamics->x(Dynamics::STATE_Z); 
 
-    // Run Copilot
+    // Run Copilot, triggering copilot_runMotors
     step();
+
+    // Get updated motor values
+    values[0] = _m1;
+    values[1] = _m2;
+    values[2] = _m3;
+    values[3] = _m4;
 }
 
 void FCopilotFlightManager::tick(void)
