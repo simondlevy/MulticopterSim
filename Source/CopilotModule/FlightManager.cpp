@@ -20,6 +20,7 @@ double copilot_receiverPitch = 0;
 double copilot_receiverYaw = 0;
 
 double copilot_altimeterZ = 0;
+double copilot_altimeterDz = 0;
 
 double copilot_gyrometerX = 0;
 double copilot_gyrometerY = 0;
@@ -78,8 +79,9 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
     copilot_gyrometerY = _dynamics->x(Dynamics::STATE_THETA_DOT); 
     copilot_gyrometerZ = _dynamics->x(Dynamics::STATE_PSI_DOT); 
 
-    // Share the altimeter value, negating for NED
-    copilot_altimeterZ = -_dynamics->x(Dynamics::STATE_Z); 
+    // Share the altimeter values
+    copilot_altimeterZ = _dynamics->x(Dynamics::STATE_Z); 
+    copilot_altimeterDz = _dynamics->x(Dynamics::STATE_Z_DOT); 
 
     // Run Copilot, triggering copilot_runMotors
     step();
