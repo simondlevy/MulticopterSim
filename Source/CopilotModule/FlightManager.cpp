@@ -63,25 +63,25 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
         return;
     }
 
-    // Set the current time
-    copilot_time = time; 
-
-    // Remaining values are stick demands
+    // Get stick demands
     _gameInput->getJoystick(_joyvals);
 
+    // Share the current time with Copilot
+    copilot_time = time; 
+
+    // Share the stick demands
     copilot_receiverThrottle = _joyvals[0];
     copilot_receiverRoll     = _joyvals[1];
     copilot_receiverPitch    = _joyvals[2];
     copilot_receiverYaw      = _joyvals[3];
 
-    // Get the gyrometer values
+    // Share the gyrometer values
     copilot_gyrometerX = _dynamics->x(Dynamics::STATE_PHI_DOT); 
     copilot_gyrometerY = _dynamics->x(Dynamics::STATE_THETA_DOT); 
     copilot_gyrometerZ = _dynamics->x(Dynamics::STATE_PSI_DOT); 
 
-    // Get the altimeter value, negating for NED
+    // Share the altimeter value, negating for NED
     copilot_altimeterZ = -_dynamics->x(Dynamics::STATE_Z); 
-
 }
 
 void FCopilotFlightManager::tick(void)
