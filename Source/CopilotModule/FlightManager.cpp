@@ -75,12 +75,12 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
     copilot_receiverYaw      = _joyvals[3];
 
     // Get the gyrometer values
-    //copilot_gyrometerX = _dynamics->x(Dynamics::STATE_PHI_DOT); 
-    //copilot_gyrometerY = _dynamics->x(Dynamics::STATE_THETA_DOT); 
-    //copilot_gyrometerZ = _dynamics->x(Dynamics::STATE_PSI_DOT); 
+    copilot_gyrometerX = _dynamics->x(Dynamics::STATE_PHI_DOT); 
+    copilot_gyrometerY = _dynamics->x(Dynamics::STATE_THETA_DOT); 
+    copilot_gyrometerZ = _dynamics->x(Dynamics::STATE_PSI_DOT); 
 
     // Get the altimeter value, negating for NED
-    //copilot_altimeterZ = _dynamics->x(Dynamics::STATE_Z); 
+    copilot_altimeterZ = -_dynamics->x(Dynamics::STATE_Z); 
 
 }
 
