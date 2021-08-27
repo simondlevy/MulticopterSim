@@ -116,8 +116,9 @@ void FCopilotFlightManager::getOpticalFlow(void)
     copilot_flowY = dy * cp - dx * sp;
 
     double dxdx = copilot_flowX * cp - copilot_flowY * sp;
+    double dydy = copilot_flowY * cp + copilot_flowX * sp;
 
-    debugline("PSI: %+3.3f  DX: %+3.3f  (%+3.3f)", psi, dxdx, dx);
+    debugline("PSI: %+3.3f  DY: %+3.3f  (%+3.3f)", psi, dydy, dy);
 }
 
 void FCopilotFlightManager::getActuators(const double time, double * values)
