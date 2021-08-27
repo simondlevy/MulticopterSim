@@ -49,6 +49,17 @@ void copilot_runMotors(float m1, float m2, float m3, float m4)
     _m4 = m4;
 }
 
+static double phi;
+static double theta;
+static double psi;
+static double dx;
+static double dy;
+
+void copilot_debug(float psipsi)
+{
+    debugline("%+3.3f (%+3.3f)", psipsi, psi);
+}
+
 
 FCopilotFlightManager::FCopilotFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
@@ -84,9 +95,9 @@ void FCopilotFlightManager::getGyrometer(void)
 
 void FCopilotFlightManager::getQuaternion(void)
 {
-    double phi   = _dynamics->x(Dynamics::STATE_PHI); 
-    double theta = _dynamics->x(Dynamics::STATE_THETA); 
-    double psi   = _dynamics->x(Dynamics::STATE_PSI); 
+    phi   = _dynamics->x(Dynamics::STATE_PHI); 
+    theta = _dynamics->x(Dynamics::STATE_THETA); 
+    psi   = _dynamics->x(Dynamics::STATE_PSI); 
 
     // Pre-computation
     double cph = cos(phi);
@@ -100,25 +111,29 @@ void FCopilotFlightManager::getQuaternion(void)
     copilot_quaternionX = cph * sth * sps - sph * cth * cps;
     copilot_quaternionY = -cph * sth * cps - sph * cth * sps;
     copilot_quaternionZ = cph * cth * sps - sph * sth * cps;
+
+    double qw = copilot_quaternionW;
+    double qx = copilot_quaternionX;
+    double qy = copilot_quaternionY;
+    double qz = copilot_quaternionZ;
+
+    double psipsi = atan2(2*(qx*qy+qw*qz), qw*qw+qx*qx-qy*qy-qz*qz) / 2;
+
+    debugline("%+3.3f (%+3.3f)", psipsi, psi);
 }
 
 void FCopilotFlightManager::getOpticalFlow(void)
 {
-    double dx = _dynamics->x(Dynamics::STATE_X_DOT);
-    double dy = _dynamics->x(Dynamics::STATE_Y_DOT);
+    dx = _dynamics->x(Dynamics::STATE_X_DOT);
+    dy = _dynamics->x(Dynamics::STATE_Y_DOT);
 
-    double psi = _dynamics->x(Dynamics::STATE_PSI);
+    psi = _dynamics->x(Dynamics::STATE_PSI);
     double cp = cos(psi);
     double sp = sin(psi);
 
     // Rotate inertial velocity into body frame, ignoring roll and pitch fow now
     copilot_flowX = dx * cp + dy * sp;
     copilot_flowY = dy * cp - dx * sp;
-
-    double dxdx = copilot_flowX * cp - copilot_flowY * sp;
-    double dydy = copilot_flowY * cp + copilot_flowX * sp;
-
-    debugline("PSI: %+3.3f  DY: %+3.3f  (%+3.3f)", psi, dydy, dy);
 }
 
 void FCopilotFlightManager::getActuators(const double time, double * values)
