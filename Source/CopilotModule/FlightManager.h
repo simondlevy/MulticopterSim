@@ -25,6 +25,7 @@ class FCopilotFlightManager : public FFlightManager {
         void getReceiverDemands(void);
         void getGyrometer(void);
         void getQuaternion(void);
+        void getOpticalFlow(void);
 
     public:
 

@@ -31,6 +31,9 @@ float copilot_quaternionX = 0;
 float copilot_quaternionY = 0;
 float copilot_quaternionZ = 0;
 
+float copilot_flowX = 0;
+float copilot_flowY = 0;
+
 // Sent by Copilot to copilot_runMotors() -----------
 static float _m1;
 static float _m2;
@@ -99,6 +102,18 @@ void FCopilotFlightManager::getQuaternion(void)
     copilot_quaternionZ = cph * cth * sps - sph * sth * cps;
 }
 
+void FCopilotFlightManager::getOpticalFlow(void)
+{
+    double dx = _dynamics->x(Dynamics::STATE_X_DOT);
+    double dy = _dynamics->x(Dynamics::STATE_Y_DOT);
+
+    debugline("DX: %+3.3f  DY: %+3.3f", dx, dy);
+
+    // XXX ignore pitch, roll influence for now
+    copilot_flowX = 0;
+    copilot_flowY = 0;
+}
+
 void FCopilotFlightManager::getActuators(const double time, double * values)
 {
     // Avoid null-pointer exceptions at startup, freeze after control
@@ -118,6 +133,9 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
 
     // Share the quaternion values
     getQuaternion();
+
+    // Share the optical flow values
+    getOpticalFlow();
 
     // Share the altimeter value
     copilot_altimeterZ = _dynamics->x(Dynamics::STATE_Z); 
