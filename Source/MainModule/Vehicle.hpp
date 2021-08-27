@@ -119,6 +119,7 @@ class Vehicle {
                 100 * FVector(_dynamics->x(Dynamics::STATE_X), 
                               _dynamics->x(Dynamics::STATE_Y),
                               -_dynamics->x(Dynamics::STATE_Z))); // for NED
+
             _pawn->SetActorRotation(
                     FMath::RadiansToDegrees(
                         FRotator(_dynamics->x(Dynamics::STATE_THETA),

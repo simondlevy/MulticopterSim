@@ -99,6 +99,15 @@ void FCopilotFlightManager::getQuaternion(void)
     theta = _dynamics->x(Dynamics::STATE_THETA); 
     psi   = _dynamics->x(Dynamics::STATE_PSI); 
 
+    FRotator rot;
+    rot.Roll = phi * 180 / M_PI;
+    rot.Pitch = theta * 180 / M_PI;
+    rot.Yaw = psi * 180 / M_PI;
+
+    FQuat quat = rot.Quaternion();
+
+    //debugline("W: %+3.3f X: %+3.3f Y: %+3.3f Z: %+3.3f", quat.W, quat.X, quat.Y, quat.Z);
+
     // Pre-computation
     double cph = cos(phi);
     double cth = cos(theta);
@@ -112,12 +121,21 @@ void FCopilotFlightManager::getQuaternion(void)
     copilot_quaternionY = -cph * sth * cps - sph * cth * sps;
     copilot_quaternionZ = cph * cth * sps - sph * sth * cps;
 
+    /*
     double qw = copilot_quaternionW;
     double qx = copilot_quaternionX;
     double qy = copilot_quaternionY;
     double qz = copilot_quaternionZ;
+    */
 
-    double psipsi = atan2(2*(qx*qy+qw*qz), qw*qw+qx*qx-qy*qy-qz*qz) / 2;
+    double qw = quat.W;
+    double qx = quat.X;
+    double qy = quat.Y;
+    double qz = quat.Z;
+
+    double psipsi = atan2(2*(qx*qy+qw*qz), qw*qw+qx*qx-qy*qy-qz*qz);
+
+    debugline("%+3.3f (%+3.3f)", psi, psipsi);
 }
 
 void FCopilotFlightManager::getOpticalFlow(void)
