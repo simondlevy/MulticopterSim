@@ -107,11 +107,15 @@ void FCopilotFlightManager::getOpticalFlow(void)
     double dx = _dynamics->x(Dynamics::STATE_X_DOT);
     double dy = _dynamics->x(Dynamics::STATE_Y_DOT);
 
-    debugline("DX: %+3.3f  DY: %+3.3f", dx, dy);
+    double psi = _dynamics->x(Dynamics::STATE_PSI);
+    double cp = cos(psi);
+    double sp = sin(psi);
 
-    // XXX ignore pitch, roll influence for now
-    copilot_flowX = 0;
-    copilot_flowY = 0;
+    // Rotate inertial velocity into body frame, ignoring roll and pitch fow now
+    copilot_flowX = dx * cp + dy * sp;
+    copilot_flowY = dy * cp - dx * sp;
+
+    debugline("PSI: %+3.3f  DX: %+3.3f  DY: %+3.3f", psi, copilot_flowX, copilot_flowY);
 }
 
 void FCopilotFlightManager::getActuators(const double time, double * values)
