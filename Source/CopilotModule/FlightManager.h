@@ -21,6 +21,11 @@ class FCopilotFlightManager : public FFlightManager {
         // Guards thread
         bool _connected = false;
 
+        // Helpers
+        void getReceiverDemands(void);
+        void getGyrometer(void);
+        void getQuaternion(void);
+
     public:
 
         FCopilotFlightManager(APawn * pawn, Dynamics * dynamics);

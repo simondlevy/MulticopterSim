@@ -26,6 +26,11 @@ double copilot_gyrometerX = 0;
 double copilot_gyrometerY = 0;
 double copilot_gyrometerZ = 0;
 
+double copilot_quaternionW = 0;
+double copilot_quaternionX = 0;
+double copilot_quaternionY = 0;
+double copilot_quaternionZ = 0;
+
 // Sent by Copilot to copilot_runMotors() -----------
 static double _m1;
 static double _m2;
@@ -54,6 +59,34 @@ FCopilotFlightManager::~FCopilotFlightManager()
 {
 }
 
+void FCopilotFlightManager::getReceiverDemands(void)
+{
+    // Get stick demands
+    _gameInput->getJoystick(_joyvals);
+
+    // Share the stick demands
+    copilot_receiverThrottle = _joyvals[0];
+    copilot_receiverRoll     = _joyvals[1];
+    copilot_receiverPitch    = _joyvals[2];
+    copilot_receiverYaw      = _joyvals[3];
+}
+
+
+void FCopilotFlightManager::getGyrometer(void)
+{
+    copilot_gyrometerX = _dynamics->x(Dynamics::STATE_PHI_DOT); 
+    copilot_gyrometerY = _dynamics->x(Dynamics::STATE_THETA_DOT); 
+    copilot_gyrometerZ = _dynamics->x(Dynamics::STATE_PSI_DOT); 
+}
+
+void FCopilotFlightManager::getQuaternion(void)
+{
+    copilot_quaternionW = 0;
+    copilot_quaternionX = 0;
+    copilot_quaternionY = 0;
+    copilot_quaternionZ = 0;
+}
+
 void FCopilotFlightManager::getActuators(const double time, double * values)
 {
     // Avoid null-pointer exceptions at startup, freeze after control
@@ -62,26 +95,20 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
         return;
     }
 
-    // Get stick demands
-    _gameInput->getJoystick(_joyvals);
-
     // Share the current time with Copilot
     copilot_time = time; 
 
-    // Share the stick demands
-    copilot_receiverThrottle = _joyvals[0];
-    copilot_receiverRoll     = _joyvals[1];
-    copilot_receiverPitch    = _joyvals[2];
-    copilot_receiverYaw      = _joyvals[3];
+    // Share stick demands with Copilot
+    getReceiverDemands();
 
     // Share the gyrometer values
-    copilot_gyrometerX = _dynamics->x(Dynamics::STATE_PHI_DOT); 
-    copilot_gyrometerY = _dynamics->x(Dynamics::STATE_THETA_DOT); 
-    copilot_gyrometerZ = _dynamics->x(Dynamics::STATE_PSI_DOT); 
+    getGyrometer();
 
-    // Share the altimeter values
+    // Share the quaternion values
+    getQuaternion();
+
+    // Share the altimeter value
     copilot_altimeterZ = _dynamics->x(Dynamics::STATE_Z); 
-    copilot_altimeterDz = _dynamics->x(Dynamics::STATE_Z_DOT); 
 
     // Run Copilot, triggering copilot_runMotors
     step();
