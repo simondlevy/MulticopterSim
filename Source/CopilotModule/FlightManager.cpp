@@ -95,38 +95,18 @@ void FCopilotFlightManager::getGyrometer(void)
 
 void FCopilotFlightManager::getQuaternion(void)
 {
-    phi   = _dynamics->x(Dynamics::STATE_PHI); 
-    theta = _dynamics->x(Dynamics::STATE_THETA); 
-    psi   = _dynamics->x(Dynamics::STATE_PSI); 
-
-    FRotator rot;
-    rot.Roll = phi * 180 / M_PI;
-    rot.Pitch = theta * 180 / M_PI;
-    rot.Yaw = psi * 180 / M_PI;
+    FRotator rot = FRotator(
+            FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_THETA)),
+            FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_PSI)),
+            FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_PHI))
+            );
 
     FQuat quat = rot.Quaternion();
 
-    //debugline("W: %+3.3f X: %+3.3f Y: %+3.3f Z: %+3.3f", quat.W, quat.X, quat.Y, quat.Z);
-
-    // Pre-computation
-    double cph = cos(phi);
-    double cth = cos(theta);
-    double cps = cos(psi);
-    double sph = sin(phi);
-    double sth = sin(theta);
-    double sps = sin(psi);
-
-    copilot_quaternionW = cph * cth * cps + sph * sth * sps;
-    copilot_quaternionX = cph * sth * sps - sph * cth * cps;
-    copilot_quaternionY = -cph * sth * cps - sph * cth * sps;
-    copilot_quaternionZ = cph * cth * sps - sph * sth * cps;
-
-    /*
-    double qw = copilot_quaternionW;
-    double qx = copilot_quaternionX;
-    double qy = copilot_quaternionY;
-    double qz = copilot_quaternionZ;
-    */
+    copilot_quaternionW = quat.W;
+    copilot_quaternionX = quat.X;
+    copilot_quaternionY = quat.Y;
+    copilot_quaternionZ = quat.Z;
 
     double qw = quat.W;
     double qx = quat.X;
