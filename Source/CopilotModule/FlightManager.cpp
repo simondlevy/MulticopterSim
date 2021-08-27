@@ -12,33 +12,33 @@
 
 // Used by Copilot ---------------------------------
 
-double copilot_time = 0;
+float copilot_time = 0;
 
-double copilot_receiverThrottle = 0;
-double copilot_receiverRoll = 0;
-double copilot_receiverPitch = 0;
-double copilot_receiverYaw = 0;
+float copilot_receiverThrottle = 0;
+float copilot_receiverRoll = 0;
+float copilot_receiverPitch = 0;
+float copilot_receiverYaw = 0;
 
-double copilot_altimeterZ = 0;
-double copilot_altimeterDz = 0;
+float copilot_altimeterZ = 0;
+float copilot_altimeterDz = 0;
 
-double copilot_gyrometerX = 0;
-double copilot_gyrometerY = 0;
-double copilot_gyrometerZ = 0;
+float copilot_gyrometerX = 0;
+float copilot_gyrometerY = 0;
+float copilot_gyrometerZ = 0;
 
-double copilot_quaternionW = 0;
-double copilot_quaternionX = 0;
-double copilot_quaternionY = 0;
-double copilot_quaternionZ = 0;
+float copilot_quaternionW = 0;
+float copilot_quaternionX = 0;
+float copilot_quaternionY = 0;
+float copilot_quaternionZ = 0;
 
 // Sent by Copilot to copilot_runMotors() -----------
-static double _m1;
-static double _m2;
-static double _m3;
-static double _m4;
+static float _m1;
+static float _m2;
+static float _m3;
+static float _m4;
 
 // Called by Copilot
-void copilot_runMotors(double m1, double m2, double m3, double m4)
+void copilot_runMotors(float m1, float m2, float m3, float m4)
 {
     _m1 = m1;
     _m2 = m2;
