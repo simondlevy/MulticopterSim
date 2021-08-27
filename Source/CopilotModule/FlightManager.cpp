@@ -66,7 +66,7 @@ FCopilotFlightManager::FCopilotFlightManager(APawn * pawn, Dynamics * dynamics)
 {
     _gameInput = new GameInput(pawn);
 
-    _pawn = pawn;
+    _ready = true;
 }
 
 FCopilotFlightManager::~FCopilotFlightManager()
@@ -138,7 +138,7 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
 {
     // Avoid null-pointer exceptions at startup, freeze after control
     // program halts
-    if (!_pawn) {
+    if (!_ready) {
         return;
     }
 

@@ -18,8 +18,8 @@ class FCopilotFlightManager : public FFlightManager {
         GameInput * _gameInput = NULL;
         double _joyvals[4] = {};
 
-        // For getting the quaternion
-        APawn * _pawn = NULL;
+        // For guarding thread
+        bool _ready = false;
 
         // Helpers
         void getReceiverDemands(void);
