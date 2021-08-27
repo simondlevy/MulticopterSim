@@ -81,10 +81,22 @@ void FCopilotFlightManager::getGyrometer(void)
 
 void FCopilotFlightManager::getQuaternion(void)
 {
-    copilot_quaternionW = 0;
-    copilot_quaternionX = 0;
-    copilot_quaternionY = 0;
-    copilot_quaternionZ = 0;
+    double phi   = _dynamics->x(Dynamics::STATE_PHI); 
+    double theta = _dynamics->x(Dynamics::STATE_THETA); 
+    double psi   = _dynamics->x(Dynamics::STATE_PSI); 
+
+    // Pre-computation
+    double cph = cos(phi);
+    double cth = cos(theta);
+    double cps = cos(psi);
+    double sph = sin(phi);
+    double sth = sin(theta);
+    double sps = sin(psi);
+
+    copilot_quaternionW = cph * cth * cps + sph * sth * sps;
+    copilot_quaternionX = cph * sth * sps - sph * cth * cps;
+    copilot_quaternionY = -cph * sth * cps - sph * cth * sps;
+    copilot_quaternionZ = cph * cth * sps - sph * sth * cps;
 }
 
 void FCopilotFlightManager::getActuators(const double time, double * values)
@@ -122,6 +134,6 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
 
 void FCopilotFlightManager::tick(void)
 {
-     // Get demands from keypad
+    // Get demands from keypad
     _gameInput->getKeypad(_joyvals);
 }
