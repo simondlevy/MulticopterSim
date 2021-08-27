@@ -111,8 +111,7 @@ class Vehicle {
         // Starting location, for kinematic offset
         FVector _startLocation = {};
 
-        // Retrieves kinematics from dynamics computed in another thread,
-        // returning true if vehicle is airborne, false otherwise.
+        // Retrieves kinematics from dynamics computed in another thread
         void updateKinematics(void)
         {
             // Set vehicle pose in animation
