@@ -66,7 +66,7 @@ FCopilotFlightManager::FCopilotFlightManager(APawn * pawn, Dynamics * dynamics)
 {
     _gameInput = new GameInput(pawn);
 
-    _connected = true;
+    _pawn = pawn;
 }
 
 FCopilotFlightManager::~FCopilotFlightManager()
@@ -118,8 +118,6 @@ void FCopilotFlightManager::getQuaternion(void)
     double qz = copilot_quaternionZ;
 
     double psipsi = atan2(2*(qx*qy+qw*qz), qw*qw+qx*qx-qy*qy-qz*qz) / 2;
-
-    debugline("%+3.3f (%+3.3f)", psipsi, psi);
 }
 
 void FCopilotFlightManager::getOpticalFlow(void)
@@ -140,7 +138,7 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
 {
     // Avoid null-pointer exceptions at startup, freeze after control
     // program halts
-    if (!_connected) {
+    if (!_pawn) {
         return;
     }
 
