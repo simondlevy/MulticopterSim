@@ -107,15 +107,6 @@ void FCopilotFlightManager::getQuaternion(void)
     copilot_quaternionX = quat.X;
     copilot_quaternionY = quat.Y;
     copilot_quaternionZ = quat.Z;
-
-    double qw = quat.W;
-    double qx = quat.X;
-    double qy = quat.Y;
-    double qz = quat.Z;
-
-    double psipsi = atan2(2*(qx*qy+qw*qz), qw*qw+qx*qx-qy*qy-qz*qz);
-
-    debugline("%+3.3f (%+3.3f)", psi, psipsi);
 }
 
 void FCopilotFlightManager::getOpticalFlow(void)
