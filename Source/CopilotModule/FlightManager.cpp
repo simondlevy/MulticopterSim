@@ -49,15 +49,10 @@ void copilot_runMotors(float m1, float m2, float m3, float m4)
     _m4 = m4;
 }
 
-static double phi;
-static double theta;
-static double psi;
-static double dx;
-static double dy;
-
-void copilot_debug(float psipsi)
+static double cpp_value;
+void copilot_debug(float haskell_value)
 {
-    debugline("%+3.3f (%+3.3f)", psipsi, psi);
+    debugline("%+3.3f (%+3.3f)", haskell_value, cpp_value);
 }
 
 
@@ -111,10 +106,12 @@ void FCopilotFlightManager::getQuaternion(void)
 
 void FCopilotFlightManager::getOpticalFlow(void)
 {
-    dx = _dynamics->x(Dynamics::STATE_X_DOT);
-    dy = _dynamics->x(Dynamics::STATE_Y_DOT);
+    double dx = _dynamics->x(Dynamics::STATE_X_DOT);
+    double dy = _dynamics->x(Dynamics::STATE_Y_DOT);
 
-    psi = _dynamics->x(Dynamics::STATE_PSI);
+    cpp_value = dx;
+
+    double psi = _dynamics->x(Dynamics::STATE_PSI);
     double cp = cos(psi);
     double sp = sin(psi);
 
