@@ -109,8 +109,6 @@ void FCopilotFlightManager::getOpticalFlow(void)
     double dx = _dynamics->x(Dynamics::STATE_X_DOT);
     double dy = _dynamics->x(Dynamics::STATE_Y_DOT);
 
-    cpp_value = dx;
-
     double psi = _dynamics->x(Dynamics::STATE_PSI);
     double cp = cos(psi);
     double sp = sin(psi);
