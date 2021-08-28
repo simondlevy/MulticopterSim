@@ -8,7 +8,7 @@
 
 #include "FlightManager.h"
 
-#include "hackflight.h"
+#include "copilot_hackflight.h"
 
 // Used by Copilot ---------------------------------
 
@@ -18,6 +18,11 @@ float copilot_receiverThrottle = 0;
 float copilot_receiverRoll = 0;
 float copilot_receiverPitch = 0;
 float copilot_receiverYaw = 0;
+
+bool copilot_receiverLostSignal = false;
+bool copilot_receiverReady = true;
+bool copilot_receiverInArmedState = true;
+bool copilot_receiverInactive = false;
 
 float copilot_altimeterZ = 0;
 float copilot_altimeterDz = 0;
