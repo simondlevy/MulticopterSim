@@ -8,36 +8,7 @@
 
 #include "FlightManager.h"
 
-#include "copilot_hackflight.h"
-
-// Used by Copilot ---------------------------------
-
-float copilot_time = 0;
-
-float copilot_receiverThrottle = 0;
-float copilot_receiverRoll = 0;
-float copilot_receiverPitch = 0;
-float copilot_receiverYaw = 0;
-
-bool copilot_receiverLostSignal = false;
-bool copilot_receiverReady = true;
-bool copilot_receiverInArmedState = true;
-bool copilot_receiverInactive = false;
-
-float copilot_altimeterZ = 0;
-float copilot_altimeterDz = 0;
-
-float copilot_gyrometerX = 0;
-float copilot_gyrometerY = 0;
-float copilot_gyrometerZ = 0;
-
-float copilot_quaternionW = 0;
-float copilot_quaternionX = 0;
-float copilot_quaternionY = 0;
-float copilot_quaternionZ = 0;
-
-float copilot_flowX = 0;
-float copilot_flowY = 0;
+#include "copilot.h"
 
 // Sent by Copilot to copilot_runMotors() -----------
 static float _m1;
@@ -52,6 +23,8 @@ void copilot_runMotors(float m1, float m2, float m3, float m4)
     _m2 = m2;
     _m3 = m3;
     _m4 = m4;
+
+    debugline("m1: %+3.3f  m2: %+3.3f  m3: %+3.3f  m4: %+3.3f", m1, m2, m3, m4);
 }
 
 static double cpp_value;
@@ -119,8 +92,8 @@ void FCopilotFlightManager::getOpticalFlow(void)
     double sp = sin(psi);
 
     // Rotate inertial velocity into body frame, ignoring roll and pitch fow now
-    copilot_flowX = dx * cp + dy * sp;
-    copilot_flowY = dy * cp - dx * sp;
+    //copilot_flowX = dx * cp + dy * sp;
+    //copilot_flowY = dy * cp - dx * sp;
 }
 
 void FCopilotFlightManager::getActuators(const double time, double * values)
@@ -132,7 +105,7 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
     }
 
     // Share the current time with Copilot
-    copilot_time = time; 
+    // copilot_time = time; 
 
     // Share stick demands with Copilot
     getReceiverDemands();
@@ -147,7 +120,7 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
     getOpticalFlow();
 
     // Share the altimeter value
-    copilot_altimeterZ = _dynamics->x(Dynamics::STATE_Z); 
+    // copilot_altimeterZ = _dynamics->x(Dynamics::STATE_Z); 
 
     // Run Copilot, triggering copilot_runMotors
     step();
