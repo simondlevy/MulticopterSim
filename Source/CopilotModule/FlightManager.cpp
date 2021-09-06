@@ -75,10 +75,10 @@ void FCopilotFlightManager::getQuaternion(void)
 
     FQuat quat = rot.Quaternion();
 
-    //copilot_quaternionW = quat.W;
-    //copilot_quaternionX = quat.X;
-    //copilot_quaternionY = quat.Y;
-    //copilot_quaternionZ = quat.Z;
+    copilot_quaternionW = quat.W;
+    copilot_quaternionX = quat.X;
+    copilot_quaternionY = quat.Y;
+    copilot_quaternionZ = quat.Z;
 }
 
 void FCopilotFlightManager::getOpticalFlow(void)
@@ -91,8 +91,8 @@ void FCopilotFlightManager::getOpticalFlow(void)
     double sp = sin(psi);
 
     // Rotate inertial velocity into body frame, ignoring roll and pitch fow now
-    //copilot_flowX = dx * cp + dy * sp;
-    //copilot_flowY = dy * cp - dx * sp;
+    copilot_flowX = dx * cp + dy * sp;
+    copilot_flowY = dy * cp - dx * sp;
 }
 
 void FCopilotFlightManager::getActuators(const double time, double * values)
