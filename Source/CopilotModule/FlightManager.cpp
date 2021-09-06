@@ -24,13 +24,12 @@ void copilot_runMotors(float m1, float m2, float m3, float m4)
     _m3 = m3;
     _m4 = m4;
 
-    debugline("m1: %+3.3f  m2: %+3.3f  m3: %+3.3f  m4: %+3.3f", m1, m2, m3, m4);
+    //debugline("m1: %+3.3f  m2: %+3.3f  m3: %+3.3f  m4: %+3.3f", m1, m2, m3, m4);
 }
 
-static double cpp_value;
-void copilot_debug(float haskell_value)
+void copilot_debug(float value)
 {
-    debugline("%+3.3f (%+3.3f)", haskell_value, cpp_value);
+    debugline("%+3.3f", value);
 }
 
 
@@ -76,10 +75,10 @@ void FCopilotFlightManager::getQuaternion(void)
 
     FQuat quat = rot.Quaternion();
 
-    copilot_quaternionW = quat.W;
-    copilot_quaternionX = quat.X;
-    copilot_quaternionY = quat.Y;
-    copilot_quaternionZ = quat.Z;
+    //copilot_quaternionW = quat.W;
+    //copilot_quaternionX = quat.X;
+    //copilot_quaternionY = quat.Y;
+    //copilot_quaternionZ = quat.Z;
 }
 
 void FCopilotFlightManager::getOpticalFlow(void)
@@ -105,7 +104,7 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
     }
 
     // Share the current time with Copilot
-    // copilot_time = time; 
+    copilot_time_sec = time; 
 
     // Share stick demands with Copilot
     getReceiverDemands();
@@ -120,7 +119,7 @@ void FCopilotFlightManager::getActuators(const double time, double * values)
     getOpticalFlow();
 
     // Share the altimeter value
-    // copilot_altimeterZ = _dynamics->x(Dynamics::STATE_Z); 
+    copilot_altimeterZ = _dynamics->x(Dynamics::STATE_Z); 
 
     // Run Copilot, triggering copilot_runMotors
     step();
