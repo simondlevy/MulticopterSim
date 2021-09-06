@@ -60,9 +60,9 @@ void FCopilotFlightManager::getReceiverDemands(void)
 
 void FCopilotFlightManager::getGyrometer(void)
 {
-    copilot_gyrometerX = _dynamics->x(Dynamics::STATE_PHI_DOT); 
-    copilot_gyrometerY = _dynamics->x(Dynamics::STATE_THETA_DOT); 
-    copilot_gyrometerZ = _dynamics->x(Dynamics::STATE_PSI_DOT); 
+    copilot_gyrometerX = FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_PHI_DOT)); 
+    copilot_gyrometerY = FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_THETA_DOT)); 
+    copilot_gyrometerZ = FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_PSI_DOT)); 
 }
 
 void FCopilotFlightManager::getQuaternion(void)
