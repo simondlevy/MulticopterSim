@@ -104,11 +104,11 @@ class FHackflightFlightManager : public FFlightManager {
             // Add PID controllers for all aux switch positions.
             // Position hold goes first, so it can have access to roll and yaw
             // stick demands before other PID controllers modify them.
-            _hackflight->addClosedLoopController(&_posHoldPid);
+            //_hackflight->addClosedLoopController(&_posHoldPid);
             _hackflight->addClosedLoopController(&_ratePid);
-            _hackflight->addClosedLoopController(&_yawPid);
-            _hackflight->addClosedLoopController(&_levelPid);
-            _hackflight->addClosedLoopController(&_altHoldPid);
+            //_hackflight->addClosedLoopController(&_yawPid);
+            //_hackflight->addClosedLoopController(&_levelPid);
+            //_hackflight->addClosedLoopController(&_altHoldPid);
 
             // Start Hackflight firmware, indicating already armed
             _hackflight->begin(true);
@@ -143,8 +143,8 @@ class FHackflightFlightManager : public FFlightManager {
             for (uint8_t i=0; i < _actuatorCount; ++i) {
                 values[i] = _motors[i]->getValue();
             }
-            debugline("m1: %3.3f  m2: %3.3f  m3: %3.3f  m4: %3.3f",   
-                    values[0], values[1], values[2], values[3]);
+            //debugline("m1: %3.3f  m2: %3.3f  m3: %3.3f  m4: %3.3f",   
+            //        values[0], values[1], values[2], values[3]);
         }
 
         void tick(void)
