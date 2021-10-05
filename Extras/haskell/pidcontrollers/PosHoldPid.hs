@@ -29,11 +29,11 @@ posHoldController kp (state, rdemands, pdemands) = (state, rdemands, pdemands')
 
     pdemands' = Demands (throttle pdemands) rollDemand pitchDemand (yaw pdemands)
 
-    rollDemand = compute (roll rdemands) (cp * dy' - sp * dx')
+    rollDemand = compute roll (cp * dy' - sp * dx')
 
-    pitchDemand = compute (pitch rdemands) (cp * dx' + sp * dy')
+    pitchDemand = compute pitch (cp * dx' + sp * dy')
 
-    compute demand err = if in_band demand stickDeadband then (-kp) * err else 0
+    compute dmdfun err = (dmdfun pdemands) + (if in_band (dmdfun rdemands) stickDeadband then (-kp) * err else 0)
 
     -- Rotate X, Y velocities into body frame
     psi' = psi state

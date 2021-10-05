@@ -38,7 +38,7 @@ hackflight receiver sensors pidfuns mixer safetyFun = (motors, isArmed)
 
     -- Get the demands by composing the PID control functions over the vehicle state and
     -- receiver demands.
-    (_, _, demands) = compose pidfuns (state, receiverDemands, receiverDemands)
+    (_, _, demands) = compose pidfuns (state, receiverDemands, (Demands 0 0 0 0))
 
     -- Get safety status
     safety = safetyFun state

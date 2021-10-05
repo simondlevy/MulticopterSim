@@ -32,7 +32,7 @@ yawController kp ki (state, rdemands, pdemands) = (state, rdemands, pdemands')
 
     yawDemand = kp * yawError + ki * yawErrorI
 
-    yawError = (yaw pdemands) - (dpsi state)
+    yawError = (yaw rdemands) - (dpsi state)
 
     -- Accumualte error integral
     yawErrorI = constrain_abs (yawErrorI' + yawError) windupMax
