@@ -62,7 +62,7 @@ class FHackflightFlightManager : public FFlightManager {
         SimMotor * _motors[100] = {};
 
         // Main firmware
-        hf::Hackflight * _hackflight = NULL;
+        hf::HackflightPure * _hackflight = NULL;
         
         // Guards socket comms
         bool _ready = false;
