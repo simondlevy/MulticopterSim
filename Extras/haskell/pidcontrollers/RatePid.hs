@@ -24,7 +24,7 @@ rateMaxDps = 40 :: SFloat
 
 rateController :: SFloat -> SFloat -> SFloat -> PidFun
 
-rateController kp ki kd state demands = demands'
+rateController kp ki kd (state, demands) = (state, demands')
 
   where
 
