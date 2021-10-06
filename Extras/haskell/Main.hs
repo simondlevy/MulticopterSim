@@ -29,7 +29,7 @@ import OpticalFlow
 import PidController
 import RatePid(rateController)
 import YawPid(yawController)
--- import LevelPid(levelController)
+import LevelPid(levelController)
 import AltHoldPid(altHoldController)
 -- import PosHoldPid(posHoldController)
 
@@ -38,11 +38,12 @@ import AltHoldPid(altHoldController)
 receiver = makeReceiver 4.0
 
 -- sensors = [gyrometer, quaternion, altimeter, opticalFlow]
-sensors = [gyrometer, altimeter]
+sensors = [gyrometer, quaternion, altimeter]
 
 -- PID controllers are applied last-to-first
 pidfuns = [  
              altHoldController 0.75 1.5   -- Kp, Ki
+           , levelController 0.2 -- Kp
            , yawController 1.0625 0.005625 -- Kp, Ki
            , rateController 0.225  0.001875 0.375 -- Kp      Ki    Kd 
           ]
