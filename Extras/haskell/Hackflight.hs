@@ -40,7 +40,7 @@ hackflight receiver sensors pidfuns mixer safetyFun = (motors, isArmed)
     altholdPid = head pidfuns
     ratePid = (head (tail pidfuns))
     yawPid = (head (tail (tail pidfuns)))
-    demands = yawPid state (altholdPid state (ratePid state receiverDemands))
+    demands = altholdPid state (yawPid state (ratePid state receiverDemands))
     --(_, _, demands) = compose pidfuns (state, receiverDemands, (Demands 0 0 0 0))
 
     -- Get safety status
