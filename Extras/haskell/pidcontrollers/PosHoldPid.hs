@@ -23,17 +23,17 @@ stickDeadband = 0.2 :: SFloat
 
 posHoldController :: Stream Float -> PidFun
 
-posHoldController kp (state, rdemands, pdemands) = (state, rdemands, pdemands')
+posHoldController kp (state, demands) = (state, demands')
 
   where
 
-    pdemands' = Demands (throttle pdemands) rollDemand pitchDemand (yaw pdemands)
+    demands' = Demands (throttle demands) rollDemand pitchDemand (yaw demands)
 
     rollDemand = compute roll (cp * dy' - sp * dx')
 
     pitchDemand = compute pitch (cp * dx' + sp * dy')
 
-    compute dmdfun err = (dmdfun pdemands) + (if in_band (dmdfun rdemands) stickDeadband then (-kp) * err else 0)
+    compute dmdfun err = (dmdfun demands) + (if in_band (dmdfun demands) stickDeadband then (-kp) * err else 0)
 
     -- Rotate X, Y velocities into body frame
     psi' = psi state
