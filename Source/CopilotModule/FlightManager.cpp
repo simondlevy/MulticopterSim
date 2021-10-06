@@ -75,10 +75,10 @@ void FCopilotFlightManager::getQuaternion(void)
 
     FQuat quat = rot.Quaternion();
 
-    copilot_quaternionW = quat.W;
-    copilot_quaternionX = quat.X;
-    copilot_quaternionY = quat.Y;
-    copilot_quaternionZ = quat.Z;
+    // copilot_quaternionW = quat.W;
+    // copilot_quaternionX = quat.X;
+    // copilot_quaternionY = quat.Y;
+    // copilot_quaternionZ = quat.Z;
 }
 
 void FCopilotFlightManager::getOpticalFlow(void)

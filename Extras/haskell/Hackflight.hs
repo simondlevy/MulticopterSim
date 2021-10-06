@@ -12,14 +12,13 @@ module Hackflight where
 
 import Language.Copilot
 
-import Prelude hiding((||), (++), (<), (>), (&&), (==), div, mod, not)
+import Prelude hiding((!!), (||), (++), (<), (>), (&&), (==), div, mod, not)
 
 import Safety
 import Receiver
 import State
 import Sensor
 import PidController
-import RatePid
 import Demands
 import Mixer
 import Utils
@@ -38,7 +37,11 @@ hackflight receiver sensors pidfuns mixer safetyFun = (motors, isArmed)
 
     -- Get the demands by composing the PID control functions over the vehicle state and
     -- receiver demands.
-    (_, _, demands) = compose pidfuns (state, receiverDemands, (Demands 0 0 0 0))
+    altholdPid = head pidfuns
+    ratePid = (head (tail pidfuns))
+    yawPid = (head (tail (tail pidfuns)))
+    demands = yawPid state (altholdPid state (ratePid state receiverDemands))
+    --(_, _, demands) = compose pidfuns (state, receiverDemands, (Demands 0 0 0 0))
 
     -- Get safety status
     safety = safetyFun state

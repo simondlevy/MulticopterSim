@@ -29,15 +29,20 @@ import OpticalFlow
 import PidController
 import RatePid(rateController)
 import YawPid(yawController)
-import LevelPid(levelController)
+-- import LevelPid(levelController)
 import AltHoldPid(altHoldController)
-import PosHoldPid(posHoldController)
+-- import PosHoldPid(posHoldController)
 
 ------------------------------------------------------------
 
 receiver = makeReceiver 4.0
 
-sensors = [gyrometer, quaternion, altimeter, opticalFlow]
+-- sensors = [gyrometer, quaternion, altimeter, opticalFlow]
+sensors = [gyrometer, altimeter]
+
+altholdPid = altHoldController 0.75 1.5   -- Kp, Ki
+ratePid =  rateController 0.225  0.001875 0.375 -- Kp      Ki    Kd 
+yawPid = yawController 1.0625 0.005625 -- Kp, Ki
 
 {--
 pidfuns = [  posHoldController 0.1 -- Kp
@@ -48,12 +53,6 @@ pidfuns = [  posHoldController 0.1 -- Kp
           ]
 --}
 
-pidfuns = [  levelController 0.2  -- Kp 
-           , rateController 0.225  0.001875 0.375 -- Kp      Ki    Kd 
-           , yawController 1.0625 0.005625 -- Kp, Ki
-           , altHoldController 0.75 1.5   -- Kp, Ki
-          ]
-
 mixer = quadXAPMixer
 
 ------------------------------------------------------------
@@ -61,7 +60,7 @@ mixer = quadXAPMixer
 spec = do
 
   -- Run the main Hackflight algorithm, getting the motor spins
-  let motors = hackflightSim receiver sensors pidfuns mixer
+  let motors = hackflightSim receiver sensors [altholdPid, ratePid, yawPid] mixer
 
   -- trigger "copilot_debug" true [arg $ roll pdemands]
 

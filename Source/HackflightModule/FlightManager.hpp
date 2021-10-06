@@ -104,11 +104,11 @@ class FHackflightFlightManager : public FFlightManager {
             // Add PID controllers for all aux switch positions.
             // Position hold goes first, so it can have access to roll and yaw
             // stick demands before other PID controllers modify them.
-            //_hackflight->addClosedLoopController(&_posHoldPid);
+            _hackflight->addClosedLoopController(&_posHoldPid);
             _hackflight->addClosedLoopController(&_ratePid);
-            //_hackflight->addClosedLoopController(&_yawPid);
-            //_hackflight->addClosedLoopController(&_levelPid);
-            //_hackflight->addClosedLoopController(&_altHoldPid);
+            _hackflight->addClosedLoopController(&_yawPid);
+            _hackflight->addClosedLoopController(&_levelPid);
+            _hackflight->addClosedLoopController(&_altHoldPid);
 
             // Start Hackflight firmware, indicating already armed
             _hackflight->begin(true);

@@ -24,15 +24,15 @@ dpsMax = 40 :: SFloat -- deg/sec
 
 yawController :: SFloat -> SFloat -> PidFun
 
-yawController kp ki (state, rdemands, pdemands) = (state, rdemands, pdemands')
+yawController kp ki state demands = demands'
 
   where 
 
-    pdemands' = Demands (throttle pdemands) (roll pdemands) (pitch pdemands) yawDemand
+    demands' = Demands (throttle demands) (roll demands) (pitch demands) yawDemand
 
     yawDemand = kp * yawError + ki * yawErrorI
 
-    yawError = (yaw rdemands) - (dpsi state)
+    yawError = (yaw demands) - (dpsi state)
 
     -- Accumualte error integral
     yawErrorI = constrain_abs (yawErrorI' + yawError) windupMax

@@ -17,11 +17,9 @@ HSRC = Main.hs \
        Utils.hs \
        Mixer.hs \
        PidController.hs \
+       pidcontrollers/AltHoldPid.hs \
        pidcontrollers/RatePid.hs \
        pidcontrollers/YawPid.hs \
-       pidcontrollers/LevelPid.hs \
-       pidcontrollers/AltHoldPid.hs \
-       pidcontrollers/PosHoldPid.hs \
        sensors/Gyrometer.hs \
        sensors/Altimeter.hs \
        sensors/Quaternion.hs \

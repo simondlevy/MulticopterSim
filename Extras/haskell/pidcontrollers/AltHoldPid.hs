@@ -25,11 +25,11 @@ stickDeadband = 0.2 :: SFloat
 
 altHoldController :: Stream Float -> Stream Float -> PidFun
 
-altHoldController kp ki (state, rdemands, pdemands) = (state, rdemands, pdemands')
+altHoldController kp ki state demands = demands'
 
   where
 
-    pdemands' = Demands throttleDemand (roll pdemands) (pitch pdemands) (yaw pdemands)
+    demands' = Demands throttleDemand (roll demands) (pitch demands) (yaw demands)
 
     throttleDemand =  kp * err + ki * errI
 
@@ -40,7 +40,7 @@ altHoldController kp ki (state, rdemands, pdemands) = (state, rdemands, pdemands
     -- Accumualte error integral
     errI = constrain_abs (errI' + err) windupMax
 
-    targetVelocity = if inband then altitudeTarget - altitude else pilotVelZMax * (throttle rdemands)
+    targetVelocity = if inband then altitudeTarget - altitude else pilotVelZMax * (throttle demands)
 
     -- Reset controller when moving into deadband
     altitudeTarget = if inband && not (in_band throttleDemand' stickDeadband)
@@ -50,7 +50,7 @@ altHoldController kp ki (state, rdemands, pdemands) = (state, rdemands, pdemands
     altitude = -(z state)
 
     -- inband = in_band throttleDemand stickDeadband
-    inband = in_band (throttle rdemands) stickDeadband
+    inband = in_band (throttle demands) stickDeadband
 
     -- Controller state
     errI' = [0] ++ errI
