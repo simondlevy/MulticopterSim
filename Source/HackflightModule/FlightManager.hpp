@@ -87,7 +87,7 @@ class FHackflightFlightManager : public FFlightManager {
             _receiver = new SimReceiver(pawn);
 
             // Create Hackflight object
-            _hackflight = new hf::Hackflight(&_board, _receiver, _mixer);
+            _hackflight = new hf::HackflightPure(&_board, _receiver, _mixer);
 
             // Create simulated sensors
             _gyrometer = new SimGyrometer(_dynamics);
@@ -104,14 +104,14 @@ class FHackflightFlightManager : public FFlightManager {
             // Add PID controllers for all aux switch positions.
             // Position hold goes first, so it can have access to roll and yaw
             // stick demands before other PID controllers modify them.
-            _hackflight->addClosedLoopController(&_posHoldPid);
-            _hackflight->addClosedLoopController(&_ratePid);
-            _hackflight->addClosedLoopController(&_yawPid);
-            _hackflight->addClosedLoopController(&_levelPid);
-            _hackflight->addClosedLoopController(&_altHoldPid);
+            _hackflight->addPidController(&_posHoldPid);
+            _hackflight->addPidController(&_ratePid);
+            _hackflight->addPidController(&_yawPid);
+            _hackflight->addPidController(&_levelPid);
+            _hackflight->addPidController(&_altHoldPid);
 
             // Start Hackflight firmware, indicating already armed
-            _hackflight->begin(true);
+            _hackflight->begin();
 
             _ready = true;
         }

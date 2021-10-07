@@ -13,7 +13,7 @@
 			]
 		},
 		{
-			"Name": "CopilotModule",
+			"Name": "HackflightModule",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}

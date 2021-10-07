@@ -15,10 +15,10 @@
 
 #include <HF_state.hpp>
 
-#include <RFT_sensor.hpp>
-#include <RFT_filters.hpp>
+#include <HF_sensor.hpp>
+#include <HF_filters.hpp>
 
-class SimQuaternion : public rft::Sensor {
+class SimQuaternion : public hf::Sensor {
 
     protected:
 
@@ -26,7 +26,7 @@ class SimQuaternion : public rft::Sensor {
         // sensor values
         Dynamics * _dynamics = NULL;
 
-        virtual void modifyState(rft::State * state, float time) override
+        virtual void modifyState(hf::State * state, float time) override
         {
             (void)time;
 

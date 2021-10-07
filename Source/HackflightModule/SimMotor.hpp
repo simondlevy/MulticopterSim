@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include <rft_motors/rotary.hpp>
-#include <rft_motors/servo.hpp>
+#include <hf_motors/rotary.hpp>
+#include <hf_motors/servo.hpp>
 
 class SimMotor {
 
@@ -29,7 +29,7 @@ class SimMotor {
 }; // class SimMotor
 
 
-class SimRotaryMotor : public SimMotor, public rft::RotaryMotor {
+class SimRotaryMotor : public SimMotor, public hf::RotaryMotor {
 
     protected:
 
@@ -48,7 +48,7 @@ class SimRotaryMotor : public SimMotor, public rft::RotaryMotor {
 }; // class SimRotaryMotor
 
 
-class SimServoMotor : public SimMotor, public rft::ServoMotor {
+class SimServoMotor : public SimMotor, public hf::ServoMotor {
 
     protected:
 

@@ -28,7 +28,6 @@ public class HackflightModule : ModuleRules
         // Hackflight support --------------------------------------------------------------------
 
         PrivateIncludePaths.Add(ARDUINO_PATH + "Hackflight\\src");
-        PrivateIncludePaths.Add(ARDUINO_PATH + "RoboFirmwareToolkit\\src");
 
         // OpenCV support --------------------------------------------------------------------
 
