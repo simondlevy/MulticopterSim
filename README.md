@@ -1,7 +1,7 @@
 <a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="Extras/media/IndoorScene.png" width=500></a>
 
 <h2>Note: I am no longer maintaining this repository, having switched my simulation work
- to <a href="https://github.com/simondlevy/Hackflight/tree/master/unreall/">HackflightSim</a>.
+ to <a href="https://github.com/simondlevy/Hackflight/tree/master/unreal/">HackflightSim</a>.
 </h2>
 
 # About
