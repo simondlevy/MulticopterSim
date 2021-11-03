@@ -27,7 +27,7 @@ altimeter state =
         (y      state)
         (dy     state)
         ((z     state) + altimeterZ)
-        ((dz    state) + ((altimeterZ - z') / ((time - time') / time)))
+        ((dz    state) + ((altimeterZ - z') / (time - time')))
         (phi    state)
         (dphi   state)
         (theta  state)
