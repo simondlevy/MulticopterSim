@@ -8,6 +8,8 @@
 
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
+
 #include "Dynamics.hpp"
 #include "Utils.hpp"
 
@@ -52,7 +54,8 @@ class FFlightManager : public FRunnable {
         // Constructor, called main thread
         FFlightManager(Dynamics * dynamics) 
         {
-            _thread = FRunnableThread::Create(this, TEXT("FThreadedManage"), 0, TPri_BelowNormal); 
+            _thread =
+                FRunnableThread::Create(this, TEXT("FThreadedManage"), 0, TPri_BelowNormal); 
             _startTime = FPlatformTime::Seconds();
             _count = 0;
 

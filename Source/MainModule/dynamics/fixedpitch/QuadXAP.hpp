@@ -20,7 +20,9 @@ class QuadXAPDynamics : public FixedPitchDynamics {
 
     public:	
 
-        QuadXAPDynamics(Dynamics::vehicle_params_t &vparams, FixedPitchDynamics::fixed_pitch_params_t &fparams)
+        QuadXAPDynamics(
+                Dynamics::vehicle_params_t &vparams,
+                FixedPitchDynamics::fixed_pitch_params_t &fparams)
             : FixedPitchDynamics(4, vparams, fparams)
         {
         }

@@ -34,6 +34,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define WIN32_LEAN_AND_MEAN
+
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -418,6 +420,9 @@ class Dynamics {
                 double vz = 5 * _agl;
                 _x[STATE_Z] += vz * dt;
             }
+
+            // XXX
+            //_x[STATE_Z] = -1;
 
         } // update
 

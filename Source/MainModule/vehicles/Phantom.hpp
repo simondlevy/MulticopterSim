@@ -10,7 +10,9 @@
 
 #include "../Vehicle.hpp"
 
-#include "../dynamics/fixedpitch/QuadXAP.hpp"
+#include "../dynamics/fixedpitch/QuadXBF.hpp"
+
+#include <mixers/quadxbf.h>
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -47,7 +49,7 @@ class Phantom {
 
     public:
 
-        QuadXAPDynamics dynamics = QuadXAPDynamics(vparams, fparams);
+        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
 
         Vehicle vehicle = Vehicle(&dynamics);
 

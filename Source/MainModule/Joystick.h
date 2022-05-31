@@ -12,6 +12,8 @@
 
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
+
 #include <CoreMinimal.h>
 #include <UObject/Interface.h>
 #include "Joystick.generated.h"
