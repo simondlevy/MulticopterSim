@@ -62,6 +62,11 @@ void FHackflightFlightManager::getActuators(const double time, double * values)
     // Poll "receiver" (joystick) periodcially
     checkTask(&_rxTask, usec);
 
+    // Run additional tasks
+    for (uint8_t k=0; k<_task_count; ++k) {
+        checkTask(&_tasks[k], usec);
+    }
+
     //  Get the new motor values
     for (uint8_t i=0; i < _actuatorCount; ++i) {
         values[i] = _motorvals[i];
