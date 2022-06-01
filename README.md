@@ -60,11 +60,11 @@ vehicle pawns into the map. Click the play button and you'll see the vehicle
 take off to an altitude of 10 meters.  You can use the spacebar to switch your
 point-of-view.
 
-# C++ development with HackflightCPP
+# C++ development with Hackflight
 
 Although MulticopterSim is designed to work with any flight-control software
 you like, it easiest to get started with the
-[HackflightCPP](https://github.com/simondlevy/HackflightCPP) software. 
+[Hackflight](https://github.com/simondlevy/Hackflight) software. 
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
@@ -87,9 +87,8 @@ The key mappings are based on those used in [Microsoft Flight Simulator](https:/
 
 To get MulticopterSim working with Hackflight, you should do the following:
 
-1. Clone the [HackflightCPP](https://github.com/simondlevy/HackflightCPP) 
-and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit) 
-(RFT) repositories into your 
+1. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
+repository into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
 where MulticopterSim looks for the Hackflight firmware.)
@@ -111,13 +110,6 @@ to build the project.
 7. In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
 <b>Content/C++ Classes/HackflightModule/pawns</b> folder and drag one of the
 vehicle pawns into the map. Click the play button and you're ready to take off!
-
-## OpenCV
-
-After you build the Hackflight module, the <b>Content/C++ Classes/Hackflight/pawns</b> folder will contain a
-pawn that will run OpenCV edge detection.  By sub-classing the
-[OpenCVCamera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/HackflightModule/OpenCVCamera.hpp)
-class you can run different kinds of machine-vision algorithms.
 
 # Support for other programming languages / packages
 
