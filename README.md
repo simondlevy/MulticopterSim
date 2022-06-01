@@ -171,10 +171,3 @@ illustrates this arrangement, using a traditional
 (slow outer loop / fast inner loop) diagram:
 
 <img src="Extras/media/Control.png" width=800></a>
-
-In addition, an abstract, threaded C++
-[TargetManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/TargetManager.hpp)
-class supports modeling interaction with other moving objects having their own dynamics; for example,
-in a predator/prey scenario. 
-
-
