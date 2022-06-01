@@ -16,10 +16,17 @@ static Dynamics * _dyn;
 // Hackflight stuff --------------------------------------------------
 
 static uint32_t ALTIMETER_RATE = 100;
+static uint32_t ALT_HOLD_RATE  = 50;
 
 static void altimeterTask(uint32_t usec)
 {
+    (void)usec;
     _state.z = _dyn->x(Dynamics::STATE_Z);
+}
+
+static void altHoldTask(uint32_t usec)
+{
+    (void)usec;
 }
 
 static void checkTask(task_t * task, uint32_t usec)
@@ -46,6 +53,7 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     // Interact with Hackflight
     hackflightInit();
     hackflightAddTask(altimeterTask, ALTIMETER_RATE);
+    hackflightAddTask(altHoldTask, ALT_HOLD_RATE);
 
     // Set instance variables
     _ready = true;
