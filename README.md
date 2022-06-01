@@ -3,7 +3,7 @@
 
 # About
 
-MulticopterSim is a simple multicopter flight simulator using Unreal Engine 4.  It runs on Windows.
+MulticopterSim is a simple multicopter flight simulator using Unreal Engine.  It runs on Windows.
 
 I began this project using the [V-REP platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
 UnrealEngine after seeing the kinds of beautiful, real-time simulations that
@@ -30,8 +30,8 @@ for the minimum requirements recommended by Unreal Engine.
 
 ## Toolchain
 
-You will need Unreal Engine 4 (UE4). I am attempting to use the latest version, which as of the time of this
-writing is UE4.26.1. To install UE4, follow these [instructions](https://docs.unrealengine.com/en-US/GettingStarted/Installation/index.html).
+You will need Unreal Engine 5 (UE5). I am attempting to use the latest version, which as of the time of this
+writing is UE5.0.1. To install UE5, follow these [instructions](https://docs.unrealengine.com/en-US/GettingStarted/Installation/index.html).
 
 # Quickstart
 
@@ -45,7 +45,7 @@ doesn't exist.
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
 4. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
-you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE4 files needed
+you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE5 files needed
 to build the project.
 
 5. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
@@ -134,8 +134,9 @@ to build the project.
 <b>Content/C++ Classes/SocketModule/pawns</b> folder and drag one of the
 vehicle pawns into the map.  
 
-Then follow the directions in
-[this folder](https://github.com/simondlevy/MulticopterSim/tree/master/Extras/python).
+6. Run the <b>launch.py</b> script in <b>Extras/python</b>.  It will tell you to hit the Start
+button back in the simulator.  When you hit the start button, the vehicle should behave as 
+in the quickstart demo (rise to 10m).
 
 # Design principles
 
@@ -143,7 +144,7 @@ The core of MulticopterSim is the abstract C++
 [FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/FlightManager.hpp) 
 class. This class provides support for running the vehicle dynamics and the PID control
 regime (e.g., Hackflight) on its own thread, after it first disables the
-built-in physics in UE4.  The dynamics we used are based directly on the model
+built-in physics in UE5.  The dynamics we used are based directly on the model
 presented in this [paper](https://infoscience.epfl.ch/record/97532/files/325.pdf), 
 written as a standalone, header-only C++ 
 [class](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/Dynamics.hpp)
@@ -159,7 +160,7 @@ The FlightManager API contains a single virtual
 method that accepts the current time and the state of the vehicle (as computed by the
 dynamics), and returns the current motor values.  The motor values are then
 passed to the dynamics object, which computes the new vehicle state.  On the
-main thread, UE4's <b>Tick()</b> method queries the flight manager for the
+main thread, UE5's <b>Tick()</b> method queries the flight manager for the
 current vehicle pose (location, rotation) and displays the vehicle and its
 environment kinematically at the 60-120Hz frame rate of the game engine.  In a
 similar manner, the 
