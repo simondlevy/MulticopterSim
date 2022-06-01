@@ -5,6 +5,7 @@
 
 #include <debug.h>
 #include <hackflight.h>
+#include <pids/althold.h>
 
 #include "FlightManager.hpp"
 
