@@ -18,7 +18,7 @@ static uint32_t ALTIMETER_RATE = 100;
 
 static void altimeterTask(uint32_t usec)
 {
-    debugPrintf("%+3.3f", _dyn->x(Dynamics::STATE_Z));
+    _state.z = _dyn->x(Dynamics::STATE_Z);
 }
 
 static void checkTask(task_t * task, uint32_t usec)
