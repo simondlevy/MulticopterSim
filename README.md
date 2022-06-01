@@ -11,7 +11,7 @@ Microsoft was able to get with its
 
 MulticopterSim differs from AirSim in a few important ways:
 * MulticopterSim can be used with the same simple flight-control 
-[firmware](https://github.com/simondlevy/Hackflight/tree/master/src) that we fly on our real-world 
+[firmware](https://github.com/simondlevy/HackflightCPP/tree/master/src) that we fly on our real-world 
 [quadcopters](http://diydrones.com/profiles/blogs/flight-of-the-ladybug).
 * MulticopterSim is tiny, under 2,000 lines of code.
 * MulticopterSim focuses exclusively on multirotor firmware, whereas AirSim
@@ -55,11 +55,11 @@ vehicle pawns into the map. Click the play button and you'll see the vehicle
 take off to an altitude of 10 meters.  You can use the spacebar to switch your
 point-of-view.
 
-# C++ development with Hackflight
+# C++ development with HackflightCPP
 
 Although MulticopterSim is designed to work with any flight-control software
 you like, it easiest to get started with the
-[Hackflight](https://github.com/simondlevy/Hackflight) software. 
+[HackflightCPP](https://github.com/simondlevy/HackflightCPP) software. 
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
@@ -82,7 +82,7 @@ The key mappings are based on those used in [Microsoft Flight Simulator](https:/
 
 To get MulticopterSim working with Hackflight, you should do the following:
 
-1. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
+1. Clone the [HackflightCPP](https://github.com/simondlevy/HackflightCPP) 
 and [RoboFirmwareToolkit](https://github.com/simondlevy/RoboFirmwareToolkit) 
 (RFT) repositories into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
