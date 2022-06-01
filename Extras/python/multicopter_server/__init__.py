@@ -11,7 +11,7 @@ import socket
 import numpy as np
 import sys
 import time
-import cv2
+#import cv2
 
 
 def _debug(msg):
@@ -69,19 +69,22 @@ class MulticopterServer(object):
                               motorClientSocket))
 
         # Serve a socket with a maximum of one client
-        imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        imageServerSocket.bind((self.host, self.image_port))
-        imageServerSocket.listen(1)
+        #imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #imageServerSocket.bind((self.host, self.image_port))
+        #imageServerSocket.listen(1)
 
         # This will block (wait) until a client connets
-        imageConn, _ = imageServerSocket.accept()
-        imageConn.settimeout(1)
-        _debug('Got a connection!')
+        #imageConn, _ = imageServerSocket.accept()
+        #imageConn.settimeout(1)
+        #_debug('Got a connection!')
 
         thread.start()
 
         while not self.done:
 
+            time.sleep(.001)  # Yield to other thread
+
+            '''
             try:
                 imgbytes = imageConn.recv(self.image_rows*self.image_cols*4)
 
@@ -96,13 +99,15 @@ class MulticopterServer(object):
                 image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
 
                 self.handleImage(image)
+            '''
 
     def handleImage(self, image):
         '''
         Override for your application
         '''
-        cv2.imshow('Image', image)
-        cv2.waitKey(1)
+        # cv2.imshow('Image', image)
+        # cv2.waitKey(1)
+        return
 
     def getMotors(self, time, state, demands):
         '''

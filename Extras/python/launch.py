@@ -7,7 +7,7 @@ Copyright (C) 2021 Simon D. Levy
 MIT License
 '''
 
-import cv2
+#import cv2
 import numpy as np
 import argparse
 from argparse import ArgumentDefaultsHelpFormatter
@@ -36,6 +36,7 @@ class LaunchCopter(MulticopterServer):
         # Create PID controller
         self.ctrl = LaunchController(kp, ki)
 
+    '''
     def handleImage(self, image):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(gray, 100, 200)
@@ -47,6 +48,7 @@ class LaunchCopter(MulticopterServer):
         # Ignore image for first five seconds
         if len(nonzero) > 0 and np.mean(nonzero) > 390 and self.time > 5:
             self.target = 30
+    '''
 
     def getMotors(self, t, state, _stickDemands):
 
