@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "../SimQuadMixer.hpp"
+#define WIN32_LEAN_AND_MEAN
+
 #include "../../MainModule/vehicles/Phantom.hpp"
 #include "../FlightManager.hpp"
 
@@ -26,7 +27,6 @@ class APhantomPawn : public APawn {
 
         // Helper classes
         Phantom _phantom;
-        SimQuadMixer _mixer;
 
         FHackflightFlightManager * _flightManager = NULL;
 

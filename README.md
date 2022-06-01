@@ -54,7 +54,7 @@ to build the project.
 
 5. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
-6. In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
+6. In UnrealEditor, select one of the maps in <b>Content Drawer/MulticopterSim/Maps</b>. Then open the
 <b>Content/C++ Classes/QuickstartModule/pawns</b> folder and drag one of the
 vehicle pawns into the map. Click the play button and you'll see the vehicle
 take off to an altitude of 10 meters.  You can use the spacebar to switch your

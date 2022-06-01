@@ -1,5 +1,5 @@
 /*
- * Build script for HackflightModule, including OpenCV support
+ * Build script for Hackflight module
  *
  * Copyright (C) 2018 Simon D. Levy
  *
@@ -31,6 +31,7 @@ public class HackflightModule : ModuleRules
 
         // OpenCV support --------------------------------------------------------------------
 
+        /*
         string OpenCVPath = Path.GetFullPath(Path.Combine(ModuleDirectory, "ThirdParty")) + "\\OpenCV";
 
         // Add Include path
@@ -42,6 +43,7 @@ public class HackflightModule : ModuleRules
 
         PublicDefinitions.Add(string.Format("WITH_OPENCV_BINDING=1"));
         PublicDefinitions.Add("_USE_OPENCV");
-    }
+        */
+     }
 }
 

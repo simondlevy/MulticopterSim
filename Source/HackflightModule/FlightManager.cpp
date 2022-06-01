@@ -8,7 +8,7 @@
 
 #include "FlightManager.hpp"
 
-FNewflightFlightManager::FNewflightFlightManager(APawn * pawn, Dynamics * dynamics)
+FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
 {
     void shareMotors(float *);
@@ -24,12 +24,12 @@ FNewflightFlightManager::FNewflightFlightManager(APawn * pawn, Dynamics * dynami
     _dynamics = dynamics;
 }
 
-FNewflightFlightManager::~FNewflightFlightManager()
+FHackflightFlightManager::~FHackflightFlightManager()
 {
 }
 
 // Caled from fast thread
-void FNewflightFlightManager::getActuators(const double time, double * values)
+void FHackflightFlightManager::getActuators(const double time, double * values)
 {
     // Avoid null-pointer exceptions at startup, freeze after control
     // program halts
@@ -62,6 +62,6 @@ void FNewflightFlightManager::getActuators(const double time, double * values)
     }
 }
 
-void FNewflightFlightManager::tick(void)
+void FHackflightFlightManager::tick(void)
 {
 }
