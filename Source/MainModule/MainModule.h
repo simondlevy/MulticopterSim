@@ -2,6 +2,8 @@
 
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
+
 #include <CoreMinimal.h>
 
 DECLARE_LOG_CATEGORY_EXTERN(LogMulticopterSim, Log, All);

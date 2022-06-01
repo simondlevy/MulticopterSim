@@ -1,5 +1,5 @@
 /*
-* MulticopterSim.Target.cs: Target script for MulticopterSim
+* MulticopterSimEditor.Target.cs: Edtor Target script for MulticopterSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
@@ -9,17 +9,17 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class MulticopterSimTarget : TargetRules
+public class MulticopterSimEditorTarget : TargetRules
 {
-	public MulticopterSimTarget(TargetInfo Target) : base(Target)
+	public MulticopterSimEditorTarget(TargetInfo Target) : base(Target)
 	{
-		Type = TargetType.Game;
+		Type = TargetType.Editor;
 
         DefaultBuildSettings = BuildSettingsVersion.V2;
 
 		ExtraModuleNames.AddRange( new string[] { 
                 "MainModule", 
-                "SocketModule"
+                "NewflightModule"
                 } );
 	}
 }

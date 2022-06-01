@@ -13,7 +13,6 @@
 
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
-#include "../MainModule/GameInput.hpp"
 
 #include "sockets/UdpClientSocket.hpp"
 #include "sockets/UdpServerSocket.hpp"
@@ -25,9 +24,6 @@ class FSocketFlightManager : public FFlightManager {
         // Socket comms
         UdpClientSocket * _telemClient = NULL;
         UdpServerSocket * _motorServer = NULL;
-
-        // Joystick (RC transmitter, game controller) or keypad
-        GameInput * _gameInput = NULL;
 
 	    // Time : State : Demands
         double _telemetry[17] = {};
@@ -44,8 +40,6 @@ class FSocketFlightManager : public FFlightManager {
                 const short telemPort=5001) : 
             FFlightManager(dynamics)
         {
-            _gameInput = new GameInput(pawn);
-
             _telemClient = new UdpClientSocket(host, telemPort);
             _motorServer = new UdpServerSocket(motorPort);
 
@@ -81,9 +75,6 @@ class FSocketFlightManager : public FFlightManager {
                 _telemetry[k+1] = _dynamics->x(k);
             }
 
-            // Remaining values are stick demands
-            _gameInput->getJoystick(&_telemetry[13]);
-
             // Send telemetry values to server
             _telemClient->sendData(_telemetry, sizeof(_telemetry));
 
@@ -100,8 +91,6 @@ class FSocketFlightManager : public FFlightManager {
 
         void tick(void)
         {
-            // Get demands from keypad
-            _gameInput->getKeypad(&_telemetry[13]);
         }
 
 }; // FSocketFlightManager

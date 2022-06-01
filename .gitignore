@@ -1,6 +1,6 @@
 DerivedDataCache/
-Binaries/Win64/UE4*
 Binaries/Win64/*.target
+Binaries/Win64/UnrealEditor*
 Intermediate/
 Saved/
 Source/FlightManager/
