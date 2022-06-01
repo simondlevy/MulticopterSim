@@ -12,7 +12,7 @@ Microsoft was able to get with its
 
 MulticopterSim differs from AirSim in a few important ways:
 * MulticopterSim can be used with the same simple flight-control 
-[firmware](https://github.com/simondlevy/Hackflight/src) that we fly on our real-world 
+[firmware](https://github.com/simondlevy/Hackflight) that we fly on our real-world 
 [quadcopters](https://www.youtube.com/watch?v=wFP_l6wOhS4).
 * MulticopterSim is tiny, under 2,000 lines of code.
 * MulticopterSim focuses exclusively on multirotor firmware, whereas AirSim
