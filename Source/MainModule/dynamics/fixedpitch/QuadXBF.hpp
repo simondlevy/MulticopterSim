@@ -1,5 +1,3 @@
-
-#include <mixers/quadxbf.h>
 /*
  * Dynamics class for quad-X frames using Betaflight motor layout:
  *
@@ -17,6 +15,7 @@
 #pragma once
 
 #include "../FixedPitch.hpp"
+#include "../../mixers/quadxbf.h"
 
 class QuadXBFDynamics : public FixedPitchDynamics {
 

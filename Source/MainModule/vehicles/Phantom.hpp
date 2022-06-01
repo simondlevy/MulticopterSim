@@ -12,7 +12,7 @@
 
 #include "../dynamics/fixedpitch/QuadXBF.hpp"
 
-#include <mixers/quadxbf.h>
+#include "../mixers/quadxbf.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
