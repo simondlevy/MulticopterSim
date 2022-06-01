@@ -32,6 +32,10 @@ for the minimum requirements recommended by Unreal Engine.
 
 You will need Unreal Engine 5 (UE5). I am attempting to use the latest version, which as of the time of this
 writing is UE5.0.1. To install UE5, follow these [instructions](https://docs.unrealengine.com/en-US/GettingStarted/Installation/index.html).
+Because of
+[problems](https://forums.unrealengine.com/t/unhandled-exception-when-building-blank-project-version-1-2-is-not-supported-version/510668/17)
+getting UE5 to work with Visual Studio 2022, I have opted to stay with Visual Studio
+2019 for the time being.
 
 # Quickstart
 
