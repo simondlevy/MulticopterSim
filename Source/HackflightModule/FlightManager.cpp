@@ -11,21 +11,33 @@
 FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
 {
+    // Set up code in impl/ directory
+
     void shareMotors(float *);
     shareMotors(_motorvals);
 
     void shareDynamics(Dynamics *);
     shareDynamics(dynamics);
 
+    // Interact with Hackflight
+
     hackflightInit();
 
+    // Set instance variables
     _ready = true;
-
     _dynamics = dynamics;
 }
 
 FHackflightFlightManager::~FHackflightFlightManager()
 {
+}
+
+static void checkTask(task_t * task, uint32_t usec)
+{
+    if (usec - task->desiredPeriodUs > task->lastExecutedAtUs) {
+        task->fun(usec);
+        task->lastExecutedAtUs = usec;
+    }
 }
 
 // Caled from fast thread

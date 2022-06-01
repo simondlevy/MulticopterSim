@@ -13,7 +13,7 @@
 			]
 		},
 		{
-			"Name": "SocketModule",
+			"Name": "HackflightModule",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
