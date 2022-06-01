@@ -10,7 +10,7 @@
 
 // Dynamics shared between FlightManager and Hackflight --------------
 
-static Dynamics * _dynamics;
+static Dynamics * _dyn;
 
 // Hackflight stuff --------------------------------------------------
 
@@ -18,6 +18,7 @@ static uint32_t ALTIMETER_RATE = 100;
 
 static void altimeterTask(uint32_t usec)
 {
+    debugPrintf("%+3.3f", _dyn->x(Dynamics::STATE_Z));
 }
 
 static void checkTask(task_t * task, uint32_t usec)
@@ -47,7 +48,7 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
 
     // Set instance variables
     _ready = true;
-    _dynamics = dynamics;
+    _dyn = dynamics;
 }
 
 FHackflightFlightManager::~FHackflightFlightManager()
@@ -76,6 +77,8 @@ void FHackflightFlightManager::getActuators(const double time, double * values)
 
     // Poll "receiver" (joystick) periodcially
     checkTask(&_rxTask, usec);
+
+    //debugPrintf("A: %p", _dyn); // "%+3.3f", _dyn->x(Dynamics::STATE_Z));
 
     // Run additional tasks
     for (uint8_t k=0; k<_task_count; ++k) {
