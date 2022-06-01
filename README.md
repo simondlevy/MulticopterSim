@@ -139,8 +139,9 @@ to build the project.
 vehicle pawns into the map.  
 
 6. Run the <b>launch.py</b> script in <b>Extras/python</b>.  It will tell you to hit the Play
-button back in the simulator.  When you hit the button, the vehicle should behave as 
-in the quickstart demo (rise to 10m).
+button back in the simulator.  When you hit the button, the vehicle should rise quickly and then
+begin flying towards you.
+
 
 # Design principles
 
