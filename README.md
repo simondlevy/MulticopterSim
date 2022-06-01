@@ -134,8 +134,8 @@ to build the project.
 <b>Content/C++ Classes/SocketModule/pawns</b> folder and drag one of the
 vehicle pawns into the map.  
 
-6. Run the <b>launch.py</b> script in <b>Extras/python</b>.  It will tell you to hit the Start
-button back in the simulator.  When you hit the start button, the vehicle should behave as 
+6. Run the <b>launch.py</b> script in <b>Extras/python</b>.  It will tell you to hit the Play
+button back in the simulator.  When you hit the button, the vehicle should behave as 
 in the quickstart demo (rise to 10m).
 
 # Design principles
