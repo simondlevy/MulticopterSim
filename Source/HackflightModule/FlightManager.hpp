@@ -7,8 +7,6 @@ class FHackflightFlightManager : public FFlightManager {
 
     private:
 
-        Dynamics * _dynamics;
-
         float _motorvals[100] = {};
 
         // Guards socket comms

@@ -8,6 +8,28 @@
 
 #include "FlightManager.hpp"
 
+// Dynamics shared between FlightManager and Hackflight --------------
+
+static Dynamics * _dynamics;
+
+// Hackflight stuff --------------------------------------------------
+
+static uint32_t ALTIMETER_RATE = 100;
+
+static void altimeterTask(uint32_t usec)
+{
+}
+
+static void checkTask(task_t * task, uint32_t usec)
+{
+    if (usec - task->desiredPeriodUs > task->lastExecutedAtUs) {
+        task->fun(usec);
+        task->lastExecutedAtUs = usec;
+    }
+}
+
+// FlightManager stuff ------------------------------------------------
+
 FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
 {
@@ -20,8 +42,8 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     shareDynamics(dynamics);
 
     // Interact with Hackflight
-
     hackflightInit();
+    hackflightAddTask(altimeterTask, ALTIMETER_RATE);
 
     // Set instance variables
     _ready = true;
@@ -32,13 +54,6 @@ FHackflightFlightManager::~FHackflightFlightManager()
 {
 }
 
-static void checkTask(task_t * task, uint32_t usec)
-{
-    if (usec - task->desiredPeriodUs > task->lastExecutedAtUs) {
-        task->fun(usec);
-        task->lastExecutedAtUs = usec;
-    }
-}
 
 // Caled from fast thread
 void FHackflightFlightManager::getActuators(const double time, double * values)
