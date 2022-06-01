@@ -60,13 +60,7 @@ void FHackflightFlightManager::getActuators(const double time, double * values)
     }
 
     // Poll "receiver" (joystick) periodcially
-    if (usec - _rxTask.desiredPeriodUs > _rxTask.lastExecutedAtUs) {
-        _rxTask.fun(usec);
-        _rxTask.lastExecutedAtUs = usec;
-    }
-
-    //debugPrintf("m1=%+3.3f    m2=%+3.3f    m3=%+3.3f    m4=%+3.3f",    
-    //        _motorvals[0], _motorvals[1], _motorvals[2], _motorvals[3]);
+    checkTask(&_rxTask, usec);
 
     //  Get the new motor values
     for (uint8_t i=0; i < _actuatorCount; ++i) {
