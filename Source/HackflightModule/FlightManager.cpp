@@ -27,6 +27,7 @@ static void altimeterTask(uint32_t usec)
 static void altHoldTask(uint32_t usec)
 {
     (void)usec;
+    altHoldRunController(&_state, &_demands);
 }
 
 static void checkTask(task_t * task, uint32_t usec)
