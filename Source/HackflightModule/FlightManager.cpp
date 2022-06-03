@@ -18,16 +18,17 @@ static Dynamics * _dyn;
 static uint32_t ALTIMETER_RATE = 100;
 static uint32_t ALT_HOLD_RATE  = 50;
 
-static void altimeterTask(uint32_t usec)
+static void altimeter(uint32_t usec)
 {
     (void)usec;
     _state.z = _dyn->x(Dynamics::STATE_Z);
+    debugPrintf("%f", _state.z);
 }
 
 static void altHoldTask(uint32_t usec)
 {
     (void)usec;
-    altHoldRunController(&_state, &_demands);
+    //altHoldRunController(&_state, &_demands, _pid_zero_throttle_iterm_reset);
 }
 
 static void checkTask(task_t * task, uint32_t usec)
@@ -53,8 +54,7 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
 
     // Interact with Hackflight
     hackflightInit();
-    hackflightAddTask(altimeterTask, ALTIMETER_RATE);
-    hackflightAddTask(altHoldTask, ALT_HOLD_RATE);
+    hackflightAddSensor(altimeter, ALTIMETER_RATE);
 
     // Set instance variables
     _ready = true;
@@ -88,11 +88,9 @@ void FHackflightFlightManager::getActuators(const double time, double * values)
     // Poll "receiver" (joystick) periodcially
     checkTask(&_rxTask, usec);
 
-    //debugPrintf("A: %p", _dyn); // "%+3.3f", _dyn->x(Dynamics::STATE_Z));
-
-    // Run additional tasks
-    for (uint8_t k=0; k<_task_count; ++k) {
-        checkTask(&_tasks[k], usec);
+    // Run sensors
+    for (uint8_t k=0; k<_sensor_task_count; ++k) {
+        checkTask(&_sensor_tasks[k], usec);
     }
 
     //  Get the new motor values
