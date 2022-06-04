@@ -37,6 +37,12 @@ static void checkTask(task_t * task, uint32_t usec)
 FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
 {
+    // Reset last-time-executed for tasks
+    _rxTask.lastExecutedAtUs = 0;
+    for (uint8_t k=0; k<_sensor_task_count; ++k) {
+        _sensor_tasks[k].lastExecutedAtUs = 0;
+    }
+
     // Set up code in impl/ directory
 
     void shareMotors(float *);
@@ -47,8 +53,8 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
 
     // Interact with Hackflight
     hackflightInit();
-    hackflightAddSensor(altimeter, ALTIMETER_RATE);
-    hackflightAddPidController(altHoldPidUpdate, &_rx_axes.demands.throttle);
+    //hackflightAddSensor(altimeter, ALTIMETER_RATE);
+    //hackflightAddPidController(altHoldPidUpdate, &_rx_axes.demands.throttle);
 
     // Set instance variables
     _ready = true;
