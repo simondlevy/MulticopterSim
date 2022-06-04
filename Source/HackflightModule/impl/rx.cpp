@@ -47,12 +47,12 @@ void rxPoll(
 {
     (void)currentTimeUs;
     (void)imuIsLevel;
-    (void)rxax;
-    (void)gotNewData;
 
     _joystick->poll(_joyvals);
 
     _joyvals[0] = (_joyvals[0] + 1) / 2; // [-1,+1] => [0,1]
+
+    rxax->demands.throttle = _joyvals[0];
 
     bool lowThrottle = _joyvals[0] < THROTTLE_LOW_THRESHOLD;
 
@@ -60,6 +60,7 @@ void rxPoll(
     *pidItermResetValue = lowThrottle;
 
     *armed = true;
+    *gotNewData = true;
 }
 
 } // extern "C"

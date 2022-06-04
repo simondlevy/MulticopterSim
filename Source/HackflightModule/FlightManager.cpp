@@ -48,7 +48,7 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     // Interact with Hackflight
     hackflightInit();
     hackflightAddSensor(altimeter, ALTIMETER_RATE);
-    hackflightAddPidController(altHoldPidUpdate, NULL);
+    hackflightAddPidController(altHoldPidUpdate, &_rx_axes.demands.throttle);
 
     // Set instance variables
     _ready = true;
