@@ -21,8 +21,11 @@ static uint32_t ALT_HOLD_RATE  = 50;
 static void altimeter(uint32_t usec)
 {
     (void)usec;
-    _state.z  = _dyn->x(Dynamics::STATE_Z);
-    _state.dz = _dyn->x(Dynamics::STATE_DZ);
+
+
+    // NED => ENU
+    _state.z  = -_dyn->x(Dynamics::STATE_Z);
+    _state.dz = -_dyn->x(Dynamics::STATE_DZ);
 }
 
 static void checkTask(task_t * task, uint32_t usec)
