@@ -32,15 +32,20 @@ static void checkTask(task_t * task, uint32_t usec)
     }
 }
 
+static void resetTask(task_t * task)
+{
+    task->lastExecutedAtUs = 0;
+}
+
 // FlightManager stuff ------------------------------------------------
 
 FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
 {
     // Reset last-time-executed for tasks
-    _rxTask.lastExecutedAtUs = 0;
+    resetTask(&_rxTask);
     for (uint8_t k=0; k<_sensor_task_count; ++k) {
-        _sensor_tasks[k].lastExecutedAtUs = 0;
+        resetTask(&_sensor_tasks[k]);
     }
 
     // Set up code in impl/ directory
