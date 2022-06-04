@@ -82,17 +82,17 @@ class Dynamics {
          */
         enum {
             STATE_X,
-            STATE_X_DOT,
+            STATE_DX,
             STATE_Y,
-            STATE_Y_DOT,
+            STATE_DY,
             STATE_Z,
-            STATE_Z_DOT,
+            STATE_DZ,
             STATE_PHI,
-            STATE_PHI_DOT,
+            STATE_DPHI,
             STATE_THETA,
-            STATE_THETA_DOT,
+            STATE_DTHETA,
             STATE_PSI,
-            STATE_PSI_DOT,
+            STATE_DPSI,
             STATE_SIZE
         };
 
@@ -196,9 +196,9 @@ class Dynamics {
                                     double u3,
                                     double u4)
         {
-            double phidot = _x[STATE_PHI_DOT];
-            double thedot = _x[STATE_THETA_DOT];
-            double psidot = _x[STATE_PSI_DOT];
+            double phidot = _x[STATE_DPHI];
+            double thedot = _x[STATE_DTHETA];
+            double psidot = _x[STATE_DPSI];
 
             double Ix = _vparams.Ix;
             double Iy = _vparams.Iy;
@@ -206,18 +206,18 @@ class Dynamics {
             double Jr = _vparams.Jr;
 
             // x'
-            _dxdt[0] = _x[STATE_X_DOT];
+            _dxdt[0] = _x[STATE_DX];
             
             // x''
             _dxdt[1] = accelNED[0];
 
             // y'
-            _dxdt[2] = _x[STATE_Y_DOT];                                                     
+            _dxdt[2] = _x[STATE_DY];                                                     
             // y''
             _dxdt[3] = accelNED[1];
 
             // z'
-            _dxdt[4] = _x[STATE_Z_DOT];                                                     
+            _dxdt[4] = _x[STATE_DZ];                                                     
             // z''
             _dxdt[5] = netz;                                                                       
             // phi'
@@ -263,12 +263,12 @@ class Dynamics {
 
             // Initialize velocities and airborne flag
             _airborne = airborne;
-            _x[STATE_X_DOT] = 0;
-            _x[STATE_Y_DOT] = 0;
-            _x[STATE_Z_DOT] = 0;
-            _x[STATE_PHI_DOT] = 0;
-            _x[STATE_THETA_DOT] = 0;
-            _x[STATE_PSI_DOT] = 0;
+            _x[STATE_DX] = 0;
+            _x[STATE_DY] = 0;
+            _x[STATE_DZ] = 0;
+            _x[STATE_DPHI] = 0;
+            _x[STATE_DTHETA] = 0;
+            _x[STATE_DPSI] = 0;
 
             // Initialize inertial frame acceleration in NED coordinates
             bodyZToInertial(-_wparams.g, rotation, _inertialAccel);
@@ -378,12 +378,12 @@ class Dynamics {
 
                 if (_agl <= 0 && netz >= 0) {
                     _airborne = false;
-                    _x[STATE_PHI_DOT] = 0;
-                    _x[STATE_THETA_DOT] = 0;
-                    _x[STATE_PSI_DOT] = 0;
-                    _x[STATE_X_DOT] = 0;
-                    _x[STATE_Y_DOT] = 0;
-                    _x[STATE_Z_DOT] = 0;
+                    _x[STATE_DPHI] = 0;
+                    _x[STATE_DTHETA] = 0;
+                    _x[STATE_DPSI] = 0;
+                    _x[STATE_DX] = 0;
+                    _x[STATE_DY] = 0;
+                    _x[STATE_DZ] = 0;
 
                     _x[STATE_PHI] = 0;
                     _x[STATE_THETA] = 0;

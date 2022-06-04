@@ -60,9 +60,9 @@ void FCopilotFlightManager::getReceiverDemands(void)
 
 void FCopilotFlightManager::getGyrometer(void)
 {
-    copilot_gyrometerX = FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_PHI_DOT)); 
-    copilot_gyrometerY = FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_THETA_DOT)); 
-    copilot_gyrometerZ = FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_PSI_DOT)); 
+    copilot_gyrometerX = FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_DPHI)); 
+    copilot_gyrometerY = FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_DTHETA)); 
+    copilot_gyrometerZ = FMath::RadiansToDegrees(_dynamics->x(Dynamics::STATE_DPSI)); 
 }
 
 void FCopilotFlightManager::getQuaternion(void)
@@ -83,8 +83,8 @@ void FCopilotFlightManager::getQuaternion(void)
 
 void FCopilotFlightManager::getOpticalFlow(void)
 {
-    double dx = _dynamics->x(Dynamics::STATE_X_DOT);
-    double dy = _dynamics->x(Dynamics::STATE_Y_DOT);
+    double dx = _dynamics->x(Dynamics::STATE_DX);
+    double dy = _dynamics->x(Dynamics::STATE_DY);
 
     double psi = _dynamics->x(Dynamics::STATE_PSI);
     double cp = cos(psi);

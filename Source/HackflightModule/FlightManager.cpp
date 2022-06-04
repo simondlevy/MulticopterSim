@@ -21,7 +21,8 @@ static uint32_t ALT_HOLD_RATE  = 50;
 static void altimeter(uint32_t usec)
 {
     (void)usec;
-    _state.z = _dyn->x(Dynamics::STATE_Z);
+    _state.z  = _dyn->x(Dynamics::STATE_Z);
+    _state.dz = _dyn->x(Dynamics::STATE_DZ);
 }
 
 static void checkTask(task_t * task, uint32_t usec)
@@ -58,8 +59,8 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
 
     // Interact with Hackflight
     hackflightInit();
-    //hackflightAddSensor(altimeter, ALTIMETER_RATE);
-    //hackflightAddPidController(altHoldPidUpdate, &_rx_axes.demands.throttle);
+    hackflightAddSensor(altimeter, ALTIMETER_RATE);
+    hackflightAddPidController(altHoldPidUpdate, &_rx_axes.demands.throttle);
 
     // Set instance variables
     _ready = true;

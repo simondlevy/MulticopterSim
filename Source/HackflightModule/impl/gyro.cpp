@@ -19,9 +19,9 @@ extern "C" {
 
 void gyroReadScaled(vehicle_state_t * state, bool * isCalibrating)
 {
-    state->dphi   = rad2deg(_dynamics->x(Dynamics::STATE_PHI_DOT));
-    state->dtheta = rad2deg(_dynamics->x(Dynamics::STATE_THETA_DOT));
-    state->dpsi   = rad2deg(_dynamics->x(Dynamics::STATE_PSI_DOT));
+    state->dphi   = rad2deg(_dynamics->x(Dynamics::STATE_DPHI));
+    state->dtheta = rad2deg(_dynamics->x(Dynamics::STATE_DTHETA));
+    state->dpsi   = rad2deg(_dynamics->x(Dynamics::STATE_DPSI));
 
     *isCalibrating = false;
 }
