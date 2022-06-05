@@ -22,7 +22,6 @@ static void altimeter(uint32_t usec)
 {
     (void)usec;
 
-
     // NED => ENU
     _state.z  = -_dyn->x(Dynamics::STATE_Z);
     _state.dz = -_dyn->x(Dynamics::STATE_DZ);
@@ -96,6 +95,9 @@ void FHackflightFlightManager::getActuators(const double time, double * values)
 
     // Poll "receiver" (joystick) periodcially
     checkTask(&_rxTask, usec);
+
+    // Check attitude task
+    checkTask(&_attitudeTask, usec);
 
     // Run sensors
     for (uint8_t k=0; k<_sensor_task_count; ++k) {
