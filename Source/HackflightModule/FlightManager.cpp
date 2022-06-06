@@ -45,6 +45,13 @@ static void resetTask(task_t * task)
 FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
 {
+    // Tuning constants for angle PID controller
+    static const float RATE_P  = 1.441305;
+    static const float RATE_I  = 19.55048;
+    static const float RATE_D  = 0.021160;
+    static const float RATE_F  = 0.0165048;
+    static const float LEVEL_P = 0 /*3.0*/;
+
     // Reset last-time-executed for tasks
     resetTask(&_rxTask);
     for (uint8_t k=0; k<_sensor_task_count; ++k) {
@@ -59,8 +66,10 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     void shareDynamics(Dynamics *);
     shareDynamics(dynamics);
 
-    // Interact with Hackflight
-    hackflightInit();
+    // Initialize Hackflight with angle PID tuning constants
+    hackflightInit(RATE_P, RATE_I, RATE_D, RATE_F, LEVEL_P);
+
+    // Simulate an altimeter and add a PID controller to use it for altitude hold
     hackflightAddSensor(altimeter, ALTIMETER_RATE);
     hackflightAddPidController(altHoldPidUpdate, &_rx_axes.demands.throttle);
 
