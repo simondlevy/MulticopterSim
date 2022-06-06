@@ -46,11 +46,11 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     : FFlightManager(dynamics)
 {
     // Tuning constants for angle PID controller
-    static const float RATE_P  = 1.441305;
-    static const float RATE_I  = 19.55048;
-    static const float RATE_D  = 0.021160;
-    static const float RATE_F  = 0.0165048;
-    static const float LEVEL_P = 3.0;
+    static const float RATE_P  = 1.4e0;
+    static const float RATE_I  = 0;//1.9e+1;
+    static const float RATE_D  = 2.1e-2;
+    static const float RATE_F  = 0;//1.6e-2;
+    static const float LEVEL_P = 50.0;
 
     static const float ALT_HOLD_KP = 0.75;
     static const float ALT_HOLD_KI = 1.5;
