@@ -23,10 +23,10 @@ void rxDevInit(void)
     _joystick = new IJoystick();
 }
 
-void rxGetDemands(timeUs_t currentTimeUs, rate_pid_t * ratepid, demands_t * demands)
+void rxGetDemands(timeUs_t currentTimeUs, angle_pid_t * anglepid, demands_t * demands)
 {
     (void)currentTimeUs;
-    (void)ratepid;
+    (void)anglepid;
     
     demands->throttle = _joyvals[0];
 
