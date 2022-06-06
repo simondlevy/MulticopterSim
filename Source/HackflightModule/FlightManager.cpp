@@ -50,7 +50,7 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     static const float RATE_I  = 19.55048;
     static const float RATE_D  = 0.021160;
     static const float RATE_F  = 0.0165048;
-    static const float LEVEL_P = 0 /*3.0*/;
+    static const float LEVEL_P = 3.0;
 
     // Reset last-time-executed for tasks
     resetTask(&_rxTask);
