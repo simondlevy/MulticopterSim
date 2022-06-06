@@ -52,6 +52,9 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     static const float RATE_F  = 0.0165048;
     static const float LEVEL_P = 3.0;
 
+    static const float ALT_HOLD_KP = 0.75;
+    static const float ALT_HOLD_KI = 1.5;
+
     // Reset last-time-executed for tasks
     resetTask(&_rxTask);
     for (uint8_t k=0; k<_sensor_task_count; ++k) {
@@ -69,9 +72,12 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     // Initialize Hackflight with angle PID tuning constants
     hackflightInit(RATE_P, RATE_I, RATE_D, RATE_F, LEVEL_P);
 
-    // Simulate an altimeter and add a PID controller to use it for altitude hold
+    // Simulate an altimeter
     hackflightAddSensor(altimeter, ALTIMETER_RATE);
-    hackflightAddPidController(altHoldPidUpdate, &_rx_axes.demands.throttle);
+
+    // Add a PID controller for altitude hold
+    altHoldPidInit(&_alt_pid, ALT_HOLD_KP, ALT_HOLD_KI, &_rx_axes.demands.throttle);
+    hackflightAddPidController(altHoldPidUpdate, &_alt_pid);
 
     // Set instance variables
     _ready = true;

@@ -62,6 +62,12 @@ class Dynamics {
 
     public:
 
+        typedef struct {
+            float x;
+            float y;
+            float z;
+        } axes_t;
+
         /**
          *  Vehicle parameters
          */
@@ -137,8 +143,8 @@ class Dynamics {
 
         // bodyToInertial method optimized for body X=Y=0
         static void bodyZToInertial(double bodyZ,
-                                    const double rotation[3],
-                                    double inertial[3])
+                const double rotation[3],
+                double inertial[3])
         {
             double phi = rotation[0];
             double theta = rotation[1];

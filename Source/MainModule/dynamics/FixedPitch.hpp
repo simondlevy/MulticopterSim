@@ -10,7 +10,6 @@
 #pragma once
 
 #include "../Dynamics.hpp"
-#include "../Axes.hpp"
 
 class FixedPitchDynamics : public Dynamics {
 

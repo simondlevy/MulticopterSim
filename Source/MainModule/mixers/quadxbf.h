@@ -13,10 +13,10 @@
  *
  */
 
-#include "../Axes.hpp"
+#include "../Dynamics.hpp"
 
 // Quad X configuration with Betaflight numbering
-static axes_t mixerQuadXBF[] = {
+static Dynamics::axes_t mixerQuadXBF[] = {
     //  rol   pit    yaw
     { -1.0f, +1.0f, -1.0f },          // REAR_R
     { -1.0f, -1.0f, +1.0f },          // FRONT_R
