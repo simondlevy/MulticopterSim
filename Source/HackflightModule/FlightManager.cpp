@@ -9,8 +9,9 @@
 
 #include "FlightManager.hpp"
 
-// Dynamics shared between FlightManager and Hackflight --------------
+// Data shared between FlightManager and Hackflight ------------------
 
+static hackflight_t _hf;
 static Dynamics * _dyn;
 
 // Hackflight stuff --------------------------------------------------
@@ -18,19 +19,21 @@ static Dynamics * _dyn;
 static uint32_t ALTIMETER_RATE = 100;
 static uint32_t ALT_HOLD_RATE  = 50;
 
-static void altimeter(uint32_t usec)
+static void altimeterTask(void * hackflight, uint32_t usec)
 {
+    hackflight_t * hf = (hackflight_t *)hackflight;
+
     (void)usec;
 
     // NED => ENU
-    _state.z  = -_dyn->x(Dynamics::STATE_Z);
-    _state.dz = -_dyn->x(Dynamics::STATE_DZ);
+    hf->vstate.z  = -_dyn->x(Dynamics::STATE_Z);
+    hf->vstate.dz = -_dyn->x(Dynamics::STATE_DZ);
 }
 
 static void checkTask(task_t * task, uint32_t usec)
 {
     if (usec - task->desiredPeriodUs > task->lastExecutedAtUs) {
-        task->fun(usec);
+        task->fun(&_hf, usec);
         task->lastExecutedAtUs = usec;
     }
 }
@@ -56,9 +59,9 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     static const float ALT_HOLD_KI = 1.5;
 
     // Reset last-time-executed for tasks
-    resetTask(&_rxTask);
-    for (uint8_t k=0; k<_sensor_task_count; ++k) {
-        resetTask(&_sensor_tasks[k]);
+    resetTask(&_hf.rxTask);
+    for (uint8_t k=0; k<_hf.sensor_task_count; ++k) {
+        resetTask(&_hf.sensor_tasks[k]);
     }
 
     // Set up code in impl/ directory
@@ -70,14 +73,14 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     shareDynamics(dynamics);
 
     // Initialize Hackflight with angle PID tuning constants
-    hackflightInit(RATE_P, RATE_I, RATE_D, RATE_F, LEVEL_P);
+    hackflightInit(&_hf, RATE_P, RATE_I, RATE_D, RATE_F, LEVEL_P);
 
     // Simulate an altimeter
-    hackflightAddSensor(altimeter, ALTIMETER_RATE);
+    hackflightAddSensor(&_hf, altimeterTask, ALTIMETER_RATE);
 
     // Add a PID controller for altitude hold
-    altHoldPidInit(&_alt_pid, ALT_HOLD_KP, ALT_HOLD_KI, &_rx_axes.demands.throttle);
-    hackflightAddPidController(altHoldPidUpdate, &_alt_pid);
+    altHoldPidInit(&_alt_pid, ALT_HOLD_KP, ALT_HOLD_KI, &_hf.rx_axes.demands.throttle);
+    hackflightAddPidController(&_hf, altHoldPidUpdate, &_alt_pid);
 
     // Set instance variables
     _ready = true;
@@ -105,18 +108,18 @@ void FHackflightFlightManager::getActuators(const double time, double * values)
     // Sync core tasks to gyro period
     if (usec - _core_usec > GYRO_PERIOD()) {
         _core_usec = usec;
-        hackflightRunCoreTasks();
+        hackflightRunCoreTasks(&_hf);
     }
 
     // Poll "receiver" (joystick) periodcially
-    checkTask(&_rxTask, usec);
+    checkTask(&_hf.rxTask, usec);
 
     // Check attitude task
-    checkTask(&_attitudeTask, usec);
+    checkTask(&_hf.attitudeTask, usec);
 
     // Run sensors
-    for (uint8_t k=0; k<_sensor_task_count; ++k) {
-        checkTask(&_sensor_tasks[k], usec);
+    for (uint8_t k=0; k<_hf.sensor_task_count; ++k) {
+        checkTask(&_hf.sensor_tasks[k], usec);
     }
 
     //  Get the new motor values
