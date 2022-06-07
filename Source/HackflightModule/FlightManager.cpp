@@ -60,8 +60,8 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
 
     // Reset last-time-executed for tasks
     resetTask(&_hf.rxTask);
-    for (uint8_t k=0; k<_hf.sensor_task_count; ++k) {
-        resetTask(&_hf.sensor_tasks[k]);
+    for (uint8_t k=0; k<_hf.sensorTaskCount; ++k) {
+        resetTask(&_hf.sensorTasks[k]);
     }
 
     // Set up code in impl/ directory
@@ -79,7 +79,7 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     hackflightAddSensor(&_hf, altimeterTask, ALTIMETER_RATE);
 
     // Add a PID controller for altitude hold
-    altHoldPidInit(&_alt_pid, ALT_HOLD_KP, ALT_HOLD_KI, &_hf.rx_axes.demands.throttle);
+    altHoldPidInit(&_alt_pid, ALT_HOLD_KP, ALT_HOLD_KI, &_hf.rxAxes.demands.throttle);
     hackflightAddPidController(&_hf, altHoldPidUpdate, &_alt_pid);
 
     // Set instance variables
@@ -118,8 +118,8 @@ void FHackflightFlightManager::getActuators(const double time, double * values)
     checkTask(&_hf.attitudeTask, usec);
 
     // Run sensors
-    for (uint8_t k=0; k<_hf.sensor_task_count; ++k) {
-        checkTask(&_hf.sensor_tasks[k], usec);
+    for (uint8_t k=0; k<_hf.sensorTaskCount; ++k) {
+        checkTask(&_hf.sensorTasks[k], usec);
     }
 
     //  Get the new motor values
