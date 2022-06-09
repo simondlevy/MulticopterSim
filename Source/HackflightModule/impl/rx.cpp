@@ -23,7 +23,7 @@ void rxDevInit(void)
     _joystick = new IJoystick();
 }
 
-void rxGetDemands(timeUs_t currentTimeUs, angle_pid_t * anglepid, demands_t * demands)
+void rxGetDemands(uint32_t currentTimeUs, angle_pid_t * anglepid, demands_t * demands)
 {
     (void)currentTimeUs;
     (void)anglepid;
@@ -36,7 +36,7 @@ void rxGetDemands(timeUs_t currentTimeUs, angle_pid_t * anglepid, demands_t * de
 }
 
 void rxPoll(
-        timeUs_t currentTimeUs,
+        uint32_t currentTimeUs,
         bool imuIsLevel,
         bool calibrating,
         rx_axes_t * rxax,

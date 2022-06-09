@@ -42,7 +42,7 @@ extern "C" {
         (void)adcf;
     }
 
-    void imuGetEulerAngles(hackflight_t * hf, timeUs_t time)
+    void imuGetEulerAngles(hackflight_t * hf, uint32_t time)
     {
         (void)time;
 
