@@ -5,6 +5,7 @@
 
 #include <debug.h>
 #include <hackflight.h>
+#include <serial.h>
 #include <pids/althold.h>
 
 #include "FlightManager.hpp"
@@ -73,7 +74,7 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     shareDynamics(dynamics);
 
     // Initialize Hackflight with angle PID tuning constants
-    hackflightInit(&_hf, RATE_P, RATE_I, RATE_D, RATE_F, LEVEL_P);
+    hackflightInit(&_hf, SERIAL_PORT_NONE, RATE_P, RATE_I, RATE_D, RATE_F, LEVEL_P);
 
     // Simulate an altimeter
     hackflightAddSensor(&_hf, altimeterTask, ALTIMETER_RATE);

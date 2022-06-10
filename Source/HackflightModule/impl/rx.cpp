@@ -18,8 +18,10 @@ static double      _joyvals[10];
 
 extern "C" {
 
-void rxDevInit(void)
+void rxDevInit(serialPortIdentifier_e port)
 {
+    (void)port;
+
     _joystick = new IJoystick();
 }
 
