@@ -95,7 +95,7 @@ void FCopilotFlightManager::getOpticalFlow(void)
     copilot_flowY = dy * cp - dx * sp;
 }
 
-void FCopilotFlightManager::getActuators(const double time, double * values)
+void FCopilotFlightManager::getMotors(const double time, double * values)
 {
     // Avoid null-pointer exceptions at startup, freeze after control
     // program halts

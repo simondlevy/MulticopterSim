@@ -29,7 +29,7 @@ class FFlightManager : public FRunnable {
         // For FPS reporting
         uint32_t _count;
 
-        // Current actuator values from getActuators() method
+        // Current actuator values from getMotors() method
         double _actuatorValues[100] = {}; 
 
         // For computing deltaT
@@ -43,7 +43,7 @@ class FFlightManager : public FRunnable {
          * @param values actuator values returned by your controller (output)
          *
          */
-        virtual void getActuators(const double time, double * values)  = 0;
+        virtual void getMotors(const double time, double * values)  = 0;
 
     protected:
 
@@ -130,7 +130,7 @@ class FFlightManager : public FRunnable {
                 // PID controller: update the flight manager (e.g.,
                 // HackflightManager) with the dynamics state, getting back the
                 // actuator values
-                this->getActuators(currentTime, _actuatorValues);
+                this->getMotors(currentTime, _actuatorValues);
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;

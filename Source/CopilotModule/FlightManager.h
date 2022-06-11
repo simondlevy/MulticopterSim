@@ -33,7 +33,7 @@ class FCopilotFlightManager : public FFlightManager {
 		
         ~FCopilotFlightManager();
 
-        virtual void getActuators(const double time, double * values) override;
+        virtual void getMotors(const double time, double * values) override;
 
         void tick(void);
 

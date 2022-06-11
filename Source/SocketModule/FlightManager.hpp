@@ -59,7 +59,7 @@ class FSocketFlightManager : public FFlightManager {
             UdpServerSocket::free(_motorServer);
         }
 
-        virtual void getActuators(const double time, double * values) override
+        virtual void getMotors(const double time, double * values) override
         {
             // Avoid null-pointer exceptions at startup, freeze after control
             // program halts

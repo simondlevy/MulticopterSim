@@ -36,7 +36,7 @@ class FQuickstartFlightManager : public FFlightManager {
         {
         }
 
-        virtual void getActuators(const double time, double * values) override
+        virtual void getMotors(const double time, double * values) override
         {
             /*
             if (!_running) {

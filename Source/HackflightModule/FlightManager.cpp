@@ -94,7 +94,7 @@ FHackflightFlightManager::~FHackflightFlightManager()
 
 
 // Caled from fast thread
-void FHackflightFlightManager::getActuators(const double time, double * values)
+void FHackflightFlightManager::getMotors(const double time, double * values)
 {
     // Avoid null-pointer exceptions at startup, freeze after control
     // program halts

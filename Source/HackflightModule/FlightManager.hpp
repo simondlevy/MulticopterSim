@@ -23,7 +23,7 @@ class FHackflightFlightManager : public FFlightManager {
 
         ~FHackflightFlightManager();
 
-        virtual void getActuators(const double time, double * values) override;
+        virtual void getMotors(const double time, double * values) override;
 
         void tick(void);
 
