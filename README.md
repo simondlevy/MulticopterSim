@@ -60,15 +60,19 @@ vehicle pawns into the map. Click the play button and you'll see the vehicle
 take off to an altitude of 10 meters.  You can use the spacebar to switch your
 point-of-view.
 
-# C++ development with Hackflight
+# Sensor / PID controller prototyping with Hackflight
 
 Although MulticopterSim is designed to work with any flight-control software
 you like, it easiest to get started with the
-[Hackflight](https://github.com/simondlevy/Hackflight) software. 
+[Hackflight](https://github.com/simondlevy/Hackflight) software. By prototyping
+sensors and PID controllers in Hackflight and testing them out in MulticopterSim,
+you can make significant progress before deploying your code on an actual vehicle.
 
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MulticopterSim currently supports the following controllers
-through the [Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/joystick/Joystick.h) class:
+through the
+[Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/Joystick.h)
+class:
 
 * PS4 controller
 * XBox One controller
