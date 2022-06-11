@@ -168,7 +168,7 @@ similar manner, the
 [Camera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/Camera.hpp)
 class can be used to process
 the images collected by a simulated gimbal-mounted camera on the vehicle, using
-a library like OpenCV (see [above](#opencv)).  Computer-vision algorithms running in a Camera subclass can then be used
+a library like OpenCV.  Computer-vision algorithms running in a Camera subclass can then be used
 as input to the PID control running in the FlightManager.  The following figure
 illustrates this arrangement, using a traditional
 [cascade-control](https://controlguru.com/the-cascade-control-architecture/)
