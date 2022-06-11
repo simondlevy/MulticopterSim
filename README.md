@@ -25,7 +25,7 @@ MulticopterSim differs from AirSim in a few important ways:
 I am currently developing MulticopterSim on an HP Z440 workstation with 32GB
 RAM and NVIDIA GeForce GTX 1080 Ti. It may however be possible to develop on a
 less &ldquo;loaded&rdquo; machine &ndash; see
-[here](https://docs.unrealengine.com/latest/INT/GettingStarted/RecommendedSpecifications/)
+[here](https://docs.unrealengine.com/4.27/en-US/Basics/InstallingUnrealEngine/RecommendedSpecifications/)
 for the minimum requirements recommended by Unreal Engine.
 
 ## Toolchain
