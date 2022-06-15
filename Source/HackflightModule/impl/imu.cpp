@@ -25,22 +25,15 @@ extern "C" {
         return rad2deg(_dynamics->x(index));
     }
 
-    void gyroReadScaled(hackflight_t * hf)
+    void gyroReadScaled(gyro_t * gyro, vehicle_state_t * vstate)
     {
-        vehicle_state_t * vstate = &hf->vstate;
-
         vstate->dphi   =  angle(Dynamics::STATE_DPHI);
         vstate->dtheta = -angle(Dynamics::STATE_DTHETA); // Nose-down positive
         vstate->dpsi   =  angle(Dynamics::STATE_DPSI);
 
-        hf->gyroIsCalibrating = false;
+       gyro->isCalibrating = false;
     }
 
-    void imuAccumulateGyro(hackflight_t * hf, float * adcf)
-    {
-        (void)hf;
-        (void)adcf;
-    }
 
     void imuGetEulerAngles(hackflight_t * hf, uint32_t time)
     {
