@@ -7,6 +7,7 @@
 #include <hackflight.h>
 #include <serial.h>
 #include <pids/althold.h>
+#include <sensors.h>
 
 #include "FlightManager.hpp"
 
@@ -106,8 +107,8 @@ void FHackflightFlightManager::getMotors(const double time, double * values)
 
     static uint32_t _core_usec;
 
-    // Sync core tasks to gyro period
-    if (usec - _core_usec > GYRO_PERIOD()) {
+    // Sync core tasks to core period
+    if (usec - _core_usec > CORE_PERIOD()) {
         _core_usec = usec;
         hackflightRunCoreTasks(&_hf);
     }

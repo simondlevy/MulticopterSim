@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#include <debug.h>
+#include <motor.h>
 
 static float * _motors;
 
@@ -31,8 +31,10 @@ float motorValueLow(void)
     return 0;
 }
 
-void motorWrite(float * values)
+void motorWrite(void * motorDevice, float * values)
 {
+    (void)motorDevice;
+
     memcpy(_motors, values, 4*sizeof(float));
 }
 

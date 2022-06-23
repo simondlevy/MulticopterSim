@@ -25,30 +25,41 @@ void rxDevInit(serialPortIdentifier_e port)
     _joystick = new IJoystick();
 }
 
-void rxGetDemands(uint32_t currentTimeUs, angle_pid_t * anglepid, demands_t * demands)
+void rxGetDemands(
+        rx_t * rx,
+        uint32_t currentTimeUs,
+        angle_pid_t * anglepid,
+        demands_t * demands)
 {
+    (void)rx;
     (void)currentTimeUs;
     (void)anglepid;
     
     demands->throttle = _joyvals[0];
 
-    demands->roll  = AXIS_SCALE * _joyvals[1];   // [-1,+1] => [-AXIS_SCALE,+AXIS_SCALE]
-    demands->pitch = AXIS_SCALE * _joyvals[2];   // [-1,+1] => [-AXIS_SCALE,+AXIS_SCALE]
-    demands->yaw   = AXIS_SCALE * _joyvals[3];   // [-1,+1] => [-AXIS_SCALE,+AXIS_SCALE]
+    // [-1,+1] => [-AXIS_SCALE,+AXIS_SCALE]
+    demands->roll  = AXIS_SCALE * _joyvals[1]; 
+    demands->pitch = AXIS_SCALE * _joyvals[2];
+    demands->yaw   = AXIS_SCALE * _joyvals[3];
 }
 
 void rxPoll(
+        rx_t * rx,
         uint32_t currentTimeUs,
         bool imuIsLevel,
         bool calibrating,
         rx_axes_t * rxax,
+        void * motorDevice,
+        arming_t * arming,
         bool * pidItermResetReady,
         bool * pidItermResetValue,
-        bool * armed,
         bool * gotNewData)
 {
+    (void)rx;
     (void)currentTimeUs;
     (void)imuIsLevel;
+    (void)motorDevice;
+    (void)arming;
 
     _joystick->poll(_joyvals);
 
@@ -61,7 +72,6 @@ void rxPoll(
     *pidItermResetReady = true;
     *pidItermResetValue = lowThrottle;
 
-    *armed = true;
     *gotNewData = true;
 }
 
