@@ -8,6 +8,8 @@
 
 #include "PhantomPawn.h"
 
+#include <mixers/quadxbf.h>
+
 APhantomPawn::APhantomPawn()
 {
     _phantom.build(this);
@@ -24,7 +26,8 @@ void APhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void APhantomPawn::BeginPlay()
 {
-    _flightManager = new FHackflightFlightManager(this, &_phantom.dynamics);
+    _flightManager =
+        new FHackflightFlightManager(this, &_phantom.dynamics, &mixerQuadXbf);
 
     _phantom.BeginPlay(_flightManager);
 

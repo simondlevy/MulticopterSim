@@ -47,7 +47,10 @@ static void resetTask(task_t * task)
 
 // FlightManager stuff ------------------------------------------------
 
-FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dynamics)
+FHackflightFlightManager::FHackflightFlightManager(
+        APawn * pawn,
+        Dynamics * dynamics,
+        mixer_t * mixer)
     : FFlightManager(dynamics)
 {
     // Tuning constants for angle PID controller
@@ -75,13 +78,15 @@ FHackflightFlightManager::FHackflightFlightManager(APawn * pawn, Dynamics * dyna
     shareDynamics(dynamics);
 
     // Initialize Hackflight with angle PID tuning constants
-    hackflightInit(&_hf, SERIAL_PORT_NONE, RATE_P, RATE_I, RATE_D, RATE_F, LEVEL_P);
+    hackflightInit(&_hf, mixer, 
+            SERIAL_PORT_NONE, RATE_P, RATE_I, RATE_D, RATE_F, LEVEL_P);
 
     // Simulate an altimeter
     hackflightAddSensor(&_hf, altimeterTask, ALTIMETER_RATE);
 
     // Add a PID controller for altitude hold
-    altHoldPidInit(&_alt_pid, ALT_HOLD_KP, ALT_HOLD_KI, &_hf.rxAxes.demands.throttle);
+    altHoldPidInit(&_alt_pid, ALT_HOLD_KP, ALT_HOLD_KI,
+            &_hf.rxAxes.demands.throttle);
     hackflightAddPidController(&_hf, altHoldPidUpdate, &_alt_pid);
 
     // Set instance variables

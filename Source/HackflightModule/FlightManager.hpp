@@ -4,6 +4,7 @@
 #include "../MainModule/Dynamics.hpp"
 
 #include <pids/althold_struct.h>
+#include <mixer.h>
 
 class FHackflightFlightManager : public FFlightManager {
 
@@ -19,7 +20,7 @@ class FHackflightFlightManager : public FFlightManager {
 
     public:
 
-        FHackflightFlightManager(APawn * pawn, Dynamics * dynamics);
+        FHackflightFlightManager(APawn * pawn, Dynamics * dynamics, mixer_t * mixer);
 
         ~FHackflightFlightManager();
 

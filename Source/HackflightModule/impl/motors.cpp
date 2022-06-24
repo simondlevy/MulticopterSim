@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+#include <debug.h>
 #include <motor.h>
 
 static float * _motors;
