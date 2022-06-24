@@ -8,7 +8,7 @@
 
 #include "PhantomPawn.h"
 
-#include <mixers/quadxbf.h>
+#include <mixers/fixedpitch/quadxbf.h>
 
 APhantomPawn::APhantomPawn()
 {
