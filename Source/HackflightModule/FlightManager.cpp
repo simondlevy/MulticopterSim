@@ -50,7 +50,7 @@ static void resetTask(task_t * task)
 FHackflightFlightManager::FHackflightFlightManager(
         APawn * pawn,
         Dynamics * dynamics,
-        mixer_t * mixer)
+        mixer_t mixer)
     : FFlightManager(dynamics)
 {
     // Tuning constants for angle PID controller

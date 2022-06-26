@@ -3,14 +3,14 @@
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
 
+#include <motor.h>
 #include <pids/althold_struct.h>
-#include <mixer.h>
 
 class FHackflightFlightManager : public FFlightManager {
 
     private:
 
-        float _motorvals[100] = {};
+        float _motorvals[MAX_SUPPORTED_MOTORS] = {};
 
         // Guards socket comms
         bool _ready = false;
@@ -20,7 +20,7 @@ class FHackflightFlightManager : public FFlightManager {
 
     public:
 
-        FHackflightFlightManager(APawn * pawn, Dynamics * dynamics, mixer_t * mixer);
+        FHackflightFlightManager(APawn * pawn, Dynamics * dynamics, mixer_t mixer);
 
         ~FHackflightFlightManager();
 
