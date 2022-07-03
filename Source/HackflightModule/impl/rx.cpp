@@ -21,7 +21,7 @@ extern "C" {
 void rxGetDemands(
         rx_t * rx,
         uint32_t currentTimeUs,
-        angle_pid_t * anglepid,
+        anglePid_t * anglepid,
         demands_t * demands)
 {
     (void)rx;

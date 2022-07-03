@@ -16,6 +16,7 @@
 
 #include <CoreMinimal.h>
 #include <UObject/Interface.h>
+#include "Utils.hpp"
 #include "Joystick.generated.h"
 
 // This class does not need to be modified.

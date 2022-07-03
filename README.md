@@ -82,7 +82,8 @@ class:
 * Logitech Extreme Pro 3D joystick
 * Logitech F310 gamepad
 * FrSky Taranis TX9 RC transmitter with mini USB cable 
-* Spektrum transmitter with WS1000 wireless simulator dongle
+* FrSky XSR-Sim dongle
+* Spektrum WS1000 dongle
 * Great Planes RealFlight Interlink
 
 If you don't have a controller, MulticopterSim will use input from the numeric keypad on your keyboard (make sure
