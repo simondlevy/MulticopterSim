@@ -25,13 +25,15 @@ extern "C" {
         return rad2deg(_dynamics->x(index));
     }
 
-    void gyroReadScaled(gyro_t * gyro, vehicle_state_t * vstate)
+    void gyroReadScaled(hackflight_t * hf, vehicle_state_t * vstate)
     {
+        (void)hf;
+
         vstate->dphi   =  angle(Dynamics::STATE_DPHI);
         vstate->dtheta = -angle(Dynamics::STATE_DTHETA); // Nose-down positive
         vstate->dpsi   =  angle(Dynamics::STATE_DPSI);
 
-       gyro->isCalibrating = false;
+       hf->gyro.isCalibrating = false;
     }
 
 

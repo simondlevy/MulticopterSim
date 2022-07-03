@@ -78,8 +78,7 @@ FHackflightFlightManager::FHackflightFlightManager(
     shareDynamics(dynamics);
 
     // Initialize Hackflight with angle PID tuning constants
-    hackflightInit(&_hf, mixer, 
-            SERIAL_PORT_NONE, RATE_P, RATE_I, RATE_D, RATE_F, LEVEL_P);
+    hackflightInit(&_hf, mixer, RATE_P, RATE_I, RATE_D, RATE_F, LEVEL_P);
 
     // Simulate an altimeter
     hackflightAddSensor(&_hf, altimeterTask, ALTIMETER_RATE);

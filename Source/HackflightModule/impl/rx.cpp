@@ -18,13 +18,6 @@ static double      _joyvals[10];
 
 extern "C" {
 
-void rxDevInit(serialPortIdentifier_e port)
-{
-    (void)port;
-
-    _joystick = new IJoystick();
-}
-
 void rxGetDemands(
         rx_t * rx,
         uint32_t currentTimeUs,
@@ -60,6 +53,10 @@ void rxPoll(
     (void)imuIsLevel;
     (void)motorDevice;
     (void)arming;
+
+    if (!_joystick) {
+        _joystick = new IJoystick();
+    }
 
     _joystick->poll(_joyvals);
 
