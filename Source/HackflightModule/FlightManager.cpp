@@ -7,7 +7,6 @@
 #include <hackflight.h>
 #include <serial.h>
 #include <pids/althold.h>
-#include <sensors.h>
 
 #include "FlightManager.hpp"
 

@@ -25,7 +25,7 @@ extern "C" {
         return rad2deg(_dynamics->x(index));
     }
 
-    void gyroReadScaled(hackflight_t * hf, vehicle_state_t * vstate)
+    void gyroReadScaled(hackflight_t * hf, vehicleState_t * vstate)
     {
         (void)hf;
 
@@ -41,7 +41,7 @@ extern "C" {
     {
         (void)time;
 
-        vehicle_state_t * vstate = &hf->vstate;
+        vehicleState_t * vstate = &hf->vstate;
 
         vstate->phi   =  angle(Dynamics::STATE_PHI);
         vstate->theta = -angle(Dynamics::STATE_THETA); // Nose-down positive
