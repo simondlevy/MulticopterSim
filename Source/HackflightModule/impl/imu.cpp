@@ -37,15 +37,15 @@ extern "C" {
     }
 
 
-    void imuGetEulerAngles(hackflight_t * hf, uint32_t time)
+    void imuGetEulerAngles(hackflight_t * hf, uint32_t time, axes_t * angles)
     {
         (void)time;
 
         vehicleState_t * vstate = &hf->vstate;
 
-        vstate->phi   =  angle(Dynamics::STATE_PHI);
-        vstate->theta = -angle(Dynamics::STATE_THETA); // Nose-down positive
-        vstate->psi   =  angle(Dynamics::STATE_PSI);
+        angles->x =  angle(Dynamics::STATE_PHI);
+        angles->y = -angle(Dynamics::STATE_THETA); // Nose-down positive
+        angles->z =  angle(Dynamics::STATE_PSI);
     }
 
 } // extern "C"

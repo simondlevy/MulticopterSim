@@ -5,6 +5,7 @@
 
 #include <debug.h>
 #include <hackflight.h>
+#include <sensor.h>
 #include <serial.h>
 #include <pids/althold.h>
 
