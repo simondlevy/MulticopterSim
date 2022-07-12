@@ -3,7 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#include <core_period.h>
+#include <core_rate.h>
 #include <debug.h>
 #include <hackflight.h>
 #include <sensor.h>
@@ -140,6 +140,11 @@ void FHackflightFlightManager::getMotors(const double time, double * values)
     for (uint8_t i=0; i < _actuatorCount; ++i) {
         values[i] = _motorvals[i];
     }
+}
+
+uint32_t CORE_RATE(void)
+{
+    return 10000; // arbitrary
 }
 
 void FHackflightFlightManager::tick(void)

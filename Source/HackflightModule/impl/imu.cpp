@@ -34,11 +34,6 @@ extern "C" {
        hf->gyro.isCalibrating = false;
     }
 
-    uint32_t gyroGetRate(void)
-    {
-        return 10000; // arbitrary
-    }
-
     void imuGetEulerAngles(hackflight_t * hf, uint32_t time, axes_t * angles)
     {
         (void)time;
