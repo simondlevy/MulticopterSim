@@ -3,6 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
+#include <core_period.h>
 #include <debug.h>
 #include <hackflight.h>
 #include <sensor.h>
