@@ -4,7 +4,6 @@
 #include "../MainModule/Dynamics.hpp"
 
 #include <motor.h>
-#include <pids/althold_struct.h>
 
 class FHackflightFlightManager : public FFlightManager {
 
