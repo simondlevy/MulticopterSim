@@ -6,7 +6,7 @@
 #include <core_rate.h>
 #include <debug.h>
 #include <hackflight.h>
-#include <sensor.h>
+#include <sensors.h>
 #include <serial.h>
 #include <pids/althold.h>
 
@@ -105,9 +105,7 @@ FHackflightFlightManager::~FHackflightFlightManager()
 {
 }
 
-
-// Caled from fast thread
-void FHackflightFlightManager::getMotors(const double time, double * values)
+void FHackflightFlightManager::getMotors(double time, double* values)
 {
     // Avoid null-pointer exceptions at startup, freeze after control
     // program halts
@@ -122,7 +120,7 @@ void FHackflightFlightManager::getMotors(const double time, double * values)
     // Sync core tasks to core period
     if (usec - _core_usec > CORE_PERIOD()) {
         _core_usec = usec;
-        hackflightStep(&_hf);
+        hackflightRunCoreTasks(&_hf);
     }
 
     // Poll "receiver" (joystick) periodcially
@@ -140,11 +138,6 @@ void FHackflightFlightManager::getMotors(const double time, double * values)
     for (uint8_t i=0; i < _actuatorCount; ++i) {
         values[i] = _motorvals[i];
     }
-}
-
-uint32_t CORE_RATE(void)
-{
-    return 10000; // arbitrary
 }
 
 void FHackflightFlightManager::tick(void)

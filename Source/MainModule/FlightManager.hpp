@@ -35,6 +35,8 @@ class FFlightManager : public FRunnable {
         // For computing deltaT
         double   _previousTime = 0;
 
+    protected:
+
         /**
          * Flight-control method running repeatedly on its own thread.  
          * Override this method to implement your own flight controller.
@@ -43,9 +45,9 @@ class FFlightManager : public FRunnable {
          * @param values actuator values returned by your controller (output)
          *
          */
-        virtual void getMotors(const double time, double * values)  = 0;
+        //virtual void getMotors(double time, double * values)  = 0;
 
-    protected:
+        virtual void getMotors(double time, double* values) = 0;
 
         uint8_t _actuatorCount = 0;
 

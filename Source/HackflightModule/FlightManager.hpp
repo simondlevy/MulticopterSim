@@ -3,6 +3,7 @@
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
 
+#include <datatypes.h>
 #include <motor.h>
 
 class FHackflightFlightManager : public FFlightManager {
@@ -15,15 +16,19 @@ class FHackflightFlightManager : public FFlightManager {
         bool _ready = false;
 
         // PID controller for altitude hold
-        alt_pid_t _alt_pid;
+        altPid_t _alt_pid;
+
+    protected:
+
+        //virtual void getMotors(double time, double * values) override;
+
+        virtual void getMotors(double time, double* values) override;
 
     public:
 
         FHackflightFlightManager(APawn * pawn, Dynamics * dynamics, mixer_t mixer);
 
         ~FHackflightFlightManager();
-
-        virtual void getMotors(const double time, double * values) override;
 
         void tick(void);
 

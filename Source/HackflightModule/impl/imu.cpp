@@ -25,11 +25,11 @@ extern "C" {
         return rad2deg(_dynamics->x(index));
     }
 
-    void gyroGetAngularVelocities(hackflight_t * hf)
+    void gyroReadScaled(hackflight_t * hf, vehicleState_t * vstate)
     {
-        hf->vstate.dphi   =  angle(Dynamics::STATE_DPHI);
-        hf->vstate.dtheta = -angle(Dynamics::STATE_DTHETA); // Nose-down positive
-        hf->vstate.dpsi   =  angle(Dynamics::STATE_DPSI);
+        vstate->dphi   =  angle(Dynamics::STATE_DPHI);
+        vstate->dtheta = -angle(Dynamics::STATE_DTHETA); // Nose-down positive
+        vstate->dpsi   =  angle(Dynamics::STATE_DPSI);
 
        hf->gyro.isCalibrating = false;
     }
