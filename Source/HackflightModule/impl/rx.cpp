@@ -31,9 +31,9 @@ void rxGetDemands(
     demands->throttle = _joyvals[0];
 
     // [-1,+1] => [-AXIS_SCALE,+AXIS_SCALE]
-    demands->roll  = AXIS_SCALE * _joyvals[1]; 
-    demands->pitch = AXIS_SCALE * _joyvals[2];
-    demands->yaw   = AXIS_SCALE * _joyvals[3];
+    demands->rpy.x = AXIS_SCALE * _joyvals[1]; 
+    demands->rpy.y = AXIS_SCALE * _joyvals[2];
+    demands->rpy.z = AXIS_SCALE * _joyvals[3];
 }
 
 void rxPoll(
