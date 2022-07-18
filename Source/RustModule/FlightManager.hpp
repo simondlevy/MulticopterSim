@@ -8,6 +8,17 @@ class FRustFlightManager : public FFlightManager {
 
     private:
 
+        typedef float f32;
+
+        struct Vec2 {
+            f32 x;
+            f32 y;
+        };
+
+        typedef Vec2 (*vec2_init_t)();
+
+        vec2_init_t _vec2_init;
+
     protected:
 
         virtual void getMotors(double time, double* values) override;
