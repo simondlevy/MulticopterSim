@@ -1,9 +1,11 @@
-#define WIN32_LEAN_AND_MEAN
+//#define WIN32_LEAN_AND_MEAN
 
-#define _USE_MATH_DEFINES
-#include <cmath>
+//#define _USE_MATH_DEFINES
+//#include <cmath>
 
 #include "FlightManager.hpp"
+
+#include <SDL.h>
 
 // Data shared between FlightManager and Rust ------------------
 

@@ -13,8 +13,14 @@ using System.IO;
 
 public class RustModule : ModuleRules
 {
+    // Change this to agree with your SDL install location
+    private static string SDL_PATH = "D:\\SDL2\\";
+
     public RustModule(ReadOnlyTargetRules Target) : base(Target)
     {
+        // Avoid warning/error from SDL
+        bEnableUndefinedIdentifierWarnings = false;
+
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PublicDependencyModuleNames.AddRange(new string[] 
@@ -22,6 +28,7 @@ public class RustModule : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[] { "MainModule" });
 
+        PrivateIncludePaths.Add(SDL_PATH + "\\include");
      }
 }
 

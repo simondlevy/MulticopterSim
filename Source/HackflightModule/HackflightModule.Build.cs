@@ -25,14 +25,15 @@ public class HackflightModule : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[] { "MainModule" });
 
-        // Hackflight support --------------------------------------------------------------------
+        // Hackflight support ---------------------------------------------------------------
 
         PrivateIncludePaths.Add(ARDUINO_PATH + "Hackflight\\src");
 
-        // OpenCV support --------------------------------------------------------------------
+        // OpenCV support -------------------------------------------------------------------
 
         /*
-        string OpenCVPath = Path.GetFullPath(Path.Combine(ModuleDirectory, "ThirdParty")) + "\\OpenCV";
+        string OpenCVPath =
+          Path.GetFullPath(Path.Combine(ModuleDirectory, "ThirdParty")) + "\\OpenCV";
 
         // Add Include path
         PublicIncludePaths.AddRange(new string[] { OpenCVPath + "\\include" });
