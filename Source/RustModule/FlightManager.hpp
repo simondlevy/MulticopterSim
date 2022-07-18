@@ -10,14 +10,16 @@ class FRustFlightManager : public FFlightManager {
 
         typedef float f32;
 
-        struct Vec2 {
-            f32 x;
-            f32 y;
+        struct Motors {
+            f32 m1;
+            f32 m2;
+            f32 m3;
+            f32 m4;
         };
 
-        typedef Vec2 (*vec2_init_t)();
+        typedef Motors (*get_motors_t)();
 
-        vec2_init_t _vec2_init;
+        get_motors_t _get_motors;
 
     protected:
 

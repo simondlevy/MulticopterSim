@@ -1,13 +1,12 @@
 #[repr(C)]
-pub struct Vec2 {
-    x: f32,
-    y: f32,
-
-    // Adding a constructor here makes the code crash on Windows! :-O
-    // Vec2(f32 x_, f32 y_) : x(x_), y(y_) {}
+pub struct Motors {
+    m1: f32,
+    m2: f32,
+    m3: f32,
+    m4: f32
 }
 
 #[no_mangle]
-pub extern "C" fn vec2_init() -> Vec2 {
-	Vec2 { x: 3.0, y: 5.0 }
+pub extern "C" fn get_motors() -> Motors {
+	Motors { m1: 1.0, m2: 2.0, m3: 3.0, m4:4.0 }
 }

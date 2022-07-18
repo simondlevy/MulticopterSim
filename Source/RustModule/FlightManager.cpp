@@ -15,7 +15,7 @@ FRustFlightManager::FRustFlightManager(APawn * pawn, Dynamics * dynamics)
 {
     void * library_handle = SDL_LoadObject(LIBRARY_FILENAME);
 
-    _vec2_init = (vec2_init_t) SDL_LoadFunction(library_handle, "vec2_init");
+    _get_motors = (get_motors_t) SDL_LoadFunction(library_handle, "get_motors");
 }
 
 FRustFlightManager::~FRustFlightManager()
@@ -28,6 +28,8 @@ void FRustFlightManager::getMotors(double time, double* values)
 
 void FRustFlightManager::tick(void)
 {
-    auto v2 = _vec2_init();
-    debugline("v2: %.2f %.2f", v2.x, v2.y);
+    auto motors = _get_motors();
+
+    debugline("motors: %.2f %.2f %.2f %.2f",
+            motors.m1, motors.m2, motors.m3, motors.m4);
 }
