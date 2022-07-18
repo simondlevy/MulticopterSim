@@ -8,8 +8,6 @@
 
 #include "PhantomPawn.h"
 
-#include <mixers/fixedpitch/quadxbf.h>
-
 APhantomPawn::APhantomPawn()
 {
     _phantom.build(this);
@@ -26,8 +24,7 @@ void APhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void APhantomPawn::BeginPlay()
 {
-    _flightManager =
-        new FRustFlightManager(this, &_phantom.dynamics, mixerQuadXbf);
+    _flightManager = new FRustFlightManager(this, &_phantom.dynamics);
 
     _phantom.BeginPlay(_flightManager);
 
