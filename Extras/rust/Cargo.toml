@@ -1,11 +1,11 @@
 
 [package]
-name = "vec"
+name = "hackflight"
 version = "0.1.0"
-authors = ["Frederik De Bleser <frederik@debleser.be>"]
+authors = ["Simon D. Levy<simon.d.levy@gmail.com>"]
 
 [lib]
-name = "vec"
+name = "hackflight"
 crate-type = ["dylib"]
 
 [dependencies]

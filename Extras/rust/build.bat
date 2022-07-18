@@ -6,4 +6,4 @@
 :: MIT License
 
 cargo build
-copy target\debug\vec.dll ..\..\Binaries\Win64
+copy target\debug\hackflight.dll ..\..\Binaries\Win64

@@ -8,7 +8,7 @@
 
 #include <SDL.h>
 
-static const char * LIBRARY_FILENAME = "vec.dll";
+static const char * LIBRARY_FILENAME = "hackflight.dll";
 
 typedef float f32;
 
@@ -21,10 +21,14 @@ typedef Vec2 (*vec2_init_t)();
 
 static void * library_handle;
 
+static auto vec2_init = (vec2_init_t) SDL_LoadFunction(library_handle, "vec2_init");
+
 FRustFlightManager::FRustFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
 {
     library_handle = SDL_LoadObject(LIBRARY_FILENAME);
+
+    vec2_init = (vec2_init_t) SDL_LoadFunction(library_handle, "vec2_init");
 }
 
 FRustFlightManager::~FRustFlightManager()
@@ -38,7 +42,6 @@ void FRustFlightManager::getMotors(double time, double* values)
 
 void FRustFlightManager::tick(void)
 {
-    auto vec2_init = (vec2_init_t) SDL_LoadFunction(library_handle, "vec2_init");
     auto v2 = vec2_init();
     debugline("v2: %.2f %.2f", v2.x, v2.y);
 }
