@@ -1,0 +1,10 @@
+[package]
+name = "vec"
+version = "0.1.0"
+authors = ["Frederik De Bleser <frederik@debleser.be>"]
+
+[lib]
+name = "vec"
+crate-type = ["dylib"]
+
+[dependencies]
