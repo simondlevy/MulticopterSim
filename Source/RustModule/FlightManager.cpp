@@ -21,7 +21,7 @@ typedef Vec2 (*vec2_init_t)();
 
 static void * library_handle;
 
-static auto vec2_init = (vec2_init_t) SDL_LoadFunction(library_handle, "vec2_init");
+static vec2_init_t vec2_init;
 
 FRustFlightManager::FRustFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
