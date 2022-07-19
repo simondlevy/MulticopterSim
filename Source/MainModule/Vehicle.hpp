@@ -116,15 +116,15 @@ class Vehicle {
         {
             // Set vehicle pose in animation
             _pawn->SetActorLocation(_startLocation +
-                100 * FVector(_dynamics->x(Dynamics::STATE_X), 
-                              _dynamics->x(Dynamics::STATE_Y),
-                              -_dynamics->x(Dynamics::STATE_Z))); // for NED
+                100 * FVector(_dynamics->vstate.x,
+                              _dynamics->vstate.y,
+                              -_dynamics->vstate.z)); // for NED
 
             _pawn->SetActorRotation(
                     FMath::RadiansToDegrees(
-                        FRotator(_dynamics->x(Dynamics::STATE_THETA),
-                            _dynamics->x(Dynamics::STATE_PSI),
-                            _dynamics->x(Dynamics::STATE_PHI))));
+                        FRotator(_dynamics->vstate.theta,
+                            _dynamics->vstate.psi,
+                            _dynamics->vstate.phi)));
         }
 
         void grabImages(void)

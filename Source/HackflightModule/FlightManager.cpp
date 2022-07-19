@@ -29,8 +29,8 @@ static void altimeterTask(void * hackflight, uint32_t usec)
     (void)usec;
 
     // NED => ENU
-    hf->vstate.z  = -_dyn->x(Dynamics::STATE_Z);
-    hf->vstate.dz = -_dyn->x(Dynamics::STATE_DZ);
+    hf->vstate.z  = -_dyn->vstate.z;
+    hf->vstate.dz = -_dyn->vstate.dz;
 }
 
 static void checkTask(task_t * task, uint32_t usec)

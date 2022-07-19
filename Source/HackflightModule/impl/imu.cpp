@@ -20,16 +20,11 @@ void shareDynamics(Dynamics * dynamics)
 
 extern "C" {
 
-    static float angle(uint8_t index)
-    {
-        return rad2deg(_dynamics->x(index));
-    }
-
     void gyroReadScaled(hackflight_t * hf, vehicleState_t * vstate)
     {
-        vstate->dphi   =  angle(Dynamics::STATE_DPHI);
-        vstate->dtheta = -angle(Dynamics::STATE_DTHETA); // Nose-down positive
-        vstate->dpsi   =  angle(Dynamics::STATE_DPSI);
+        vstate->dphi   =  rad2deg(_dynamics->vstate.dphi); 
+        vstate->dtheta = -rad2deg(_dynamics->vstate.dtheta); // Nose-down positive
+        vstate->dpsi   =  rad2deg(_dynamics->vstate.dpsi);
 
        hf->gyro.isCalibrating = false;
     }
@@ -40,9 +35,9 @@ extern "C" {
 
         vehicleState_t * vstate = &hf->vstate;
 
-        angles->x =  angle(Dynamics::STATE_PHI);
-        angles->y = -angle(Dynamics::STATE_THETA); // Nose-down positive
-        angles->z =  angle(Dynamics::STATE_PSI);
+        angles->x =  rad2deg(_dynamics->vstate.phi);
+        angles->y = -rad2deg(_dynamics->vstate.theta); // Nose-down positive
+        angles->z =  rad2deg(_dynamics->vstate.psi);
     }
 
 } // extern "C"

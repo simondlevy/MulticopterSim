@@ -71,9 +71,18 @@ class FSocketFlightManager : public FFlightManager {
             _telemetry[0] = time;
 
             // Next output values are state
-            for (uint8_t k=0; k<12; ++k) {
-                _telemetry[k+1] = _dynamics->x(k);
-            }
+            _telemetry[1] = _dynamics->vstate.x;
+            _telemetry[2] = _dynamics->vstate.dx;
+            _telemetry[3] = _dynamics->vstate.y;
+            _telemetry[4] = _dynamics->vstate.dy;
+            _telemetry[5] = _dynamics->vstate.z;
+            _telemetry[6] = _dynamics->vstate.dz;
+            _telemetry[7] = _dynamics->vstate.phi;
+            _telemetry[8] = _dynamics->vstate.dphi;
+            _telemetry[9] = _dynamics->vstate.theta;
+            _telemetry[10] = _dynamics->vstate.dtheta;
+            _telemetry[11] = _dynamics->vstate.psi;
+            _telemetry[12] = _dynamics->vstate.dpsi;
 
             // Send telemetry values to server
             _telemClient->sendData(_telemetry, sizeof(_telemetry));

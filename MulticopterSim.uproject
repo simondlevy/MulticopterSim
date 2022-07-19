@@ -13,7 +13,7 @@
 			]
 		},
 		{
-			"Name": "RustModule",
+			"Name": "HackflightModule",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
