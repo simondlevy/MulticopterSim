@@ -24,12 +24,16 @@ FRustFlightManager::~FRustFlightManager()
 
 void FRustFlightManager::getMotors(double time, double* values)
 {
+    (time);
+
+    auto motors = _get_motors();
+
+    values[0] = motors.m1;
+    values[1] = motors.m2;
+    values[2] = motors.m3;
+    values[3] = motors.m4;
 }
 
 void FRustFlightManager::tick(void)
 {
-    auto motors = _get_motors();
-
-    debugline("motors: %.2f %.2f %.2f %.2f",
-            motors.m1, motors.m2, motors.m3, motors.m4);
 }

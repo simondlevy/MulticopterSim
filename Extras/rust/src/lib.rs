@@ -8,5 +8,5 @@ pub struct Motors {
 
 #[no_mangle]
 pub extern "C" fn get_motors() -> Motors {
-	Motors { m1: 1.0, m2: 2.0, m3: 3.0, m4:4.0 }
+	Motors { m1: 0.6, m2: 0.6, m3: 0.6, m4:0.6 }
 }
