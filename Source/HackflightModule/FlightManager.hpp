@@ -16,7 +16,7 @@ class FHackflightFlightManager : public FFlightManager {
         bool _ready = false;
 
         // PID controller for altitude hold
-        altPid_t _alt_pid;
+        altHoldPid_t _alt_pid;
 
     protected:
 

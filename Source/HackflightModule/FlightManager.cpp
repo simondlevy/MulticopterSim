@@ -92,8 +92,7 @@ FHackflightFlightManager::FHackflightFlightManager(
     hackflightAddSensor(&_hf, altimeterTask, ALTIMETER_RATE);
 
     // Add a PID controller for altitude hold
-    altHoldPidInit(&_alt_pid, ALT_HOLD_KP, ALT_HOLD_KI,
-            &_hf.rxAxes.demands.throttle);
+    altHoldPidInit(&_alt_pid, ALT_HOLD_KP, ALT_HOLD_KI);
     hackflightAddPidController(&_hf, altHoldPidUpdate, &_alt_pid);
 
     // Set instance variables
