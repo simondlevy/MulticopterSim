@@ -119,7 +119,7 @@ void FHackflightFlightManager::getMotors(double time, double* values)
     // Sync core tasks to core period
     if (usec - _core_usec > CORE_PERIOD()) {
         _core_usec = usec;
-        hackflightRunCoreTasks(&_hf);
+        hackflightRunCoreTasks(&_hf, _motorvals);
     }
 
     // Poll "receiver" (joystick) periodcially
