@@ -44,18 +44,27 @@ fn alt_hold(demands : Demands, vstate : VehicleState) -> Demands {
     let stick_deadband = 2.0e-1;
 
     // State variables
-    let mut _error_integral = 0.0;
-    let mut _throttle_demand = 0.0; 
-    let mut _altitude_target = 0.0; 
-
-    let _inband = in_band(demands.throttle, stick_deadband);
+    let mut error_integral_prev = 0.0;
+    let mut throttle_demand_prev = 0.0; 
+    let mut altitude_target_prev = 0.0; 
 
     // NED => ENU
     let altitude = -vstate.z; 
 
+    let inband = in_band(demands.throttle, stick_deadband);
+
+    // Reset controller when moving into deadband
+    let altitude_target =
+        if inband && !in_band(throttle_demand_prev, stick_deadband)
+        {altitude}
+        else {altitude_target_prev};
+
     let new_throttle = if altitude < 1.0 { 0.6 } else { 0.0 };
 
-    _error_integral = 0.0;
+    // Update state variables
+    error_integral_prev = 0.0;
+    throttle_demand_prev = 0.0; 
+    altitude_target_prev = altitude_target;
 
     Demands { throttle:new_throttle,
               roll:demands.roll,
