@@ -30,24 +30,40 @@ pub struct Motors {
     m4: f32
 }
 
-fn _alt_hold(_demands : Demands, _vehicle_state : VehicleState) -> Demands {
+fn _alt_hold(_demands : Demands, _vstate : VehicleState) -> Demands {
 
     Demands { throttle:0.0, roll:0.0, pitch:0.0, yaw:0.0 }
 }
 
 #[no_mangle]
 pub extern "C" fn get_motors(
-    c_demands : *mut Demands, c_vehicle_state: *mut VehicleState) -> Motors {
+    c_demands : *mut Demands, c_vstate: *mut VehicleState) -> Motors {
 
-    let z = -(unsafe { (*c_vehicle_state).z });
+    let z = -(unsafe { (*c_vstate).z });
 
     let m = if z < 1.0 { 0.6 } else { 0.0 };
 
     let _demands = Demands {
         throttle:(unsafe { (*c_demands).throttle }),
-        roll:0.0,
-        pitch:0.0,
-        yaw:0.0 };
+        roll:(unsafe { (*c_demands).roll }),
+        pitch:(unsafe { (*c_demands).pitch }),
+        yaw:(unsafe { (*c_demands).yaw }) 
+    };
+
+    let _vstate = VehicleState {
+        x:(unsafe { (*c_vstate).x }),
+        dx:(unsafe { (*c_vstate).dx }),
+        y:(unsafe { (*c_vstate).y }),
+        dy:(unsafe { (*c_vstate).dy }),
+        z:(unsafe { (*c_vstate).z }),
+        dz:(unsafe { (*c_vstate).dz }),
+        phi:(unsafe { (*c_vstate).phi }),
+        dphi:(unsafe { (*c_vstate).dphi }),
+        theta:(unsafe { (*c_vstate).theta }),
+        dtheta:(unsafe { (*c_vstate).dtheta }),
+        psi:(unsafe { (*c_vstate).psi }),
+        dpsi:(unsafe { (*c_vstate).dpsi })
+    };
 
 	Motors { m1: m, m2: m, m3: m, m4: m }
 }
