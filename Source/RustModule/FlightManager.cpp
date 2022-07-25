@@ -1,6 +1,5 @@
 #include "FlightManager.hpp"
 #include "../MainModule/Utils.hpp"
-#include "../MainModule/Joystick.h"
 
 #include <SDL.h>
 
@@ -13,7 +12,9 @@ FRustFlightManager::FRustFlightManager(APawn * pawn, Dynamics * dynamics)
 
     void * library_handle = SDL_LoadObject(LIBRARY_FILENAME);
 
-    _get_motors = (get_motors_t) SDL_LoadFunction(library_handle, "get_motors");
+    _run_hackflight = (run_hackflight_t) SDL_LoadFunction(library_handle, "c_run_hackflight");
+
+    _joystick = new IJoystick();
 }
 
 FRustFlightManager::~FRustFlightManager()
@@ -24,12 +25,6 @@ void FRustFlightManager::getMotors(double time, double* values)
 {
     (time);
 
-    static IJoystick * _joystick;
-
-    if (!_joystick) {
-        _joystick = new IJoystick();
-    }
-
     double joyvals[10] = {};
 
     _joystick->poll(joyvals);
@@ -38,7 +33,11 @@ void FRustFlightManager::getMotors(double time, double* values)
 
     demands_t demands = { joyvals[0], joyvals[1], joyvals[2], joyvals[3] };
 
-    auto motors = _get_motors(&demands, &_dynamics->vstate);
+    auto hackflight = _run_hackflight(&demands, &_dynamics->vstate, &_alt_hold);
+
+    auto motors = hackflight.motors;
+
+    memcpy(&_alt_hold, &hackflight.alt_hold, sizeof(alt_hold_t));
 
     values[0] = motors.m1;
     values[1] = motors.m2;

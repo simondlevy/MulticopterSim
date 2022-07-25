@@ -30,6 +30,20 @@ pub struct Motors {
     m4: f32
 }
 
+#[repr(C)]
+pub struct AltHold {
+
+    altitude_target: f32,
+    error_integral:  f32,
+    throttle_demand: f32
+}
+
+#[repr(C)]
+pub struct Hackflight {
+    motors: Motors,
+    alt_hold: AltHold
+}
+
 fn in_band(value : f32, band : f32) -> bool {
     value > -band && value < band
 }
@@ -38,7 +52,7 @@ fn constrain_abs(value : f32, limit : f32) -> f32 {
     if value < -limit {-limit} else if value > limit {limit} else {value}
 }
 
-fn alt_hold(demands : Demands, vstate : VehicleState) -> Demands {
+fn run_alt_hold(throttle: f32, z: f32, dz: f32, pid_state: AltHold) -> AltHold {
 
     // Constants
     let kp = 7.5e-1;
@@ -47,54 +61,74 @@ fn alt_hold(demands : Demands, vstate : VehicleState) -> Demands {
     let pilot_vel_z_max = 2.5e0;
     let stick_deadband = 2.0e-1;
 
-    // State variables
-    let mut error_integral_prev = 0.0;
-    let mut throttle_demand_prev = 0.0; 
-    let mut altitude_target_prev = 0.0; 
+    let inband = in_band(throttle, stick_deadband);
 
-    let inband = in_band(demands.throttle, stick_deadband);
-
-    // NED => ENU
-    let altitude = -vstate.z; 
+    let altitude = z;
 
     // Reset controller when moving into deadband
-    let altitude_target =
-        if inband && !in_band(throttle_demand_prev, stick_deadband)
+    let new_altitude_target =
+        if inband && !in_band(pid_state.throttle_demand, stick_deadband)
         {altitude}
-        else {altitude_target_prev};
+        else {pid_state.altitude_target};
 
     // Inside deadband, target velocity is difference between altitude target and current
     // altitude; outside deadband, target velocity is proportional to stick demand
     let target_velocity =
         if inband
-        {altitude_target - altitude}
-        else {pilot_vel_z_max * demands.throttle};
+        {new_altitude_target - altitude}
+        else {pilot_vel_z_max * throttle};
 
     // Compute error as altTarget velocity minus actual velocity, after
     // negating actual to accommodate NED
-    let error = target_velocity + vstate.dz;
+    let error = target_velocity + dz;
 
     // Accumualte error integral
-    let error_integral = constrain_abs(error_integral_prev + error, windup_max);
+    let new_error_integral = constrain_abs(pid_state.error_integral + error, windup_max);
 
     // PI controller
-    let throttle_demand =  kp * error + ki * error_integral;
+    let new_throttle_demand =  kp * error + ki * new_error_integral;
 
-    // Update state variables
-    error_integral_prev = error_integral;
-    throttle_demand_prev = throttle_demand;
-    altitude_target_prev = altitude_target;
-
-    Demands { throttle:throttle_demand,
-              roll:demands.roll,
-              pitch:demands.pitch,
-              yaw:demands.yaw
+    AltHold { 
+        altitude_target: new_altitude_target,
+        error_integral: new_error_integral,
+        throttle_demand: new_throttle_demand
     }
 }
 
+fn run_hackflight(
+    demands : Demands,
+    vehicle_state: VehicleState,
+    alt_hold: AltHold) -> Hackflight {
+
+    let new_alt_hold = run_alt_hold(
+        demands.throttle, 
+        -vehicle_state.z,  // NED => ENU
+        -vehicle_state.dz, // NED => ENU
+        alt_hold);
+
+    let _new_throttle = new_alt_hold.throttle_demand;
+
+    let new_throttle = if -vehicle_state.z < 1.0 {0.6} else {0.0};
+
+    let new_motors = Motors {
+        m1:new_throttle,
+        m2:new_throttle,
+        m3:new_throttle,
+        m4:new_throttle
+    };
+
+    Hackflight {
+        motors:new_motors,
+        alt_hold:new_alt_hold
+    }
+}
+
+
 #[no_mangle]
-pub extern "C" fn get_motors(
-    c_demands : *mut Demands, c_vstate: *mut VehicleState) -> Motors {
+pub extern "C" fn c_run_hackflight(
+    c_demands : *mut Demands,
+    c_vehicle_state: *mut VehicleState,
+    c_alt_hold: *mut AltHold) -> Hackflight {
 
     let demands = Demands {
         throttle:(unsafe { (*c_demands).throttle }),
@@ -103,24 +137,26 @@ pub extern "C" fn get_motors(
         yaw:(unsafe { (*c_demands).yaw }) 
     };
 
-    let vstate = VehicleState {
-        x:(unsafe { (*c_vstate).x }),
-        dx:(unsafe { (*c_vstate).dx }),
-        y:(unsafe { (*c_vstate).y }),
-        dy:(unsafe { (*c_vstate).dy }),
-        z:(unsafe { (*c_vstate).z }),
-        dz:(unsafe { (*c_vstate).dz }),
-        phi:(unsafe { (*c_vstate).phi }),
-        dphi:(unsafe { (*c_vstate).dphi }),
-        theta:(unsafe { (*c_vstate).theta }),
-        dtheta:(unsafe { (*c_vstate).dtheta }),
-        psi:(unsafe { (*c_vstate).psi }),
-        dpsi:(unsafe { (*c_vstate).dpsi })
+    let vehicle_state = VehicleState {
+        x:(unsafe { (*c_vehicle_state).x }),
+        dx:(unsafe { (*c_vehicle_state).dx }),
+        y:(unsafe { (*c_vehicle_state).y }),
+        dy:(unsafe { (*c_vehicle_state).dy }),
+        z:(unsafe { (*c_vehicle_state).z }),
+        dz:(unsafe { (*c_vehicle_state).dz }),
+        phi:(unsafe { (*c_vehicle_state).phi }),
+        dphi:(unsafe { (*c_vehicle_state).dphi }),
+        theta:(unsafe { (*c_vehicle_state).theta }),
+        dtheta:(unsafe { (*c_vehicle_state).dtheta }),
+        psi:(unsafe { (*c_vehicle_state).psi }),
+        dpsi:(unsafe { (*c_vehicle_state).dpsi })
     };
 
-    let new_demands = alt_hold(demands, vstate);
+    let alt_hold = AltHold {
+        altitude_target:(unsafe { (*c_alt_hold).altitude_target }),
+        error_integral:(unsafe { (*c_alt_hold).error_integral }),
+        throttle_demand:(unsafe { (*c_alt_hold).throttle_demand })
+    };
 
-    let throttle = new_demands.throttle;
-
-    Motors { m1:throttle, m2:throttle, m3:throttle, m4:throttle }
+    run_hackflight(demands, vehicle_state, alt_hold)
 }

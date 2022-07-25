@@ -2,7 +2,7 @@
 
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
-
+#include "../MainModule/Joystick.h"
 
 class FRustFlightManager : public FFlightManager {
 
@@ -26,12 +26,34 @@ class FRustFlightManager : public FFlightManager {
 
         } motors_t;
 
-        typedef motors_t (*get_motors_t)(
-                demands_t * demands, Dynamics::vehicle_state_t * vstate);
+        typedef struct {
 
-        get_motors_t _get_motors;
+            float altitude_target;
+            float error_integral;
+            float throttle_demand;
+
+        } alt_hold_t;
+
+        typedef struct {
+
+            motors_t motors;
+            alt_hold_t alt_hold;
+
+        } hackflight_t;
+
+        typedef hackflight_t (*run_hackflight_t) (
+                demands_t * demands,
+                Dynamics::vehicle_state_t * vehicle_state,
+                alt_hold_t * alt_hold
+                );
+
+        run_hackflight_t _run_hackflight;
 
         Dynamics * _dynamics;
+
+        IJoystick * _joystick;
+
+        alt_hold_t _alt_hold;
 
     protected:
 
