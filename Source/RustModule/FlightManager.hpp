@@ -26,7 +26,8 @@ class FRustFlightManager : public FFlightManager {
 
         } motors_t;
 
-        typedef motors_t (*get_motors_t)(Dynamics::vehicle_state_t * vstate);
+        typedef motors_t (*get_motors_t)(
+                demands_t * demands, Dynamics::vehicle_state_t * vstate);
 
         get_motors_t _get_motors;
 

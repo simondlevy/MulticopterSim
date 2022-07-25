@@ -38,7 +38,7 @@ void FRustFlightManager::getMotors(double time, double* values)
 
     demands_t demands = { joyvals[0], joyvals[1], joyvals[2], joyvals[3] };
 
-    auto motors = _get_motors(&_dynamics->vstate);
+    auto motors = _get_motors(&demands, &_dynamics->vstate);
 
     values[0] = motors.m1;
     values[1] = motors.m2;

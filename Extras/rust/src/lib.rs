@@ -15,6 +15,14 @@ pub struct VehicleState {
 }
 
 #[repr(C)]
+pub struct Demands {
+    throttle: f32,
+    roll:     f32,
+    pitch:    f32,
+    yaw:      f32
+}
+
+#[repr(C)]
 pub struct Motors {
     m1: f32,
     m2: f32,
@@ -23,7 +31,8 @@ pub struct Motors {
 }
 
 #[no_mangle]
-pub extern "C" fn get_motors(vehicle_state: *mut VehicleState) -> Motors {
+pub extern "C" fn get_motors(
+    _demands : *mut Demands, vehicle_state: *mut VehicleState) -> Motors {
 
     let z = -(unsafe { (*vehicle_state).z });
 
