@@ -30,27 +30,27 @@ pub struct Motors {
     m4: f32
 }
 
-fn _alt_hold(_demands : Demands, _vstate : VehicleState) -> Demands {
+fn alt_hold(_demands : Demands, vstate : VehicleState) -> Motors {
 
-    Demands { throttle:0.0, roll:0.0, pitch:0.0, yaw:0.0 }
+    let z = -vstate.z; // NED => ENU
+
+    let m = if z < 1.0 { 0.6 } else { 0.0 };
+
+	Motors { m1: m, m2: m, m3: m, m4: m }
 }
 
 #[no_mangle]
 pub extern "C" fn get_motors(
     c_demands : *mut Demands, c_vstate: *mut VehicleState) -> Motors {
 
-    let z = -(unsafe { (*c_vstate).z });
-
-    let m = if z < 1.0 { 0.6 } else { 0.0 };
-
-    let _demands = Demands {
+    let demands = Demands {
         throttle:(unsafe { (*c_demands).throttle }),
         roll:(unsafe { (*c_demands).roll }),
         pitch:(unsafe { (*c_demands).pitch }),
         yaw:(unsafe { (*c_demands).yaw }) 
     };
 
-    let _vstate = VehicleState {
+    let vstate = VehicleState {
         x:(unsafe { (*c_vstate).x }),
         dx:(unsafe { (*c_vstate).dx }),
         y:(unsafe { (*c_vstate).y }),
@@ -65,5 +65,5 @@ pub extern "C" fn get_motors(
         dpsi:(unsafe { (*c_vstate).dpsi })
     };
 
-	Motors { m1: m, m2: m, m3: m, m4: m }
+     alt_hold(demands, vstate)
 }
