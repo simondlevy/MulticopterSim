@@ -13,6 +13,8 @@ static const char * LIBRARY_FILENAME = "hackflight.dll";
 FRustFlightManager::FRustFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
 {
+    _dynamics = dynamics;
+
     void * library_handle = SDL_LoadObject(LIBRARY_FILENAME);
 
     _get_motors = (get_motors_t) SDL_LoadFunction(library_handle, "get_motors");
@@ -26,9 +28,7 @@ void FRustFlightManager::getMotors(double time, double* values)
 {
     (time);
 
-    VehicleState vstate = {};
-
-    auto motors = _get_motors(&vstate);
+    auto motors = _get_motors(&_dynamics->vstate);
 
     values[0] = motors.m1;
     values[1] = motors.m2;
