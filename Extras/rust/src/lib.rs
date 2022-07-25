@@ -25,7 +25,9 @@ pub struct Motors {
 #[no_mangle]
 pub extern "C" fn get_motors(vehicle_state: *mut VehicleState) -> Motors {
 
-    let _z = unsafe { (*vehicle_state).z };
+    let z = unsafe { (*vehicle_state).z };
+
+    let _m = if z < 1.0 { 0.6 } else { 0.0 };
 
 	Motors { m1: 0.6, m2: 0.6, m3: 0.6, m4:0.6 }
 }
