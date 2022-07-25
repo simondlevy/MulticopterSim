@@ -52,7 +52,11 @@ fn constrain_abs(value : f32, limit : f32) -> f32 {
     if value < -limit {-limit} else if value > limit {limit} else {value}
 }
 
-fn run_alt_hold(throttle: f32, z: f32, dz: f32, pid_state: AltHold) -> AltHold {
+fn run_alt_hold(
+    throttle: f32,
+    z: f32,
+    dz: f32,
+    pid_state: AltHold) -> AltHold {
 
     // Constants
     let kp = 7.5e-1;
@@ -61,7 +65,7 @@ fn run_alt_hold(throttle: f32, z: f32, dz: f32, pid_state: AltHold) -> AltHold {
     let pilot_vel_z_max = 2.5e0;
     let stick_deadband = 2.0e-1;
 
-    let inband = in_band(throttle, stick_deadband);
+    let inband = false; //in_band(throttle, stick_deadband);
 
     let altitude = z;
 
@@ -86,9 +90,7 @@ fn run_alt_hold(throttle: f32, z: f32, dz: f32, pid_state: AltHold) -> AltHold {
     let new_error_integral = constrain_abs(pid_state.error_integral + error, windup_max);
 
     // PI controller
-    let _new_throttle_demand =  kp * error + ki * new_error_integral;
-
-    let new_throttle_demand = if z < 1.0 {0.6} else {0.0};
+    let new_throttle_demand =  kp * error + ki * new_error_integral;
 
     AltHold { 
         altitude_target: new_altitude_target,

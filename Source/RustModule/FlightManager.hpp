@@ -36,8 +36,10 @@ class FRustFlightManager : public FFlightManager {
 
         typedef struct {
 
-            motors_t motors;
+            demands_t demands;
+            Dynamics::vehicle_state_t vehicle_state;
             alt_hold_t alt_hold;
+            motors_t motors;
 
         } hackflight_t;
 
@@ -53,7 +55,19 @@ class FRustFlightManager : public FFlightManager {
 
         IJoystick * _joystick;
 
-        alt_hold_t _alt_hold;
+        hackflight_t _hackflight;
+
+        static void run_hackflight(hackflight_t * hackflight);
+
+        static void run_alt_hold(
+                float throttle,
+                float z,
+                float dz,
+                alt_hold_t * alt_hold);
+
+        static bool in_band(float value, float mid, float band);
+
+        static float constrain_abs(float value, float limit);
 
     protected:
 
