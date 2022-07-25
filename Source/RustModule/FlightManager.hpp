@@ -17,7 +17,22 @@ class FRustFlightManager : public FFlightManager {
             f32 m4;
         };
 
-        typedef Motors (*get_motors_t)();
+        struct VehicleState {
+            f32 x;
+            f32 dx;
+            f32 y;
+            f32 dy;
+            f32 z;
+            f32 dz;
+            f32 phi;
+            f32 dphi;
+            f32 theta;
+            f32 dtheta;
+            f32 psi;
+            f32 dpsi;
+        };
+
+        typedef Motors (*get_motors_t)(VehicleState * vstate);
 
         get_motors_t _get_motors;
 

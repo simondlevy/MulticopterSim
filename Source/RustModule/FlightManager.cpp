@@ -26,7 +26,9 @@ void FRustFlightManager::getMotors(double time, double* values)
 {
     (time);
 
-    auto motors = _get_motors();
+    VehicleState vstate = {};
+
+    auto motors = _get_motors(&vstate);
 
     values[0] = motors.m1;
     values[1] = motors.m2;

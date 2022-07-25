@@ -1,4 +1,20 @@
 #[repr(C)]
+pub struct VehicleState {
+    x: f32,
+    dx: f32,
+    y: f32,
+    dy: f32,
+    z: f32,
+    dz: f32,
+    phi: f32,
+    dphi: f32,
+    theta: f32,
+    dtheta: f32,
+    psi: f32,
+    dpsi: f32
+}
+
+#[repr(C)]
 pub struct Motors {
     m1: f32,
     m2: f32,
@@ -7,6 +23,7 @@ pub struct Motors {
 }
 
 #[no_mangle]
-pub extern "C" fn get_motors() -> Motors {
+pub extern "C" fn get_motors(vehicle_state: *mut VehicleState) -> Motors {
+    println!("{:?}", unsafe { (*vehicle_state).z });
 	Motors { m1: 0.6, m2: 0.6, m3: 0.6, m4:0.6 }
 }
