@@ -8,16 +8,16 @@ class FRustFlightManager : public FFlightManager {
 
     private:
 
-        typedef float f32;
+        typedef struct {
 
-        struct Motors {
-            f32 m1;
-            f32 m2;
-            f32 m3;
-            f32 m4;
-        };
+            float m1;
+            float m2;
+            float m3;
+            float m4;
 
-        typedef Motors (*get_motors_t)(Dynamics::vehicle_state_t * vstate);
+        } motors_t;
+
+        typedef motors_t (*get_motors_t)(Dynamics::vehicle_state_t * vstate);
 
         get_motors_t _get_motors;
 
