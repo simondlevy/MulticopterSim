@@ -30,11 +30,25 @@ pub struct Motors {
     m4: f32
 }
 
-fn alt_hold(_demands : Demands, vstate : VehicleState) -> Motors {
+fn in_band(value : f32, band : f32) -> bool {
+    value > -band && value < band
+}
 
-    let z = -vstate.z; // NED => ENU
+fn alt_hold(demands : Demands, vstate : VehicleState) -> Motors {
 
-    let m = if z < 1.0 { 0.6 } else { 0.0 };
+    // Constants
+    let _kp = 7.5e-1;
+    let _ki = 1.5e0;
+    let _windup_max = 4.0e-1;
+    let _pilot_vel_z_max = 2.5e0;
+    let stick_deadband = 2.0e-1;
+
+    let _inband = in_band(demands.throttle, stick_deadband);
+
+    // NED => ENU
+    let altitude = -vstate.z; 
+
+    let m = if altitude < 1.0 { 0.6 } else { 0.0 };
 
 	Motors { m1: m, m2: m, m3: m, m4: m }
 }
