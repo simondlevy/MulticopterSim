@@ -34,13 +34,17 @@ fn in_band(value : f32, band : f32) -> bool {
     value > -band && value < band
 }
 
+fn constrain_abs(value : f32, limit : f32) -> f32 {
+    if value < -limit {-limit} else if value > limit {limit} else {value}
+}
+
 fn alt_hold(demands : Demands, vstate : VehicleState) -> Demands {
 
     // Constants
-    let _kp = 7.5e-1;
-    let _ki = 1.5e0;
-    let _windup_max = 4.0e-1;
-    let _pilot_vel_z_max = 2.5e0;
+    let kp = 7.5e-1;
+    let ki = 1.5e0;
+    let windup_max = 4.0e-1;
+    let pilot_vel_z_max = 2.5e0;
     let stick_deadband = 2.0e-1;
 
     // State variables
@@ -48,10 +52,10 @@ fn alt_hold(demands : Demands, vstate : VehicleState) -> Demands {
     let mut throttle_demand_prev = 0.0; 
     let mut altitude_target_prev = 0.0; 
 
+    let inband = in_band(demands.throttle, stick_deadband);
+
     // NED => ENU
     let altitude = -vstate.z; 
-
-    let inband = in_band(demands.throttle, stick_deadband);
 
     // Reset controller when moving into deadband
     let altitude_target =
@@ -59,14 +63,29 @@ fn alt_hold(demands : Demands, vstate : VehicleState) -> Demands {
         {altitude}
         else {altitude_target_prev};
 
-    let new_throttle = if altitude < 1.0 { 0.6 } else { 0.0 };
+    // Inside deadband, target velocity is difference between altitude target and current
+    // altitude; outside deadband, target velocity is proportional to stick demand
+    let target_velocity =
+        if inband
+        {altitude_target - altitude}
+        else {pilot_vel_z_max * demands.throttle};
+
+    // Compute error as altTarget velocity minus actual velocity, after
+    // negating actual to accommodate NED
+    let error = target_velocity + vstate.dz;
+
+    // Accumualte error integral
+    let error_integral = constrain_abs(error_integral_prev + error, windup_max);
+
+    // PI controller
+    let throttle_demand =  kp * error + ki * error_integral;
 
     // Update state variables
-    error_integral_prev = 0.0;
-    throttle_demand_prev = 0.0; 
+    error_integral_prev = error_integral;
+    throttle_demand_prev = throttle_demand;
     altitude_target_prev = altitude_target;
 
-    Demands { throttle:new_throttle,
+    Demands { throttle:throttle_demand,
               roll:demands.roll,
               pitch:demands.pitch,
               yaw:demands.yaw

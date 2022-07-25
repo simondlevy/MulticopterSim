@@ -31,6 +31,7 @@ altHoldController kp ki (state, demands) = (state, demands')
 
     demands' = Demands throttleDemand (roll demands) (pitch demands) (yaw demands)
 
+    -- PI controller
     throttleDemand =  kp * err + ki * errI
 
     -- Compute error as altTarget velocity minus actual velocity, after
@@ -40,7 +41,11 @@ altHoldController kp ki (state, demands) = (state, demands')
     -- Accumualte error integral
     errI = constrain_abs (errI' + err) windupMax
 
-    targetVelocity = if inband then altitudeTarget - altitude else pilotVelZMax * (throttle demands)
+    -- Inside deadband, target velocity is difference between altitude target and current
+    -- altitude; outside deadband, target velocity is proportional to stick demand
+    targetVelocity = if inband
+                     then altitudeTarget - altitude
+                     else pilotVelZMax * (throttle demands)
 
     -- Reset controller when moving into deadband
     altitudeTarget = if inband && not (in_band throttleDemand' stickDeadband)
@@ -49,7 +54,6 @@ altHoldController kp ki (state, demands) = (state, demands')
     -- NED => ENU
     altitude = -(z state)
 
-    -- inband = in_band throttleDemand stickDeadband
     inband = in_band (throttle demands) stickDeadband
 
     -- Controller state
