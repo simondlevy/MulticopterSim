@@ -55,6 +55,8 @@ fn alt_hold(demands : Demands, vstate : VehicleState) -> Demands {
 
     let new_throttle = if altitude < 1.0 { 0.6 } else { 0.0 };
 
+    _error_integral = 0.0;
+
     Demands { throttle:new_throttle,
               roll:demands.roll,
               pitch:demands.pitch,
