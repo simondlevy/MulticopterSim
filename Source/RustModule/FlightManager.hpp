@@ -10,6 +10,15 @@ class FRustFlightManager : public FFlightManager {
 
         typedef struct {
 
+            float throttle;
+            float roll;
+            float pitch;
+            float yaw;
+
+        } demands_t;
+
+        typedef struct {
+
             float m1;
             float m2;
             float m3;

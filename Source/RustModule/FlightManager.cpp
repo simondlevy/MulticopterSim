@@ -1,10 +1,6 @@
-//#define WIN32_LEAN_AND_MEAN
-
-//#define _USE_MATH_DEFINES
-//#include <cmath>
-
 #include "FlightManager.hpp"
 #include "../MainModule/Utils.hpp"
+#include "../MainModule/Joystick.h"
 
 #include <SDL.h>
 
@@ -27,6 +23,20 @@ FRustFlightManager::~FRustFlightManager()
 void FRustFlightManager::getMotors(double time, double* values)
 {
     (time);
+
+    static IJoystick * _joystick;
+
+    if (!_joystick) {
+        _joystick = new IJoystick();
+    }
+
+    double joyvals[10] = {};
+
+    _joystick->poll(joyvals);
+
+    joyvals[0] = (joyvals[0] + 1) / 2; // [-1,+1] => [0,1]
+
+    demands_t demands = { joyvals[0], joyvals[1], joyvals[2], joyvals[3] };
 
     auto motors = _get_motors(&_dynamics->vstate);
 
