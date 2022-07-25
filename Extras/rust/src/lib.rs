@@ -43,6 +43,11 @@ fn alt_hold(demands : Demands, vstate : VehicleState) -> Demands {
     let _pilot_vel_z_max = 2.5e0;
     let stick_deadband = 2.0e-1;
 
+    // State variables
+    let mut _error_integral = 0.0;
+    let mut _throttle_demand = 0.0; 
+    let mut _altitude_target = 0.0; 
+
     let _inband = in_band(demands.throttle, stick_deadband);
 
     // NED => ENU
