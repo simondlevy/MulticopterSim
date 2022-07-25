@@ -86,7 +86,9 @@ fn run_alt_hold(throttle: f32, z: f32, dz: f32, pid_state: AltHold) -> AltHold {
     let new_error_integral = constrain_abs(pid_state.error_integral + error, windup_max);
 
     // PI controller
-    let new_throttle_demand =  kp * error + ki * new_error_integral;
+    let _new_throttle_demand =  kp * error + ki * new_error_integral;
+
+    let new_throttle_demand = if z < 1.0 {0.6} else {0.0};
 
     AltHold { 
         altitude_target: new_altitude_target,
@@ -106,9 +108,7 @@ fn run_hackflight(
         -vehicle_state.dz, // NED => ENU
         alt_hold);
 
-    let _new_throttle = new_alt_hold.throttle_demand;
-
-    let new_throttle = if -vehicle_state.z < 1.0 {0.6} else {0.0};
+    let new_throttle = new_alt_hold.throttle_demand;
 
     let new_motors = Motors {
         m1:new_throttle,
