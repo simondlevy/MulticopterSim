@@ -34,7 +34,7 @@ fn in_band(value : f32, band : f32) -> bool {
     value > -band && value < band
 }
 
-fn alt_hold(demands : Demands, vstate : VehicleState) -> Motors {
+fn alt_hold(demands : Demands, vstate : VehicleState) -> Demands {
 
     // Constants
     let _kp = 7.5e-1;
@@ -48,9 +48,13 @@ fn alt_hold(demands : Demands, vstate : VehicleState) -> Motors {
     // NED => ENU
     let altitude = -vstate.z; 
 
-    let m = if altitude < 1.0 { 0.6 } else { 0.0 };
+    let new_throttle = if altitude < 1.0 { 0.6 } else { 0.0 };
 
-	Motors { m1: m, m2: m, m3: m, m4: m }
+    Demands { throttle:new_throttle,
+              roll:demands.roll,
+              pitch:demands.pitch,
+              yaw:demands.yaw
+    }
 }
 
 #[no_mangle]
@@ -79,5 +83,9 @@ pub extern "C" fn get_motors(
         dpsi:(unsafe { (*c_vstate).dpsi })
     };
 
-     alt_hold(demands, vstate)
+    let new_demands = alt_hold(demands, vstate);
+
+    let throttle = new_demands.throttle;
+
+    Motors { m1:throttle, m2:throttle, m3:throttle, m4:throttle }
 }
