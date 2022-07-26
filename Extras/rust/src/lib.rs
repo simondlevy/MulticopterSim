@@ -39,14 +39,19 @@ fn alt_hold(
     let in_band = fabs(sthrottle) < stick_deadband && altitude > altitude_min; 
 
     // Zero throttle will reset error integral
-    let _at_zero_throttle = throttle == 0.0;
+    let at_zero_throttle = throttle == 0.0;
 
     // Reset controller when moving into deadband above a minimum altitude
-    let _got_new_target = in_band && !oldpid.in_band;
-    //newpid->error_integral = got_new_target || at_zero_throttle ? 0 : oldpid->error_integral;
+    let got_new_target = in_band && !oldpid.in_band;
+    let new_error_integral =
+        if got_new_target || at_zero_throttle {0.0} else {oldpid.error_integral};
 
-
-    AltHoldPid { error_integral: 0.0, in_band: false, target: 0.0, throttle: 0.0 }
+    AltHoldPid {
+        error_integral: new_error_integral,
+        in_band: false,
+        target: 0.0,
+        throttle: 0.0 
+    }
 }
 
  #[no_mangle]
