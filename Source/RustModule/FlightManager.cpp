@@ -22,14 +22,14 @@ FRustFlightManager::~FRustFlightManager()
 {
 }
 
-static float constrainAbs(float v, float lim)
-{
-    return v < -lim ? -lim : v > +lim ? +lim : v;
-}
-
 static float constrain(float v, float lo, float hi)
 {
     return v < lo ? lo : v > hi ? hi : v;
+}
+
+static float constrain_abs(float v, float lim)
+{
+    return constrain(v, -lim, +lim);
 }
 
 void FRustFlightManager::getMotors(double time, double* values)
@@ -86,7 +86,7 @@ void FRustFlightManager::getMotors(double time, double* values)
     float error = targetVelocity - dz;
 
     // Compute I term, avoiding windup
-    _errorI = constrainAbs(_errorI + error, WINDUP_MAX);
+    _errorI = constrain_abs(_errorI + error, WINDUP_MAX);
 
     float correction = error * KP + _errorI * KI;
 
