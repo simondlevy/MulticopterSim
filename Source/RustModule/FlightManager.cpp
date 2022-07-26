@@ -49,9 +49,7 @@ static float alt_hold(float throttle, float altitude, float climb_rate)
     static constexpr float STICK_DEADBAND = 0.2;
     static constexpr float WINDUP_MAX     = 0.4;
 
-    static bool _in_band_prev;
-    static float _error_integral;
-    static float _altitude_target;
+    static alt_hold_pid_t _pid;
 
     // Rescale throttle [0,1] => [-1,+1]
     float sthrottle = 2 * throttle - 1; 
@@ -63,29 +61,29 @@ static float alt_hold(float throttle, float altitude, float climb_rate)
     bool atZeroThrottle = throttle == 0;
 
     // Reset controller when moving into deadband above a minimum altitude
-    bool gotNewTarget = inBand && !_in_band_prev;
-    _error_integral = gotNewTarget || atZeroThrottle ? 0 : _error_integral;
+    bool gotNewTarget = inBand && !_pid.in_band_prev;
+    _pid.error_integral = gotNewTarget || atZeroThrottle ? 0 : _pid.error_integral;
 
     if (atZeroThrottle) {
-        _altitude_target = 0;
+        _pid.altitude_target = 0;
     }
 
-    _altitude_target = gotNewTarget ? altitude : _altitude_target;
+    _pid.altitude_target = gotNewTarget ? altitude : _pid.altitude_target;
 
     // Target velocity is a setpoint inside deadband, scaled
     // constant outside
     float targetVelocity = inBand ?
-        _altitude_target - altitude :
+        _pid.altitude_target - altitude :
         PILOT_VELZ_MAX * sthrottle;
 
     // Compute error as scaled target minus actual
     float error = targetVelocity - climb_rate;
 
     // Compute I term, avoiding windup
-    _error_integral = constrain_abs(_error_integral + error, WINDUP_MAX);
+    _pid.error_integral = constrain_abs(_pid.error_integral + error, WINDUP_MAX);
 
     // Run PI controller
-    float correction = error * KP + _error_integral * KI;
+    float correction = error * KP + _pid.error_integral * KI;
 
     return constrain(throttle+correction, 0, 1);
 }
