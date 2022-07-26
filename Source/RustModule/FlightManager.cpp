@@ -45,7 +45,8 @@ static void alt_hold(
         float throttle,
         float altitude,
         float climb_rate,
-        alt_hold_pid_t * pid)
+        alt_hold_pid_t * oldpid,
+        alt_hold_pid_t * newpid)
 {
     static constexpr float KP = 0.75;
     static constexpr float KI = 1.5;
@@ -64,31 +65,29 @@ static void alt_hold(
     bool atZeroThrottle = throttle == 0;
 
     // Reset controller when moving into deadband above a minimum altitude
-    bool gotNewTarget = inBand && !pid->in_band_prev;
-    pid->error_integral = gotNewTarget || atZeroThrottle ? 0 : pid->error_integral;
+    bool gotNewTarget = inBand && !oldpid->in_band_prev;
+    newpid->error_integral = gotNewTarget || atZeroThrottle ? 0 : oldpid->error_integral;
 
-    if (atZeroThrottle) {
-        pid->altitude_target = 0;
-    }
+    float altitude_target = atZeroThrottle ? 0 : oldpid->altitude_target;
 
-    pid->altitude_target = gotNewTarget ? altitude : pid->altitude_target;
+    newpid->altitude_target = gotNewTarget ? altitude : altitude_target;
 
     // Target velocity is a setpoint inside deadband, scaled
     // constant outside
     float targetVelocity = inBand ?
-        pid->altitude_target - altitude :
+        newpid->altitude_target - altitude :
         PILOT_VELZ_MAX * sthrottle;
 
     // Compute error as scaled target minus actual
     float error = targetVelocity - climb_rate;
 
     // Compute I term, avoiding windup
-    pid->error_integral = constrain_abs(pid->error_integral + error, WINDUP_MAX);
+    newpid->error_integral = constrain_abs(oldpid->error_integral + error, WINDUP_MAX);
 
     // Run PI controller
-    float correction = error * KP + pid->error_integral * KI;
+    float correction = error * KP + newpid->error_integral * KI;
 
-    pid->new_throttle = constrain(throttle+correction, 0, 1);
+    newpid->new_throttle = constrain(throttle+correction, 0, 1);
 }
 
 void FRustFlightManager::getMotors(double time, double* values)
@@ -108,7 +107,11 @@ void FRustFlightManager::getMotors(double time, double* values)
     float altitude   = -_dynamics->vstate.z;
     float climb_rate = -_dynamics->vstate.dz;
 
-    alt_hold(throttle, altitude, climb_rate, &_pid);
+    alt_hold_pid_t newpid = {};
+
+    alt_hold(throttle, altitude, climb_rate, &_pid, &newpid);
+
+    memcpy(&_pid, &newpid, sizeof(alt_hold_pid_t));
 
     values[0] = _pid.new_throttle;
     values[1] = _pid.new_throttle;
