@@ -32,10 +32,8 @@ static float constrain_abs(float v, float lim)
     return constrain(v, -lim, +lim);
 }
 
-void FRustFlightManager::getMotors(double time, double* values)
+static float alt_hold(float throttle, float altitude, float climb_rate)
 {
-    (time);
-
     static constexpr float KP = 0.75;
     static constexpr float KI = 1.5;
     static constexpr float ALTITUDE_MIN   = 1.0;
@@ -47,24 +45,14 @@ void FRustFlightManager::getMotors(double time, double* values)
     static float _errorI;
     static float _altitudeTarget;
 
-    double joyvals[10] = {};
-
-    _joystick->poll(joyvals);
-
-    // [-1,+1] => [0,1]
-    float throttle = (joyvals[0] + 1) / 2;
-
-    bool atZeroThrottle = throttle == 0;
-
-    // NED => ENU
-    float altitude = -_dynamics->vstate.z;
-    float dz = -_dynamics->vstate.dz;
-
     // Rescale throttle [0,1] => [-1,+1]
     float sthrottle = 2 * throttle - 1; 
 
     // Is stick demand in deadband, above a minimum altitude?
     bool inBand = fabs(sthrottle) < STICK_DEADBAND && altitude > ALTITUDE_MIN; 
+
+    // Zero throttle will reset error integral
+    bool atZeroThrottle = throttle == 0;
 
     // Reset controller when moving into deadband above a minimum altitude
     bool gotNewTarget = inBand && !_inBandPrev;
@@ -83,14 +71,33 @@ void FRustFlightManager::getMotors(double time, double* values)
         PILOT_VELZ_MAX * sthrottle;
 
     // Compute error as scaled target minus actual
-    float error = targetVelocity - dz;
+    float error = targetVelocity - climb_rate;
 
     // Compute I term, avoiding windup
     _errorI = constrain_abs(_errorI + error, WINDUP_MAX);
 
+    // Run PI controller
     float correction = error * KP + _errorI * KI;
 
-    float new_throttle = constrain(throttle+correction, 0, 1);
+    return constrain(throttle+correction, 0, 1);
+}
+
+void FRustFlightManager::getMotors(double time, double* values)
+{
+    (time);
+
+    double joyvals[10] = {};
+
+    _joystick->poll(joyvals);
+
+    // [-1,+1] => [0,1]
+    float throttle = (joyvals[0] + 1) / 2;
+
+    // NED => ENU
+    float altitude   = -_dynamics->vstate.z;
+    float climb_rate = -_dynamics->vstate.dz;
+
+    float new_throttle = alt_hold(throttle, altitude, climb_rate);
 
     values[0] = new_throttle;
     values[1] = new_throttle;
