@@ -22,14 +22,31 @@ FRustFlightManager::~FRustFlightManager()
 {
 }
 
+static float constrainAbs(float v, float lim)
+{
+    return v < -lim ? -lim : v > +lim ? +lim : v;
+}
+
+static float constrain(float v, float lo, float hi)
+{
+    return v < lo ? lo : v > hi ? hi : v;
+}
+
 void FRustFlightManager::getMotors(double time, double* values)
 {
     (time);
 
+    static constexpr float KP = 0.75;
+    static constexpr float KI = 1.5;
+    static constexpr float ALTITUDE_MIN   = 1.0;
+    static constexpr float PILOT_VELZ_MAX = 2.5;
+    static constexpr float STICK_DEADBAND = 0.2;
+    static constexpr float WINDUP_MAX     = 0.4;
+
     static bool _inBandPrev;
     static float _errorI;
     static float _altitudeTarget;
- 
+
     double joyvals[10] = {};
 
     _joystick->poll(joyvals);
@@ -37,15 +54,48 @@ void FRustFlightManager::getMotors(double time, double* values)
     // [-1,+1] => [0,1]
     float throttle = (joyvals[0] + 1) / 2;
 
+    bool atZeroThrottle = throttle == 0;
+
     // NED => ENU
     float altitude = -_dynamics->vstate.z;
+    float dz = -_dynamics->vstate.dz;
 
-    debugline("%f", altitude);
+    // Rescale throttle [0,1] => [-1,+1]
+    float sthrottle = 2 * throttle - 1; 
 
-    values[0] = 0.6;
-    values[1] = 0.6;
-    values[2] = 0.6;
-    values[3] = 0.6;
+    // Is stick demand in deadband, above a minimum altitude?
+    bool inBand = fabs(sthrottle) < STICK_DEADBAND && altitude > ALTITUDE_MIN; 
+
+    // Reset controller when moving into deadband above a minimum altitude
+    bool gotNewTarget = inBand && !_inBandPrev;
+    _errorI = gotNewTarget || atZeroThrottle ? 0 : _errorI;
+
+    if (atZeroThrottle) {
+        _altitudeTarget = 0;
+    }
+
+    _altitudeTarget = gotNewTarget ? altitude : _altitudeTarget;
+
+    // Target velocity is a setpoint inside deadband, scaled
+    // constant outside
+    float targetVelocity = inBand ?
+        _altitudeTarget - altitude :
+        PILOT_VELZ_MAX * sthrottle;
+
+    // Compute error as scaled target minus actual
+    float error = targetVelocity - dz;
+
+    // Compute I term, avoiding windup
+    _errorI = constrainAbs(_errorI + error, WINDUP_MAX);
+
+    float correction = error * KP + _errorI * KI;
+
+    float new_throttle = constrain(throttle+correction, 0, 1);
+
+    values[0] = new_throttle;
+    values[1] = new_throttle;
+    values[2] = new_throttle;
+    values[3] = new_throttle;
 }
 
 void FRustFlightManager::tick(void)
