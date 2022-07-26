@@ -34,10 +34,10 @@ static float constrain_abs(float v, float lim)
 
 typedef struct {
 
-    bool  in_band_prev;
+    bool  in_band;
     float error_integral;
-    float altitude_target;
-    float new_throttle;
+    float target;
+    float throttle;
 
 } alt_hold_pid_t;
 
@@ -65,17 +65,17 @@ static void alt_hold(
     bool atZeroThrottle = throttle == 0;
 
     // Reset controller when moving into deadband above a minimum altitude
-    bool gotNewTarget = inBand && !oldpid->in_band_prev;
+    bool gotNewTarget = inBand && !oldpid->in_band;
     newpid->error_integral = gotNewTarget || atZeroThrottle ? 0 : oldpid->error_integral;
 
-    float altitude_target = atZeroThrottle ? 0 : oldpid->altitude_target;
+    float altitude_target = atZeroThrottle ? 0 : oldpid->target;
 
-    newpid->altitude_target = gotNewTarget ? altitude : altitude_target;
+    newpid->target = gotNewTarget ? altitude : altitude_target;
 
     // Target velocity is a setpoint inside deadband, scaled
     // constant outside
     float targetVelocity = inBand ?
-        newpid->altitude_target - altitude :
+        newpid->target - altitude :
         PILOT_VELZ_MAX * sthrottle;
 
     // Compute error as scaled target minus actual
@@ -87,7 +87,7 @@ static void alt_hold(
     // Run PI controller
     float correction = error * KP + newpid->error_integral * KI;
 
-    newpid->new_throttle = constrain(throttle+correction, 0, 1);
+    newpid->throttle = constrain(throttle+correction, 0, 1);
 }
 
 void FRustFlightManager::getMotors(double time, double* values)
@@ -111,12 +111,13 @@ void FRustFlightManager::getMotors(double time, double* values)
 
     alt_hold(throttle, altitude, climb_rate, &_pid, &newpid);
 
+    values[0] = newpid.throttle;
+    values[1] = newpid.throttle;
+    values[2] = newpid.throttle;
+    values[3] = newpid.throttle;
+
     memcpy(&_pid, &newpid, sizeof(alt_hold_pid_t));
 
-    values[0] = _pid.new_throttle;
-    values[1] = _pid.new_throttle;
-    values[2] = _pid.new_throttle;
-    values[3] = _pid.new_throttle;
 }
 
 void FRustFlightManager::tick(void)
