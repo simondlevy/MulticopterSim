@@ -23,7 +23,7 @@ fn alt_hold(
     throttle: f32,
     altitude: f32,
     _climb_rate: f32,
-    _oldpid: AltHoldPid) -> AltHoldPid {
+    oldpid: AltHoldPid) -> AltHoldPid {
 
     let _kp = 0.75;
     let _ki = 1.5;
@@ -36,10 +36,15 @@ fn alt_hold(
     let sthrottle = 2.0 * throttle - 1.0; 
 
     // Is stick demand in deadband, above a minimum altitude?
-    let _in_band = fabs(sthrottle) < stick_deadband && altitude > altitude_min; 
+    let in_band = fabs(sthrottle) < stick_deadband && altitude > altitude_min; 
 
     // Zero throttle will reset error integral
     let _at_zero_throttle = throttle == 0.0;
+
+    // Reset controller when moving into deadband above a minimum altitude
+    let _got_new_target = in_band && !oldpid.in_band;
+    //newpid->error_integral = got_new_target || at_zero_throttle ? 0 : oldpid->error_integral;
+
 
     AltHoldPid { error_integral: 0.0, in_band: false, target: 0.0, throttle: 0.0 }
 }
