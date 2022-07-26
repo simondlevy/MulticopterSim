@@ -59,27 +59,27 @@ static void alt_hold(
     float sthrottle = 2 * throttle - 1; 
 
     // Is stick demand in deadband, above a minimum altitude?
-    bool inBand = fabs(sthrottle) < STICK_DEADBAND && altitude > ALTITUDE_MIN; 
+    bool in_band = fabs(sthrottle) < STICK_DEADBAND && altitude > ALTITUDE_MIN; 
 
     // Zero throttle will reset error integral
-    bool atZeroThrottle = throttle == 0;
+    bool at_zero_throttle = throttle == 0;
 
     // Reset controller when moving into deadband above a minimum altitude
-    bool gotNewTarget = inBand && !oldpid->in_band;
-    newpid->error_integral = gotNewTarget || atZeroThrottle ? 0 : oldpid->error_integral;
+    bool gotNewTarget = in_band && !oldpid->in_band;
+    newpid->error_integral = gotNewTarget || at_zero_throttle ? 0 : oldpid->error_integral;
 
-    float altitude_target = atZeroThrottle ? 0 : oldpid->target;
+    float altitude_target = at_zero_throttle ? 0 : oldpid->target;
 
     newpid->target = gotNewTarget ? altitude : altitude_target;
 
     // Target velocity is a setpoint inside deadband, scaled
     // constant outside
-    float targetVelocity = inBand ?
+    float target_velocity = in_band ?
         newpid->target - altitude :
         PILOT_VELZ_MAX * sthrottle;
 
     // Compute error as scaled target minus actual
-    float error = targetVelocity - climb_rate;
+    float error = target_velocity - climb_rate;
 
     // Compute I term, avoiding windup
     newpid->error_integral = constrain_abs(oldpid->error_integral + error, WINDUP_MAX);
