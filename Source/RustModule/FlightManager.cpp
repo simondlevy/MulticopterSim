@@ -34,8 +34,8 @@ static float constrain_abs(float v, float lim)
 
 typedef struct {
 
-    bool  in_band;
     float error_integral;
+    bool  in_band;
     float target;
     float throttle;
 
