@@ -40,7 +40,11 @@ typedef struct {
 
 } alt_hold_pid_t;
 
-static float alt_hold(float throttle, float altitude, float climb_rate)
+static float alt_hold(
+        float throttle,
+        float altitude,
+        float climb_rate,
+        alt_hold_pid_t * pid)
 {
     static constexpr float KP = 0.75;
     static constexpr float KI = 1.5;
@@ -48,8 +52,6 @@ static float alt_hold(float throttle, float altitude, float climb_rate)
     static constexpr float PILOT_VELZ_MAX = 2.5;
     static constexpr float STICK_DEADBAND = 0.2;
     static constexpr float WINDUP_MAX     = 0.4;
-
-    static alt_hold_pid_t _pid;
 
     // Rescale throttle [0,1] => [-1,+1]
     float sthrottle = 2 * throttle - 1; 
@@ -61,29 +63,29 @@ static float alt_hold(float throttle, float altitude, float climb_rate)
     bool atZeroThrottle = throttle == 0;
 
     // Reset controller when moving into deadband above a minimum altitude
-    bool gotNewTarget = inBand && !_pid.in_band_prev;
-    _pid.error_integral = gotNewTarget || atZeroThrottle ? 0 : _pid.error_integral;
+    bool gotNewTarget = inBand && !pid->in_band_prev;
+    pid->error_integral = gotNewTarget || atZeroThrottle ? 0 : pid->error_integral;
 
     if (atZeroThrottle) {
-        _pid.altitude_target = 0;
+        pid->altitude_target = 0;
     }
 
-    _pid.altitude_target = gotNewTarget ? altitude : _pid.altitude_target;
+    pid->altitude_target = gotNewTarget ? altitude : pid->altitude_target;
 
     // Target velocity is a setpoint inside deadband, scaled
     // constant outside
     float targetVelocity = inBand ?
-        _pid.altitude_target - altitude :
+        pid->altitude_target - altitude :
         PILOT_VELZ_MAX * sthrottle;
 
     // Compute error as scaled target minus actual
     float error = targetVelocity - climb_rate;
 
     // Compute I term, avoiding windup
-    _pid.error_integral = constrain_abs(_pid.error_integral + error, WINDUP_MAX);
+    pid->error_integral = constrain_abs(pid->error_integral + error, WINDUP_MAX);
 
     // Run PI controller
-    float correction = error * KP + _pid.error_integral * KI;
+    float correction = error * KP + pid->error_integral * KI;
 
     return constrain(throttle+correction, 0, 1);
 }
@@ -96,6 +98,8 @@ void FRustFlightManager::getMotors(double time, double* values)
 
     _joystick->poll(joyvals);
 
+    static alt_hold_pid_t _pid;
+
     // [-1,+1] => [0,1]
     float throttle = (joyvals[0] + 1) / 2;
 
@@ -103,7 +107,7 @@ void FRustFlightManager::getMotors(double time, double* values)
     float altitude   = -_dynamics->vstate.z;
     float climb_rate = -_dynamics->vstate.dz;
 
-    float new_throttle = alt_hold(throttle, altitude, climb_rate);
+    float new_throttle = alt_hold(throttle, altitude, climb_rate, &_pid);
 
     values[0] = new_throttle;
     values[1] = new_throttle;
