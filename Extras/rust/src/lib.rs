@@ -46,10 +46,14 @@ fn alt_hold(
     let new_error_integral =
         if got_new_target || at_zero_throttle {0.0} else {oldpid.error_integral};
 
+    let altitude_target = if at_zero_throttle {0.0} else {oldpid.target};
+
+    let new_target = if got_new_target {altitude} else {altitude_target};
+
     AltHoldPid {
         error_integral: new_error_integral,
         in_band: false,
-        target: 0.0,
+        target: new_target,
         throttle: 0.0 
     }
 }
