@@ -65,12 +65,12 @@ static void alt_hold(
     bool at_zero_throttle = throttle == 0;
 
     // Reset controller when moving into deadband above a minimum altitude
-    bool gotNewTarget = in_band && !oldpid->in_band;
-    newpid->error_integral = gotNewTarget || at_zero_throttle ? 0 : oldpid->error_integral;
+    bool got_new_target = in_band && !oldpid->in_band;
+    newpid->error_integral = got_new_target || at_zero_throttle ? 0 : oldpid->error_integral;
 
     float altitude_target = at_zero_throttle ? 0 : oldpid->target;
 
-    newpid->target = gotNewTarget ? altitude : altitude_target;
+    newpid->target = got_new_target ? altitude : altitude_target;
 
     // Target velocity is a setpoint inside deadband, scaled
     // constant outside
