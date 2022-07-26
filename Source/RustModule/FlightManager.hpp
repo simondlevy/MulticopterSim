@@ -65,10 +65,6 @@ class FRustFlightManager : public FFlightManager {
                 float dz,
                 alt_hold_t * alt_hold);
 
-        static bool in_band(float value, float mid, float band);
-
-        static float constrain_abs(float value, float limit);
-
     protected:
 
         virtual void getMotors(double time, double* values) override;

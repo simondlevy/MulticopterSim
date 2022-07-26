@@ -125,9 +125,8 @@ fn run_hackflight(
     }
 }
 
-
-#[no_mangle]
-pub extern "C" fn c_run_hackflight(
+ #[no_mangle]
+pub extern "C" fn rust_run_hackflight(
     c_demands : *mut Demands,
     c_vehicle_state: *mut VehicleState,
     c_alt_hold: *mut AltHold) -> Hackflight {
@@ -159,6 +158,7 @@ pub extern "C" fn c_run_hackflight(
         error_integral:(unsafe { (*c_alt_hold).error_integral }),
         throttle_demand:(unsafe { (*c_alt_hold).throttle_demand })
     };
+
 
     run_hackflight(demands, vehicle_state, alt_hold)
 }
