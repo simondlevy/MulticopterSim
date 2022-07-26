@@ -37,10 +37,11 @@ typedef struct {
     bool  in_band_prev;
     float error_integral;
     float altitude_target;
+    float new_throttle;
 
 } alt_hold_pid_t;
 
-static float alt_hold(
+static void alt_hold(
         float throttle,
         float altitude,
         float climb_rate,
@@ -87,7 +88,7 @@ static float alt_hold(
     // Run PI controller
     float correction = error * KP + pid->error_integral * KI;
 
-    return constrain(throttle+correction, 0, 1);
+    pid->new_throttle = constrain(throttle+correction, 0, 1);
 }
 
 void FRustFlightManager::getMotors(double time, double* values)
@@ -107,12 +108,12 @@ void FRustFlightManager::getMotors(double time, double* values)
     float altitude   = -_dynamics->vstate.z;
     float climb_rate = -_dynamics->vstate.dz;
 
-    float new_throttle = alt_hold(throttle, altitude, climb_rate, &_pid);
+    alt_hold(throttle, altitude, climb_rate, &_pid);
 
-    values[0] = new_throttle;
-    values[1] = new_throttle;
-    values[2] = new_throttle;
-    values[3] = new_throttle;
+    values[0] = _pid.new_throttle;
+    values[1] = _pid.new_throttle;
+    values[2] = _pid.new_throttle;
+    values[3] = _pid.new_throttle;
 }
 
 void FRustFlightManager::tick(void)
