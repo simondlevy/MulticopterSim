@@ -57,9 +57,9 @@ pub extern "C" fn rust_alt_hold(
         climb_rate,
         AltHoldPid { 
             error_integral: (unsafe { (*oldpid).error_integral}),
-            in_band: false,
-            target: 0.0,
-            throttle: 0.0
+            in_band: (unsafe { (*oldpid).in_band}),
+            target: (unsafe { (*oldpid).target}),
+            throttle: (unsafe { (*oldpid).throttle})
         })
 
 }
