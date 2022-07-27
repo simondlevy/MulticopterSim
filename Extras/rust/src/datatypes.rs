@@ -16,4 +16,22 @@ pub mod datatypes {
         pub pitch: f32,
         pub yaw: f32
     } 
+
+    #[repr(C)]
+    pub struct VehicleState {
+
+        pub x: f32,
+        pub dx: f32,
+        pub y: f32,
+        pub dy: f32,
+        pub z: f32,
+        pub dz: f32,
+        pub phi: f32,
+        pub dphi: f32,
+        pub theta: f32,
+        pub dtheta: f32,
+        pub psi: f32,
+        pub dpsi: f32
+    }
+
 }

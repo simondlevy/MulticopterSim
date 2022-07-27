@@ -28,8 +28,7 @@ class FRustFlightManager : public FFlightManager {
 
         typedef alt_hold_t (*alt_hold_fun_t) (
                 demands_t * demands,
-                float altitude,
-                float climb_rate,
+                Dynamics::vehicle_state_t * vehicle_state,
                 alt_hold_t * oldpid
                 );
 

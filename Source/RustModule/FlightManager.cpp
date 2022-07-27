@@ -51,7 +51,7 @@ void FRustFlightManager::getMotors(double time, double* values)
     float altitude   = -_dynamics->vstate.z;
     float climb_rate = -_dynamics->vstate.dz;
 
-    alt_hold_t newpid = _run_alt_hold(&demands, altitude, climb_rate, &_pid);
+    alt_hold_t newpid = _run_alt_hold(&demands, &_dynamics->vstate, &_pid);
 
     values[0] = newpid.throttle;
     values[1] = newpid.throttle;
