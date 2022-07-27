@@ -46,7 +46,9 @@ void FRustFlightManager::getMotors(double time, double* values)
 
     hackflight_t hackflight = { demands, _dynamics->vstate, _pid};
 
-    alt_hold_t newpid = _run_hackflight(&hackflight);
+    hackflight_t new_hackflight = _run_hackflight(&hackflight);
+
+    alt_hold_t newpid = new_hackflight.alt_hold_pid;
 
     values[0] = newpid.throttle;
     values[1] = newpid.throttle;

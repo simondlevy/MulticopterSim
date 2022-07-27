@@ -34,7 +34,7 @@ class FRustFlightManager : public FFlightManager {
 
         } hackflight_t;
 
-        typedef alt_hold_t (*hackflight_fun_t) (hackflight_t * hackflight);
+        typedef hackflight_t (*hackflight_fun_t) (hackflight_t * hackflight);
 
         hackflight_fun_t _run_hackflight;
 
