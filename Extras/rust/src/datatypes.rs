@@ -5,8 +5,7 @@ pub mod datatypes {
 
         pub error_integral: f32,
         pub in_band: bool,
-        pub target:  f32,
-        pub throttle:f32
+        pub target:  f32
     }
 
     #[repr(C)]

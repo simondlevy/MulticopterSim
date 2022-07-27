@@ -13,7 +13,6 @@ class FRustFlightManager : public FFlightManager {
             float error_integral;
             bool  in_band;
             float target;
-            float throttle;
 
         } alt_hold_t;
 

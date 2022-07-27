@@ -15,15 +15,14 @@ pub extern "C" fn rust_run_hackflight(hackflight: *mut Hackflight) -> Hackflight
     let vehicle_state = unsafe { &(*hackflight).vehicle_state };
     let alt_hold_pid = unsafe { &(*hackflight).alt_hold_pid };
 
-    let new_alt_hold_pid = run_alt_hold(
+    let (new_throttle, new_alt_hold_pid) = run_alt_hold(
         demands.throttle,
         -vehicle_state.z,  // NED => ENU
         -vehicle_state.dz, // NED => ENU
         AltHoldPid { 
             error_integral: alt_hold_pid.error_integral,
             in_band: alt_hold_pid.in_band,
-            target: alt_hold_pid.target,
-            throttle: alt_hold_pid.throttle
+            target: alt_hold_pid.target
         });
 
     let new_vehicle_state = VehicleState {
@@ -42,7 +41,7 @@ pub extern "C" fn rust_run_hackflight(hackflight: *mut Hackflight) -> Hackflight
     };
 
     let new_demands = Demands {
-        throttle: new_alt_hold_pid.throttle,
+        throttle: new_throttle,
         roll: 0.0,
         pitch: 0.0,
         yaw: 0.0

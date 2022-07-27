@@ -18,7 +18,7 @@ pub mod alt_hold {
         throttle: f32,
         altitude: f32,
         climb_rate: f32,
-        oldpid: AltHoldPid) -> AltHoldPid {
+        oldpid: AltHoldPid) -> (f32, AltHoldPid) {
 
         let kp = 0.75;
         let ki = 1.5;
@@ -60,12 +60,14 @@ pub mod alt_hold {
         // Add correction to throttle, constraining output to [0,1]
         let new_throttle = constrain(throttle+correction, 0.0, 1.0);
 
-        AltHoldPid {
+        // Capture new state of PID controller
+        let new_alt_hold_pid = AltHoldPid {
             error_integral: new_error_integral,
             in_band: in_band,
-            target: new_target,
-            throttle: new_throttle
-        }
+            target: new_target
+        };
+
+        (new_throttle, new_alt_hold_pid)
     }
 
 }
