@@ -28,7 +28,7 @@ fn alt_hold(
     let _kp = 0.75;
     let _ki = 1.5;
     let altitude_min   = 1.0;
-    let _pilot_velz_max = 2.5;
+    let pilot_velz_max = 2.5;
     let stick_deadband = 0.2;
     let _windup_max     = 0.4;
 
@@ -49,6 +49,11 @@ fn alt_hold(
     let altitude_target = if at_zero_throttle {0.0} else {oldpid.target};
 
     let new_target = if got_new_target {altitude} else {altitude_target};
+
+    // Target velocity is a setpoint inside deadband, scaled
+    // constant outside
+    let _target_velocity =
+        if in_band {new_target - altitude} else {pilot_velz_max * sthrottle};
 
     AltHoldPid {
         error_integral: new_error_integral,
