@@ -1,5 +1,8 @@
 pub mod alt_hold {
 
+    use datatypes::datatypes::AltHoldPid;
+
+    /*
     #[repr(C)]
     pub struct AltHoldPid {
 
@@ -7,7 +10,7 @@ pub mod alt_hold {
         pub in_band:        bool,
         pub target:         f32,
         pub throttle:       f32
-    }
+    }*/
 
     fn constrain(value: f32, lo: f32, hi: f32) -> f32 {
         if value  < lo {lo} else if value > hi {hi} else {value}

@@ -1,8 +1,8 @@
-//use crate::alt_hold;
-
-use alt_hold::alt_hold::AltHoldPid;
+//use alt_hold::alt_hold::AltHoldPid;
+use datatypes::datatypes::AltHoldPid;
 use alt_hold::alt_hold::run_alt_hold;
 
+pub mod datatypes;
 pub mod alt_hold;
 
 #[no_mangle]
