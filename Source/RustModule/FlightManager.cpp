@@ -64,13 +64,12 @@ static void alt_hold(
     // Zero throttle will reset error integral
     bool at_zero_throttle = throttle == 0;
 
-    // Reset controller when moving into deadband above a minimum altitude
-    bool got_new_target = in_band && !oldpid->in_band;
-    newpid->error_integral = got_new_target || at_zero_throttle ? 0 : oldpid->error_integral;
-
+    // Reset altitude target at zero throttle
     float altitude_target = at_zero_throttle ? 0 : oldpid->target;
 
-    newpid->target = got_new_target ? altitude : altitude_target;
+    // If stick just moved into deadband, set new target altitude; otherwise,
+    // keep previous
+    float new_target = in_band && !oldpid->in_band ? altitude : altitude_target;
 
     // Target velocity is a setpoint inside deadband, scaled
     // constant outside
@@ -82,12 +81,18 @@ static void alt_hold(
     float error = target_velocity - climb_rate;
 
     // Compute I term, avoiding windup
-    newpid->error_integral = constrain_abs(oldpid->error_integral + error, WINDUP_MAX);
+    float new_error_integral = constrain_abs(oldpid->error_integral + error, WINDUP_MAX);
 
     // Run PI controller
     float correction = error * KP + newpid->error_integral * KI;
 
-    newpid->throttle = constrain(throttle+correction, 0, 1);
+    // Add correction to throttle, constraining output to [0,1]
+    float new_throttle = constrain(throttle+correction, 0, 1);
+
+    newpid->error_integral = new_error_integral;
+    newpid->in_band = in_band;
+    newpid->target = new_target;
+    newpid->throttle = new_throttle;
 }
 
 void FRustFlightManager::getMotors(double time, double* values)

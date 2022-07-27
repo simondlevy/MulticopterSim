@@ -7,12 +7,12 @@ pub struct AltHoldPid {
     throttle:       f32
 }
 
-fn _in_band(value : f32, band : f32) -> bool {
-    value > -band && value < band
+fn constrain(value: f32, lo: f32, hi: f32) -> f32 {
+    if value  < lo {lo} else if value > hi {hi} else {value}
 }
 
-fn _constrain_abs(value : f32, limit : f32) -> f32 {
-    if value < -limit {-limit} else if value > limit {limit} else {value}
+fn constrain_abs(value : f32, limit : f32) -> f32 {
+    constrain(value, -limit, limit)
 }
 
 fn fabs(value: f32) -> f32 {
@@ -22,15 +22,15 @@ fn fabs(value: f32) -> f32 {
 fn alt_hold(
     throttle: f32,
     altitude: f32,
-    _climb_rate: f32,
+    climb_rate: f32,
     oldpid: AltHoldPid) -> AltHoldPid {
 
-    let _kp = 0.75;
-    let _ki = 1.5;
+    let kp = 0.75;
+    let ki = 1.5;
     let altitude_min   = 1.0;
     let pilot_velz_max = 2.5;
     let stick_deadband = 0.2;
-    let _windup_max     = 0.4;
+    let windup_max     = 0.4;
 
     // Rescale throttle [0,1] => [-1,+1]
     let sthrottle = 2.0 * throttle - 1.0; 
@@ -41,25 +41,35 @@ fn alt_hold(
     // Zero throttle will reset error integral
     let at_zero_throttle = throttle == 0.0;
 
-    // Reset controller when moving into deadband above a minimum altitude
-    let got_new_target = in_band && !oldpid.in_band;
-    let new_error_integral =
-        if got_new_target || at_zero_throttle {0.0} else {oldpid.error_integral};
-
+    // Reset altitude target at zero throttle
     let altitude_target = if at_zero_throttle {0.0} else {oldpid.target};
 
-    let new_target = if got_new_target {altitude} else {altitude_target};
+    // If stick just moved into deadband, set new target altitude; otherwise,
+    // keep previous
+    let new_target = if in_band && !oldpid.in_band {altitude} else {altitude_target};
 
     // Target velocity is a setpoint inside deadband, scaled
     // constant outside
-    let _target_velocity =
+    let target_velocity =
         if in_band {new_target - altitude} else {pilot_velz_max * sthrottle};
+
+    // Compute error as scaled target minus actual
+    let error = target_velocity - climb_rate;
+
+    // Compute I term, avoiding windup
+    let new_error_integral = constrain_abs(oldpid.error_integral + error, windup_max);
+
+    // Run PI controller
+    let correction = error * kp + new_error_integral * ki;
+
+    // Add correction to throttle, constraining output to [0,1]
+    let new_throttle = constrain(throttle+correction, 0.0, 1.0);
 
     AltHoldPid {
         error_integral: new_error_integral,
-        in_band: false,
+        in_band: in_band,
         target: new_target,
-        throttle: 0.0 
+        throttle: new_throttle
     }
 }
 
