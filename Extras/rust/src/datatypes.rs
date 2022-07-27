@@ -38,7 +38,8 @@ pub mod datatypes {
     pub struct Hackflight {
 
         pub demands: Demands,
-        pub vehicle_state: VehicleState
+        pub vehicle_state: VehicleState,
+        pub alt_hold_pid: AltHoldPid
     }
 
 }

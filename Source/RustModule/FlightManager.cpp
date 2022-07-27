@@ -42,11 +42,11 @@ void FRustFlightManager::getMotors(double time, double* values)
         scaleAxis(joyvals[3]) 
     };
 
-    hackflight_t hackflight = { demands, _dynamics->vstate };
-
     static alt_hold_t _pid;
 
-    alt_hold_t newpid = _run_hackflight(&hackflight, &_pid);
+    hackflight_t hackflight = { demands, _dynamics->vstate, _pid};
+
+    alt_hold_t newpid = _run_hackflight(&hackflight);
 
     values[0] = newpid.throttle;
     values[1] = newpid.throttle;
