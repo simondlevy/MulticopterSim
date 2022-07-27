@@ -35,7 +35,6 @@ class FRustFlightManager : public FFlightManager {
 
         typedef alt_hold_t (*hackflight_fun_t) (
                 hackflight_t * hackflight,
-                Dynamics::vehicle_state_t * vehicle_state,
                 alt_hold_t * oldpid
                 );
 
