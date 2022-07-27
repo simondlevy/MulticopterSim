@@ -10,13 +10,16 @@ pub mod alt_hold;
 
 #[no_mangle]
 pub extern "C" fn rust_run_hackflight(
-    _hackflight: *mut Hackflight,
-    demands: *mut Demands,
+    hackflight: *mut Hackflight,
+    _demands: *mut Demands,
     vehicle_state: *mut VehicleState,
     oldpid: *mut AltHoldPid) -> AltHoldPid {
 
+    let demands = unsafe { &(*hackflight).demands };
+
     run_alt_hold(
-        unsafe { (*demands).throttle},
+        demands.throttle,
+        //unsafe {(*demands).throttle},
         -(unsafe {(*vehicle_state).z}),  // NED => ENU
         -(unsafe {(*vehicle_state).dz}), // NED => ENU
         AltHoldPid { 

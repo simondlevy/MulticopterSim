@@ -29,7 +29,7 @@ class FRustFlightManager : public FFlightManager {
         typedef struct {
 
             demands_t demands;
-            alt_hold_t alt_hold;
+            Dynamics::vehicle_state_t vehicle_state;
 
         } hackflight_t;
 
