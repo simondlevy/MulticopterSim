@@ -74,7 +74,7 @@ fn alt_hold(
 }
 
  #[no_mangle]
-pub extern "C" fn rust_alt_hold(
+pub extern "C" fn rust_run_alt_hold(
     throttle: f32,
     altitude: f32,
     climb_rate: f32,

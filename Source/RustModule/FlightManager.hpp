@@ -10,60 +10,24 @@ class FRustFlightManager : public FFlightManager {
 
         typedef struct {
 
-            float throttle;
-            float roll;
-            float pitch;
-            float yaw;
-
-        } demands_t;
-
-        typedef struct {
-
-            float m1;
-            float m2;
-            float m3;
-            float m4;
-
-        } motors_t;
-
-        typedef struct {
-
             float altitude_target;
             float error_integral;
             float throttle_demand;
 
         } alt_hold_t;
 
-        typedef struct {
-
-            demands_t demands;
-            Dynamics::vehicle_state_t vehicle_state;
-            alt_hold_t alt_hold;
-            motors_t motors;
-
-        } hackflight_t;
-
-        typedef hackflight_t (*run_hackflight_t) (
-                demands_t * demands,
-                Dynamics::vehicle_state_t * vehicle_state,
-                alt_hold_t * alt_hold
+        typedef alt_hold_t (*alt_hold_fun_t) (
+                float throttle,
+                float altitude,
+                float climb_rate,
+                alt_hold_t * oldpid
                 );
 
-        run_hackflight_t _run_hackflight;
+        alt_hold_fun_t _run_alt_hold;
 
         Dynamics * _dynamics;
 
         IJoystick * _joystick;
-
-        hackflight_t _hackflight;
-
-        static void run_hackflight(hackflight_t * hackflight);
-
-        static void run_alt_hold(
-                float throttle,
-                float z,
-                float dz,
-                alt_hold_t * alt_hold);
 
     protected:
 

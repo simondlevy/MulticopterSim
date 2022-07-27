@@ -12,8 +12,8 @@ FRustFlightManager::FRustFlightManager(APawn * pawn, Dynamics * dynamics)
 
     void * library_handle = SDL_LoadObject(LIBRARY_FILENAME);
 
-    _run_hackflight =
-        (run_hackflight_t) SDL_LoadFunction(library_handle, "rust_run_hackflight");
+    _run_alt_hold =
+        (alt_hold_fun_t)SDL_LoadFunction(library_handle, "rust_run_alt_hold");
 
     _joystick = new IJoystick();
 }
@@ -112,9 +112,9 @@ void FRustFlightManager::getMotors(double time, double* values)
     float altitude   = -_dynamics->vstate.z;
     float climb_rate = -_dynamics->vstate.dz;
 
-    alt_hold_pid_t newpid = {};
+    alt_hold_pid_t newpid = {}; alt_hold(throttle, altitude, climb_rate, &_pid, &newpid);
 
-    alt_hold(throttle, altitude, climb_rate, &_pid, &newpid);
+    //alt_hold_pid_t newpid = _run_alt_hold(throttle, altitude, climb_rate, &_pid);
 
     values[0] = newpid.throttle;
     values[1] = newpid.throttle;
