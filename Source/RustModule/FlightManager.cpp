@@ -13,7 +13,7 @@ FRustFlightManager::FRustFlightManager(APawn * pawn, Dynamics * dynamics)
     void * library_handle = SDL_LoadObject(LIBRARY_FILENAME);
 
     _run_hackflight =
-        (alt_hold_fun_t)SDL_LoadFunction(library_handle, "rust_run_hackflight");
+        (hackflight_fun_t)SDL_LoadFunction(library_handle, "rust_run_hackflight");
 
     _joystick = new IJoystick();
 }
@@ -44,7 +44,10 @@ void FRustFlightManager::getMotors(double time, double* values)
 
     static alt_hold_t _pid;
 
-    alt_hold_t newpid = _run_hackflight(&demands, &_dynamics->vstate, &_pid);
+    static hackflight_t _hackflight;
+
+    alt_hold_t newpid =
+        _run_hackflight(&_hackflight, &demands, &_dynamics->vstate, &_pid);
 
     values[0] = newpid.throttle;
     values[1] = newpid.throttle;

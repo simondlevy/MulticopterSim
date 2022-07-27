@@ -1,6 +1,8 @@
+use datatypes::datatypes::Hackflight;
 use datatypes::datatypes::AltHoldPid;
 use datatypes::datatypes::Demands;
 use datatypes::datatypes::VehicleState;
+
 use alt_hold::alt_hold::run_alt_hold;
 
 pub mod datatypes;
@@ -8,6 +10,7 @@ pub mod alt_hold;
 
 #[no_mangle]
 pub extern "C" fn rust_run_hackflight(
+    _hackflight: *mut Hackflight,
     demands: *mut Demands,
     vehicle_state: *mut VehicleState,
     oldpid: *mut AltHoldPid) -> AltHoldPid {

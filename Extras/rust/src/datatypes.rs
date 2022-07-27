@@ -34,4 +34,11 @@ pub mod datatypes {
         pub dpsi: f32
     }
 
+    #[repr(C)]
+    pub struct Hackflight {
+
+        pub demands: Demands,
+        pub alt_hold_pid: AltHoldPid
+    }
+
 }

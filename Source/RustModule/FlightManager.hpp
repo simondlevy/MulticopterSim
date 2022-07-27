@@ -33,13 +33,14 @@ class FRustFlightManager : public FFlightManager {
 
         } hackflight_t;
 
-        typedef alt_hold_t (*alt_hold_fun_t) (
+        typedef alt_hold_t (*hackflight_fun_t) (
+                hackflight_t * hackflight,
                 demands_t * demands,
                 Dynamics::vehicle_state_t * vehicle_state,
                 alt_hold_t * oldpid
                 );
 
-        alt_hold_fun_t _run_hackflight;
+        hackflight_fun_t _run_hackflight;
 
         Dynamics * _dynamics;
 
