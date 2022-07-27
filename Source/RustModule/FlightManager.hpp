@@ -26,13 +26,6 @@ class FRustFlightManager : public FFlightManager {
 
         alt_hold_fun_t _run_alt_hold;
 
-        static void alt_hold(
-                float throttle,
-                float altitude,
-                float climb_rate,
-                alt_hold_t * oldpid,
-                alt_hold_t * newpid);
-
         Dynamics * _dynamics;
 
         IJoystick * _joystick;
