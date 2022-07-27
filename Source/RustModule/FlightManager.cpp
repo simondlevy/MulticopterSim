@@ -32,21 +32,12 @@ static float constrain_abs(float v, float lim)
     return constrain(v, -lim, +lim);
 }
 
-typedef struct {
-
-    float error_integral;
-    bool  in_band;
-    float target;
-    float throttle;
-
-} alt_hold_pid_t;
-
-static void alt_hold(
+void FRustFlightManager::alt_hold(
         float throttle,
         float altitude,
         float climb_rate,
-        alt_hold_pid_t * oldpid,
-        alt_hold_pid_t * newpid)
+        alt_hold_t * oldpid,
+        alt_hold_t * newpid)
 {
     static constexpr float KP = 0.75;
     static constexpr float KI = 1.5;
@@ -103,7 +94,7 @@ void FRustFlightManager::getMotors(double time, double* values)
 
     _joystick->poll(joyvals);
 
-    static alt_hold_pid_t _pid;
+    static alt_hold_t _pid;
 
     // [-1,+1] => [0,1]
     float throttle = (joyvals[0] + 1) / 2;
@@ -112,16 +103,16 @@ void FRustFlightManager::getMotors(double time, double* values)
     float altitude   = -_dynamics->vstate.z;
     float climb_rate = -_dynamics->vstate.dz;
 
-    alt_hold_pid_t newpid = {}; alt_hold(throttle, altitude, climb_rate, &_pid, &newpid);
+    //alt_hold_t newpid = {}; alt_hold(throttle, altitude, climb_rate, &_pid, &newpid);
 
-    //alt_hold_pid_t newpid = _run_alt_hold(throttle, altitude, climb_rate, &_pid);
+    alt_hold_t newpid = _run_alt_hold(throttle, altitude, climb_rate, &_pid);
 
     values[0] = newpid.throttle;
     values[1] = newpid.throttle;
     values[2] = newpid.throttle;
     values[3] = newpid.throttle;
 
-    memcpy(&_pid, &newpid, sizeof(alt_hold_pid_t));
+    memcpy(&_pid, &newpid, sizeof(alt_hold_t));
 
 }
 

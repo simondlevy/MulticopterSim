@@ -10,9 +10,10 @@ class FRustFlightManager : public FFlightManager {
 
         typedef struct {
 
-            float altitude_target;
             float error_integral;
-            float throttle_demand;
+            bool  in_band;
+            float target;
+            float throttle;
 
         } alt_hold_t;
 
@@ -24,6 +25,13 @@ class FRustFlightManager : public FFlightManager {
                 );
 
         alt_hold_fun_t _run_alt_hold;
+
+        static void alt_hold(
+                float throttle,
+                float altitude,
+                float climb_rate,
+                alt_hold_t * oldpid,
+                alt_hold_t * newpid);
 
         Dynamics * _dynamics;
 
