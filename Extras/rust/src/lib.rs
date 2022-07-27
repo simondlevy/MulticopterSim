@@ -42,7 +42,7 @@ pub extern "C" fn rust_run_hackflight(hackflight: *mut Hackflight) -> Hackflight
     };
 
     let new_demands = Demands {
-        throttle: 0.0,
+        throttle: new_alt_hold_pid.throttle,
         roll: 0.0,
         pitch: 0.0,
         yaw: 0.0

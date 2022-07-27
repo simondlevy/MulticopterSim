@@ -48,14 +48,14 @@ void FRustFlightManager::getMotors(double time, double* values)
 
     hackflight_t new_hackflight = _run_hackflight(&hackflight);
 
-    alt_hold_t newpid = new_hackflight.alt_hold_pid;
+    demands_t new_demands = new_hackflight.demands;
 
-    values[0] = newpid.throttle;
-    values[1] = newpid.throttle;
-    values[2] = newpid.throttle;
-    values[3] = newpid.throttle;
+    values[0] = new_demands.throttle;
+    values[1] = new_demands.throttle;
+    values[2] = new_demands.throttle;
+    values[3] = new_demands.throttle;
 
-    memcpy(&_pid, &newpid, sizeof(alt_hold_t));
+    memcpy(&_pid, &new_hackflight.alt_hold_pid, sizeof(alt_hold_t));
 }
 
 void FRustFlightManager::tick(void)
