@@ -35,21 +35,14 @@ void FRustFlightManager::getMotors(double time, double* values)
 
     _joystick->poll(joyvals);
 
-    static alt_hold_t _pid;
-
-    // [-1,+1] => [0,1]
-    float throttle = (joyvals[0] + 1) / 2;
-
     demands_t demands = {
-        throttle,
+        (joyvals[0] + 1) / 2, // throttle [-1,+1] => [0,1]
         scaleAxis(joyvals[1]),
         scaleAxis(joyvals[2]),
         scaleAxis(joyvals[3]) 
     };
 
-    // NED => ENU
-    float altitude   = -_dynamics->vstate.z;
-    float climb_rate = -_dynamics->vstate.dz;
+    static alt_hold_t _pid;
 
     alt_hold_t newpid = _run_alt_hold(&demands, &_dynamics->vstate, &_pid);
 
