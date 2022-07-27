@@ -39,6 +39,8 @@ class FRustFlightManager : public FFlightManager {
 
         IJoystick * _joystick;
 
+        static float scaleAxis(float value);
+
     protected:
 
         virtual void getMotors(double time, double* values) override;

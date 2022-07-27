@@ -22,6 +22,11 @@ FRustFlightManager::~FRustFlightManager()
 {
 }
 
+float FRustFlightManager::scaleAxis(float value)
+{
+    return value * 670;
+}
+
 void FRustFlightManager::getMotors(double time, double* values)
 {
     (time);
@@ -35,7 +40,12 @@ void FRustFlightManager::getMotors(double time, double* values)
     // [-1,+1] => [0,1]
     float throttle = (joyvals[0] + 1) / 2;
 
-    demands_t demands = {throttle, 0, 0, 0};
+    demands_t demands = {
+        throttle,
+        scaleAxis(joyvals[1]),
+        scaleAxis(joyvals[2]),
+        scaleAxis(joyvals[3]) 
+    };
 
     // NED => ENU
     float altitude   = -_dynamics->vstate.z;
