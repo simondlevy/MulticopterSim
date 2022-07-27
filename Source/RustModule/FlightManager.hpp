@@ -17,8 +17,17 @@ class FRustFlightManager : public FFlightManager {
 
         } alt_hold_t;
 
+        typedef struct {
+
+            float throttle;
+            float roll;
+            float pitch;
+            float yaw;
+
+        } demands_t;
+
         typedef alt_hold_t (*alt_hold_fun_t) (
-                float throttle,
+                demands_t * demands,
                 float altitude,
                 float climb_rate,
                 alt_hold_t * oldpid

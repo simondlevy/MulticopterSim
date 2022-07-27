@@ -35,11 +35,13 @@ void FRustFlightManager::getMotors(double time, double* values)
     // [-1,+1] => [0,1]
     float throttle = (joyvals[0] + 1) / 2;
 
+    demands_t demands = {throttle, 0, 0, 0};
+
     // NED => ENU
     float altitude   = -_dynamics->vstate.z;
     float climb_rate = -_dynamics->vstate.dz;
 
-    alt_hold_t newpid = _run_alt_hold(throttle, altitude, climb_rate, &_pid);
+    alt_hold_t newpid = _run_alt_hold(&demands, altitude, climb_rate, &_pid);
 
     values[0] = newpid.throttle;
     values[1] = newpid.throttle;
