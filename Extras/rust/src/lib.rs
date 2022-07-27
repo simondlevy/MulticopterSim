@@ -7,7 +7,7 @@ pub mod datatypes;
 pub mod alt_hold;
 
 #[no_mangle]
-pub extern "C" fn rust_run_alt_hold(
+pub extern "C" fn rust_run_hackflight(
     demands: *mut Demands,
     vehicle_state: *mut VehicleState,
     oldpid: *mut AltHoldPid) -> AltHoldPid {

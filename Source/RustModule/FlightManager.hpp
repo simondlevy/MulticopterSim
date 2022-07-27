@@ -26,13 +26,20 @@ class FRustFlightManager : public FFlightManager {
 
         } demands_t;
 
+        typedef struct {
+
+            demands_t demands;
+            alt_hold_t alt_hold;
+
+        } hackflight_t;
+
         typedef alt_hold_t (*alt_hold_fun_t) (
                 demands_t * demands,
                 Dynamics::vehicle_state_t * vehicle_state,
                 alt_hold_t * oldpid
                 );
 
-        alt_hold_fun_t _run_alt_hold;
+        alt_hold_fun_t _run_hackflight;
 
         Dynamics * _dynamics;
 
