@@ -18,18 +18,8 @@ pub extern "C" fn rust_run_hackflight(c_hackflight: *mut Hackflight) -> Hackflig
     let c_alt_hold_pid = unsafe { &(*c_hackflight).alt_hold_pid };
 
     let vehicle_state = VehicleState {
-        x: c_vehicle_state.x,
-        dx: c_vehicle_state.dx,
-        y: c_vehicle_state.y,
-        dy: c_vehicle_state.dy,
         z: c_vehicle_state.z,
-        dz: c_vehicle_state.dz,
-        phi: c_vehicle_state.phi,
-        dphi: c_vehicle_state.dphi,
-        theta: c_vehicle_state.theta,
-        dtheta: c_vehicle_state.dtheta,
-        psi: c_vehicle_state.psi,
-        dpsi: c_vehicle_state.dpsi
+        dz: c_vehicle_state.dz
     };
 
     let demands = Demands { 
