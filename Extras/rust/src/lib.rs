@@ -4,27 +4,19 @@ use datatypes::datatypes::VehicleState;
 use datatypes::datatypes::AltHoldPid;
 use datatypes::datatypes::Motors;
 
+//use hackflight::hackflight::run_hackflight;
 use alt_hold::alt_hold::run_alt_hold;
 
 pub mod datatypes;
+//pub mod hackflight;
 pub mod alt_hold;
 
 #[no_mangle]
-pub extern "C" fn rust_run_hackflight(hackflight: *mut Hackflight) -> Hackflight {
+pub extern "C" fn rust_run_hackflight(c_hackflight: *mut Hackflight) -> Hackflight {
 
-    let demands = unsafe { &(*hackflight).demands };
-    let vehicle_state = unsafe { &(*hackflight).vehicle_state };
-    let alt_hold_pid = unsafe { &(*hackflight).alt_hold_pid };
-
-    let (new_throttle, new_alt_hold_pid) = run_alt_hold(
-        demands.throttle,
-        -vehicle_state.z,  // NED => ENU
-        -vehicle_state.dz, // NED => ENU
-        AltHoldPid { 
-            error_integral: alt_hold_pid.error_integral,
-            in_band: alt_hold_pid.in_band,
-            target: alt_hold_pid.target
-        });
+    let demands = unsafe { &(*c_hackflight).demands };
+    let vehicle_state = unsafe { &(*c_hackflight).vehicle_state };
+    let alt_hold_pid = unsafe { &(*c_hackflight).alt_hold_pid };
 
     let new_vehicle_state = VehicleState {
         x: 0.0,
@@ -40,6 +32,16 @@ pub extern "C" fn rust_run_hackflight(hackflight: *mut Hackflight) -> Hackflight
         psi: 0.0,
         dpsi: 0.0
     };
+
+    let (new_throttle, new_alt_hold_pid) = run_alt_hold(
+        demands.throttle,
+        -vehicle_state.z,  // NED => ENU
+        -vehicle_state.dz, // NED => ENU
+        AltHoldPid { 
+            error_integral: alt_hold_pid.error_integral,
+            in_band: alt_hold_pid.in_band,
+            target: alt_hold_pid.target
+        });
 
     let new_demands = Demands {
         throttle: new_throttle,
