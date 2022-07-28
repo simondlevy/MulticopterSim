@@ -20,18 +20,18 @@ pub mod alt_hold {
         climb_rate: f32,
         oldpid: AltHoldPid) -> (f32, AltHoldPid) {
 
-        let kp = 0.75;
-        let ki = 1.5;
-        let altitude_min   = 1.0;
-        let pilot_velz_max = 2.5;
-        let stick_deadband = 0.2;
-        let windup_max     = 0.4;
+        const KP: f32 = 0.75;
+        const KI: f32 = 1.5;
+        const ALTITUDE_MIN: f32   = 1.0;
+        const PILOT_VELZ_MAX: f32 = 2.5;
+        const STICK_DEADBAND: f32 = 0.2;
+        const WINDUP_MAX: f32     = 0.4;
 
         // Rescale throttle [0,1] => [-1,+1]
         let sthrottle = 2.0 * throttle - 1.0; 
 
         // Is stick demand in deadband, above a minimum altitude?
-        let in_band = fabs(sthrottle) < stick_deadband && altitude > altitude_min; 
+        let in_band = fabs(sthrottle) < STICK_DEADBAND && altitude > ALTITUDE_MIN; 
 
         // Zero throttle will reset error integral
         let at_zero_throttle = throttle == 0.0;
@@ -46,16 +46,16 @@ pub mod alt_hold {
         // Target velocity is a setpoint inside deadband, scaled
         // constant outside
         let target_velocity =
-            if in_band {new_target - altitude} else {pilot_velz_max * sthrottle};
+            if in_band {new_target - altitude} else {PILOT_VELZ_MAX * sthrottle};
 
         // Compute error as scaled target minus actual
         let error = target_velocity - climb_rate;
 
         // Compute I term, avoiding windup
-        let new_error_integral = constrain_abs(oldpid.error_integral + error, windup_max);
+        let new_error_integral = constrain_abs(oldpid.error_integral + error, WINDUP_MAX);
 
         // Run PI controller
-        let correction = error * kp + new_error_integral * ki;
+        let correction = error * KP + new_error_integral * KI;
 
         // Add correction to throttle, constraining output to [0,1]
         let new_throttle = constrain(throttle+correction, 0.0, 1.0);

@@ -34,11 +34,21 @@ pub mod datatypes {
     }
 
     #[repr(C)]
+    pub struct Motors {
+
+        pub m1: f32,
+        pub m2: f32,
+        pub m3: f32,
+        pub m4: f32
+    }
+    
+    #[repr(C)]
     pub struct Hackflight {
 
         pub demands: Demands,
         pub vehicle_state: VehicleState,
-        pub alt_hold_pid: AltHoldPid
+        pub alt_hold_pid: AltHoldPid,
+        pub motors: Motors
     }
 
 }

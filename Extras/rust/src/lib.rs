@@ -2,6 +2,7 @@ use datatypes::datatypes::Hackflight;
 use datatypes::datatypes::Demands;
 use datatypes::datatypes::VehicleState;
 use datatypes::datatypes::AltHoldPid;
+use datatypes::datatypes::Motors;
 
 use alt_hold::alt_hold::run_alt_hold;
 
@@ -47,9 +48,17 @@ pub extern "C" fn rust_run_hackflight(hackflight: *mut Hackflight) -> Hackflight
         yaw: 0.0
     };
 
+    let new_motors = Motors {
+        m1: new_demands.throttle,
+        m2: new_demands.throttle,
+        m3: new_demands.throttle,
+        m4: new_demands.throttle
+    };
+
     Hackflight { 
         demands: new_demands,
         vehicle_state: new_vehicle_state,
-        alt_hold_pid: new_alt_hold_pid
+        alt_hold_pid: new_alt_hold_pid,
+        motors: new_motors
     }
 }

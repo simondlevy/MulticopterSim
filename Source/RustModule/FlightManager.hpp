@@ -27,9 +27,19 @@ class FRustFlightManager : public FFlightManager {
 
         typedef struct {
 
+            float m1;
+            float m2;
+            float m3;
+            float m4;
+
+        } motors_t;
+
+        typedef struct {
+
             demands_t demands;
             Dynamics::vehicle_state_t vehicle_state;
             alt_hold_t alt_hold_pid;
+            motors_t motors;
 
         } hackflight_t;
 
