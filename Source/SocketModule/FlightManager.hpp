@@ -106,6 +106,8 @@ class FSocketFlightManager : public FFlightManager {
             // Get motor values from server
             _motorServer->receiveData(values, 8 * _actuatorCount);
 
+            static uint64_t _foo; debugline("%d", _foo++);
+
             // Server sends a -1 to halt
             if (values[0] == -1) {
 				values[0] = 0;

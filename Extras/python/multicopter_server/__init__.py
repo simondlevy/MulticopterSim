@@ -64,7 +64,7 @@ class MulticopterServer(object):
 
         _debug('Hit the Play button ...')
 
-        thread = Thread(target=self._run_threadetry,
+        thread = Thread(target=self._run_thread,
                         args=(telemetryServerSocket,
                               motorClientSocket))
 
@@ -123,9 +123,7 @@ class MulticopterServer(object):
 
         return self.done
 
-    def _run_threadetry(self,
-                        telemetryServerSocket,
-                        motorClientSocket):
+    def _run_thread(self, telemetryServerSocket, motorClientSocket):
 
         running = False
 

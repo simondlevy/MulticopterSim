@@ -1,41 +1,46 @@
 use std::net::UdpSocket;
-use std::io::{Write};
 
-use datatypes::datatypes::AltHoldPid;
-use datatypes::datatypes::Demands;
-use datatypes::datatypes::VehicleState;
 
-use hackflight::hackflight::run_hackflight2;
+//use datatypes::datatypes::AltHoldPid;
+//use datatypes::datatypes::Demands;
+//use datatypes::datatypes::VehicleState;
 
-pub mod alt_hold;
-pub mod datatypes;
-pub mod hackflight;
+//use hackflight::hackflight::run_hackflight2;
+
+//pub mod alt_hold;
+//pub mod datatypes;
+//pub mod hackflight;
 
 fn main() -> std::io::Result<()> {
 
+    /*
     let mut alt_hold_pid = AltHoldPid {
         error_integral: 0.0,
         in_band: false,
         target: 0.0
-    };
+    };*/
 
-    let socket = UdpSocket::bind("127.0.0.1:5001")?;
+    let motor_client_socket = UdpSocket::bind("0.0.0.0:5000")?;
+    let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
 
-    print!("Hit the start button ...");
-    std::io::stdout().flush().unwrap();
+    println!("Hit the Play button ...");
 
     loop {
 
-        let mut buf = [0; 17*8];
-        let (amt, _src) = socket.recv_from(&mut buf)?;
+        let mut in_buf = [0; 17*8]; // 17 doubles in
+        let (amt, src) = telemetry_server_socket.recv_from(&mut in_buf)?;
 
         println!("{}", amt);
 
-        let demands = Demands {
+        let out_buf = [0; 4*8]; // 4 doubles out
+        motor_client_socket.send_to(&out_buf, &src)?;
 
-            throttle:0.0,
-            roll:0.0,
-            pitch:0.0,
+        /*
+           let demands = Demands {
+
+           throttle:0.0,
+           roll:0.0,
+           pitch:0.0,
             yaw:0.0
         };
 
@@ -58,5 +63,6 @@ fn main() -> std::io::Result<()> {
             run_hackflight2(demands, vehicle_state, alt_hold_pid.clone());
 
         alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
+        */
     }
 }
