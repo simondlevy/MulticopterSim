@@ -1,17 +1,20 @@
 use std::net::UdpSocket;
 
-//use datatypes::datatypes::AltHoldPid;
+use datatypes::datatypes::AltHoldPid;
 use datatypes::datatypes::Demands;
 use datatypes::datatypes::VehicleState;
 
-//use hackflight::hackflight::run_hackflight2;
+use hackflight::hackflight::run_hackflight2;
 
-//pub mod alt_hold;
+pub mod alt_hold;
 pub mod datatypes;
-//pub mod hackflight;
+pub mod hackflight;
 
 
 fn main() -> std::io::Result<()> {
+
+    const IN_BUF_SIZE:usize  = 17*8; // 17 doubles in
+    const OUT_BUF_SIZE:usize = 4*8;  // 4 doubles out
 
     fn read_float(buf:[u8; IN_BUF_SIZE], idx:usize) -> f32 {
         let mut dst = [0u8; 8];
@@ -21,10 +24,27 @@ fn main() -> std::io::Result<()> {
         f64::from_le_bytes(dst) as f32
     }
 
-    const IN_BUF_SIZE:usize = 17*8;  // 17 doubles in
+    fn write_double(val:f32, mut buf:[u8; OUT_BUF_SIZE], idx:usize) {
+        let src = (val as f64).to_le_bytes();
+        let beg = 8 * idx;
+        buf[beg+0] = src[0];
+        buf[beg+1] = src[1];
+        buf[beg+2] = src[2];
+        buf[beg+3] = src[3];
+        buf[beg+4] = src[4];
+        buf[beg+5] = src[5];
+        buf[beg+6] = src[6];
+        buf[beg+7] = src[7];
+    }
 
     let motor_client_socket = UdpSocket::bind("0.0.0.0:5000")?;
     let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
+
+    let mut alt_hold_pid = AltHoldPid {
+        error_integral: 0.0,
+        in_band: false,
+        target: 0.0
+    };
 
     println!("Hit the Play button ...");
 
@@ -33,7 +53,11 @@ fn main() -> std::io::Result<()> {
         let mut in_buf = [0; IN_BUF_SIZE]; 
         let (_amt, src) = telemetry_server_socket.recv_from(&mut in_buf)?;
 
-        let _vehicle_state = VehicleState {
+        let time = read_float(in_buf, 0);
+
+        if time < 0.0 { break Ok(()); }
+
+        let vehicle_state = VehicleState {
             x:read_float(in_buf, 1),
             dx:read_float(in_buf, 2),
             y:read_float(in_buf, 3),
@@ -55,18 +79,19 @@ fn main() -> std::io::Result<()> {
             yaw:read_float(in_buf, 16)
         };
 
-        println!("{}", demands.yaw);
-
-        let out_buf = [0; 4*8]; // 4 doubles out
-        motor_client_socket.send_to(&out_buf, &src)?;
-
-        /*
-
-            let (new_alt_hold_pid, _motors) =
+        let (new_alt_hold_pid, _motors) =
             run_hackflight2(demands, vehicle_state, alt_hold_pid.clone());
 
-        alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
-        */
-    }
+        // alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
+        alt_hold_pid = new_alt_hold_pid;
 
+        let out_buf = [0u8; OUT_BUF_SIZE]; 
+
+        write_double(0.6, out_buf, 0);
+        write_double(0.6, out_buf, 1);
+        write_double(0.6, out_buf, 2);
+        write_double(0.6, out_buf, 3);
+
+        motor_client_socket.send_to(&out_buf, &src)?;
+    }
 }
