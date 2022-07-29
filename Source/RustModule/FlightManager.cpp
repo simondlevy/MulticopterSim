@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 
-static const char * LIBRARY_FILENAME = "hackflight.dll";
+static const char * LIBRARY_FILENAME = "hackflight_lib.dll";
 
 FRustFlightManager::FRustFlightManager(APawn * pawn, Dynamics * dynamics)
     : FFlightManager(dynamics)
