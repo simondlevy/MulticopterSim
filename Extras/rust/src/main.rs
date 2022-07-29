@@ -35,7 +35,7 @@ fn main() -> std::io::Result<()> {
 
         let mut dst = [0u8; 8];
         dst.clone_from_slice(&in_buf[0..8]);
-        let time = f64::from_be_bytes(dst);
+        let time = f64::from_le_bytes(dst);
         println!("{}", time);
 
         let _vehicle_state = VehicleState {
