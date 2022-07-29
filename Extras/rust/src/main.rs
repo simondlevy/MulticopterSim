@@ -51,7 +51,7 @@ fn main() -> std::io::Result<()> {
     loop {
 
         let mut in_buf = [0; IN_BUF_SIZE]; 
-        let (_amt, src) = telemetry_server_socket.recv_from(&mut in_buf)?;
+        telemetry_server_socket.recv_from(&mut in_buf)?;
 
         let time = read_float(in_buf, 0);
 
@@ -92,6 +92,6 @@ fn main() -> std::io::Result<()> {
         write_double(0.6, out_buf, 2);
         write_double(0.6, out_buf, 3);
 
-        motor_client_socket.send_to(&out_buf, &src)?;
+        motor_client_socket.send_to(&out_buf, "127.0.0.1:5001")?;
     }
 }
