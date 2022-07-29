@@ -1,6 +1,7 @@
 pub mod datatypes {
 
     #[repr(C)]
+    #[derive(Clone)]
     pub struct AltHoldPid {
 
         pub error_integral: f32,
