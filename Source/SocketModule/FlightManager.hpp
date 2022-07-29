@@ -84,6 +84,12 @@ class FSocketFlightManager : public FFlightManager {
             _telemetry[11] = _dynamics->vstate.psi;
             _telemetry[12] = _dynamics->vstate.dpsi;
 
+            // Remaining output values are stick demands
+            _telemetry[13] = 1;
+            _telemetry[14] = 2;
+            _telemetry[15] = 3;
+            _telemetry[16] = 4;
+
             // Send telemetry values to server
             _telemClient->sendData(_telemetry, sizeof(_telemetry));
 

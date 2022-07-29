@@ -82,24 +82,28 @@ class MulticopterServer(object):
 
         while not self.done:
 
-            time.sleep(.001)  # Yield to other thread
+            try: 
+                time.sleep(.001)  # Yield to other thread
 
-            '''
-            try:
-                imgbytes = imageConn.recv(self.image_rows*self.image_cols*4)
+                '''
+                try:
+                    imgbytes = imageConn.recv(self.image_rows*self.image_cols*4)
 
-            except Exception:  # likely a timeout from sim quitting
+                except Exception:  # likely a timeout from sim quitting
+                    break
+
+                if len(imgbytes) == self.image_rows*self.image_cols*4:
+
+                    rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
+                                            (self.image_rows, self.image_cols, 4))
+
+                    image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
+
+                    self.handleImage(image)
+                '''
+
+            except KeyboardInterrupt:
                 break
-
-            if len(imgbytes) == self.image_rows*self.image_cols*4:
-
-                rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
-                                        (self.image_rows, self.image_cols, 4))
-
-                image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
-
-                self.handleImage(image)
-            '''
 
     def handleImage(self, image):
         '''
