@@ -1,3 +1,4 @@
+use datatypes::datatypes::AltHoldPid;
 use datatypes::datatypes::Demands;
 use datatypes::datatypes::VehicleState;
 
@@ -16,6 +17,12 @@ fn main() {
         roll:0.0,
         pitch:0.0,
         yaw:0.0
+    };
+
+    let _alt_hold_pid = AltHoldPid {
+        error_integral: 0.0,
+        in_band: false,
+        target: 0.0
     };
 
     loop {
