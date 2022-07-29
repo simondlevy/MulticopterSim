@@ -13,12 +13,12 @@ pub mod datatypes;
 
 fn main() -> std::io::Result<()> {
 
-    fn read_double(buf:[u8; IN_BUF_SIZE], idx:usize) -> f64 {
+    fn read_double_as_float(buf:[u8; IN_BUF_SIZE], idx:usize) -> f32 {
         let mut dst = [0u8; 8];
         let beg = 8 * idx;
         let end = beg + 8;
         dst.clone_from_slice(&buf[beg..end]);
-        f64::from_le_bytes(dst)
+        f64::from_le_bytes(dst) as f32
     }
 
     const IN_BUF_SIZE:usize = 17*8;  // 17 doubles in
@@ -52,7 +52,7 @@ fn main() -> std::io::Result<()> {
 
         let demands = Demands {
 
-            throttle:(read_double(in_buf, 13) as f32),
+            throttle:read_double_as_float(in_buf, 13),
             roll:0.0,
             pitch:0.0,
             yaw:0.0
