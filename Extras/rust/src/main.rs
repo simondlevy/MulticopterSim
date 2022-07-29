@@ -13,7 +13,7 @@ pub mod datatypes;
 
 fn main() -> std::io::Result<()> {
 
-    fn read_double_as_float(buf:[u8; IN_BUF_SIZE], idx:usize) -> f32 {
+    fn read_float(buf:[u8; IN_BUF_SIZE], idx:usize) -> f32 {
         let mut dst = [0u8; 8];
         let beg = 8 * idx;
         let end = beg + 8;
@@ -52,13 +52,13 @@ fn main() -> std::io::Result<()> {
 
         let demands = Demands {
 
-            throttle:read_double_as_float(in_buf, 13),
-            roll:0.0,
-            pitch:0.0,
-            yaw:0.0
+            throttle:read_float(in_buf, 13),
+            roll:read_float(in_buf, 14),
+            pitch:read_float(in_buf, 15),
+            yaw:read_float(in_buf, 16)
         };
 
-        println!("{}", demands.throttle);
+        println!("{}", demands.yaw);
 
         let out_buf = [0; 4*8]; // 4 doubles out
         motor_client_socket.send_to(&out_buf, &src)?;
