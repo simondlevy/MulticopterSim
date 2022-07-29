@@ -1,3 +1,6 @@
+use std::net::UdpSocket;
+use std::io::{Write};
+
 use datatypes::datatypes::AltHoldPid;
 use datatypes::datatypes::Demands;
 use datatypes::datatypes::VehicleState;
@@ -8,7 +11,7 @@ pub mod alt_hold;
 pub mod datatypes;
 pub mod hackflight;
 
-fn main() {
+fn main() -> std::io::Result<()> {
 
     let mut alt_hold_pid = AltHoldPid {
         error_integral: 0.0,
@@ -16,7 +19,17 @@ fn main() {
         target: 0.0
     };
 
+    let socket = UdpSocket::bind("127.0.0.1:5001")?;
+
+    print!("Hit the start button ...");
+    std::io::stdout().flush().unwrap();
+
     loop {
+
+        let mut buf = [0; 17*8];
+        let (amt, _src) = socket.recv_from(&mut buf)?;
+
+        println!("{}", amt);
 
         let demands = Demands {
 
