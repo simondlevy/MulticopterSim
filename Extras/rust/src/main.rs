@@ -1,3 +1,15 @@
+use datatypes::datatypes::VehicleState;
+
+pub mod datatypes;
+
 fn main() {
-    println!("Hello, Opensource world!");
+
+    let _vehicle_state = VehicleState {
+        z:0.0,
+        dz:0.0
+    };
+
+    loop {
+
+    }
 }
