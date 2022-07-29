@@ -52,6 +52,8 @@ class LaunchCopter(MulticopterServer):
 
     def getMotors(self, t, state, _stickDemands):
 
+        print(_stickDemands)
+
         # Track current time to share it with handleImage()
         self.time = t
 

@@ -13,6 +13,7 @@
 
 #include "../MainModule/FlightManager.hpp"
 #include "../MainModule/Dynamics.hpp"
+#include "../MainModule/Joystick.h"
 
 #include "sockets/UdpClientSocket.hpp"
 #include "sockets/UdpServerSocket.hpp"
@@ -31,6 +32,9 @@ class FSocketFlightManager : public FFlightManager {
         // Guards socket comms
         bool _connected = false;
 
+        // Joystick / game controller / RC transmitter
+        IJoystick * _joystick;
+
     public:
 
         FSocketFlightManager(APawn * pawn,
@@ -42,6 +46,8 @@ class FSocketFlightManager : public FFlightManager {
         {
             _telemClient = new UdpClientSocket(host, telemPort);
             _motorServer = new UdpServerSocket(motorPort);
+
+            _joystick = new IJoystick();
 
             _connected = true;
         }
@@ -67,6 +73,10 @@ class FSocketFlightManager : public FFlightManager {
                 return;
             }
 
+            double joyvals[10] = {};
+
+            _joystick->poll(joyvals);
+
             // First output value is time
             _telemetry[0] = time;
 
@@ -85,10 +95,10 @@ class FSocketFlightManager : public FFlightManager {
             _telemetry[12] = _dynamics->vstate.dpsi;
 
             // Remaining output values are stick demands
-            _telemetry[13] = 1;
-            _telemetry[14] = 2;
-            _telemetry[15] = 3;
-            _telemetry[16] = 4;
+            _telemetry[13] = joyvals[0];
+            _telemetry[14] = joyvals[1];
+            _telemetry[15] = joyvals[2];
+            _telemetry[16] = joyvals[3];
 
             // Send telemetry values to server
             _telemClient->sendData(_telemetry, sizeof(_telemetry));
