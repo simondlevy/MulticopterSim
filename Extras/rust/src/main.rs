@@ -13,18 +13,13 @@ pub mod datatypes;
 
 fn main() -> std::io::Result<()> {
 
-    fn read_double(buf:[u8; IN_BUF_SIZE], beg:usize) -> f64 {
+    fn read_double(buf:[u8; IN_BUF_SIZE], idx:usize) -> f64 {
         let mut dst = [0u8; 8];
-        dst.clone_from_slice(&buf[beg..beg+8]);
+        let beg = 8 * idx;
+        let end = beg + 8;
+        dst.clone_from_slice(&buf[beg..end]);
         f64::from_le_bytes(dst)
     }
-
-    /*
-       let mut alt_hold_pid = AltHoldPid {
-       error_integral: 0.0,
-       in_band: false,
-       target: 0.0
-       };*/
 
     const IN_BUF_SIZE:usize = 17*8;  // 17 doubles in
 
@@ -37,11 +32,6 @@ fn main() -> std::io::Result<()> {
 
         let mut in_buf = [0; IN_BUF_SIZE]; 
         let (_amt, src) = telemetry_server_socket.recv_from(&mut in_buf)?;
-
-        //let mut dst = [0u8; 8];
-        //let beg:usize = 0;
-        //dst.clone_from_slice(&in_buf[beg..beg+8]);
-        //let time = f64::from_le_bytes(dst);
 
         let time = read_double(in_buf, 0);
 
