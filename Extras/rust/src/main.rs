@@ -1,15 +1,15 @@
 use std::net::UdpSocket;
 
-
 //use datatypes::datatypes::AltHoldPid;
 //use datatypes::datatypes::Demands;
-//use datatypes::datatypes::VehicleState;
+use datatypes::datatypes::VehicleState;
 
 //use hackflight::hackflight::run_hackflight2;
 
 //pub mod alt_hold;
-//pub mod datatypes;
+pub mod datatypes;
 //pub mod hackflight;
+
 
 fn main() -> std::io::Result<()> {
 
@@ -28,23 +28,17 @@ fn main() -> std::io::Result<()> {
     loop {
 
         let mut in_buf = [0; 17*8]; // 17 doubles in
-        let (amt, src) = telemetry_server_socket.recv_from(&mut in_buf)?;
+        let (_amt, src) = telemetry_server_socket.recv_from(&mut in_buf)?;
 
-        println!("{}", amt);
+        let buf = [0, 0, 0, 0, 0, 0, 0, 1];
+        let _num = f64::from_be_bytes(buf);
 
-        let out_buf = [0; 4*8]; // 4 doubles out
-        motor_client_socket.send_to(&out_buf, &src)?;
+        let mut dst = [0u8; 8];
+        dst.clone_from_slice(&in_buf[0..8]);
+        let time = f64::from_be_bytes(dst);
+        println!("{}", time);
 
-        /*
-           let demands = Demands {
-
-           throttle:0.0,
-           roll:0.0,
-           pitch:0.0,
-            yaw:0.0
-        };
-
-        let vehicle_state = VehicleState {
+        let _vehicle_state = VehicleState {
             x:0.0,
             dx:0.0,
             y:0.0,
@@ -59,10 +53,22 @@ fn main() -> std::io::Result<()> {
             dpsi:0.0
         };
 
-        let (new_alt_hold_pid, _motors) =
-            run_hackflight2(demands, vehicle_state, alt_hold_pid.clone());
+        let out_buf = [0; 4*8]; // 4 doubles out
+        motor_client_socket.send_to(&out_buf, &src)?;
 
-        alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
-        */
+        /*
+           let demands = Demands {
+
+           throttle:0.0,
+           roll:0.0,
+           pitch:0.0,
+           yaw:0.0
+           };
+
+           let (new_alt_hold_pid, _motors) =
+           run_hackflight2(demands, vehicle_state, alt_hold_pid.clone());
+
+           alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
+         */
     }
 }
