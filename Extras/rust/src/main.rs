@@ -33,25 +33,22 @@ fn main() -> std::io::Result<()> {
         let mut in_buf = [0; IN_BUF_SIZE]; 
         let (_amt, src) = telemetry_server_socket.recv_from(&mut in_buf)?;
 
-        // let time = read_double(in_buf, 0);
-
         let _vehicle_state = VehicleState {
-            x:0.0,
-            dx:0.0,
-            y:0.0,
-            dy:0.0,
-            z:0.0,
-            dz:0.0,
-            phi:0.0,
-            dphi:0.0,
-            theta:0.0,
-            dtheta:0.0,
-            psi:0.0,
-            dpsi:0.0
+            x:read_float(in_buf, 1),
+            dx:read_float(in_buf, 2),
+            y:read_float(in_buf, 3),
+            dy:read_float(in_buf, 4),
+            z:read_float(in_buf, 5),
+            dz:read_float(in_buf, 6),
+            phi:read_float(in_buf, 7),
+            dphi:read_float(in_buf, 8),
+            theta:read_float(in_buf, 9),
+            dtheta:read_float(in_buf, 10),
+            psi:read_float(in_buf, 11),
+            dpsi:read_float(in_buf, 12)
         };
 
         let demands = Demands {
-
             throttle:read_float(in_buf, 13),
             roll:read_float(in_buf, 14),
             pitch:read_float(in_buf, 15),
