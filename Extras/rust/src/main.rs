@@ -1,15 +1,14 @@
 use std::net::UdpSocket;
 
-use datatypes::datatypes::AltHoldPid;
-use datatypes::datatypes::Demands;
-use datatypes::datatypes::VehicleState;
+//use datatypes::datatypes::AltHoldPid;
+//use datatypes::datatypes::Demands;
+//use datatypes::datatypes::VehicleState;
 
-use hackflight::hackflight::run_hackflight2;
+//use hackflight::hackflight::run_hackflight2;
 
-pub mod alt_hold;
-pub mod datatypes;
-pub mod hackflight;
-
+//pub mod alt_hold;
+//pub mod datatypes;
+//pub mod hackflight;
 
 fn main() -> std::io::Result<()> {
 
@@ -24,7 +23,7 @@ fn main() -> std::io::Result<()> {
         f64::from_le_bytes(dst) as f32
     }
 
-    fn write_double(val:f32, mut buf:[u8; OUT_BUF_SIZE], idx:usize) {
+    fn _write_double(val:f32, mut buf:[u8; OUT_BUF_SIZE], idx:usize) {
         let src = (val as f64).to_le_bytes();
         let beg = 8 * idx;
         buf[beg+0] = src[0];
@@ -37,14 +36,17 @@ fn main() -> std::io::Result<()> {
         buf[beg+7] = src[7];
     }
 
-    let motor_client_socket = UdpSocket::bind("0.0.0.0:5000")?;
+    //let motor_client_socket = UdpSocket::bind("0.0.0.1:5000")?;
+    let motor_client_socket = UdpSocket::bind("0.0.0.0:0")?;
     let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
 
+    /*
     let mut alt_hold_pid = AltHoldPid {
         error_integral: 0.0,
         in_band: false,
         target: 0.0
     };
+    */
 
     println!("Hit the Play button ...");
 
@@ -57,6 +59,9 @@ fn main() -> std::io::Result<()> {
 
         if time < 0.0 { break Ok(()); }
 
+        println!("{}", time);
+
+        /*
         let vehicle_state = VehicleState {
             x:read_float(in_buf, 1),
             dx:read_float(in_buf, 2),
@@ -79,19 +84,31 @@ fn main() -> std::io::Result<()> {
             yaw:read_float(in_buf, 16)
         };
 
+        
         let (new_alt_hold_pid, _motors) =
             run_hackflight2(demands, vehicle_state, alt_hold_pid.clone());
 
         // alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
         alt_hold_pid = new_alt_hold_pid;
+        */
 
-        let out_buf = [0u8; OUT_BUF_SIZE]; 
+        let mut out_buf = [0u8; OUT_BUF_SIZE]; 
 
-        write_double(0.6, out_buf, 0);
-        write_double(0.6, out_buf, 1);
-        write_double(0.6, out_buf, 2);
-        write_double(0.6, out_buf, 3);
+        let src = (0.6 as f64).to_le_bytes();
+        out_buf[0] = src[0];
+        out_buf[1] = src[1];
+        out_buf[2] = src[2];
+        out_buf[3] = src[3];
+        out_buf[4] = src[4];
+        out_buf[5] = src[5];
+        out_buf[6] = src[6];
+        out_buf[7] = src[7];
 
-        motor_client_socket.send_to(&out_buf, "127.0.0.1:5001")?;
+         //write_double(0.6, out_buf, 0);
+        //write_double(0.6, out_buf, 1);
+        //write_double(0.6, out_buf, 2);
+        //write_double(0.6, out_buf, 3);
+
+        motor_client_socket.send_to(&out_buf, "127.0.0.1:5000")?;
     }
 }
