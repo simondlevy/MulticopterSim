@@ -62,53 +62,43 @@ fn main() -> std::io::Result<()> {
         buf
     }
 
-        // We have to bind client socket to some address
-        let motor_client_socket = UdpSocket::bind("0.0.0.0:0")?;
+    // We have to bind client socket to some address
+    let motor_client_socket = UdpSocket::bind("0.0.0.0:0")?;
 
-        // Bind server socket to address,port that client will connect to
-        let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
+    // Bind server socket to address,port that client will connect to
+    let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
 
-        let mut alt_hold_pid = AltHoldPid {
-            error_integral: 0.0,
-            in_band: false,
-            target: 0.0
-        };
+    let mut alt_hold_pid = AltHoldPid {
+        error_integral: 0.0,
+        in_band: false,
+        target: 0.0
+    };
 
-        println!("Hit the Play button ...");
+    println!("Hit the Play button ...");
 
-        loop {
+    loop {
 
-            let mut in_buf = [0; IN_BUF_SIZE]; 
-            telemetry_server_socket.recv_from(&mut in_buf)?;
+        let mut in_buf = [0; IN_BUF_SIZE]; 
+        telemetry_server_socket.recv_from(&mut in_buf)?;
 
-            let time = read_float(in_buf, 0);
+        let time = read_float(in_buf, 0);
 
-            if time < 0.0 { break Ok(()); }
+        if time < 0.0 { break Ok(()); }
 
-            println!("{}", time);
+        let vehicle_state = read_vehicle_state(in_buf);
 
-            let vehicle_state = read_vehicle_state(in_buf);
+        let demands = read_demands(in_buf);
 
-            let demands = read_demands(in_buf);
+        println!("{}", demands.throttle);
 
-            let (new_alt_hold_pid, motors) =
-                run_hackflight2(demands, vehicle_state, alt_hold_pid.clone());
+        let (new_alt_hold_pid, motors) =
+            run_hackflight2(demands, vehicle_state, alt_hold_pid.clone());
 
-            // alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
-            alt_hold_pid = new_alt_hold_pid;
+        // alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
+        alt_hold_pid = new_alt_hold_pid;
 
-            let out_buf = write_motors(motors);
+        let out_buf = write_motors(motors);
 
-            /*
-               let motorvals = [motors.m1, motors.m2, motors.m3, motors.m4];
-
-               for j in 0..4 {
-               let bytes = (motorvals[j] as f64).to_le_bytes();
-               for k in 0..8 {
-               out_buf[j*8+k] = bytes[k];
-               }
-               }*/
-
-            motor_client_socket.send_to(&out_buf, "127.0.0.1:5000")?;
-        }
+        motor_client_socket.send_to(&out_buf, "127.0.0.1:5000")?;
     }
+}
