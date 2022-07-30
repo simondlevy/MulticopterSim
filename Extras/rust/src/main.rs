@@ -23,6 +23,33 @@ fn main() -> std::io::Result<()> {
         f64::from_le_bytes(dst) as f32
     }
 
+    fn read_vehicle_state(buf:[u8; IN_BUF_SIZE]) -> VehicleState {
+        VehicleState {
+            x:read_float(buf, 1),
+            dx:read_float(buf, 2),
+            y:read_float(buf, 3),
+            dy:read_float(buf, 4),
+            z:read_float(buf, 5),
+            dz:read_float(buf, 6),
+            phi:read_float(buf, 7),
+            dphi:read_float(buf, 8),
+            theta:read_float(buf, 9),
+            dtheta:read_float(buf, 10),
+            psi:read_float(buf, 11),
+            dpsi:read_float(buf, 12)
+        }
+    }
+
+
+    fn read_demands(buf:[u8; IN_BUF_SIZE]) -> Demands {
+        Demands {
+            throttle:read_float(buf, 13),
+            roll:read_float(buf, 14),
+            pitch:read_float(buf, 15),
+            yaw:read_float(buf, 16)
+        }
+    }
+
     // We have to bind client socket to some address
     let motor_client_socket = UdpSocket::bind("0.0.0.0:0")?;
 
@@ -48,29 +75,10 @@ fn main() -> std::io::Result<()> {
 
         println!("{}", time);
 
-        let vehicle_state = VehicleState {
-            x:read_float(in_buf, 1),
-            dx:read_float(in_buf, 2),
-            y:read_float(in_buf, 3),
-            dy:read_float(in_buf, 4),
-            z:read_float(in_buf, 5),
-            dz:read_float(in_buf, 6),
-            phi:read_float(in_buf, 7),
-            dphi:read_float(in_buf, 8),
-            theta:read_float(in_buf, 9),
-            dtheta:read_float(in_buf, 10),
-            psi:read_float(in_buf, 11),
-            dpsi:read_float(in_buf, 12)
-        };
+        let vehicle_state = read_vehicle_state(in_buf);
 
-        let demands = Demands {
-            throttle:read_float(in_buf, 13),
-            roll:read_float(in_buf, 14),
-            pitch:read_float(in_buf, 15),
-            yaw:read_float(in_buf, 16)
-        };
+        let demands = read_demands(in_buf);
 
-        
         let (new_alt_hold_pid, motors) =
             run_hackflight2(demands, vehicle_state, alt_hold_pid.clone());
 
@@ -82,9 +90,7 @@ fn main() -> std::io::Result<()> {
         let motorvals = [motors.m1, motors.m2, motors.m3, motors.m4];
 
         for j in 0..4 {
-
             let bytes = (motorvals[j] as f64).to_le_bytes();
-
             for k in 0..8 {
                 out_buf[j*8+k] = bytes[k];
             }
