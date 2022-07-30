@@ -28,7 +28,7 @@ pub mod alt_hold {
         const WINDUP_MAX: f32     = 0.4;
 
         // Rescale throttle [0,1] => [-1,+1]
-        let sthrottle = 2.0 * throttle - 1.0; 
+        let sthrottle = throttle; // 2.0 * throttle - 1.0; 
 
         // Is stick demand in deadband, above a minimum altitude?
         let in_band = fabs(sthrottle) < STICK_DEADBAND && altitude > ALTITUDE_MIN; 
