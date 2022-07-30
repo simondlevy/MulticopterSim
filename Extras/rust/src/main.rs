@@ -23,20 +23,6 @@ fn main() -> std::io::Result<()> {
         f64::from_le_bytes(dst) as f32
     }
 
-    fn _write_double(val:f32, mut buf:[u8; OUT_BUF_SIZE], idx:usize) {
-        let src = (val as f64).to_le_bytes();
-        let beg = 8 * idx;
-        buf[beg+0] = src[0];
-        buf[beg+1] = src[1];
-        buf[beg+2] = src[2];
-        buf[beg+3] = src[3];
-        buf[beg+4] = src[4];
-        buf[beg+5] = src[5];
-        buf[beg+6] = src[6];
-        buf[beg+7] = src[7];
-    }
-
-    //let motor_client_socket = UdpSocket::bind("0.0.0.1:5000")?;
     let motor_client_socket = UdpSocket::bind("0.0.0.0:0")?;
     let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
 
@@ -94,20 +80,16 @@ fn main() -> std::io::Result<()> {
 
         let mut out_buf = [0u8; OUT_BUF_SIZE]; 
 
-        let src = (0.6 as f64).to_le_bytes();
-        out_buf[0] = src[0];
-        out_buf[1] = src[1];
-        out_buf[2] = src[2];
-        out_buf[3] = src[3];
-        out_buf[4] = src[4];
-        out_buf[5] = src[5];
-        out_buf[6] = src[6];
-        out_buf[7] = src[7];
+        let motors = [0.1, 0.2, 0.3, 0.4];
 
-         //write_double(0.6, out_buf, 0);
-        //write_double(0.6, out_buf, 1);
-        //write_double(0.6, out_buf, 2);
-        //write_double(0.6, out_buf, 3);
+        for j in 0..4 {
+
+            let bytes = (motors[j] as f64).to_le_bytes();
+
+            for k in 0..8 {
+                out_buf[j*8+k] = bytes[k];
+            }
+        }
 
         motor_client_socket.send_to(&out_buf, "127.0.0.1:5000")?;
     }
