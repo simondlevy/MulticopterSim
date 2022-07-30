@@ -119,7 +119,7 @@ vehicle pawns into the map. Click the play button and you're ready to take off!
 # Support for other programming languages / packages
 
 MulticopterSim supports other programming languages via the SocketModule.  
-An Python example is provided. To use this module, do the following:
+Examples in Python and Rust are provided. To use this module, do the following:
 
 1. Double-click <b>use_socket.bat</b>
 
