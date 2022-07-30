@@ -22,6 +22,12 @@ enum PidController {
     Angle{s:f32}
 }
 
+fn run_alt_hold(demands:Demands, alt_hold:PidController)
+    -> (Demands, PidController) {
+
+    (demands, alt_hold)
+}
+
 fn update(
     pid:PidController,
     demands:&Demands,
