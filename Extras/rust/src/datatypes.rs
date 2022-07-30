@@ -10,6 +10,7 @@ pub mod datatypes {
     }
 
     #[repr(C)]
+    #[derive(Clone)]
     pub struct Demands {
         pub throttle: f32,
         pub roll:     f32,

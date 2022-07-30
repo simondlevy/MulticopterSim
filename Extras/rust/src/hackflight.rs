@@ -7,6 +7,17 @@ pub mod hackflight {
 
     use alt_hold::alt_hold::run_alt_hold;
 
+    pub fn run_mixer(demands:Demands) -> Motors {
+
+        Motors {
+            m1: demands.throttle,
+            m2: demands.throttle,
+            m3: demands.throttle,
+            m4: demands.throttle
+        }
+    }
+
+
     pub fn run_hackflight(
         demands: Demands,
         vehicle_state: VehicleState, 
@@ -25,12 +36,7 @@ pub mod hackflight {
             yaw: 0.0
         };
 
-        let new_motors = Motors {
-            m1: new_demands.throttle,
-            m2: new_demands.throttle,
-            m3: new_demands.throttle,
-            m4: new_demands.throttle
-        };
+        let new_motors = run_mixer(new_demands.clone());
 
         (new_alt_hold_pid, new_motors)
 
