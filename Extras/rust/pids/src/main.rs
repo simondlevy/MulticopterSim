@@ -9,40 +9,53 @@ struct VehicleState {
 
 struct Demands {
 
-    //pub throttle: f32,
-    //pub roll:     f32,
-    //pub pitch:    f32,
-    //pub yaw:      f32
+    pub throttle: f32,
+    pub roll:     f32,
+    pub pitch:    f32,
+    pub yaw:      f32
 } 
 
 enum PidController {
 
     Altitude{r:f32},
+
     Angle{s:f32}
 }
 
 fn update(
     pid:PidController,
-    _demands:&Demands,
-    _vstate:&VehicleState) -> (f32, PidController) {
+    demands:&Demands,
+    _vstate:&VehicleState) -> (Demands, PidController) {
 
     match pid {
 
         PidController::Altitude{r} =>
-            (r*r, PidController::Altitude{r:r}),
+            (Demands {
+                throttle:demands.throttle, 
+                roll:demands.roll, 
+                pitch:demands.pitch, 
+                yaw:demands.yaw 
+            },
+            PidController::Altitude{r:r}),
 
         PidController::Angle{s} =>
-            (s*s, PidController::Angle{s:s})
+            (Demands {
+                throttle:demands.throttle, 
+                roll:demands.roll, 
+                pitch:demands.pitch, 
+                yaw:demands.yaw 
+            },
+            PidController::Angle{s:s})
     }
 }
 
 fn main() {
 
     let demands = Demands {
-        //throttle:0.0,
-        //roll:0.0,
-        //pitch:0.0,
-        //yaw:0.0
+        throttle:0.0,
+        roll:0.0,
+        pitch:0.0,
+        yaw:0.0
     };
 
     let vstate = VehicleState {
