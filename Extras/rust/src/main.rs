@@ -40,7 +40,6 @@ fn main() -> std::io::Result<()> {
         }
     }
 
-
     fn read_demands(buf:[u8; IN_BUF_SIZE]) -> Demands {
         Demands {
             throttle:read_float(buf, 13),
