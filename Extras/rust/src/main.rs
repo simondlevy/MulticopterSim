@@ -5,7 +5,7 @@ use datatypes::datatypes::Demands;
 use datatypes::datatypes::Motors;
 use datatypes::datatypes::VehicleState;
 
-use hackflight::hackflight::run_hackflight2;
+use hackflight::hackflight::run_hackflight;
 
 pub mod alt_hold;
 pub mod datatypes;
@@ -92,7 +92,7 @@ fn main() -> std::io::Result<()> {
         println!("{}", demands.throttle);
 
         let (new_alt_hold_pid, motors) =
-            run_hackflight2(demands, vehicle_state, alt_hold_pid.clone());
+            run_hackflight(demands, vehicle_state, alt_hold_pid.clone());
 
         // alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
         alt_hold_pid = new_alt_hold_pid;
