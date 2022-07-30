@@ -1,14 +1,14 @@
 use std::net::UdpSocket;
 
-//use datatypes::datatypes::AltHoldPid;
-//use datatypes::datatypes::Demands;
-//use datatypes::datatypes::VehicleState;
+use datatypes::datatypes::AltHoldPid;
+use datatypes::datatypes::Demands;
+use datatypes::datatypes::VehicleState;
 
-//use hackflight::hackflight::run_hackflight2;
+use hackflight::hackflight::run_hackflight2;
 
-//pub mod alt_hold;
-//pub mod datatypes;
-//pub mod hackflight;
+pub mod alt_hold;
+pub mod datatypes;
+pub mod hackflight;
 
 fn main() -> std::io::Result<()> {
 
@@ -23,16 +23,17 @@ fn main() -> std::io::Result<()> {
         f64::from_le_bytes(dst) as f32
     }
 
+    // We have to bind client socket to some address
     let motor_client_socket = UdpSocket::bind("0.0.0.0:0")?;
+
+    // Bind server socket to address,port that client will connect to
     let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
 
-    /*
     let mut alt_hold_pid = AltHoldPid {
         error_integral: 0.0,
         in_band: false,
         target: 0.0
     };
-    */
 
     println!("Hit the Play button ...");
 
@@ -47,7 +48,6 @@ fn main() -> std::io::Result<()> {
 
         println!("{}", time);
 
-        /*
         let vehicle_state = VehicleState {
             x:read_float(in_buf, 1),
             dx:read_float(in_buf, 2),
@@ -71,20 +71,19 @@ fn main() -> std::io::Result<()> {
         };
 
         
-        let (new_alt_hold_pid, _motors) =
+        let (new_alt_hold_pid, motors) =
             run_hackflight2(demands, vehicle_state, alt_hold_pid.clone());
 
         // alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
         alt_hold_pid = new_alt_hold_pid;
-        */
 
         let mut out_buf = [0u8; OUT_BUF_SIZE]; 
 
-        let motors = [0.1, 0.2, 0.3, 0.4];
+        let motorvals = [motors.m1, motors.m2, motors.m3, motors.m4];
 
         for j in 0..4 {
 
-            let bytes = (motors[j] as f64).to_le_bytes();
+            let bytes = (motorvals[j] as f64).to_le_bytes();
 
             for k in 0..8 {
                 out_buf[j*8+k] = bytes[k];
