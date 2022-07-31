@@ -18,6 +18,8 @@ pub mod hackflight {
     use yaw_pid::yaw_pid::run_yaw_pid;
     use mixer::mixer::run_quadxbf_mixer;
 
+    use pids::yaw as yaw;
+
     pub fn run_hackflight(
         demands: Demands,
         vehicle_state: VehicleState, 

@@ -21,6 +21,7 @@ pub mod yaw_pid;
 pub mod datatypes;
 pub mod hackflight;
 pub mod mixer;
+pub mod pids;
 pub mod utils;
 
 fn main() -> std::io::Result<()> {
