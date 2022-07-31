@@ -1,14 +1,14 @@
 /*
-   Angle PID controller
+   Yaw rate PID controller
 
    Copyright (C) 2022 Simon D. Levy
 
    MIT License
 */
 
-pub mod angle_pid {
+pub mod yaw_pid {
 
-    use datatypes::datatypes::AnglePid;
+    use datatypes::datatypes::YawPid;
     use datatypes::datatypes::Demands;
     use datatypes::datatypes::VehicleState;
 
@@ -18,14 +18,14 @@ pub mod angle_pid {
 
     #[repr(C)]
     #[derive(Clone)]
-    pub struct AnglePidState {
+    pub struct YawPidState {
         error_integral: f32
     }
 
-    pub fn run_angle_pid(
+    pub fn run_yaw_pid(
         demands:Demands,
         vstate:&VehicleState,
-        pstate: AnglePidState) -> (Demands, AnglePid) {
+        pstate: YawPidState) -> (Demands, YawPid) {
 
         const KP: f32 = 1.0625;
         const KI: f32 = 0.001875;
@@ -51,21 +51,21 @@ pub mod angle_pid {
             yaw: KP * error + KI * bounded_error_integral
         };
 
-        let new_angle_pid = make_angle_pid(error_integral);
+        let new_yaw_pid = make_yaw_pid(error_integral);
 
-        (new_demands, new_angle_pid)
+        (new_demands, new_yaw_pid)
     }
 
-    fn make_angle_pid(error_integral:f32) -> AnglePid {
-        AnglePid {
-            state: AnglePidState {
+    fn make_yaw_pid(error_integral:f32) -> YawPid {
+        YawPid {
+            state: YawPidState {
                 error_integral:error_integral
             }
         }
     }
 
-    pub fn new_angle_pid() -> AnglePid {
-        make_angle_pid(0.0)
+    pub fn new_yaw_pid() -> YawPid {
+        make_yaw_pid(0.0)
     }
 
-} // mod angle_pid
+} // mod yaw_pid

@@ -9,7 +9,7 @@
 pub mod datatypes {
 
     use alt_hold::alt_hold::AltHoldPidState;
-    use angle_pid::angle_pid::AnglePidState;
+    use yaw_pid::yaw_pid::YawPidState;
 
     #[repr(C)]
     #[derive(Clone)]
@@ -19,14 +19,14 @@ pub mod datatypes {
 
     #[repr(C)]
     #[derive(Clone)]
-    pub struct AnglePid{
-        pub state:AnglePidState
+    pub struct YawPid{
+        pub state:YawPidState
     }
 
     pub enum PidController {
 
         Altitude{state:AltHoldPidState},
-        Angle{state:AnglePidState}
+        Angle{state:YawPidState}
     }
 
     #[repr(C)]

@@ -1,3 +1,11 @@
+/*
+   Mixers
+
+   Copyright (C) 2022 Simon D. Levy
+
+   MIT License
+*/
+
 pub mod mixer {
 
     use datatypes::datatypes::Demands;
@@ -6,10 +14,18 @@ pub mod mixer {
     pub fn run_quadxbf_mixer(demands:Demands) -> Motors {
 
         Motors {
-            m1: demands.throttle - demands.roll + demands.pitch + demands.yaw, // right rear
-            m2: demands.throttle - demands.roll - demands.pitch - demands.yaw, // right front
-            m3: demands.throttle + demands.roll + demands.pitch - demands.yaw, // left rear
-            m4: demands.throttle + demands.roll - demands.pitch + demands.yaw  // left front
+
+            // right rear
+            m1: demands.throttle - demands.roll + demands.pitch + demands.yaw, 
+
+            // right front
+            m2: demands.throttle - demands.roll - demands.pitch - demands.yaw, 
+
+            // left rear
+            m3: demands.throttle + demands.roll + demands.pitch - demands.yaw, 
+
+            // left front
+            m4: demands.throttle + demands.roll - demands.pitch + demands.yaw  
         }
     }
 
