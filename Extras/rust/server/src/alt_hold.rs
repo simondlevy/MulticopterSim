@@ -95,6 +95,8 @@ pub mod alt_hold {
         const STICK_DEADBAND: f32 = 0.2;
         const WINDUP_MAX: f32     = 0.4;
 
+        let pstate = oldpid.state;
+
         let throttle = demands.throttle;
 
         let altitude = -vstate.z;
@@ -110,11 +112,11 @@ pub mod alt_hold {
         let at_zero_throttle = throttle == 0.0;
 
         // Reset altitude target at zero throttle
-        let altitude_target = if at_zero_throttle {0.0} else {oldpid.target};
+        let altitude_target = if at_zero_throttle {0.0} else {pstate.target};
 
         // If stick just moved into deadband, set new target altitude; otherwise,
         // keep previous
-        let new_target = if in_band && !oldpid.in_band {altitude} else {altitude_target};
+        let new_target = if in_band && !pstate.in_band {altitude} else {altitude_target};
 
         // Target velocity is a setpoint inside deadband, scaled
         // constant outside
@@ -125,7 +127,7 @@ pub mod alt_hold {
         let error = target_velocity - climb_rate;
 
         // Compute I term, avoiding windup
-        let new_error_integral = constrain_abs(oldpid.error_integral + error, WINDUP_MAX);
+        let new_error_integral = constrain_abs(pstate.error_integral + error, WINDUP_MAX);
 
         // Run PI controller
         let correction = error * KP + new_error_integral * KI;
@@ -139,21 +141,23 @@ pub mod alt_hold {
         };
 
         // Capture new state of PID controller
-        let new_alt_hold_pid = AltHoldPid {
-            error_integral: new_error_integral,
-            in_band: in_band,
-            target: new_target
-        };
+        let new_alt_hold_pid = make_alt_hold(new_error_integral, in_band, new_target);
 
         (new_demands, new_alt_hold_pid)
     }
 
-    pub fn new_alt_hold() -> AltHoldPid {
+    fn make_alt_hold(error_integral:f32, in_band:bool, target:f32) -> AltHoldPid {
         AltHoldPid {
-            error_integral: 0.0,
-            in_band: false,
-            target: 0.0
+            state: AltHoldPidState {
+                error_integral: error_integral,
+                in_band: in_band,
+                target: target
+            }
         }
+    }
+
+    pub fn new_alt_hold() -> AltHoldPid {
+        make_alt_hold(0.0, false, 0.0)
     }
 
 } // mod alt_hold
