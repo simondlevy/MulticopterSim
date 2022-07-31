@@ -84,9 +84,8 @@ pub mod alt_hold {
     }
 
     pub fn run_alt_hold(
-        throttle: f32,
-        altitude: f32,
-        climb_rate: f32,
+        demands:Demands,
+        vstate:VehicleState,
         oldpid: AltHoldPid) -> (f32, AltHoldPid) {
 
         const KP: f32 = 0.75;
@@ -95,6 +94,11 @@ pub mod alt_hold {
         const PILOT_VELZ_MAX: f32 = 2.5;
         const STICK_DEADBAND: f32 = 0.2;
         const WINDUP_MAX: f32     = 0.4;
+
+        let throttle = demands.throttle;
+
+        let altitude = -vstate.z;
+        let climb_rate = -vstate.dz;
 
         // Rescale throttle [0,1] => [-1,+1]
         let sthrottle = throttle; // 2.0 * throttle - 1.0; 

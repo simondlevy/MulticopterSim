@@ -94,7 +94,6 @@ fn main() -> std::io::Result<()> {
         let (new_alt_hold_pid, motors) =
             run_hackflight(demands, vehicle_state, alt_hold_pid.clone());
 
-        // alt_hold_pid.error_integral = new_alt_hold_pid.error_integral;
         alt_hold_pid = new_alt_hold_pid;
 
         let out_buf = write_motors(motors);

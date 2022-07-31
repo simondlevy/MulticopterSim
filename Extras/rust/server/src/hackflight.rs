@@ -24,9 +24,8 @@ pub mod hackflight {
         alt_hold_pid: AltHoldPid) -> (AltHoldPid, Motors) {
 
         let (new_throttle, new_alt_hold_pid) = run_alt_hold(
-            demands.throttle,
-            -vehicle_state.z,  // NED => ENU
-            -vehicle_state.dz, // NED => ENU
+            demands,
+            vehicle_state,
             alt_hold_pid);
 
         let new_demands = Demands {
