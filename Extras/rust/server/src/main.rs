@@ -13,9 +13,11 @@ use datatypes::datatypes::Motors;
 use datatypes::datatypes::VehicleState;
 
 use alt_hold::alt_hold::new_alt_hold;
+//use angle_pid::angle_pid::new_angle_pid;
 use hackflight::hackflight::run_hackflight;
 
 pub mod alt_hold;
+pub mod angle_pid;
 pub mod datatypes;
 pub mod hackflight;
 pub mod mixer;

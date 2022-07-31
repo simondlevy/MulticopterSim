@@ -9,7 +9,6 @@
 pub mod alt_hold {
 
     use datatypes::datatypes::AltHoldPid;
-    //use datatypes::datatypes::AltHoldPidState;
     use datatypes::datatypes::Demands;
     use datatypes::datatypes::VehicleState;
 

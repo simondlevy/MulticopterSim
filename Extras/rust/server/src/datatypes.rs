@@ -9,6 +9,7 @@
 pub mod datatypes {
 
     use alt_hold::alt_hold::AltHoldPidState;
+    use angle_pid::angle_pid::AnglePidState;
 
     #[repr(C)]
     #[derive(Clone)]
@@ -16,7 +17,8 @@ pub mod datatypes {
         pub state:AltHoldPidState
     }
 
-    pub struct AnglePidState {
+    pub struct AnglePid{
+        pub state:AnglePidState
     }
 
     pub enum PidController {
