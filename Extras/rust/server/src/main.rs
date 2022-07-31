@@ -1,10 +1,10 @@
 use std::net::UdpSocket;
 
-use datatypes::datatypes::AltHoldPid;
 use datatypes::datatypes::Demands;
 use datatypes::datatypes::Motors;
 use datatypes::datatypes::VehicleState;
 
+use alt_hold::alt_hold::new_alt_hold;
 use hackflight::hackflight::run_hackflight;
 
 pub mod alt_hold;
@@ -68,11 +68,7 @@ fn main() -> std::io::Result<()> {
     // Bind server socket to address,port that client will connect to
     let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
 
-    let mut alt_hold_pid = AltHoldPid {
-        error_integral: 0.0,
-        in_band: false,
-        target: 0.0
-    };
+    let mut alt_hold_pid = new_alt_hold();
 
     println!("Hit the Play button ...");
 

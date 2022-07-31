@@ -141,6 +141,15 @@ pub mod alt_hold {
         };
 
         (new_throttle, new_alt_hold_pid)
+
+    } // run_alt_hold
+
+    pub fn new_alt_hold() -> AltHoldPid {
+        AltHoldPid {
+            error_integral: 0.0,
+            in_band: false,
+            target: 0.0
+        }
     }
 
-}
+} // mod alt_hold
