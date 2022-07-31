@@ -19,7 +19,7 @@ pub mod angle_pid {
 
     pub fn run_angle_pid(
         demands:Demands,
-        _vstate:VehicleState,
+        _vstate:&VehicleState,
         _pstate: AnglePidState) -> (Demands, AnglePid) {
 
         let new_demands = demands;

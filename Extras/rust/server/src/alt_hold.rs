@@ -26,7 +26,7 @@ pub mod alt_hold {
 
     pub fn run_alt_hold(
         demands:Demands,
-        vstate:VehicleState,
+        vstate:&VehicleState,
         pstate: AltHoldPidState) -> (Demands, AltHoldPid) {
 
         const KP: f32 = 0.75;
