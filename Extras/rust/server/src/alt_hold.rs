@@ -1,3 +1,11 @@
+/*
+   Altitude-hold PID controller
+
+   Copyright (C) 2022 Simon D. Levy
+
+   MIT License
+*/
+
 pub mod alt_hold {
 
     use datatypes::datatypes::AltHoldPid;

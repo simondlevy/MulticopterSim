@@ -1,3 +1,11 @@
+/*
+   Hackflight-style server for MulticopterSim socket module
+
+   Copyright (C) 2022 Simon D. Levy
+
+   MIT License
+*/
+
 use std::net::UdpSocket;
 
 use datatypes::datatypes::Demands;

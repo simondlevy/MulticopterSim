@@ -1,3 +1,11 @@
+/*
+   Utility functions
+
+   Copyright (C) 2022 Simon D. Levy
+
+   MIT License
+*/
+
 pub mod utils {
 
     pub fn constrain(value: f32, lo: f32, hi: f32) -> f32 {

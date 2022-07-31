@@ -1,3 +1,11 @@
+/*
+   Hackflight datatypes
+
+   Copyright (C) 2022 Simon D. Levy
+
+   MIT License
+*/
+
 pub mod datatypes {
 
     #[repr(C)]
