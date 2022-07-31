@@ -20,7 +20,7 @@ pub mod alt_hold {
     pub fn run_alt_hold(
         demands:Demands,
         vstate:VehicleState,
-        oldpid: AltHoldPid) -> (Demands, AltHoldPid) {
+        pstate: AltHoldPidState) -> (Demands, AltHoldPid) {
 
         const KP: f32 = 0.75;
         const KI: f32 = 1.5;
@@ -28,8 +28,6 @@ pub mod alt_hold {
         const PILOT_VELZ_MAX: f32 = 2.5;
         const STICK_DEADBAND: f32 = 0.2;
         const WINDUP_MAX: f32     = 0.4;
-
-        let pstate = oldpid.state;
 
         let throttle = demands.throttle;
 

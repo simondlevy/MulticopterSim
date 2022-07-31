@@ -24,7 +24,7 @@ pub mod hackflight {
         alt_hold_pid: AltHoldPid) -> (AltHoldPid, Motors) {
 
         let (new_demands, new_alt_hold_pid) =
-            run_alt_hold(demands, vehicle_state, alt_hold_pid);
+            run_alt_hold(demands, vehicle_state, alt_hold_pid.state);
 
         let new_motors = run_mixer(new_demands.clone());
 
