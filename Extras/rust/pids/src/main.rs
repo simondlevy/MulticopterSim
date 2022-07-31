@@ -19,7 +19,8 @@ enum PidController {
 
     Altitude{error_integral:f32},
 
-    Angle{s:f32}
+    Angle{last_dyn_lpf_update_us:u32}
+
 }
 
 fn run_alt_hold(alt_pid:PidController, _demands:&Demands, _vstate:&VehicleState)
@@ -33,6 +34,17 @@ fn run_alt_hold(alt_pid:PidController, _demands:&Demands, _vstate:&VehicleState)
         alt_pid)
 }
 
+fn run_angle_pid(angle_pid:PidController, _demands:&Demands, _vstate:&VehicleState)
+    ->  (Demands, PidController) {
+
+    (Demands {
+        throttle:0.0,
+        roll:0.0,
+        pitch:0.0,
+        yaw:0.0}, 
+        angle_pid)
+}
+
 fn update(
     pid:PidController,
     demands:&Demands,
@@ -43,14 +55,8 @@ fn update(
         PidController::Altitude{error_integral: _} =>
             run_alt_hold(pid, demands, vstate),
 
-        PidController::Angle{s} =>
-            (Demands {
-                throttle:demands.throttle, 
-                roll:demands.roll, 
-                pitch:demands.pitch, 
-                yaw:demands.yaw 
-            },
-            PidController::Angle{s:s})
+        PidController::Angle{last_dyn_lpf_update_us: _} =>
+            run_angle_pid(pid, demands, vstate)
     }
 }
 
@@ -72,7 +78,7 @@ fn main() {
     };
 
     let alt_pid = PidController::Altitude{error_integral:0.0};
-    let angle_pid = PidController::Angle{s:2.0};
+    let angle_pid = PidController::Angle{last_dyn_lpf_update_us:0};
 
     let (_x, _new_alt_pid) = update(alt_pid, &demands, &vstate);
     let (_y, _new_angle_pid) = update(angle_pid, &demands, &vstate);
