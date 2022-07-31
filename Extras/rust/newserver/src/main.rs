@@ -74,11 +74,11 @@ fn main() -> std::io::Result<()> {
         let mut in_buf = [0; IN_BUF_SIZE]; 
         telemetry_server_socket.recv_from(&mut in_buf)?;
 
-        /*
         let time = read_float(in_buf, 0);
 
         if time < 0.0 { break Ok(()); }
 
+        /*
         let vehicle_state = read_vehicle_state(in_buf);
 
         let demands = read_demands(in_buf);
