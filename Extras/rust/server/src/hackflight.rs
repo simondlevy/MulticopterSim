@@ -6,16 +6,7 @@ pub mod hackflight {
     use datatypes::datatypes::VehicleState;
 
     use alt_hold::alt_hold::run_alt_hold;
-
-    pub fn run_mixer(demands:Demands) -> Motors {
-
-        Motors {
-            m1: demands.throttle,
-            m2: demands.throttle,
-            m3: demands.throttle,
-            m4: demands.throttle
-        }
-    }
+    use mixer::mixer::run_mixer;
 
     pub fn run_hackflight(
         demands: Demands,
