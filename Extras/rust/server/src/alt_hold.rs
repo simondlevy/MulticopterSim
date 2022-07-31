@@ -86,7 +86,7 @@ pub mod alt_hold {
     pub fn run_alt_hold(
         demands:Demands,
         vstate:VehicleState,
-        oldpid: AltHoldPid) -> (f32, AltHoldPid) {
+        oldpid: AltHoldPid) -> (Demands, AltHoldPid) {
 
         const KP: f32 = 0.75;
         const KI: f32 = 1.5;
@@ -131,7 +131,12 @@ pub mod alt_hold {
         let correction = error * KP + new_error_integral * KI;
 
         // Add correction to throttle, constraining output to [0,1]
-        let new_throttle = constrain(throttle+correction, 0.0, 1.0);
+        let new_demands = Demands {
+            throttle:constrain(throttle+correction, 0.0, 1.0),
+            roll:demands.roll,
+            pitch:demands.pitch,
+            yaw:demands.yaw
+        };
 
         // Capture new state of PID controller
         let new_alt_hold_pid = AltHoldPid {
@@ -140,9 +145,8 @@ pub mod alt_hold {
             target: new_target
         };
 
-        (new_throttle, new_alt_hold_pid)
-
-    } // run_alt_hold
+        (new_demands, new_alt_hold_pid)
+    }
 
     pub fn new_alt_hold() -> AltHoldPid {
         AltHoldPid {

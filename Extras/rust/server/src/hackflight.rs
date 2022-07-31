@@ -23,17 +23,8 @@ pub mod hackflight {
         vehicle_state: VehicleState, 
         alt_hold_pid: AltHoldPid) -> (AltHoldPid, Motors) {
 
-        let (new_throttle, new_alt_hold_pid) = run_alt_hold(
-            demands,
-            vehicle_state,
-            alt_hold_pid);
-
-        let new_demands = Demands {
-            throttle: new_throttle,
-            roll: 0.0,
-            pitch: 0.0,
-            yaw: 0.0
-        };
+        let (new_demands, new_alt_hold_pid) =
+            run_alt_hold(demands, vehicle_state, alt_hold_pid);
 
         let new_motors = run_mixer(new_demands.clone());
 
