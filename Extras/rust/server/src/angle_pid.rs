@@ -22,7 +22,13 @@ pub mod angle_pid {
         _vstate:&VehicleState,
         _pstate: AnglePidState) -> (Demands, AnglePid) {
 
-        let new_demands = demands;
+        let new_demands = Demands {
+            throttle:demands.throttle,
+            roll:demands.roll,
+            pitch:demands.pitch,
+            yaw:demands.yaw
+        };
+
         let new_angle_pid = make_angle_pid();
 
         (new_demands, new_angle_pid)
