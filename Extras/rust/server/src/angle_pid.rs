@@ -40,8 +40,8 @@ pub mod angle_pid {
         let error_integral =
             if fabs(error) > deg2rad(RATE_MAX_DPS) {0.0} else {pstate.error_integral};
 
-        // Compute I term
-        //_errorI = Filter::constrainAbs(_errorI + error, _windupMax);
+        // Constrain integral to avoid windup
+        let _error_integral_bounded = constrain_abs(error_integral + error, WINDUP_MAX);
 
         // Adjust yaw demand based on error
         //demands[DEMANDS_YAW] = _Kp * error + _Ki * _errorI;
