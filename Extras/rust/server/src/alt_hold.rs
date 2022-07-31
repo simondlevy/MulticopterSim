@@ -31,6 +31,7 @@ pub mod alt_hold {
 
         const KP: f32 = 0.75;
         const KI: f32 = 1.5;
+
         const ALTITUDE_MIN: f32   = 1.0;
         const PILOT_VELZ_MAX: f32 = 2.5;
         const STICK_DEADBAND: f32 = 0.2;

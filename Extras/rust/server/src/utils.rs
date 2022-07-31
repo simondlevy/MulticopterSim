@@ -16,6 +16,10 @@ pub mod utils {
         constrain(value, -limit, limit)
     }
 
+    pub fn deg2rad(x: f32) -> f32 {
+        3.1415928 * x / 180.0
+    }
+
     pub fn fabs(value: f32) -> f32 {
         if value < 0.0 {-value} else {value}
     }
