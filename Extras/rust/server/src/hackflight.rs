@@ -35,6 +35,8 @@ pub mod hackflight {
         println!("yaw demand: {}", new_new_demands.yaw);
 
         let new_motors = run_quadxbf_mixer(new_new_demands.clone());
+        
+        yaw::foo();
 
         (new_motors, new_alt_hold_pid, new_yaw_pid)
 
