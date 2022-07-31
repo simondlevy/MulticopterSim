@@ -9,13 +9,21 @@
 pub mod alt_hold {
 
     use datatypes::datatypes::AltHoldPid;
-    use datatypes::datatypes::AltHoldPidState;
+    //use datatypes::datatypes::AltHoldPidState;
     use datatypes::datatypes::Demands;
     use datatypes::datatypes::VehicleState;
 
     use utils::utils::fabs;
     use utils::utils::constrain;
     use utils::utils::constrain_abs;
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct AltHoldPidState {
+        pub error_integral:f32,
+        pub in_band:bool,
+        pub target:f32
+    }
 
     pub fn run_alt_hold(
         demands:Demands,

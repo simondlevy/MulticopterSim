@@ -8,13 +8,7 @@
 
 pub mod datatypes {
 
-    #[repr(C)]
-    #[derive(Clone)]
-    pub struct AltHoldPidState {
-        pub error_integral:f32,
-        pub in_band:bool,
-        pub target:f32
-    }
+    use alt_hold::alt_hold::AltHoldPidState;
 
     #[repr(C)]
     #[derive(Clone)]
