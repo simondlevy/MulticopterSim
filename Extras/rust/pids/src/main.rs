@@ -34,7 +34,6 @@ struct AltHoldPidState {
 }
 
 struct AnglePidState {
-    last_dyn_lpf_update_us:u32
 }
 
 enum PidController {
@@ -43,14 +42,13 @@ enum PidController {
     Angle{state:AnglePidState}
 }
 
-fn run_angle_pid(angle_pid_state:AnglePidState, _demands:&Demands, _vstate:&VehicleState)
+fn run_angle_pid(_angle_pid_state:AnglePidState, _demands:&Demands, _vstate:&VehicleState)
     ->  (Demands, PidController) {
 
         let new_demands = Demands { throttle:0.0, roll:0.0, pitch:0.0, yaw:0.0};
 
         let new_pid = PidController::Angle{
             state:AnglePidState {
-                last_dyn_lpf_update_us:0
             }
         };
 
@@ -163,7 +161,6 @@ fn main() {
 
     let angle_pid = PidController::Angle{
         state:AnglePidState {
-            last_dyn_lpf_update_us:0
         }
     };
 
