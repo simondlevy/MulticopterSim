@@ -5,17 +5,9 @@ pub mod alt_hold {
     use datatypes::datatypes::Demands;
     use datatypes::datatypes::VehicleState;
 
-    fn constrain(value: f32, lo: f32, hi: f32) -> f32 {
-        if value  < lo {lo} else if value > hi {hi} else {value}
-    }
-
-    fn constrain_abs(value : f32, limit : f32) -> f32 {
-        constrain(value, -limit, limit)
-    }
-
-    fn fabs(value: f32) -> f32 {
-        if value < 0.0 {-value} else {value}
-    }
+    use utils::utils::fabs;
+    use utils::utils::constrain;
+    use utils::utils::constrain_abs;
 
     pub fn run_alt_hold(
         demands:Demands,

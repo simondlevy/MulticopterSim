@@ -10,6 +10,7 @@ use hackflight::hackflight::run_hackflight;
 pub mod alt_hold;
 pub mod datatypes;
 pub mod hackflight;
+pub mod utils;
 
 fn main() -> std::io::Result<()> {
 

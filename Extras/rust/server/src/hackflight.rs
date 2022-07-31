@@ -17,7 +17,6 @@ pub mod hackflight {
         }
     }
 
-
     pub fn run_hackflight(
         demands: Demands,
         vehicle_state: VehicleState, 
