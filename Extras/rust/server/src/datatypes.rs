@@ -1,5 +1,11 @@
 pub mod datatypes {
 
+    pub struct AltHoldPidState {
+        pub error_integral:f32,
+        pub in_band:bool,
+        pub target:f32
+    }
+
     #[repr(C)]
     #[derive(Clone)]
     pub struct AltHoldPid {
@@ -7,6 +13,15 @@ pub mod datatypes {
         pub error_integral: f32,
         pub in_band:        bool,
         pub target:         f32
+    }
+
+    pub struct AnglePidState {
+    }
+
+    pub enum PidController {
+
+        Altitude{state:AltHoldPidState},
+        Angle{state:AnglePidState}
     }
 
     #[repr(C)]
