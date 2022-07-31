@@ -41,16 +41,14 @@ pub mod angle_pid {
             if fabs(error) > deg2rad(RATE_MAX_DPS) {0.0} else {pstate.error_integral};
 
         // Constrain integral to avoid windup
-        let _error_integral_bounded = constrain_abs(error_integral + error, WINDUP_MAX);
+        let bounded_error_integral = constrain_abs(error_integral + error, WINDUP_MAX);
 
         // Adjust yaw demand based on error
-        //demands[DEMANDS_YAW] = _Kp * error + _Ki * _errorI;
-
         let new_demands = Demands {
             throttle:demands.throttle,
             roll:demands.roll,
             pitch:demands.pitch,
-            yaw:demands.yaw
+            yaw: KP * error + KI * bounded_error_integral
         };
 
         let new_angle_pid = make_angle_pid(error_integral);

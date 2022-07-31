@@ -30,6 +30,8 @@ pub mod hackflight {
         let (new_new_demands, new_angle_pid) =
             run_angle_pid(new_demands, &vehicle_state, angle_pid.state);
 
+        println!("yaw demand: {}", new_new_demands.yaw);
+
         let new_motors = run_mixer(new_new_demands.clone());
 
         (new_motors, new_alt_hold_pid, new_angle_pid)
