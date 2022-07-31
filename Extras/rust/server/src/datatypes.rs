@@ -17,6 +17,8 @@ pub mod datatypes {
         pub state:AltHoldPidState
     }
 
+    #[repr(C)]
+    #[derive(Clone)]
     pub struct AnglePid{
         pub state:AnglePidState
     }
