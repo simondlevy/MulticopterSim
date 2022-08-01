@@ -18,7 +18,7 @@ use hackflight::hackflight::run_hackflight;
 
 pub mod datatypes;
 pub mod hackflight;
-pub mod mixer;
+pub mod mixers;
 pub mod pids;
 pub mod utils;
 

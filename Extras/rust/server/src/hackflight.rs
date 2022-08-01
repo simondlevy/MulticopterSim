@@ -14,7 +14,7 @@ pub mod hackflight {
     use datatypes::datatypes::Motors;
     use datatypes::datatypes::VehicleState;
 
-    use mixer::mixer::run_quadxbf_mixer;
+    use mixers::quadxbf as mixer;
 
     use pids::altitude as altitude_pid;
     use pids::yaw as yaw_pid;
@@ -33,7 +33,7 @@ pub mod hackflight {
 
         println!("yaw demand: {}", new_new_demands.yaw);
 
-        let new_motors = run_quadxbf_mixer(new_new_demands.clone());
+        let new_motors = mixer::run(new_new_demands.clone());
         
         (new_motors, new_altitude_pid, new_yaw_pid)
 
