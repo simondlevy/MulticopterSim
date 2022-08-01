@@ -14,7 +14,7 @@ pub mod hackflight {
     use datatypes::datatypes::Motors;
     use datatypes::datatypes::VehicleState;
 
-    use mixers::quadxbf as mixer;
+    use mixers::fixedpitch::quadxbf as mixer;
 
     use pids::altitude as altitude_pid;
     use pids::yaw as yaw_pid;
