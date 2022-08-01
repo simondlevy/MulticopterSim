@@ -12,11 +12,10 @@ use datatypes::datatypes::Demands;
 use datatypes::datatypes::Motors;
 use datatypes::datatypes::VehicleState;
 
-use alt_hold::alt_hold::new_alt_hold;
+use pids::altitude as altitude_pid;
 use pids::yaw as yaw_pid;
 use hackflight::hackflight::run_hackflight;
 
-pub mod alt_hold;
 pub mod datatypes;
 pub mod hackflight;
 pub mod mixer;
@@ -80,7 +79,7 @@ fn main() -> std::io::Result<()> {
     // Bind server socket to address,port that client will connect to
     let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
 
-    let mut alt_hold_pid = new_alt_hold();
+    let mut altitude_pid = altitude_pid::new();
     let mut yaw_pid = yaw_pid::new();
 
     println!("Hit the Play button ...");
@@ -98,14 +97,14 @@ fn main() -> std::io::Result<()> {
 
         let demands = read_demands(in_buf);
 
-        let (motors, new_alt_hold_pid, new_yaw_pid) =
+        let (motors, new_altitude_pid, new_yaw_pid) =
             run_hackflight(
                 demands,
                 vehicle_state,
-                alt_hold_pid.clone(),
+                altitude_pid.clone(),
                 yaw_pid.clone());
 
-        alt_hold_pid = new_alt_hold_pid;
+        altitude_pid = new_altitude_pid;
         yaw_pid = new_yaw_pid;
 
         let out_buf = write_motors(motors);
