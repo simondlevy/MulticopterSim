@@ -24,15 +24,17 @@ pub mod hackflight {
         yaw_pid: YawPid,
         mixfun: &dyn Fn(Demands) -> Motors) -> (Motors, AltitudePid, YawPid) {
 
-        let (new_demands, new_altitude_pid) =
-            altitude_pid::run(demands, &vehicle_state, altitude_pid.state);
+        let new_demands = demands;
 
-        let (new_new_demands, new_yaw_pid) =
+        let (new_demands, new_altitude_pid) =
+            altitude_pid::run(new_demands, &vehicle_state, altitude_pid.state);
+
+        let (new_demands, new_yaw_pid) =
             yaw_pid::run(new_demands, &vehicle_state, yaw_pid.state);
 
-        println!("yaw demand: {}", new_new_demands.yaw);
+        println!("yaw demand: {}", new_demands.yaw);
 
-        let new_motors = mixfun(new_new_demands.clone());
+        let new_motors = mixfun(new_demands.clone());
         
         (new_motors, new_altitude_pid, new_yaw_pid)
 
