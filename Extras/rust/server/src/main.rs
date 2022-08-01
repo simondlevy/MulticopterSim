@@ -15,6 +15,7 @@ use datatypes::datatypes::VehicleState;
 use pids::altitude as altitude_pid;
 use pids::yaw as yaw_pid;
 use hackflight::hackflight::run_hackflight;
+use mixers::fixedpitch::quadxbf as mixer;
 
 pub mod datatypes;
 pub mod hackflight;
@@ -102,7 +103,9 @@ fn main() -> std::io::Result<()> {
                 demands,
                 vehicle_state,
                 altitude_pid.clone(),
-                yaw_pid.clone());
+                yaw_pid.clone(),
+                &mixer::run
+                );
 
         altitude_pid = new_altitude_pid;
         yaw_pid = new_yaw_pid;
