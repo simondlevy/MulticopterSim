@@ -13,11 +13,10 @@ use datatypes::datatypes::Motors;
 use datatypes::datatypes::VehicleState;
 
 use alt_hold::alt_hold::new_alt_hold;
-use yaw_pid::yaw_pid::new_yaw_pid;
+use pids::yaw as yaw_pid;
 use hackflight::hackflight::run_hackflight;
 
 pub mod alt_hold;
-pub mod yaw_pid;
 pub mod datatypes;
 pub mod hackflight;
 pub mod mixer;
@@ -82,7 +81,7 @@ fn main() -> std::io::Result<()> {
     let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
 
     let mut alt_hold_pid = new_alt_hold();
-    let mut yaw_pid = new_yaw_pid();
+    let mut yaw_pid = yaw_pid::new();
 
     println!("Hit the Play button ...");
 
