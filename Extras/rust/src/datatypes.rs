@@ -21,12 +21,6 @@ pub mod datatypes {
         pub state:yaw_pid::YawPidState
     }
 
-    pub enum PidController {
-
-        Altitude{state:altitude_pid::AltitudePidState},
-        Angle{state:yaw_pid::YawPidState}
-    }
-
     #[derive(Clone)]
     pub struct Demands {
         pub throttle: f32,
