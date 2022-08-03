@@ -84,7 +84,7 @@ fn main() -> std::io::Result<()> {
     let mut altitude_pid = altitude_pid::new();
     let mut yaw_pid = yaw_pid::new();
 
-    let mut pid_controller = new_pid_controller();
+    let mut _pid_controller = new_pid_controller();
 
     println!("Hit the Play button ...");
 

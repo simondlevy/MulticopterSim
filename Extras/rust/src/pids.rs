@@ -14,7 +14,7 @@ pub mod pids {
     use datatypes::datatypes::Demands;
     use datatypes::datatypes::VehicleState;
 
-    use pids::altitude as altitude_pid;
+    use pids::altitude as alt_pid;
     use pids::altitude::AltitudePid;
 
     use pids::yaw as yaw_pid;
@@ -22,20 +22,29 @@ pub mod pids {
 
     pub struct Controller {
 
-        alt_hold: AltitudePid,
+        alt: AltitudePid,
         yaw: YawPid
     }
 
     pub fn new_controller() -> Controller {
 
-        Controller { alt_hold:altitude_pid::new(), yaw:yaw_pid::new() }
+        Controller { alt:alt_pid::new(), yaw:yaw_pid::new() }
     }
 
     pub fn run_pids(
+        controller:Controller,
         demands: Demands,
-        _vehicle_state: VehicleState) -> Demands {
+        vehicle_state: VehicleState) -> (Demands, Controller) {
 
-        demands
+        let (new_demands, new_alt_pid) =
+            alt_pid::run(demands, &vehicle_state, controller.alt);
+
+        let (new_demands, new_yaw_pid) =
+            yaw_pid::run(new_demands, &vehicle_state, controller.yaw);
+
+        let new_controller = Controller {alt:new_alt_pid, yaw:new_yaw_pid};
+
+        (new_demands, new_controller)
     }
 }
 
