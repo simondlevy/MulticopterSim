@@ -12,11 +12,6 @@ pub mod datatypes {
     use pids::yaw as yaw_pid;
 
     #[derive(Clone)]
-    pub struct YawPid{
-        pub state:yaw_pid::YawPidState
-    }
-
-    #[derive(Clone)]
     pub struct Demands {
         pub throttle: f32,
         pub roll:     f32,

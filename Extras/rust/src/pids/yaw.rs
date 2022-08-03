@@ -6,7 +6,6 @@
    MIT License
 */
 
-use datatypes::datatypes::YawPid;
 use datatypes::datatypes::Demands;
 use datatypes::datatypes::VehicleState;
 
@@ -19,6 +18,11 @@ pub struct YawPidState {
     error_integral: f32
 }
     
+#[derive(Clone)]
+pub struct YawPid{
+    pub state: YawPidState
+}
+
 pub fn run(
     demands:Demands,
     vstate:&VehicleState,
