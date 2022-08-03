@@ -11,13 +11,11 @@ pub mod datatypes {
     use pids::altitude as altitude_pid;
     use pids::yaw as yaw_pid;
 
-    #[repr(C)]
     #[derive(Clone)]
     pub struct AltitudePid {
         pub state:altitude_pid::AltitudePidState
     }
 
-    #[repr(C)]
     #[derive(Clone)]
     pub struct YawPid{
         pub state:yaw_pid::YawPidState
@@ -29,7 +27,6 @@ pub mod datatypes {
         Angle{state:yaw_pid::YawPidState}
     }
 
-    #[repr(C)]
     #[derive(Clone)]
     pub struct Demands {
         pub throttle: f32,
@@ -38,7 +35,6 @@ pub mod datatypes {
         pub yaw:      f32
     } 
 
-    #[repr(C)]
     pub struct VehicleState {
 
         pub x:      f32,
@@ -55,7 +51,6 @@ pub mod datatypes {
         pub dpsi:   f32
     }
 
-    #[repr(C)]
     pub struct Motors {
 
         pub m1: f32,

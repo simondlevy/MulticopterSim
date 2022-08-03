@@ -14,6 +14,7 @@ use datatypes::datatypes::VehicleState;
 
 use pids::altitude as altitude_pid;
 use pids::yaw as yaw_pid;
+use pids::pids::new_controller as new_pid_controller;
 use hackflight::hackflight::run_hackflight;
 use mixers::fixedpitch::quadxbf as mixer;
 
@@ -82,6 +83,8 @@ fn main() -> std::io::Result<()> {
 
     let mut altitude_pid = altitude_pid::new();
     let mut yaw_pid = yaw_pid::new();
+
+    let mut pid_controller = new_pid_controller();
 
     println!("Hit the Play button ...");
 
