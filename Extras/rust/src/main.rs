@@ -96,6 +96,8 @@ fn main() -> std::io::Result<()> {
 
         let demands = read_demands(in_buf);
 
+        println!("{}", demands.throttle);
+
         let (motors, new_pid_controller) =
             run_hackflight(demands, vehicle_state, pid_controller, &mixer::run);
 
