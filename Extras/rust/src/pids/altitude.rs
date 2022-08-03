@@ -14,21 +14,16 @@ use utils::utils::constrain;
 use utils::utils::constrain_abs;
 
 #[derive(Clone)]
-pub struct AltitudePidState {
+pub struct AltitudePid {
     pub error_integral:f32,
     pub in_band:bool,
     pub target:f32
 }
 
-#[derive(Clone)]
-pub struct AltitudePid {
-    pub state:AltitudePidState
-}
-
 pub fn run(
     demands:Demands,
     vstate:&VehicleState,
-    pstate: AltitudePidState) -> (Demands, AltitudePid) {
+    pid: AltitudePid) -> (Demands, AltitudePid) {
 
     const KP: f32 = 0.75;
     const KI: f32 = 1.5;
@@ -53,11 +48,11 @@ pub fn run(
     let at_zero_throttle = throttle == 0.0;
 
     // Reset altitude target at zero throttle
-    let altitude_target = if at_zero_throttle {0.0} else {pstate.target};
+    let altitude_target = if at_zero_throttle {0.0} else {pid.target};
 
     // If stick just moved into deadband, set new target altitude; otherwise,
     // keep previous
-    let new_target = if in_band && !pstate.in_band {altitude} else {altitude_target};
+    let new_target = if in_band && !pid.in_band {altitude} else {altitude_target};
 
     // Target velocity is a setpoint inside deadband, scaled
     // constant outside
@@ -68,7 +63,7 @@ pub fn run(
     let error = target_velocity - climb_rate;
 
     // Compute I term, avoiding windup
-    let new_error_integral = constrain_abs(pstate.error_integral + error, WINDUP_MAX);
+    let new_error_integral = constrain_abs(pid.error_integral + error, WINDUP_MAX);
 
     // Run PI controller
     let correction = error * KP + new_error_integral * KI;
@@ -89,11 +84,9 @@ pub fn run(
 
 fn make(error_integral:f32, in_band:bool, target:f32) -> AltitudePid {
     AltitudePid {
-        state: AltitudePidState {
-            error_integral: error_integral,
-            in_band: in_band,
-            target: target
-        }
+        error_integral: error_integral,
+        in_band: in_band,
+        target: target
     }
 }
 
