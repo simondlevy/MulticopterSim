@@ -51,12 +51,14 @@ pub fn run(
 
     let (roll_demand, roll_pid) = run_axis(demands.roll, vstate.dphi, pid.roll);
 
-    let (_pitch_demand, pitch_pid) = run_axis(demands.pitch, vstate.dtheta, pid.pitch);
+    // Pitch demand is nose-down positive, so we negate pitch-forward rate
+    // (nose-down negative)
+    let (pitch_demand, pitch_pid) = run_axis(demands.pitch, -vstate.dtheta, pid.pitch);
 
     let new_demands = Demands {
         throttle:demands.throttle,
-        roll:roll_demand,
-        pitch:demands.pitch, // pitch_demand,
+        roll:demands.roll, //roll_demand,
+        pitch:pitch_demand,
         yaw:demands.yaw
     };
 
