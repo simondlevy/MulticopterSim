@@ -29,7 +29,7 @@ pub mod hackflight {
             altitude_pid::run(demands, &vehicle_state, altitude_pid);
 
         let (demands, new_yaw_pid) =
-            yaw_pid::run(demands, &vehicle_state, yaw_pid.state);
+            yaw_pid::run(demands, &vehicle_state, yaw_pid);
 
         println!("yaw demand: {}", demands.yaw);
 

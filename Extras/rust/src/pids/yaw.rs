@@ -14,19 +14,14 @@ use utils::utils::constrain_abs;
 use utils::utils::deg2rad;
 
 #[derive(Clone)]
-pub struct YawPidState {
-    error_integral: f32
-}
-    
-#[derive(Clone)]
 pub struct YawPid{
-    pub state: YawPidState
+    error_integral: f32
 }
 
 pub fn run(
     demands:Demands,
     vstate:&VehicleState,
-    pstate: YawPidState) -> (Demands, YawPid) {
+    pid: YawPid) -> (Demands, YawPid) {
 
     const KP: f32 = 1.0625;
     const KI: f32 = 0.001875;
@@ -39,7 +34,7 @@ pub fn run(
 
     // Reset integral on quick angular velocity change
     let error_integral =
-        if fabs(error) > deg2rad(RATE_MAX_DPS) {0.0} else {pstate.error_integral};
+        if fabs(error) > deg2rad(RATE_MAX_DPS) {0.0} else {pid.error_integral};
 
     // Constrain integral to avoid windup
     let bounded_error_integral = constrain_abs(error_integral + error, WINDUP_MAX);
@@ -59,9 +54,7 @@ pub fn run(
 
 fn make(error_integral:f32) -> YawPid {
     YawPid {
-        state: YawPidState {
-            error_integral:error_integral
-        }
+        error_integral:error_integral
     }
 }
 
