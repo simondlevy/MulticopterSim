@@ -12,11 +12,6 @@ pub mod datatypes {
     use pids::yaw as yaw_pid;
 
     #[derive(Clone)]
-    pub struct AltitudePid {
-        pub state:altitude_pid::AltitudePidState
-    }
-
-    #[derive(Clone)]
     pub struct YawPid{
         pub state:yaw_pid::YawPidState
     }

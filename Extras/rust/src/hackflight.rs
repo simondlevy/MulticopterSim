@@ -8,11 +8,12 @@
 
 pub mod hackflight {
 
-    use datatypes::datatypes::AltitudePid;
     use datatypes::datatypes::YawPid;
     use datatypes::datatypes::Demands;
     use datatypes::datatypes::Motors;
     use datatypes::datatypes::VehicleState;
+
+    use pids::altitude::AltitudePid;
 
     use pids::altitude as altitude_pid;
     use pids::yaw as yaw_pid;

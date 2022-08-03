@@ -6,7 +6,6 @@
    MIT License
  */
 
-use datatypes::datatypes::AltitudePid;
 use datatypes::datatypes::Demands;
 use datatypes::datatypes::VehicleState;
 
@@ -19,6 +18,11 @@ pub struct AltitudePidState {
     pub error_integral:f32,
     pub in_band:bool,
     pub target:f32
+}
+
+#[derive(Clone)]
+pub struct AltitudePid {
+    pub state:AltitudePidState
 }
 
 pub fn run(
