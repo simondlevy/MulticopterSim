@@ -15,16 +15,20 @@ pub mod pids {
     use datatypes::datatypes::VehicleState;
 
     use pids::altitude as altitude_pid;
+    use pids::altitude::AltitudePid;
+
     use pids::yaw as yaw_pid;
+    use pids::yaw::YawPid;
 
     pub struct Controller {
 
-        x: f32
+        alt_hold: AltitudePid,
+        yaw: YawPid
     }
 
     pub fn new_controller() -> Controller {
 
-        Controller {x: 0.0}
+        Controller { alt_hold:altitude_pid::new(), yaw:yaw_pid::new() }
     }
 
     pub fn run_pids(
