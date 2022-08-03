@@ -8,9 +8,6 @@
 
 pub mod datatypes {
 
-    use pids::altitude as altitude_pid;
-    use pids::yaw as yaw_pid;
-
     #[derive(Clone)]
     pub struct Demands {
         pub throttle: f32,
