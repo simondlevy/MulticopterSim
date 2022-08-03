@@ -14,7 +14,6 @@ use utils::utils::fabs;
 use utils::utils::constrain;
 use utils::utils::constrain_abs;
 
-#[repr(C)]
 #[derive(Clone)]
 pub struct AltitudePidState {
     pub error_integral:f32,

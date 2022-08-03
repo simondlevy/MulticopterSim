@@ -14,7 +14,6 @@ use utils::utils::fabs;
 use utils::utils::constrain_abs;
 use utils::utils::deg2rad;
 
-#[repr(C)]
 #[derive(Clone)]
 pub struct YawPidState {
     error_integral: f32
