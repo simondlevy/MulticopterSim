@@ -57,7 +57,7 @@ pub fn run(
 
     let new_demands = Demands {
         throttle:demands.throttle,
-        roll:demands.roll, //roll_demand,
+        roll:roll_demand,
         pitch:pitch_demand,
         yaw:demands.yaw
     };
