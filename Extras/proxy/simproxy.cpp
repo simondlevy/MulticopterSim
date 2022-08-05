@@ -95,7 +95,7 @@ int main(int argc, char ** argv)
         // Open image socket's connection to host
         //imageSocket.openConnection();
 
-        // Loop forever, communicating with client
+        // Loop forever, communicating with server
         while (true) {
 
             // To be sent to client
