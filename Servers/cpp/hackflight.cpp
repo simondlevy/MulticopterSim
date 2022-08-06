@@ -94,7 +94,7 @@ int main(int argc, char ** argv)
                 &hf.vstate,
                 hf.pidControllers,
                 hf.pidCount,
-                hf.pidZeroThrottleItermReset,
+                hf.pidReset,
                 usec,
                 hf.mixer,
                 motorvals);
