@@ -104,6 +104,7 @@ class FSocketFlightManager : public FFlightManager {
             _telemClient->sendData(_telemetry, sizeof(_telemetry));
 
             // Get motor values from server
+            values[0] = 0;
             _motorServer->receiveData(values, 8 * _actuatorCount);
 
             static uint64_t _foo;

@@ -110,16 +110,15 @@ int main(int argc, char ** argv)
                 &motorConfig,
                 motorvals);
 
-        motorvals[0] = 0.6;
-        motorvals[1] = 0.6;
-        motorvals[2] = 0.6;
-        motorvals[3] = 0.6;
+        // Convert motor values to doubles
+        double dmotorvals[4] = {0.6,0.6,0.6,0.6};
+        //{motorvals[0], motorvals[1], motorvals[2], motorvals[3]};
 
         printf("usec=%d\n", usec);
         fflush(stdout);
 
         // Send back motor values
-        motorClient.sendData(motorvals, sizeof(motorvals));
+        motorClient.sendData(dmotorvals, sizeof(dmotorvals));
 
     } // while (true)
 
