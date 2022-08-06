@@ -81,25 +81,25 @@ int main(int argc, char ** argv)
 
         // Build vehicle state 
         vehicle_state_t * vstate = &hf.vstate;
-        vstate->x      = telemetry[0];
-        vstate->dx     = telemetry[1];
-        vstate->y      = telemetry[2];
-        vstate->dy     = telemetry[3];
-        vstate->z      = telemetry[4];
-        vstate->dz     = telemetry[5];
-        vstate->phi    = telemetry[6];
-        vstate->dphi   = telemetry[7];
-        vstate->theta  = telemetry[8];
-        vstate->dtheta = telemetry[9];
-        vstate->psi    = telemetry[10];
-        vstate->dpsi   = telemetry[11];
+        vstate->x      = telemetry[1];
+        vstate->dx     = telemetry[2];
+        vstate->y      = telemetry[3];
+        vstate->dy     = telemetry[4];
+        vstate->z      = telemetry[5];
+        vstate->dz     = telemetry[6];
+        vstate->phi    = telemetry[7];
+        vstate->dphi   = telemetry[8];
+        vstate->theta  = telemetry[9];
+        vstate->dtheta = telemetry[10];
+        vstate->psi    = telemetry[11];
+        vstate->dpsi   = telemetry[12];
 
         // Build demands
         demands_t * demands = &hf.demands;
-        demands->throttle = telemetry[12];
-        demands->roll     = telemetry[13];
-        demands->pitch    = telemetry[14];
-        demands->yaw      = telemetry[15];
+        demands->throttle = (telemetry[13] + 1) / 2; // [-1,+1] => [0,1]
+        demands->roll     = telemetry[14];
+        demands->pitch    = telemetry[15];
+        demands->yaw      = telemetry[16];
 
         // Run core Hackflight algorithm to get motor values
         float motorvals[4] = {};
@@ -111,11 +111,7 @@ int main(int argc, char ** argv)
                 motorvals);
 
         // Convert motor values to doubles
-        double dmotorvals[4] = {0.6,0.6,0.6,0.6};
-        //{motorvals[0], motorvals[1], motorvals[2], motorvals[3]};
-
-        printf("usec=%d\n", usec);
-        fflush(stdout);
+        double dmotorvals[4] = {motorvals[0], motorvals[1], motorvals[2], motorvals[3]};
 
         // Send back motor values
         motorClient.sendData(dmotorvals, sizeof(dmotorvals));
