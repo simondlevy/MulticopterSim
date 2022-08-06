@@ -20,8 +20,16 @@ static const char * HOST = "127.0.0.1"; // localhost
 static uint16_t  MOTOR_PORT = 5000;
 static uint16_t  TELEM_PORT = 5001;
 
-// Time constant
-static const double DELTA_T = 0.001;
+// PID constants
+
+static const float RATE_P  = 1.4e0;
+static const float RATE_I  = 0;//1.9e+1;
+static const float RATE_D  = 2.1e-2;
+static const float RATE_F  = 0;//1.6e-2;
+static const float LEVEL_P = 50.0;
+
+static const float ALT_HOLD_KP = 0.75;
+static const float ALT_HOLD_KI = 1.5;
 
 int main(int argc, char ** argv)
 {
@@ -29,6 +37,9 @@ int main(int argc, char ** argv)
     // Create sockets for telemetry in, motors out
     UdpServerSocket telemServer = UdpServerSocket(TELEM_PORT);
     UdpClientSocket motorClient = UdpClientSocket(HOST, MOTOR_PORT);
+
+    // Create Hackflight objects
+
 
     printf("Hit the Play button ... ");
 
