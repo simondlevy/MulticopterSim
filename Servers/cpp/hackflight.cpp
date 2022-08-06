@@ -40,6 +40,15 @@ int main(int argc, char ** argv)
 
     // Create Hackflight objects
 
+    hackflight_t hf = {};
+
+    anglePidConstants_t anglePidConstants = { 
+        RATE_P,
+        RATE_I,
+        RATE_D,
+        RATE_F,
+        LEVEL_P
+    };
 
     printf("Hit the Play button ... ");
 
