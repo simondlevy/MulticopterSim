@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include <hackflight.h>
+#include <mixers/fixedpitch/quadxbf.h>
 
 #include "../../Source/SocketModule/sockets/UdpClientSocket.hpp"
 #include "../../Source/SocketModule/sockets/UdpServerSocket.hpp"
