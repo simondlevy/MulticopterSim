@@ -51,6 +51,8 @@ int main(int argc, char ** argv)
         LEVEL_P
     };
 
+    hackflightInit(&hf, &anglePidConstants, mixerQuadXbf);
+
     printf("Hit the Play button ... ");
 
     // Loop forever, waiting for clients
@@ -60,10 +62,14 @@ int main(int argc, char ** argv)
         double telemetry[17] = {};
         telemServer.receiveData(telemetry, sizeof(telemetry));
 
-        // XXX process values
+        // Convert simulator time to microseconds
+        uint32_t usec = (uint32_t)(telemetry[0] * 1e6);
+
+        // Run core Hackflight algorithm to get motor values
+        float motorvals[4];
+        hackflightRunCoreTasks(&hf, usec, motorvals);
 
         // Send back motor values
-        double motorvals[4] = {0.6, 0.6, 0.6, 0.6};
         motorClient.sendData(motorvals, sizeof(motorvals));
 
     } // while (true)
