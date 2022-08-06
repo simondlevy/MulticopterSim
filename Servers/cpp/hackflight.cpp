@@ -65,6 +65,28 @@ int main(int argc, char ** argv)
         // Convert simulator time to microseconds
         uint32_t usec = (uint32_t)(telemetry[0] * 1e6);
 
+        // Build vehicle state 
+        vehicle_state_t * vstate = &hf.vstate;
+        vstate->x      = telemetry[0];
+        vstate->dx     = telemetry[1];
+        vstate->y      = telemetry[2];
+        vstate->dy     = telemetry[3];
+        vstate->z      = telemetry[4];
+        vstate->dz     = telemetry[5];
+        vstate->phi    = telemetry[6];
+        vstate->dphi   = telemetry[7];
+        vstate->theta  = telemetry[8];
+        vstate->dtheta = telemetry[9];
+        vstate->psi    = telemetry[10];
+        vstate->dpsi   = telemetry[11];
+
+        // Build demands
+        demands_t * demands = &hf.demands;
+        demands->throttle = telemetry[12];
+        demands->roll     = telemetry[13];
+        demands->pitch    = telemetry[14];
+        demands->yaw      = telemetry[15];
+        
         // Run core Hackflight algorithm to get motor values
         float motorvals[4];
         hackflightRunCore(
