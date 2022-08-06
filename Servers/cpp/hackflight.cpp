@@ -97,9 +97,9 @@ int main(int argc, char ** argv)
         // Build demands
         demands_t * demands = &hf.demands;
         demands->throttle = (telemetry[13] + 1) / 2; // [-1,+1] => [0,1]
-        demands->roll     = telemetry[14];
-        demands->pitch    = telemetry[15];
-        demands->yaw      = telemetry[16];
+        demands->roll     = telemetry[14] * 670;
+        demands->pitch    = telemetry[15] * 670;
+        demands->yaw      = telemetry[16] * 670;
 
         // Run core Hackflight algorithm to get motor values
         float motorvals[4] = {};
