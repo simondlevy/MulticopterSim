@@ -15,6 +15,7 @@ from argparse import ArgumentDefaultsHelpFormatter
 from launch_controller import LaunchController
 from multicopter_server import MulticopterServer
 from mixers import PhantomMixer, IngenuityMixer
+from debugging import debug
 
 
 class LaunchCopter(MulticopterServer):
@@ -51,8 +52,6 @@ class LaunchCopter(MulticopterServer):
     '''
 
     def getMotors(self, t, state, _stickDemands):
-
-        print(_stickDemands)
 
         # Track current time to share it with handleImage()
         self.time = t
@@ -94,7 +93,7 @@ def main():
         copter.start()
 
     else:
-        print('Unrecognized vehicle: %s' % args.vehicle)
+        debug('Unrecognized vehicle: %s' % args.vehicle)
 
 
 main()

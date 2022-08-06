@@ -61,6 +61,7 @@ int main(int argc, char ** argv)
     };
 
     printf("Hit the Play button ... ");
+    fflush(stdout);
 
     // Loop forever, waiting for clients
     while (true) {
@@ -102,6 +103,11 @@ int main(int argc, char ** argv)
                 false, // no failsafe in sim
                 &motorConfig,
                 motorvals);
+
+        motorvals[0] = 0.6;
+        motorvals[1] = 0.6;
+        motorvals[2] = 0.6;
+        motorvals[3] = 0.6;
 
         // Send back motor values
         motorClient.sendData(motorvals, sizeof(motorvals));

@@ -147,6 +147,7 @@ class MulticopterServer(object):
             if telemetry[0] < 0:
                 motorClientSocket.close()
                 telemetryServerSocket.close()
+                self.done = True
                 break
 
             motorvals = self.getMotors(telemetry[0],     # time
