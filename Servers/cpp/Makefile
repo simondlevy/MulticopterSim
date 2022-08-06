@@ -7,7 +7,7 @@
 # 
 
 # Change this to where you installed Hackflight
-HF_DIR = $(HOME)/Documents/Arduino/libraries/Hackflight
+HF_DIR = /mnt/d/Users/levys/Documents/Arduino/libraries/Hackflight
 
 ALL = hackflight
 
