@@ -6,7 +6,12 @@
 # MIT License
 # 
 
+# Change this to where you installed Hackflight
+HF_DIR = $(HOME)/Documents/Arduino/libraries/Hackflight
+
 ALL = hackflight
+
+HF_SRC = $(HF_DIR)/src/
 
 all: $(ALL)
 
@@ -17,8 +22,8 @@ all: $(ALL)
 hackflight: hackflight.o 
 	g++ -o hackflight hackflight.o 
 
-hackflight.o: hackflight.cpp ../../Source/MainModule/Dynamics.hpp
-	g++ $(CFLAGS) -c hackflight.cpp
+hackflight.o: hackflight.cpp $(HF_SRC)/hackflight.h
+	g++ $(CFLAGS) -I$(HF_SRC) -c hackflight.cpp
 
 run: hackflight
 	./hackflight

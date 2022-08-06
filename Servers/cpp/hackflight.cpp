@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include <hackflight.h>
+
 #include "../../Source/SocketModule/sockets/UdpClientSocket.hpp"
 #include "../../Source/SocketModule/sockets/UdpServerSocket.hpp"
 
