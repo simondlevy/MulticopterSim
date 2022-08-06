@@ -53,6 +53,13 @@ int main(int argc, char ** argv)
 
     hackflightInit(&hf, &anglePidConstants, mixerQuadXbf);
 
+    motor_config_t motorConfig = {
+        0,     // disarmed
+        1,     // high
+        0,     // low
+        false  // isDshot
+    };
+
     printf("Hit the Play button ... ");
 
     // Loop forever, waiting for clients
@@ -86,17 +93,14 @@ int main(int argc, char ** argv)
         demands->roll     = telemetry[13];
         demands->pitch    = telemetry[14];
         demands->yaw      = telemetry[15];
-        
+
         // Run core Hackflight algorithm to get motor values
-        float motorvals[4];
-        hackflightRunCore(
-                &hf.demands,
-                &hf.vstate,
-                hf.pidControllers,
-                hf.pidCount,
-                hf.pidReset,
+        float motorvals[4] = {};
+        hackflightRunCoreTasks(
+                &hf,
                 usec,
-                hf.mixer,
+                false, // no failsafe in sim
+                &motorConfig,
                 motorvals);
 
         // Send back motor values
