@@ -70,8 +70,14 @@ int main(int argc, char ** argv)
         double telemetry[17] = {};
         telemServer.receiveData(telemetry, sizeof(telemetry));
 
+        double time = telemetry[0];
+
+        if (time < 0) {
+            break;
+        }
+
         // Convert simulator time to microseconds
-        uint32_t usec = (uint32_t)(telemetry[0] * 1e6);
+        uint32_t usec = (uint32_t)(time * 1e6);
 
         // Build vehicle state 
         vehicle_state_t * vstate = &hf.vstate;
@@ -108,6 +114,9 @@ int main(int argc, char ** argv)
         motorvals[1] = 0.6;
         motorvals[2] = 0.6;
         motorvals[3] = 0.6;
+
+        printf("usec=%d\n", usec);
+        fflush(stdout);
 
         // Send back motor values
         motorClient.sendData(motorvals, sizeof(motorvals));
