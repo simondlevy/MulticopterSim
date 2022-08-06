@@ -67,7 +67,15 @@ int main(int argc, char ** argv)
 
         // Run core Hackflight algorithm to get motor values
         float motorvals[4];
-        hackflightRunCoreTasks(&hf, usec, motorvals);
+        hackflightRunCore(
+                &hf.demands,
+                &hf.vstate,
+                hf.pidControllers,
+                hf.pidCount,
+                hf.pidZeroThrottleItermReset,
+                usec,
+                hf.mixer,
+                motorvals);
 
         // Send back motor values
         motorClient.sendData(motorvals, sizeof(motorvals));
