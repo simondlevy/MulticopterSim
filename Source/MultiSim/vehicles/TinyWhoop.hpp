@@ -58,7 +58,7 @@ class TinyWhoop {
 
     public:
 
-        QuadXAPDynamics dynamics = QuadXAPDynamics(vparams, fparams);
+        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
 
         Vehicle vehicle = Vehicle(&dynamics);
 

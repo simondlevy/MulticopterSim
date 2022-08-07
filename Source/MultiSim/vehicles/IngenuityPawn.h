@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../vehicles/Ingenuity.hpp"
+#include "Ingenuity.hpp"
 
 #include "../FlightManager.hpp"
 

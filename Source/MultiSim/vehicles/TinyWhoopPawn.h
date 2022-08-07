@@ -1,5 +1,5 @@
 /*
-* Class declaration for DJI Phantom pawn class using UDP sockets
+* Class declaration for pawn class using Hackflight flight manager
 *
 * Copyright (C) 2019 Simon D. Levy
 *
@@ -8,24 +8,24 @@
 
 #pragma once
 
-#include "../vehicles/Phantom.hpp"
+#include "TinyWhoop.hpp"
 
 #include "../FlightManager.hpp"
 
 #include <CoreMinimal.h>
 #include <GameFramework/Pawn.h>
 
-#include "PhantomPawn.generated.h"
+#include "TinyWhoopPawn.generated.h"
 
 UCLASS(Config=Game)
-class APhantomPawn : public APawn {
+class ATinyWhoopPawn : public APawn {
 
     private:
 
         GENERATED_BODY()
 
-        // Helper class
-        Phantom _phantom;
+        // Helper classes
+        TinyWhoop _tinyWhoop;
 
         FFlightManager * _flightManager = NULL;
 
@@ -41,10 +41,8 @@ class APhantomPawn : public APawn {
 
         virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-        // virtual void NotifyHit(...) override
-
     public:	
 
-        APhantomPawn();
+        ATinyWhoopPawn();
 
-}; // APhantomPawn
+}; // ATinyWhoopPawn

@@ -6,7 +6,7 @@
 * MIT License
 */
 
-#include "HackflightModule/pawns/TinyWhoopPawn.h"
+#include "TinyWhoopPawn.h"
 
 
 ATinyWhoopPawn::ATinyWhoopPawn()
@@ -24,11 +24,7 @@ void ATinyWhoopPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void ATinyWhoopPawn::BeginPlay()
 {
-    _flightManager = new FHackflightFlightManager(
-            /*this,
-            &_mixer.mixer,
-            _mixer.motors,*/
-            &_tinyWhoop.dynamics);
+    _flightManager = new FFlightManager(this, &_tinyWhoop.dynamics);
 
     _tinyWhoop.BeginPlay(_flightManager);
 
@@ -46,8 +42,6 @@ void ATinyWhoopPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void ATinyWhoopPawn::Tick(float DeltaSeconds)
 {
     _tinyWhoop.Tick(DeltaSeconds);
-
-    _flightManager->tick();
 
     Super::Tick(DeltaSeconds);
 }
