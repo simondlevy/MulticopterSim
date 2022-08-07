@@ -5,17 +5,12 @@
 	"Description": "",
 	"Modules": [
 		{
-			"Name": "MainModule",
+			"Name": "MulticopterSim",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine"
 			]
-		},
-		{
-			"Name": "SocketModule",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
 		}
 	]
 }

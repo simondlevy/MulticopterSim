@@ -23,7 +23,7 @@ void APhantomPawn::PostInitializeComponents()
 // Called when the game starts or when spawned
 void APhantomPawn::BeginPlay()
 {
-    _flightManager = new FSocketFlightManager(this, &_phantom.dynamics);
+    _flightManager = new FFlightManager(this, &_phantom.dynamics);
 
     _phantom.BeginPlay(_flightManager);
 
@@ -41,8 +41,6 @@ void APhantomPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void APhantomPawn::Tick(float DeltaSeconds)
 {
     _phantom.Tick(DeltaSeconds);
-
-    _flightManager->tick();
 
     Super::Tick(DeltaSeconds);
 }

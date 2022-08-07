@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../MainModule/Camera.hpp"
+#include "../MulticopterSim/Camera.hpp"
 
 #include "sockets/TcpClientSocket.hpp"
 

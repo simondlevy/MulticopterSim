@@ -1,34 +1,33 @@
 /*
-* Class declaration for DJI Phantom pawn class using UDP sockets
+* Class declaration for Ingenuity pawn class using UDP sockets
 *
-* Copyright (C) 2019 Simon D. Levy
+* Copyright (C) 2021 Simon D. Levy
 *
 * MIT License
 */
 
 #pragma once
 
-#include "../../MainModule/vehicles/Phantom.hpp"
+#include "../vehicles/Ingenuity.hpp"
 
 #include "../FlightManager.hpp"
 
 #include <CoreMinimal.h>
 #include <GameFramework/Pawn.h>
 
-#include "PhantomPawn.generated.h"
+#include "IngenuityPawn.generated.h"
 
 UCLASS(Config=Game)
-class APhantomPawn : public APawn {
+class AIngenuityPawn : public APawn {
 
     private:
 
         GENERATED_BODY()
 
         // Helper class
-        Phantom _phantom;
+        Ingenuity _ingenuity;
 
-
-        FSocketFlightManager * _flightManager = NULL;
+        FFlightManager * _flightManager = NULL;
 
     protected:
 
@@ -46,6 +45,6 @@ class APhantomPawn : public APawn {
 
     public:	
 
-        APhantomPawn();
+        AIngenuityPawn();
 
-}; // APhantomPawn
+}; // AIngenuityPawn
