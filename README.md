@@ -3,20 +3,8 @@
 
 # About
 
-MultiSim is a simple multicopter flight simulator using Unreal Engine.  It runs on Windows.
-
-I began this project using the [V-REP platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
-UnrealEngine after seeing the kinds of beautiful, real-time simulations that
-Microsoft was able to get with its
-[AirSim](https://github.com/Microsoft/AirSim) program. 
-
-MultiSim differs from AirSim in a few important ways:
-* MultiSim can be used with the same simple flight-control 
-[firmware](https://github.com/simondlevy/Hackflight) that we fly on our real-world 
-[quadcopters](https://www.youtube.com/watch?v=wFP_l6wOhS4).
-* MultiSim is tiny, under 2,000 lines of code.
-* MultiSim focuses exclusively on multirotor firmware, whereas AirSim
-  supports deep learning and different kinds of vehicles.
+MultiSim is a simple multicopter flight simulator using Unreal Engine.  It runs on Windows, using UDP
+sockets to communicate with flight-control programs written in various languages.
 
 # Prerequisites
 
@@ -37,28 +25,26 @@ Because of
 getting UE5 to work with Visual Studio 2022, I have opted to stay with Visual Studio
 2019 for the time being.
 
-# Quickstart
+# Building
 
 1. Clone this repostitory (MultiSim) into your
 <b>Documents/Unreal Projects</b> folder, first creating that folder if it
 doesn't exist.
 
-2. Double-click <b>use_quickstart.bat</b>
-   
-3. Right-click on the <b>MultiSim.uproject</b> 
+2. Right-click on the <b>MultiSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
-4. Double-click on the resulting <b>MultiSim.sln</b> file to launch VisualStudio.  The first time
+3. Double-click on the resulting <b>MultiSim.sln</b> file to launch VisualStudio.  The first time
 you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE5 files needed
 to build the project.
 
-5. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
+4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
-6. In UnrealEditor, select one of the maps in <b>Content Drawer/MultiSim/Maps</b>. Then open the
+5. In UnrealEditor, select one of the maps in <b>Content Drawer/MultiSim/Maps</b>. Then open the
 <b>Content/C++ Classes/QuickstartModule/pawns</b> folder and drag one of the
-vehicle pawns into the map. Click the play button and you'll see the vehicle
-take off to an altitude of 10 meters.  You can use the spacebar to switch your
-point-of-view.
+vehicle pawns into the map. 
+
+# Testing
 
 # Sensor / PID controller prototyping with Hackflight
 
