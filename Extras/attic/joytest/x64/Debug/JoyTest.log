@@ -1,0 +1,5 @@
+﻿  JoystickWindows.cpp
+c1xx : fatal error C1083: Cannot open source file: '..\..\..\Source\MainModule\joystick\JoystickWindows.cpp': No such file or directory
+  joytest.cpp
+c1xx : fatal error C1083: Cannot open source file: '..\joytest.cpp': No such file or directory
+  Generating Code...
