@@ -19,7 +19,7 @@ for the minimum requirements recommended by Unreal Engine.
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MultiSim currently supports the following controllers
 through the
-[Joystick](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/Joystick.h)
+[Joystick](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/Joystick.h)
 class:
 
 * PS4 controller
@@ -75,13 +75,13 @@ begin flying towards you.
 # Design principles
 
 The core of MultiSim is the abstract C++ 
-[FlightManager](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/FlightManager.hpp) 
+[FlightManager](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/FlightManager.hpp) 
 class. This class provides support for running the vehicle dynamics and the PID control
 regime on its own thread, after it first disables the
 built-in physics in UE5.  The dynamics we used are based directly on the model
 presented in this [paper](https://infoscience.epfl.ch/record/97532/files/325.pdf), 
 written as a standalone, header-only C++ 
-[class](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/Dynamics.hpp)
+[class](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/Dynamics.hpp)
 that can be easily adapted for other simulators and applications if desired.
 This class also supports different frame configurations (quadcopter,
 hexacopter) via virtual methods. By running the FlightManager on its own
@@ -90,7 +90,7 @@ flight-control.  It would also be possible to run the dynamics and control on
 separate threads, though we have not yet found it advantageous to do that.
 
 The
-[Camera](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/Camera.hpp)
+[Camera](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/Camera.hpp)
 class can be used to process
 the images collected by a simulated gimbal-mounted camera on the vehicle, using
 a library like OpenCV.  Computer-vision algorithms running in a Camera subclass can then be used
