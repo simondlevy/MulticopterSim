@@ -74,7 +74,7 @@ begin flying towards you.
 
 # Design principles
 
-The core of MultiSim is the abstract C++ 
+The core of MultiSim is the C++ 
 [FlightManager](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/FlightManager.hpp) 
 class. This class provides support for running the vehicle dynamics and the PID control
 regime on its own thread, after it first disables the
