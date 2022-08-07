@@ -1,5 +1,5 @@
 /*
- * Abstract, threaded flight-management class for MultiSim
+ * Threaded flight-management class for MultiSim
  *
  * Copyright (C) 2019 Simon D. Levy
  *
