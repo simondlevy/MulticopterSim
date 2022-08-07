@@ -17,30 +17,26 @@ APhantom::APhantom()
     addRotor(PropCCWStatics.mesh.Get(), -1, -1);
     addRotor(PropCWStatics.mesh.Get(), +1, -1);
     addRotor(PropCWStatics.mesh.Get(), -1, +1);
-
-    _flightManager = NULL;
 }
 
 // Called when the game starts or when spawned
 void APhantom::BeginPlay()
 {
-    _flightManager = new FFlightManager(this, &dynamics);
-
-    vehicle.BeginPlay(_flightManager);
+    vehicle.beginPlay(this, &dynamics);
 
     Super::BeginPlay();
 }
 
 void APhantom::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    FFlightManager::stopThread(&_flightManager);
+    vehicle.endPlay();
 
     Super::EndPlay(EndPlayReason);
 }
 
 void APhantom::PostInitializeComponents()
 {
-    vehicle.PostInitializeComponents();
+    vehicle.postInitializeComponents();
 
     Super::PostInitializeComponents();
 }
@@ -48,7 +44,7 @@ void APhantom::PostInitializeComponents()
 // Called automatically on main thread
 void APhantom::Tick(float DeltaSeconds)
 {
-    vehicle.Tick(DeltaSeconds);
+    vehicle.tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
 }

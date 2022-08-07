@@ -32,31 +32,26 @@ AIngenuity::AIngenuity()
             Leg3BottomStatics.mesh.Get());
     addLeg(4, Leg4BracketStatics.mesh.Get(), Leg4TopStatics.mesh.Get(),
             Leg4BottomStatics.mesh.Get());
-
-    // Flight manager will be set in BeginPlay()
-    _flightManager = NULL;
 }
 
 // Called when the game starts or when spawned
 void AIngenuity::BeginPlay()
 {
-    _flightManager = new FFlightManager(this, &dynamics);
-
-    vehicle.BeginPlay(_flightManager);
+    vehicle.beginPlay(this, &dynamics);
 
     Super::BeginPlay();
 }
 
 void AIngenuity::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    FFlightManager::stopThread(&_flightManager);
+    vehicle.endPlay();
 
     Super::EndPlay(EndPlayReason);
 }
 
 void AIngenuity::PostInitializeComponents()
 {
-    vehicle.PostInitializeComponents();
+    vehicle.postInitializeComponents();
 
     Super::PostInitializeComponents();
 }
@@ -64,7 +59,7 @@ void AIngenuity::PostInitializeComponents()
 // Called automatically on main thread
 void AIngenuity::Tick(float DeltaSeconds)
 {
-    vehicle.Tick(DeltaSeconds);
+    vehicle.tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
 }

@@ -35,31 +35,26 @@ ATinyWhoop::ATinyWhoop()
     vehicle.addMesh(Screw2Statics.mesh.Get(), "Screw2Mesh");
     vehicle.addMesh(Screw3Statics.mesh.Get(), "Screw3Mesh");
     vehicle.addMesh(Screw4Statics.mesh.Get(), "Screw4Mesh");
-
-    // Flight manager will be set in BeginPlay()
-    _flightManager = NULL;
 }
 
 // Called when the game starts or when spawned
 void ATinyWhoop::BeginPlay()
 {
-    _flightManager = new FFlightManager(this, &dynamics);
-
-    vehicle.BeginPlay(_flightManager);
+    vehicle.beginPlay(this, &dynamics);
 
     Super::BeginPlay();
 }
 
 void ATinyWhoop::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    FFlightManager::stopThread(&_flightManager);
+    vehicle.endPlay();
 
     Super::EndPlay(EndPlayReason);
 }
 
 void ATinyWhoop::PostInitializeComponents()
 {
-    vehicle.PostInitializeComponents();
+    vehicle.postInitializeComponents();
 
     Super::PostInitializeComponents();
 }
@@ -67,7 +62,7 @@ void ATinyWhoop::PostInitializeComponents()
 // Called automatically on main thread
 void ATinyWhoop::Tick(float DeltaSeconds)
 {
-    vehicle.Tick(DeltaSeconds);
+    vehicle.tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
 }

@@ -178,7 +178,8 @@ class Vehicle {
             switch (_view) {
             case VIEW_FRONT:
                 _playerController->SetViewTargetWithBlend(_pawn);
-                _playerCameraSpringArm->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+                _playerCameraSpringArm->SetRelativeLocationAndRotation(
+                        FVector::ZeroVector, FRotator::ZeroRotator);
 
                 // empircally determined to be far enough ahead of vehicle
                 _playerCameraSpringArm->TargetArmLength = -30; 
@@ -264,7 +265,6 @@ class Vehicle {
                                                    smoothedRotorMean);
             }
         }
-
 
     public:
 
@@ -388,9 +388,9 @@ class Vehicle {
         {
         }
 
-        void BeginPlay(FFlightManager* flightManager)
+        void beginPlay(APawn * pawn, Dynamics * dynamics)
         {
-            _flightManager = flightManager;
+            _flightManager = new FFlightManager(pawn, dynamics);
 
             // Player controller is useful for getting keyboard events,
             // switching cameas, etc.
@@ -474,7 +474,12 @@ class Vehicle {
             setView();
         }
 
-        void Tick(float DeltaSeconds)
+        void endPlay(void)
+        {
+            FFlightManager::stopThread(&_flightManager);
+        }
+
+        void tick(float DeltaSeconds)
         {
             // Quit on ESCape key
             if (hitKey(EKeys::Escape)) {
@@ -597,7 +602,7 @@ class Vehicle {
                           false, .1,0, 0.5);
         }
 
-        void PostInitializeComponents()
+        void postInitializeComponents()
         {
             // Add "Vehicle" tag for use by level blueprint
             _pawn->Tags.Add(FName("Vehicle"));

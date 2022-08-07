@@ -81,9 +81,6 @@ class AIngenuity : public APawn {
             15000,// maxrpm
         };
 
-        // Threaded worker for flight control
-        FFlightManager * _flightManager = NULL;
-
         void addRotor(UStaticMesh* propMesh, float z);
 
         void addLeg(

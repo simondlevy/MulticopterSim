@@ -33,9 +33,6 @@ class APhantom : public APawn {
 
         GENERATED_BODY()
 
-        // Threaded worker for flight control
-        FFlightManager * _flightManager = NULL;
-
         Dynamics::vehicle_params_t vparams = {
 
             // Estimated

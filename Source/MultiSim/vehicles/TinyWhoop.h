@@ -42,8 +42,6 @@ class ATinyWhoop : public APawn {
 
         GENERATED_BODY()
 
-        FFlightManager * _flightManager = NULL;
-
         Dynamics::vehicle_params_t vparams = {
 
             // Estimated
