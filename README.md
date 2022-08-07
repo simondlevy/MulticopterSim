@@ -3,26 +3,26 @@
 
 # About
 
-MulticopterSim is a simple multicopter flight simulator using Unreal Engine.  It runs on Windows.
+MultiSim is a simple multicopter flight simulator using Unreal Engine.  It runs on Windows.
 
 I began this project using the [V-REP platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
 UnrealEngine after seeing the kinds of beautiful, real-time simulations that
 Microsoft was able to get with its
 [AirSim](https://github.com/Microsoft/AirSim) program. 
 
-MulticopterSim differs from AirSim in a few important ways:
-* MulticopterSim can be used with the same simple flight-control 
+MultiSim differs from AirSim in a few important ways:
+* MultiSim can be used with the same simple flight-control 
 [firmware](https://github.com/simondlevy/Hackflight) that we fly on our real-world 
 [quadcopters](https://www.youtube.com/watch?v=wFP_l6wOhS4).
-* MulticopterSim is tiny, under 2,000 lines of code.
-* MulticopterSim focuses exclusively on multirotor firmware, whereas AirSim
+* MultiSim is tiny, under 2,000 lines of code.
+* MultiSim focuses exclusively on multirotor firmware, whereas AirSim
   supports deep learning and different kinds of vehicles.
 
 # Prerequisites
 
 ## Hardware
 
-I am currently developing MulticopterSim on an HP Z440 workstation with 32GB
+I am currently developing MultiSim on an HP Z440 workstation with 32GB
 RAM and NVIDIA GeForce GTX 1080 Ti. It may however be possible to develop on a
 less &ldquo;loaded&rdquo; machine &ndash; see
 [here](https://docs.unrealengine.com/4.27/en-US/Basics/InstallingUnrealEngine/RecommendedSpecifications/)
@@ -39,22 +39,22 @@ getting UE5 to work with Visual Studio 2022, I have opted to stay with Visual St
 
 # Quickstart
 
-1. Clone this repostitory (MulticopterSim) into your
+1. Clone this repostitory (MultiSim) into your
 <b>Documents/Unreal Projects</b> folder, first creating that folder if it
 doesn't exist.
 
 2. Double-click <b>use_quickstart.bat</b>
    
-3. Right-click on the <b>MulticopterSim.uproject</b> 
+3. Right-click on the <b>MultiSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
-4. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.  The first time
+4. Double-click on the resulting <b>MultiSim.sln</b> file to launch VisualStudio.  The first time
 you do this, you may have to wait a few minutes while Visual Studio parses up all of the UE5 files needed
 to build the project.
 
 5. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
-6. In UnrealEditor, select one of the maps in <b>Content Drawer/MulticopterSim/Maps</b>. Then open the
+6. In UnrealEditor, select one of the maps in <b>Content Drawer/MultiSim/Maps</b>. Then open the
 <b>Content/C++ Classes/QuickstartModule/pawns</b> folder and drag one of the
 vehicle pawns into the map. Click the play button and you'll see the vehicle
 take off to an altitude of 10 meters.  You can use the spacebar to switch your
@@ -62,16 +62,16 @@ point-of-view.
 
 # Sensor / PID controller prototyping with Hackflight
 
-Although MulticopterSim is designed to work with any flight-control software
+Although MultiSim is designed to work with any flight-control software
 you like, it easiest to get started with the
 [Hackflight](https://github.com/simondlevy/Hackflight) software. By prototyping
-sensors and PID controllers in Hackflight and testing them out in MulticopterSim,
+sensors and PID controllers in Hackflight and testing them out in MultiSim,
 you can make significant progress before deploying your code on an actual vehicle.
 
 For a realistic flying experience, you will also likely want some sort of game
-controller or R/C transmitter.  MulticopterSim currently supports the following controllers
+controller or R/C transmitter.  MultiSim currently supports the following controllers
 through the
-[Joystick](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/Joystick.h)
+[Joystick](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/Joystick.h)
 class:
 
 * PS4 controller
@@ -86,52 +86,52 @@ class:
 * Spektrum WS1000 dongle
 * Great Planes RealFlight Interlink
 
-If you don't have a controller, MulticopterSim will use input from the numeric keypad on your keyboard (make sure
+If you don't have a controller, MultiSim will use input from the numeric keypad on your keyboard (make sure
 that NumLock is turned on!)
 The key mappings are based on those used in [Microsoft Flight Simulator](https://www.flightsimbooks.com/flightsimhandbook/keyboardcontrols.php#:~:text=Microsoft%20Flight%20Simulator%20Handbook%20%20%20Control%20,%20Keypad%202%20%2043%20more%20rows%20i).
 
-To get MulticopterSim working with Hackflight, you should do the following:
+To get MultiSim working with Hackflight, you should do the following:
 
 1. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
 repository into your 
 <b>DocumentsArduino/libraries</b> folder, first creating that folder if it
 doesn't already exist.  (You don't need to install Arduino; this is simply
-where MulticopterSim looks for the Hackflight firmware.)
+where MultiSim looks for the Hackflight firmware.)
 
 2. Double-click <b>use_hackflight.bat</b>
 
-3. Right-click on the <b>MulticopterSim.uproject</b> 
+3. Right-click on the <b>MultiSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
-4. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.
+4. Double-click on the resulting <b>MultiSim.sln</b> file to launch VisualStudio.
 to build the project.
 
 5. In Visual Studio, edit the file
-   [MulticopterSim/Source/HackflightModule/HackflightModule.Build.cs](https://github.com/simondlevy/MulticopterSim/blob/master/Source//HackflightModule/HackflightModule.Build.cs#L16-L17)
+   [MultiSim/Source/HackflightModule/HackflightModule.Build.cs](https://github.com/simondlevy/MultiSim/blob/master/Source//HackflightModule/HackflightModule.Build.cs#L16-L17)
    to reflect where you installed Hackflight / RFT.
 
 6. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
-7. In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
+7. In UnrealEditor, select one of the maps in <b>Content/MultiSim/Maps</b>. Then open the
 <b>Content/C++ Classes/HackflightModule/pawns</b> folder and drag one of the
 vehicle pawns into the map. Click the play button and you're ready to take off!
 
 # Support for other programming languages / packages
 
-MulticopterSim supports other programming languages via the SocketModule.  
+MultiSim supports other programming languages via the SocketModule.  
 Examples in Python and Rust are provided. To use this module, do the following:
 
 1. Double-click <b>use_socket.bat</b>
 
-2. Right-click on the <b>MulticopterSim.uproject</b> 
+2. Right-click on the <b>MultiSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
-3. Double-click on the resulting <b>MulticopterSim.sln</b> file to launch VisualStudio.
+3. Double-click on the resulting <b>MultiSim.sln</b> file to launch VisualStudio.
 to build the project.
 
 4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
-5. In UnrealEditor, select one of the maps in <b>Content/MulticopterSim/Maps</b>. Then open the
+5. In UnrealEditor, select one of the maps in <b>Content/MultiSim/Maps</b>. Then open the
 <b>Content/C++ Classes/SocketModule/pawns</b> folder and drag one of the
 vehicle pawns into the map.  
 
@@ -142,14 +142,14 @@ begin flying towards you.
 
 # Design principles
 
-The core of MulticopterSim is the abstract C++ 
-[FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/FlightManager.hpp) 
+The core of MultiSim is the abstract C++ 
+[FlightManager](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/FlightManager.hpp) 
 class. This class provides support for running the vehicle dynamics and the PID control
 regime (e.g., Hackflight) on its own thread, after it first disables the
 built-in physics in UE5.  The dynamics we used are based directly on the model
 presented in this [paper](https://infoscience.epfl.ch/record/97532/files/325.pdf), 
 written as a standalone, header-only C++ 
-[class](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/Dynamics.hpp)
+[class](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/Dynamics.hpp)
 that can be easily adapted for other simulators and applications if desired.
 This class also supports different frame configurations (quadcopter,
 hexacopter) via virtual methods. By running the FlightManager on its own
@@ -158,7 +158,7 @@ flight-control.  It would also be possible to run the dynamics and control on
 separate threads, though we have not yet found it advantageous to do that.
 
 The FlightManager API contains a single virtual 
-[getMotors](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/FlightManager.hpp#L38-L46)
+[getMotors](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/FlightManager.hpp#L38-L46)
 method that accepts the current time and the state of the vehicle (as computed by the
 dynamics), and returns the current motor values.  The motor values are then
 passed to the dynamics object, which computes the new vehicle state.  On the
@@ -166,7 +166,7 @@ main thread, UE5's <b>Tick()</b> method queries the flight manager for the
 current vehicle pose (location, rotation) and displays the vehicle and its
 environment kinematically at the 60-120Hz frame rate of the game engine.  In a
 similar manner, the 
-[Camera](https://github.com/simondlevy/MulticopterSim/blob/master/Source/MainModule/Camera.hpp)
+[Camera](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/Camera.hpp)
 class can be used to process
 the images collected by a simulated gimbal-mounted camera on the vehicle, using
 a library like OpenCV.  Computer-vision algorithms running in a Camera subclass can then be used

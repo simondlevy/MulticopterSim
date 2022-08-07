@@ -13,8 +13,8 @@
 #include <hackflight.h>
 #include <mixers/fixedpitch/quadxbf.h>
 
-#include "../../Source/SocketModule/sockets/UdpClientSocket.hpp"
-#include "../../Source/SocketModule/sockets/UdpServerSocket.hpp"
+#include "../../Source/MultiSim/sockets/UdpClientSocket.hpp"
+#include "../../Source/MultiSim/sockets/UdpServerSocket.hpp"
 
 // Comms
 static const char * HOST = "127.0.0.1"; // localhost
