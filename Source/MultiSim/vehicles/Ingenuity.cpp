@@ -37,13 +37,6 @@ AIngenuity::AIngenuity()
     _flightManager = NULL;
 }
 
-void AIngenuity::PostInitializeComponents()
-{
-    vehicle.PostInitializeComponents();
-
-    Super::PostInitializeComponents();
-}
-
 // Called when the game starts or when spawned
 void AIngenuity::BeginPlay()
 {
@@ -61,6 +54,13 @@ void AIngenuity::EndPlay(const EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 }
 
+void AIngenuity::PostInitializeComponents()
+{
+    vehicle.PostInitializeComponents();
+
+    Super::PostInitializeComponents();
+}
+
 // Called automatically on main thread
 void AIngenuity::Tick(float DeltaSeconds)
 {
@@ -69,9 +69,9 @@ void AIngenuity::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 }
 
-void AIngenuity::addRotor(UStaticMesh* propMesh, float z)
+void AIngenuity::addCamera(Camera * camera)
 {
-    vehicle.addRotor(propMesh, 0, 0, z);
+    vehicle.addCamera(camera);
 }
 
 void AIngenuity::addLeg(
@@ -84,7 +84,8 @@ void AIngenuity::addLeg(
     vehicle.addComponent(topMesh,     makeName("LegTop", index, "Mesh"));
     vehicle.addComponent(bottomMesh,  makeName("LegBottom", index, "Mesh"));
 }
-void AIngenuity::addCamera(Camera * camera)
+
+void AIngenuity::addRotor(UStaticMesh* propMesh, float z)
 {
-    vehicle.addCamera(camera);
+    vehicle.addRotor(propMesh, 0, 0, z);
 }

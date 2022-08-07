@@ -40,13 +40,6 @@ ATinyWhoop::ATinyWhoop()
     _flightManager = NULL;
 }
 
-void ATinyWhoop::PostInitializeComponents()
-{
-    vehicle.PostInitializeComponents();
-
-    Super::PostInitializeComponents();
-}
-
 // Called when the game starts or when spawned
 void ATinyWhoop::BeginPlay()
 {
@@ -62,6 +55,13 @@ void ATinyWhoop::EndPlay(const EEndPlayReason::Type EndPlayReason)
     FFlightManager::stopThread(&_flightManager);
 
     Super::EndPlay(EndPlayReason);
+}
+
+void ATinyWhoop::PostInitializeComponents()
+{
+    vehicle.PostInitializeComponents();
+
+    Super::PostInitializeComponents();
 }
 
 // Called automatically on main thread
@@ -85,14 +85,3 @@ void ATinyWhoop::addRotor(float x, float y)
     vehicle.addRotor(PropCCWStatics.mesh.Get(), x, y, 0.04);
 }
 
-void ATinyWhoop::BeginPlay(FFlightManager * flightManager)
-{
-    _flightManager = flightManager;
-
-    vehicle.BeginPlay(flightManager);
-}
-
-void ATinyWhoop::EndPlay(void)
-{
-    FFlightManager::stopThread(&_flightManager);
-}

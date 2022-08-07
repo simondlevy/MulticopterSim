@@ -21,13 +21,6 @@ APhantom::APhantom()
     _flightManager = NULL;
 }
 
-void APhantom::PostInitializeComponents()
-{
-    vehicle.PostInitializeComponents();
-
-    Super::PostInitializeComponents();
-}
-
 // Called when the game starts or when spawned
 void APhantom::BeginPlay()
 {
@@ -43,6 +36,13 @@ void APhantom::EndPlay(const EEndPlayReason::Type EndPlayReason)
     FFlightManager::stopThread(&_flightManager);
 
     Super::EndPlay(EndPlayReason);
+}
+
+void APhantom::PostInitializeComponents()
+{
+    vehicle.PostInitializeComponents();
+
+    Super::PostInitializeComponents();
 }
 
 // Called automatically on main thread
