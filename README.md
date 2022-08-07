@@ -16,6 +16,28 @@ less &ldquo;loaded&rdquo; machine &ndash; see
 [here](https://docs.unrealengine.com/4.27/en-US/Basics/InstallingUnrealEngine/RecommendedSpecifications/)
 for the minimum requirements recommended by Unreal Engine.
 
+For a realistic flying experience, you will also likely want some sort of game
+controller or R/C transmitter.  MultiSim currently supports the following controllers
+through the
+[Joystick](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/Joystick.h)
+class:
+
+* PS4 controller
+* XBox One controller
+* XBox 360 controller
+* XBox 360 controller clone
+* PS3 controller clone
+* Logitech Extreme Pro 3D joystick
+* Logitech F310 gamepad
+* FrSky Taranis TX9 RC transmitter with mini USB cable 
+* FrSky XSR-Sim dongle
+* Spektrum WS1000 dongle
+* Great Planes RealFlight Interlink
+
+If you don't have a controller, MultiSim will use input from the numeric keypad on your keyboard (make sure
+that NumLock is turned on!)
+The key mappings are based on those used in [Microsoft Flight Simulator](https://www.flightsimbooks.com/flightsimhandbook/keyboardcontrols.php#:~:text=Microsoft%20Flight%20Simulator%20Handbook%20%20%20Control%20,%20Keypad%202%20%2043%20more%20rows%20i).
+
 ## Toolchain
 
 You will need Unreal Engine 5 (UE5). I am attempting to use the latest version, which as of the time of this
@@ -46,92 +68,16 @@ vehicle pawns into the map.
 
 # Testing
 
-# Sensor / PID controller prototyping with Hackflight
-
-Although MultiSim is designed to work with any flight-control software
-you like, it easiest to get started with the
-[Hackflight](https://github.com/simondlevy/Hackflight) software. By prototyping
-sensors and PID controllers in Hackflight and testing them out in MultiSim,
-you can make significant progress before deploying your code on an actual vehicle.
-
-For a realistic flying experience, you will also likely want some sort of game
-controller or R/C transmitter.  MultiSim currently supports the following controllers
-through the
-[Joystick](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/Joystick.h)
-class:
-
-* PS4 controller
-* XBox One controller
-* XBox 360 controller
-* XBox 360 controller clone
-* PS3 controller clone
-* Logitech Extreme Pro 3D joystick
-* Logitech F310 gamepad
-* FrSky Taranis TX9 RC transmitter with mini USB cable 
-* FrSky XSR-Sim dongle
-* Spektrum WS1000 dongle
-* Great Planes RealFlight Interlink
-
-If you don't have a controller, MultiSim will use input from the numeric keypad on your keyboard (make sure
-that NumLock is turned on!)
-The key mappings are based on those used in [Microsoft Flight Simulator](https://www.flightsimbooks.com/flightsimhandbook/keyboardcontrols.php#:~:text=Microsoft%20Flight%20Simulator%20Handbook%20%20%20Control%20,%20Keypad%202%20%2043%20more%20rows%20i).
-
-To get MultiSim working with Hackflight, you should do the following:
-
-1. Clone the [Hackflight](https://github.com/simondlevy/Hackflight) 
-repository into your 
-<b>DocumentsArduino/libraries</b> folder, first creating that folder if it
-doesn't already exist.  (You don't need to install Arduino; this is simply
-where MultiSim looks for the Hackflight firmware.)
-
-2. Double-click <b>use_hackflight.bat</b>
-
-3. Right-click on the <b>MultiSim.uproject</b> 
-file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
-
-4. Double-click on the resulting <b>MultiSim.sln</b> file to launch VisualStudio.
-to build the project.
-
-5. In Visual Studio, edit the file
-   [MultiSim/Source/HackflightModule/HackflightModule.Build.cs](https://github.com/simondlevy/MultiSim/blob/master/Source//HackflightModule/HackflightModule.Build.cs#L16-L17)
-   to reflect where you installed Hackflight / RFT.
-
-6. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
-
-7. In UnrealEditor, select one of the maps in <b>Content/MultiSim/Maps</b>. Then open the
-<b>Content/C++ Classes/HackflightModule/pawns</b> folder and drag one of the
-vehicle pawns into the map. Click the play button and you're ready to take off!
-
-# Support for other programming languages / packages
-
-MultiSim supports other programming languages via the SocketModule.  
-Examples in Python and Rust are provided. To use this module, do the following:
-
-1. Double-click <b>use_socket.bat</b>
-
-2. Right-click on the <b>MultiSim.uproject</b> 
-file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
-
-3. Double-click on the resulting <b>MultiSim.sln</b> file to launch VisualStudio.
-to build the project.
-
-4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
-
-5. In UnrealEditor, select one of the maps in <b>Content/MultiSim/Maps</b>. Then open the
-<b>Content/C++ Classes/SocketModule/pawns</b> folder and drag one of the
-vehicle pawns into the map.  
-
-6. Run the <b>launch.py</b> script in <b>Extras/python</b>.  It will tell you to hit the Play
+Run the <b>launch.py</b> script in <b>Servers/python</b>.  It will tell you to hit the Play
 button back in the simulator.  When you hit the button, the vehicle should rise quickly and then
 begin flying towards you.
-
 
 # Design principles
 
 The core of MultiSim is the abstract C++ 
 [FlightManager](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/FlightManager.hpp) 
 class. This class provides support for running the vehicle dynamics and the PID control
-regime (e.g., Hackflight) on its own thread, after it first disables the
+regime on its own thread, after it first disables the
 built-in physics in UE5.  The dynamics we used are based directly on the model
 presented in this [paper](https://infoscience.epfl.ch/record/97532/files/325.pdf), 
 written as a standalone, header-only C++ 
@@ -143,15 +89,7 @@ thread, we are able to achieve arbitrarily fast updates of the dynamics and
 flight-control.  It would also be possible to run the dynamics and control on
 separate threads, though we have not yet found it advantageous to do that.
 
-The FlightManager API contains a single virtual 
-[getMotors](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/FlightManager.hpp#L38-L46)
-method that accepts the current time and the state of the vehicle (as computed by the
-dynamics), and returns the current motor values.  The motor values are then
-passed to the dynamics object, which computes the new vehicle state.  On the
-main thread, UE5's <b>Tick()</b> method queries the flight manager for the
-current vehicle pose (location, rotation) and displays the vehicle and its
-environment kinematically at the 60-120Hz frame rate of the game engine.  In a
-similar manner, the 
+The
 [Camera](https://github.com/simondlevy/MultiSim/blob/master/Source/MainModule/Camera.hpp)
 class can be used to process
 the images collected by a simulated gimbal-mounted camera on the vehicle, using
