@@ -17,25 +17,6 @@ class Camera {
 
     friend class Vehicle;
 
-    private:
-
-        // Comms
-        static constexpr char * HOST = "127.0.0.1"; // localhost
-        static constexpr uint16_t PORT = 5002;
-
-        // Create one-way TCP socket server for images out
-        TcpClientSocket imageSocket = TcpClientSocket(HOST, PORT);
-
-        // Default position w.r.t vehicle
-        static constexpr float X = 0.2;
-        static constexpr float Y = 0.0;
-        static constexpr float Z = 0.3;
-
-    protected:
-
-        // Arbitrary array limits supporting statically declared assets
-        static const uint8_t MAX_CAMERAS = 10; 
-
     public:
 
         // Supported resolutions
@@ -49,6 +30,18 @@ class Camera {
         } Resolution_t;
 
     private:
+
+        // Comms
+        static constexpr char * HOST = "127.0.0.1"; // localhost
+        static constexpr uint16_t PORT = 5002;
+
+        // Create one-way TCP socket server for images out
+        TcpClientSocket imageSocket = TcpClientSocket(HOST, PORT);
+
+        // Default position w.r.t vehicle
+        static constexpr float X = 0.2;
+        static constexpr float Y = 0.0;
+        static constexpr float Z = 0.3;
 
         float _x = 0;
         float _y = 0;
@@ -70,38 +63,10 @@ class Camera {
         USceneCaptureComponent2D * _captureComponent = NULL;
         FRenderTarget * _renderTarget = NULL;
 
-    public:
+    protected:
 
-        Camera(
-                float fov=135,
-                Resolution_t resolution=RES_640x480,
-                float x=Camera::X,
-                float y=Camera::Y,
-                float z=Camera::Z)
-        {
-            uint16_t rowss[3] = {480, 720, 1080};
-            uint16_t colss[3] = {640, 1280, 1920};
-
-            _rows = rowss[resolution];
-            _cols = colss[resolution];
-            _res  = resolution;
-            _fov = fov;
-
-            // Set position w.r.t. vehicle
-            _x = x;
-            _y = y;
-            _z = z;
-
-            // Create a byte array sufficient to hold the RGBA image
-            _imageBytes = new uint8_t [_rows*_cols*4]();
-
-            // These will be set in Vehicle::addCamera()
-            _captureComponent = NULL;
-            _renderTarget = NULL;
-
-            // Open image socket's connection to host
-            imageSocket.openConnection();
-        }
+        // Arbitrary array limits supporting statically declared assets
+        static const uint8_t MAX_CAMERAS = 10; 
 
         // Called by Vehicle::addCamera()
         void addToVehicle(APawn * pawn, USpringArmComponent * springArm, uint8_t id)
@@ -199,12 +164,6 @@ class Camera {
             setFov(_fov);
         }
 
-        // Sets current FOV
-        void setFov(float fov)
-        {
-            _captureComponent->FOVAngle = fov;
-        }
-
         // Called on main thread
         void grabImage(void)
         {
@@ -219,9 +178,48 @@ class Camera {
             imageSocket.sendData(_imageBytes, _rows*_cols*4);
         }
 
+    public:
+
+        Camera(
+                float fov=135,
+                Resolution_t resolution=RES_640x480,
+                float x=Camera::X,
+                float y=Camera::Y,
+                float z=Camera::Z)
+        {
+            uint16_t rowss[3] = {480, 720, 1080};
+            uint16_t colss[3] = {640, 1280, 1920};
+
+            _rows = rowss[resolution];
+            _cols = colss[resolution];
+            _res  = resolution;
+            _fov = fov;
+
+            // Set position w.r.t. vehicle
+            _x = x;
+            _y = y;
+            _z = z;
+
+            // Create a byte array sufficient to hold the RGBA image
+            _imageBytes = new uint8_t [_rows*_cols*4]();
+
+            // These will be set in Vehicle::addCamera()
+            _captureComponent = NULL;
+            _renderTarget = NULL;
+
+            // Open image socket's connection to host
+            imageSocket.openConnection();
+        }
+
         ~Camera()
         {
             delete _imageBytes;
+        }
+
+        // Sets current FOV
+        void setFov(float fov)
+        {
+            _captureComponent->FOVAngle = fov;
         }
 
 }; // Class Camera

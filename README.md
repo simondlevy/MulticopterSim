@@ -5,7 +5,7 @@
 
 MultiSim is a simple multicopter flight simulator using Unreal Engine.  It runs on Windows, using UDP
 sockets to communicate vehicle state and camera images with flight-control programs
-written in various languages.  The use of sockets supports rapid prototyping of flight-control
+written in various languages.  This approach supports rapid prototyping of flight-control
 algorithms without having to recompile the simulator itself.
 
 # Prerequisites
@@ -51,7 +51,7 @@ getting UE5 to work with Visual Studio 2022, I have opted to stay with Visual St
 
 # Building
 
-1. Clone this repostitory (MultiSim) into your
+1. Clone this repository (MultiSim) into your
 <b>Documents/Unreal Projects</b> folder, first creating that folder if it
 doesn't exist.
 
@@ -90,20 +90,20 @@ The core of MultiSim is the C++
 [FlightManager](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/FlightManager.hpp) 
 class. This class provides support for running the vehicle dynamics and the PID control
 regime on its own thread, after it first disables the
-built-in physics in UE5.  The dynamics we used are based directly on the model
+built-in physics in UE5.  The dynamics I used are based directly on the model
 presented in this [paper](https://infoscience.epfl.ch/record/97532/files/325.pdf), 
 written as a standalone, header-only C++ 
 [class](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/Dynamics.hpp)
 that can be easily adapted for other simulators and applications if desired.
 This class also supports different frame configurations (quadcopter,
 hexacopter) via virtual methods. By running the FlightManager on its own
-thread, we are able to achieve arbitrarily fast updates of the dynamics and
+thread, I am able to achieve arbitrarily fast updates of the dynamics and
 flight-control.  It would also be possible to run the dynamics and control on
-separate threads, though we have not yet found it advantageous to do that.
+separate threads, though I have not yet found it advantageous to do that.
 
 The
 [Camera](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/Camera.hpp)
-class can be used to process
+class can be instantiated to transmit
 the images collected by a simulated gimbal-mounted camera on the vehicle, using
 a library like OpenCV.  Computer-vision algorithms running in a Camera subclass can then be used
 as input to the PID control running in the FlightManager.  The following figure
