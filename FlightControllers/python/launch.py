@@ -55,6 +55,7 @@ class LaunchCopter(MulticopterServer):
                 self.target = 30
 
         except Exception as _e:
+            debug('Failed')
             pass
 
 

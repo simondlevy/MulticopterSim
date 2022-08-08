@@ -65,7 +65,7 @@ class Camera {
         FRenderTarget * _renderTarget = NULL;
 
         Camera(
-                float fov=90,
+                float fov=135,
                 Resolution_t resolution=RES_640x480,
                 float x=Camera::X,
                 float y=Camera::Y,
@@ -196,11 +196,6 @@ class Camera {
         {
             _captureComponent->FOVAngle = fov;
         }
-
-
-        // Camera params
-        static constexpr Resolution_t RES = RES_640x480;
-        static constexpr float FOV = 135;
 
         // Called on main thread
         void grabImage(void)
