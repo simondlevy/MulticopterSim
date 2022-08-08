@@ -1,4 +1,4 @@
-<img src="logo.png" width=250 align="left">
+<img src="logo.png" width=200 align="left">
 
 ## C++ flight controller for MultiSim
 
