@@ -84,6 +84,9 @@ OpenCV.  This feature can be glitchy the first time you try it.
 
 # Support for other languages
 
+The [FlightControllers](https://github.com/simondlevy/MultiSim/tree/master/FlightControllers)
+directory contains code and instructions for different kinds of flight controllers written in various languages.
+
 # Design principles
 
 The core of MultiSim is the C++ 
