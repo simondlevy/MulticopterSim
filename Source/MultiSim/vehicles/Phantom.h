@@ -9,12 +9,9 @@
 #pragma once
 
 #include "../Vehicle.hpp"
+#include "../FlightManager.hpp"
 
 #include "../dynamics/fixedpitch/QuadXBF.hpp"
-
-#include "../mixers/quadxbf.h"
-
-#include "../FlightManager.hpp"
 
 #include <CoreMinimal.h>
 #include <GameFramework/Pawn.h>
@@ -56,6 +53,12 @@ class APhantom : public APawn {
 
         Camera camera;
 
+        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
+
+        Vehicle vehicle = Vehicle(&dynamics);
+
+        void addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy);
+
     protected:
 
         // AActor overrides
@@ -71,11 +74,5 @@ class APhantom : public APawn {
     public:	
 
         APhantom();
-
-        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
-
-        Vehicle vehicle = Vehicle(&dynamics);
-
-        void addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy);
 
 }; // APhantom
