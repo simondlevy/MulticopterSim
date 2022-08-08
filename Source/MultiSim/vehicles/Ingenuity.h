@@ -81,6 +81,12 @@ class AIngenuity : public APawn {
             15000,// maxrpm
         };
 
+        CoaxialDynamics dynamics = CoaxialDynamics(vparams);
+
+        Vehicle vehicle = Vehicle(&dynamics);
+
+        Camera camera;
+
         void addRotor(UStaticMesh* propMesh, float z);
 
         void addLeg(
@@ -104,15 +110,5 @@ class AIngenuity : public APawn {
     public:	
 
         AIngenuity();
-
-        CoaxialDynamics dynamics = CoaxialDynamics(vparams);
-
-        Vehicle vehicle = Vehicle(&dynamics);
-
-        void BeginPlay(FFlightManager * flightManager);
-
-        void EndPlay(void);
-
-        void addCamera(Camera * camera);
 
 }; // AIngenuity

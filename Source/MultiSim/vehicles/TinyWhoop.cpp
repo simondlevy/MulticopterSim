@@ -79,4 +79,3 @@ void ATinyWhoop::addRotor(float x, float y)
 {
     vehicle.addRotor(PropCCWStatics.mesh.Get(), x, y, 0.04);
 }
-

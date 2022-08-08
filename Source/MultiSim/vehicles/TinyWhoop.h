@@ -63,6 +63,12 @@ class ATinyWhoop : public APawn {
             0.350   // l arm length [m]
         };
 
+        Camera camera;
+
+        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
+
+        Vehicle vehicle = Vehicle(&dynamics);
+
         void addMotor(UStaticMesh * motorMesh, uint8_t id);
 
         void addRotor(float x, float y);
@@ -81,14 +87,7 @@ class ATinyWhoop : public APawn {
 
     public:	
 
-        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
-
-        Vehicle vehicle = Vehicle(&dynamics);
-
         ATinyWhoop();
 
-        void BeginPlay(FFlightManager * flightManager);
-
-        void EndPlay(void);
 
 }; // ATinyWhoop

@@ -64,11 +64,6 @@ void AIngenuity::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 }
 
-void AIngenuity::addCamera(Camera * camera)
-{
-    vehicle.addCamera(camera);
-}
-
 void AIngenuity::addLeg(
         uint8_t index,
         UStaticMesh * bracketMesh,
