@@ -23,10 +23,6 @@ class Camera {
         static constexpr char * HOST = "127.0.0.1"; // localhost
         static constexpr uint16_t PORT = 5002;
 
-        // Camera params
-        static constexpr Resolution_t RES = RES_640x480;
-        static constexpr float FOV = 135;
-
         // Create one-way TCP socket server for images out
         TcpClientSocket imageSocket = TcpClientSocket(HOST, PORT);
 
@@ -181,7 +177,14 @@ class Camera {
             _captureComponent->FOVAngle = fov;
         }
 
-    public:
+
+    private:
+
+         // Camera params
+        static constexpr Resolution_t RES = RES_640x480;
+        static constexpr float FOV = 135;
+
+   public:
 
         // Called on main thread
         void grabImage(void)
