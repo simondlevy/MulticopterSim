@@ -39,12 +39,10 @@ class LaunchController(object):
         # Always compute throttle demand for altitude hold
         throttle = self.Kp * velError + self.Ki * self.integralError
 
-        # Don't mess with roll and yaw for now
+        # Don't mess with roll,pitch, and yaw for this simple demo
         roll = 0
+        pitch = 0
         yaw = 0
-
-        # Pitch forward slightly for one second after level-off
-        pitch = 0.001 if (2 < t < 3.25) else 0
 
         return throttle, roll, pitch, yaw
 

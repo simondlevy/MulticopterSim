@@ -71,8 +71,7 @@ vehicle pawns into the map.
 # Testing
 
 Run the <b>launch.py</b> script in <b>FlightControllers/python/</b>.  It will tell you to hit the Play
-button back in the simulator.  When you hit the button, the vehicle should rise quickly and then
-begin flying towards you.
+button back in the simulator.  When you hit the button, the vehicle should rise quickly to an altitude of 10 meters.
 
 # Image processing
 
