@@ -7,7 +7,11 @@ Copyright (C) 2021 Simon D. Levy
 MIT License
 '''
 
-#import cv2
+try:
+    import cv2
+except Exception as _e:
+    pass
+
 import numpy as np
 import argparse
 from argparse import ArgumentDefaultsHelpFormatter
@@ -37,19 +41,22 @@ class LaunchCopter(MulticopterServer):
         # Create PID controller
         self.ctrl = LaunchController(kp, ki)
 
-    '''
     def handleImage(self, image):
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        edges = cv2.Canny(gray, 100, 200)
-        cv2.imshow('Edge Detection', edges)
-        cv2.waitKey(1)
+        try:
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            edges = cv2.Canny(gray, 100, 200)
+            cv2.imshow('Edge Detection', edges)
+            cv2.waitKey(1)
 
-        nonzero = np.nonzero(edges)[0]
+            nonzero = np.nonzero(edges)[0]
 
-        # Ignore image for first five seconds
-        if len(nonzero) > 0 and np.mean(nonzero) > 390 and self.time > 5:
-            self.target = 30
-    '''
+            # Ignore image for first five seconds
+            if len(nonzero) > 0 and np.mean(nonzero) > 390 and self.time > 5:
+                self.target = 30
+
+        except Exception as _e:
+            pass
+
 
     def getMotors(self, t, state, _stickDemands):
 

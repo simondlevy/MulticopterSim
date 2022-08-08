@@ -17,6 +17,9 @@ APhantom::APhantom()
     addRotor(PropCCWStatics.mesh.Get(), -1, -1);
     addRotor(PropCWStatics.mesh.Get(), +1, -1);
     addRotor(PropCWStatics.mesh.Get(), -1, +1);
+
+    // Un-comment for camera
+    // vehicle.addCamera(&camera);
 }
 
 // Called when the game starts or when spawned
@@ -47,11 +50,6 @@ void APhantom::Tick(float DeltaSeconds)
     vehicle.tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
-}
-
-void APhantom::addCamera(Camera * camera)
-{
-    vehicle.addCamera(camera);
 }
 
 void APhantom::addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy)

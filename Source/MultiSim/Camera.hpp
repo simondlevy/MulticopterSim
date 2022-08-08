@@ -17,7 +17,7 @@ class Camera {
 
     friend class Vehicle;
 
-    private:
+    public:
 
         // Comms
         static constexpr char * HOST = "127.0.0.1"; // localhost
@@ -25,8 +25,6 @@ class Camera {
 
         // Create one-way TCP socket server for images out
         TcpClientSocket imageSocket = TcpClientSocket(HOST, PORT);
-
-    public:
 
         // Default position w.r.t vehicle
         static constexpr float X = 0.2;
@@ -46,8 +44,6 @@ class Camera {
 
         } Resolution_t;
 
-    private:
-
         float _x = 0;
         float _y = 0;
         float _z = 0;
@@ -57,22 +53,20 @@ class Camera {
         // Byte array for RGBA image
         uint8_t * _imageBytes = NULL;
 
-    protected:
-
         // Image size and field of view, set in constructor
         uint16_t _rows = 0;
         uint16_t _cols = 0;
 
         // Initial FOV can be overridden by setFov()
-        float    _fov  = 0;
+        float _fov  = 0;
 
         // UE4 resources, set in Vehicle::addCamera()
         USceneCaptureComponent2D * _captureComponent = NULL;
-        FRenderTarget            * _renderTarget = NULL;
+        FRenderTarget * _renderTarget = NULL;
 
         Camera(
-                float fov,
-                Resolution_t resolution,
+                float fov=90,
+                Resolution_t resolution=RES_640x480,
                 float x=Camera::X,
                 float y=Camera::Y,
                 float z=Camera::Z)
@@ -102,7 +96,7 @@ class Camera {
         }
 
         // Called by Vehicle::addCamera()
-        virtual void addToVehicle(APawn * pawn, USpringArmComponent * springArm, uint8_t id)
+        void addToVehicle(APawn * pawn, USpringArmComponent * springArm, uint8_t id)
         {
             // Get static assets for all render targets.  This provides less
             // flexibility than creating it dynamically, but acquiring the
@@ -111,47 +105,80 @@ class Camera {
                 cameraTextureObjects[RES_COUNT][MAX_CAMERAS] =
             { 
                 {
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_1")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_2")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_3")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_4")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_5")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_6")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_7")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_8")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_9")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_10")) 
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_1")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_2")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_3")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_4")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_5")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_6")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_7")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_8")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_9")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_640x480_10")) 
                 },
                 {
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_1")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_2")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_3")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_4")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_5")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_6")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_7")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_8")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_9")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_10")) 
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_1")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_2")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_3")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_4")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_5")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_6")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_7")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_8")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_9")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1280x720_10")) 
                 },
                 {
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_1")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_2")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_3")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_4")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_5")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_6")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_7")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_8")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_9")),
-                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_10")) 
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_1")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_2")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_3")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_4")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_5")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_6")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_7")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_8")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_9")),
+                    ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D>(
+                            TEXT("/Game/MultiSim/RenderTargets/renderTarget_1920x1080_10")) 
                 }
             };
 
-            UTextureRenderTarget2D * textureRenderTarget2D = cameraTextureObjects[_res][id].Object;
+            UTextureRenderTarget2D * textureRenderTarget2D =
+                cameraTextureObjects[_res][id].Object;
 
             // Create a scene-capture component and set its target to the render target
-            _captureComponent = pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(makeName("Capture", id));
+            _captureComponent =
+                pawn->CreateDefaultSubobject<USceneCaptureComponent2D >(
+                        makeName("Capture", id));
             _captureComponent->SetWorldScale3D(FVector(0.1,0.1,0.1));
             _captureComponent->SetupAttachment(springArm, USpringArmComponent::SocketName);
             _captureComponent->SetRelativeLocation(100*FVector(_x, _y, _z));  // m => cm
@@ -159,16 +186,9 @@ class Camera {
 
             // Get the render target resource for copying the image pixels
             _renderTarget = textureRenderTarget2D->GameThread_GetRenderTargetResource();
-            
+
             // Set the initial FOV
             setFov(_fov);
-        }
-
-        // Override this method for your video application
-        void processImageBytes(uint8_t * bytes)
-        {
-            // Send image data
-            imageSocket.sendData(bytes, _rows*_cols*4);
         }
 
         // Sets current FOV
@@ -178,13 +198,9 @@ class Camera {
         }
 
 
-    private:
-
-         // Camera params
+        // Camera params
         static constexpr Resolution_t RES = RES_640x480;
         static constexpr float FOV = 135;
-
-   public:
 
         // Called on main thread
         void grabImage(void)
@@ -196,11 +212,11 @@ class Camera {
             // Copy the RBGA pixels to the private image
             FMemory::Memcpy(_imageBytes, renderTargetPixels.GetData(), _rows*_cols*4);
 
-            // Virtual method implemented in subclass
-            processImageBytes(_imageBytes);
+            // Send image data
+            imageSocket.sendData(_imageBytes, _rows*_cols*4);
         }
 
-        virtual ~Camera()
+        ~Camera()
         {
             delete _imageBytes;
         }

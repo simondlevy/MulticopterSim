@@ -11,7 +11,11 @@ import socket
 import numpy as np
 import sys
 import time
-#import cv2
+
+try:
+    import cv2
+except Exception as _e:
+    pass
 
 
 def _debug(msg):
@@ -68,15 +72,12 @@ class MulticopterServer(object):
                         args=(telemetryServerSocket,
                               motorClientSocket))
 
-        # Serve a socket with a maximum of one client
-        #imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #imageServerSocket.bind((self.host, self.image_port))
-        #imageServerSocket.listen(1)
-
-        # This will block (wait) until a client connets
-        #imageConn, _ = imageServerSocket.accept()
-        #imageConn.settimeout(1)
-        #_debug('Got a connection!')
+        # Serve a TCP socket for images socket with a maximum of one client
+        imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        imageServerSocket.bind((self.host, self.image_port))
+        imageServerSocket.listen(1)
+        imageConn, _ = imageServerSocket.accept()
+        imageConn.settimeout(1)
 
         thread.start()
 
@@ -85,7 +86,6 @@ class MulticopterServer(object):
             try: 
                 time.sleep(.001)  # Yield to other thread
 
-                '''
                 try:
                     imgbytes = imageConn.recv(self.image_rows*self.image_cols*4)
 
@@ -100,7 +100,6 @@ class MulticopterServer(object):
                     image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
 
                     self.handleImage(image)
-                '''
 
             except KeyboardInterrupt:
                 break
@@ -109,9 +108,11 @@ class MulticopterServer(object):
         '''
         Override for your application
         '''
-        # cv2.imshow('Image', image)
-        # cv2.waitKey(1)
-        return
+        try:
+            cv2.imshow('Image', image)
+            cv2.waitKey(1)
+        except Exception as _e:
+            pass
 
     def getMotors(self, time, state, demands):
         '''

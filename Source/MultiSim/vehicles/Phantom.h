@@ -54,6 +54,8 @@ class APhantom : public APawn {
             0.350   // l arm length [m]
         };
 
+        Camera camera;
+
     protected:
 
         // AActor overrides
@@ -73,8 +75,6 @@ class APhantom : public APawn {
         QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
 
         Vehicle vehicle = Vehicle(&dynamics);
-
-        void addCamera(Camera * camera);
 
         void addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy);
 
