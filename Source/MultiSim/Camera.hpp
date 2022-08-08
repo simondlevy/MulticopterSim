@@ -1,5 +1,5 @@
 /*
- * Abstract camera class for MultiSim
+ * Camera class for MultiSim
  *
  * Copyright (C) 2019 Simon D. Levy
  *
@@ -11,10 +11,24 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "Utils.hpp"
+#include "sockets/TcpClientSocket.hpp"
 
 class Camera {
 
     friend class Vehicle;
+
+    private:
+
+        // Comms
+        static constexpr char * HOST = "127.0.0.1"; // localhost
+        static constexpr uint16_t PORT = 5002;
+
+        // Camera params
+        static constexpr Resolution_t RES = RES_640x480;
+        static constexpr float FOV = 135;
+
+        // Create one-way TCP socket server for images out
+        TcpClientSocket imageSocket = TcpClientSocket(HOST, PORT);
 
     public:
 
@@ -60,7 +74,12 @@ class Camera {
         USceneCaptureComponent2D * _captureComponent = NULL;
         FRenderTarget            * _renderTarget = NULL;
 
-        Camera(float fov, Resolution_t resolution, float x=Camera::X, float y=Camera::Y, float z=Camera::Z)
+        Camera(
+                float fov,
+                Resolution_t resolution,
+                float x=Camera::X,
+                float y=Camera::Y,
+                float z=Camera::Z)
         {
             uint16_t rowss[3] = {480, 720, 1080};
             uint16_t colss[3] = {640, 1280, 1920};
@@ -81,6 +100,9 @@ class Camera {
             // These will be set in Vehicle::addCamera()
             _captureComponent = NULL;
             _renderTarget = NULL;
+
+            // Open image socket's connection to host
+            imageSocket.openConnection();
         }
 
         // Called by Vehicle::addCamera()
@@ -147,7 +169,11 @@ class Camera {
         }
 
         // Override this method for your video application
-        virtual void processImageBytes(uint8_t * bytes) { (void)bytes; }
+        void processImageBytes(uint8_t * bytes)
+        {
+            // Send image data
+            imageSocket.sendData(bytes, _rows*_cols*4);
+        }
 
         // Sets current FOV
         void setFov(float fov)
