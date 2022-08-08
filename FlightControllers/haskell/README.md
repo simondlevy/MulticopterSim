@@ -1,4 +1,4 @@
-<img src="logo.png" width=125 align="left">
+<img src="logo.png" width=200 align="left">
 
 ## Haskell flight controller for MultiSim
 
