@@ -1,5 +1,5 @@
 #
-# Makefile for Hackflight-based Multicopter server
+# Makefile for C++ / Haskell-bbased MultiSim flight controller
 #
 # Copyright (C) 2022 Simon D. Levy
 # 

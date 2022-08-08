@@ -1,3 +1,11 @@
+#
+# Makefile for Haskell-based MultiSim flight controller
+#
+# Copyright (C) 2022 Simon D. Levy
+# 
+# MIT License
+# 
+
 ALL = takeoff
 all: $(ALL)
 
