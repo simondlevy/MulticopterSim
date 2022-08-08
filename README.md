@@ -70,7 +70,7 @@ vehicle pawns into the map.
 
 # Testing
 
-Run the <b>launch.py</b> script in <b>FlightControllers/python</b>.  It will tell you to hit the Play
+Run the <b>launch.py</b> script in <b>FlightControllers/python/</b>.  It will tell you to hit the Play
 button back in the simulator.  When you hit the button, the vehicle should rise quickly and then
 begin flying towards you.
 
@@ -80,7 +80,9 @@ If you have Python OpenCV installed on your computer, you can try out the simula
 un-commenting the
 <tt><a href="https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/vehicles/Phantom.cpp#L21-L22">vehicle.addCamera()</a></tt>
 line in the source code.  Running the Python launch program again, you should see a 640x480 image showing edge detection in 
-OpenCV.
+OpenCV.  This feature can be glitchy the first time you try it.
+
+# Support for other languages
 
 # Design principles
 

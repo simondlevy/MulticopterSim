@@ -31,10 +31,12 @@ class Camera {
         static constexpr float Y = 0.0;
         static constexpr float Z = 0.3;
 
-    public:
+    protected:
 
         // Arbitrary array limits supporting statically declared assets
         static const uint8_t MAX_CAMERAS = 10; 
+
+    public:
 
         // Supported resolutions
         typedef enum {
