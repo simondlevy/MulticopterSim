@@ -17,7 +17,7 @@ class Camera {
 
     friend class Vehicle;
 
-    public:
+    private:
 
         // Comms
         static constexpr char * HOST = "127.0.0.1"; // localhost
@@ -31,6 +31,8 @@ class Camera {
         static constexpr float Y = 0.0;
         static constexpr float Z = 0.3;
 
+    public:
+
         // Arbitrary array limits supporting statically declared assets
         static const uint8_t MAX_CAMERAS = 10; 
 
@@ -43,6 +45,8 @@ class Camera {
             RES_COUNT
 
         } Resolution_t;
+
+    private:
 
         float _x = 0;
         float _y = 0;
@@ -63,6 +67,8 @@ class Camera {
         // UE4 resources, set in Vehicle::addCamera()
         USceneCaptureComponent2D * _captureComponent = NULL;
         FRenderTarget * _renderTarget = NULL;
+
+    public:
 
         Camera(
                 float fov=135,

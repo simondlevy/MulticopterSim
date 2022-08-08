@@ -4,7 +4,9 @@
 # About
 
 MultiSim is a simple multicopter flight simulator using Unreal Engine.  It runs on Windows, using UDP
-sockets to communicate with flight-control programs written in various languages.
+sockets to communicate vehicle state and camera images with flight-control programs
+written in various languages.  The use of sockets supports rapid prototyping of flight-control
+algorithms without having to recompile the simulator itself.
 
 # Prerequisites
 
@@ -71,6 +73,14 @@ vehicle pawns into the map.
 Run the <b>launch.py</b> script in <b>FlightControllers/python</b>.  It will tell you to hit the Play
 button back in the simulator.  When you hit the button, the vehicle should rise quickly and then
 begin flying towards you.
+
+# Image processing
+
+If you have Python OpenCV installed on your computer, you can try out the simulated camera feature of MultiSim by 
+un-commenting the
+<tt><a href="https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/vehicles/Phantom.cpp#L21-L22">vehicle.addCamera()</a></tt>
+line in the source code.  Running the Python launch program again, you should see a 640x480 image showing edge detection in 
+OpenCV.
 
 # Design principles
 
