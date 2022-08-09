@@ -51,11 +51,9 @@ getting UE5 to work with Visual Studio 2022, I have opted to stay with Visual St
 
 # Building
 
-1. Clone this repository (MultiSim) into your
-<b>Documents/Unreal Projects</b> folder, first creating that folder if it
-doesn't exist.
+1. Clone this repository. 
 
-2. Right-click on the <b>MultiSim.uproject</b> 
+2. Right-click on the <b>/Simulator/MultiSim.uproject</b> 
 file and select <b>Generate Visual Studio project file</b> to generate a <b>.sln</b> file
 
 3. Double-click on the resulting <b>MultiSim.sln</b> file to launch VisualStudio.  The first time
