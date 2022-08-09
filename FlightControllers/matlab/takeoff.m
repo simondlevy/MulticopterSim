@@ -20,6 +20,8 @@ copter = Multicopter;
 % Start the simulation
 copter.start
 
+fprintf('Hit the Play button ...')
+
 % Set up initial conditions
 z = 0;
 zprev = 0;
