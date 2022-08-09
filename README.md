@@ -1,5 +1,5 @@
-<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="Extras/media/IndoorScene.png" height=275></a>
-<a href="https://www.youtube.com/watch?v=h6107MBgQ98"><img src="Extras/media/Mars2.png" height=275></a>
+<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="Simulator/Extras/media/IndoorScene.png" height=275></a>
+<a href="https://www.youtube.com/watch?v=h6107MBgQ98"><img src="Simulator/Extras/media/Mars2.png" height=275></a>
 
 # About
 
