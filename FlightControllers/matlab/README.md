@@ -1,4 +1,4 @@
-<img src="logo.png" width=125 align="left">
+<img src="logo.png" height=150 align="left">
 
 ## Matlab flight controller for MultiSim
 

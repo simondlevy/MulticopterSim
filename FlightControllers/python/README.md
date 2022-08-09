@@ -1,4 +1,4 @@
-<img src="logo2.png" width=180 align="left">
+<img src="logo2.png" height=150 align="left">
 
 ## Python flight controller for MultiSim
 
