@@ -4,7 +4,7 @@
 # About
 
 MultiSim is a simple multicopter flight simulator using Unreal Engine.  It runs on Windows, using UDP
-sockets to communicate vehicle state and camera images with flight-control programs
+sockets to communicate Stick demands, vehicle state and camera images with flight-control programs
 written in various languages.  This approach supports rapid prototyping of flight-control
 algorithms without having to recompile the simulator itself.
 
