@@ -21,7 +21,7 @@ for the minimum requirements recommended by Unreal Engine.
 For a realistic flying experience, you will also likely want some sort of game
 controller or R/C transmitter.  MultiSim currently supports the following controllers
 through the
-[Joystick](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/Joystick.h)
+[Joystick](https://github.com/simondlevy/MultiSim/blob/master/Simulator/Source/MultiSim/Joystick.h)
 class:
 
 * PS4 controller
