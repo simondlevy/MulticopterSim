@@ -93,7 +93,7 @@ regime on its own thread, after it first disables the
 built-in physics in UE5.  The dynamics I used are based directly on the model
 presented in this [paper](https://infoscience.epfl.ch/record/97532/files/325.pdf), 
 written as a standalone, header-only C++ 
-[class](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/Dynamics.hpp)
+[class](https://github.com/simondlevy/MultiSim/blob/master/Simulator/Source/MultiSim/Dynamics.hpp)
 that can be easily adapted for other simulators and applications if desired.
 This class also supports different frame configurations (quadcopter,
 hexacopter) via virtual methods. By running the FlightManager on its own
