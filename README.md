@@ -102,7 +102,7 @@ flight-control.  It would also be possible to run the dynamics and control on
 separate threads, though I have not yet found it advantageous to do that.
 
 The
-[Camera](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/Camera.hpp)
+[Camera](https://github.com/simondlevy/MultiSim/blob/master/Simulator/Source/MultiSim/Camera.hpp)
 class can be instantiated to transmit
 the images collected by a simulated gimbal-mounted camera on the vehicle, using
 a library like OpenCV.  Computer-vision algorithms running in a Camera subclass can then be used
