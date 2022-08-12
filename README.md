@@ -87,7 +87,7 @@ directory contains code and instructions for different kinds of flight controlle
 # Design principles
 
 The core of MultiSim is the C++ 
-[FlightManager](https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/FlightManager.hpp) 
+[FlightManager](https://github.com/simondlevy/MultiSim/blob/master/Simulator/Source/MultiSim/FlightManager.hpp) 
 class. This class provides support for running the vehicle dynamics and the PID control
 regime on its own thread, after it first disables the
 built-in physics in UE5.  The dynamics I used are based directly on the model
