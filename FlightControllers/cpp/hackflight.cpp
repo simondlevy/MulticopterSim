@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include <hackflight.h>
+#include <hackflight_core.h>
 #include <mixers/fixedpitch/quadxbf.h>
 
 #include "../../Simulator/Source/MultiSim/sockets/UdpClientSocket.hpp"
@@ -41,7 +41,7 @@ int main(int argc, char ** argv)
 
     // Create Hackflight objects
 
-    hackflight_t hf = {};
+    hackflight_core_t hf = {};
 
     anglePidConstants_t anglePidConstants = { 
         RATE_P,
