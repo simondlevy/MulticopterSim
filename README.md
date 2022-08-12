@@ -75,7 +75,7 @@ button back in the simulator.  When you hit the button, the vehicle should rise 
 
 If you have Python OpenCV installed on your computer, you can try out the simulated camera feature of MultiSim by 
 un-commenting the
-<tt><a href="https://github.com/simondlevy/MultiSim/blob/master/Source/MultiSim/vehicles/Phantom.cpp#L21-L22">vehicle.addCamera()</a></tt>
+<tt><a href="https://github.com/simondlevy/MultiSim/blob/master/Simulator/Source/MultiSim/vehicles/Phantom.cpp#L21-L22">vehicle.addCamera()</a></tt>
 line in the source code.  Running the Python launch program again, you should see a 640x480 image showing edge detection in 
 OpenCV.  This feature can be glitchy the first time you try it.
 
