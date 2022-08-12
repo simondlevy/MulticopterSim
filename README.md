@@ -63,8 +63,8 @@ to build the project.
 4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
 5. In UnrealEditor, select one of the maps in <b>Content Drawer/MultiSim/Maps</b>. Then open the
-<b>Content/C++ Classes/MultiSim/pawns</b> folder and drag one of the
-vehicle pawns into the map. 
+<b>Content/C++ Classes/MultiSim/vehicles</b> folder and drag one of the
+vehicles into the map. 
 
 # Testing
 
