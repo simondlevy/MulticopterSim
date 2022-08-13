@@ -41,8 +41,6 @@ int main(int argc, char ** argv)
 
     // Create Hackflight objects
 
-    hackflight_core_t hf = {};
-
     anglePidConstants_t anglePidConstants = { 
         RATE_P,
         RATE_I,
@@ -51,7 +49,9 @@ int main(int argc, char ** argv)
         LEVEL_P
     };
 
-    hackflightInit(&hf, &anglePidConstants, mixerQuadXbf);
+    HackflightCore::data_t hf = {};
+
+    HackflightCore::init(&hf, &anglePidConstants, mixerQuadXbf);
 
     motor_config_t motorConfig = {
         0,     // disarmed
@@ -103,7 +103,7 @@ int main(int argc, char ** argv)
 
         // Run core Hackflight algorithm to get motor values
         float motorvals[4] = {};
-        hackflightRunCoreTasks(
+        HackflightCore::step(
                 &hf,
                 usec,
                 false, // no failsafe in sim
