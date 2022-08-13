@@ -11,8 +11,7 @@ module, you should take the following steps:
 2. Follow the [directions](https://github.com/simondlevy/MultiSim#building) for building MultiSim.
 
 3. Follow the [directions](https://github.com/simondlevy/MultiSim/tree/master/FlightControllers/python) 
-in <b>MultiSim/Extras/python</b> for installing the <b>multicopter_sim</b> Python library
-and using a socket-based pawn.
+in <b>MultiSim/Extras/python</b> for installing the <b>multicopter_sim</b> Python library.
 
 4. In <b>MultiSim/Extras/nengo</b> folder, run <tt>python3 takeoff.py</tt>, and click the play button.
 
