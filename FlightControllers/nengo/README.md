@@ -8,9 +8,9 @@ module, you should take the following steps:
 
 1. Install Nengo.
 
-2. Follow the [directions](https://github.com/simondlevy/MultiSim#windows) for building MultiSim.
+2. Follow the [directions](https://github.com/simondlevy/MultiSim#building) for building MultiSim.
 
-3. Follow the [directions](https://github.com/simondlevy/MultiSim/tree/master/Extras/python) 
+3. Follow the [directions](https://github.com/simondlevy/MultiSim/tree/master/FlightControllers/python) 
 in <b>MultiSim/Extras/python</b> for installing the <b>multicopter_sim</b> Python library
 and using a socket-based pawn.
 
