@@ -41,14 +41,22 @@ int main(int argc, char ** argv)
 
     // Create Hackflight objects
 
+<<<<<<< HEAD
+    HackflightCore::data_t hf = {};
+
+    static AnglePidController anglePid(
+=======
     anglePidConstants_t anglePidConstants = { 
+>>>>>>> ba7bd829c40449417782a4345333a76134fc73b1
         RATE_P,
         RATE_I,
         RATE_D,
         RATE_F,
-        LEVEL_P
-    };
+        LEVEL_P);
 
+<<<<<<< HEAD
+    QuadXbfMixer mixer; 
+=======
     HackflightCore::data_t hf = {};
 
     HackflightCore::init(&hf, &anglePidConstants, mixerQuadXbf);
@@ -59,6 +67,7 @@ int main(int argc, char ** argv)
         0,     // low
         false  // isDshot
     };
+>>>>>>> ba7bd829c40449417782a4345333a76134fc73b1
 
     printf("Hit the Play button ... ");
     fflush(stdout);
@@ -105,13 +114,18 @@ int main(int argc, char ** argv)
         float motorvals[4] = {};
         HackflightCore::step(
                 &hf,
+                &anglePid,
                 usec,
-                false, // no failsafe in sim
-                &motorConfig,
+                &mixer,
                 motorvals);
 
         // Convert motor values to doubles
-        double dmotorvals[4] = {motorvals[0], motorvals[1], motorvals[2], motorvals[3]};
+        double dmotorvals[4] = {
+            motorvals[0],
+            motorvals[1],
+            motorvals[2],
+            motorvals[3]
+        };
 
         // Send back motor values
         motorClient.sendData(dmotorvals, sizeof(dmotorvals));
