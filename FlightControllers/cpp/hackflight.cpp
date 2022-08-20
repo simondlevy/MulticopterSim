@@ -41,33 +41,16 @@ int main(int argc, char ** argv)
 
     // Create Hackflight objects
 
-<<<<<<< HEAD
     HackflightCore::data_t hf = {};
 
     static AnglePidController anglePid(
-=======
-    anglePidConstants_t anglePidConstants = { 
->>>>>>> ba7bd829c40449417782a4345333a76134fc73b1
         RATE_P,
         RATE_I,
         RATE_D,
         RATE_F,
         LEVEL_P);
 
-<<<<<<< HEAD
     QuadXbfMixer mixer; 
-=======
-    HackflightCore::data_t hf = {};
-
-    HackflightCore::init(&hf, &anglePidConstants, mixerQuadXbf);
-
-    motor_config_t motorConfig = {
-        0,     // disarmed
-        1,     // high
-        0,     // low
-        false  // isDshot
-    };
->>>>>>> ba7bd829c40449417782a4345333a76134fc73b1
 
     printf("Hit the Play button ... ");
     fflush(stdout);
