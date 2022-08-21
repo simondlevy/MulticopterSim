@@ -41,8 +41,6 @@ int main(int argc, char ** argv)
 
     // Create Hackflight objects
 
-    HackflightCore::data_t hf = {};
-
     static AnglePidController anglePid(
         RATE_P,
         RATE_I,
@@ -72,32 +70,38 @@ int main(int argc, char ** argv)
         uint32_t usec = (uint32_t)(time * 1e6);
 
         // Build vehicle state 
-        vehicle_state_t * vstate = &hf.vstate;
-        vstate->x      = telemetry[1];
-        vstate->dx     = telemetry[2];
-        vstate->y      = telemetry[3];
-        vstate->dy     = telemetry[4];
-        vstate->z      = telemetry[5];
-        vstate->dz     = telemetry[6];
-        vstate->phi    = telemetry[7];
-        vstate->dphi   = telemetry[8];
-        vstate->theta  = telemetry[9];
-        vstate->dtheta = telemetry[10];
-        vstate->psi    = telemetry[11];
-        vstate->dpsi   = telemetry[12];
+        vehicle_state_t vstate = {
+            (float)telemetry[1],
+            (float)telemetry[2],
+            (float)telemetry[3],
+            (float)telemetry[4],
+            (float)telemetry[5],
+            (float)telemetry[6],
+            (float)telemetry[7],
+            (float)telemetry[8],
+            (float)telemetry[9],
+            (float)telemetry[10],
+            (float)telemetry[11],
+            (float)telemetry[12]
+        };
 
         // Build demands
-        demands_t * demands = &hf.demands;
-        demands->throttle = (telemetry[13] + 1) / 2; // [-1,+1] => [0,1]
-        demands->roll     = telemetry[14] * 670;
-        demands->pitch    = telemetry[15] * 670;
-        demands->yaw      = telemetry[16] * 670;
+        demands_t demands = {
+            (float)(telemetry[13] + 1) / 2, // [-1,+1] => [0,1]
+            (float)telemetry[14] * 670,
+            (float)telemetry[15] * 670,
+            (float)telemetry[16] * 670
+        };
+
+        bool pidReset = demands.throttle < .05;
 
         // Run core Hackflight algorithm to get motor values
         float motorvals[4] = {};
         HackflightCore::step(
-                &hf,
+                &demands,
+                &vstate,
                 &anglePid,
+                pidReset,
                 usec,
                 &mixer,
                 motorvals);
