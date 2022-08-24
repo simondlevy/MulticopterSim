@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include <hackflight_core.h>
+#include <pids/althold.h>
 #include <mixers/fixedpitch/quadxbf.h>
 
 #include "../../Simulator/Source/MultiSim/sockets/UdpClientSocket.hpp"
@@ -29,8 +30,8 @@ static const float RATE_D  = 2.1e-2;
 static const float RATE_F  = 0;//1.6e-2;
 static const float LEVEL_P = 50.0;
 
-static const float ALT_HOLD_KP = 0.75;
-static const float ALT_HOLD_KI = 1.5;
+static const float ALT_HOLD_KP = 7.5e-2;
+static const float ALT_HOLD_KI = 1.5e-1;
 
 int main(int argc, char ** argv)
 {
@@ -47,6 +48,10 @@ int main(int argc, char ** argv)
         RATE_D,
         RATE_F,
         LEVEL_P);
+
+    static AltHoldPidController altHoldPid(
+            ALT_HOLD_KP,
+            ALT_HOLD_KI);
 
     QuadXbfMixer mixer; 
 
@@ -104,7 +109,8 @@ int main(int argc, char ** argv)
                 pidReset,
                 usec,
                 &mixer,
-                motorvals);
+                motorvals,
+                &altHoldPid);
 
         // Convert motor values to doubles
         double dmotorvals[4] = {
