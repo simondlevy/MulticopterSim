@@ -16,7 +16,6 @@
 #include <pids/althold.h>
 #include <mixers/fixedpitch/quadxbf.h>
 
-#include <Embedded_Template_Library.h>
 #include <etl/vector.h>
 
 #include "../../Simulator/Source/MultiSim/sockets/UdpClientSocket.hpp"
