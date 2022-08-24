@@ -65,8 +65,8 @@ int main(int argc, char ** argv)
         double telemetry[17] = {};
         telemServer.receiveData(telemetry, sizeof(telemetry));
 
+        // Sim sends negative time value on halt
         double time = telemetry[0];
-
         if (time < 0) {
             break;
         }
@@ -98,7 +98,8 @@ int main(int argc, char ** argv)
             (float)telemetry[16] * 670
         };
 
-        bool pidReset = demands.throttle < .05;
+        // Reset PID controllers on zero throttle
+        auto pidReset = demands.throttle < .05;
 
         // Run core Hackflight algorithm to get motor values
         float motorvals[4] = {};
