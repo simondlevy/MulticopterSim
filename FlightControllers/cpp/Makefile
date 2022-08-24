@@ -6,13 +6,16 @@
 # MIT License
 # 
 
-# Change this to where you installed Hackflight
-HF_DIR = /mnt/d/Users/levys/Documents/Arduino/libraries/Hackflight
-#HF_DIR = $(HOME)/Documents/Arduino/libraries/Hackflight
+ARDUINO_DIR = /mnt/d/Users/levys/Documents/Arduino/libraries
+#ARDUINO_DIR = $(HOME)/Documents/Arduino/libraries
 
-ALL = hackflight
+HF_DIR = $(ARDUINO_DIR)/Hackflight
 
 HF_SRC = $(HF_DIR)/src/
+
+ETL_SRC = $(ARDUINO_DIR)/etl-arduino/src/
+
+ALL = hackflight
 
 all: $(ALL)
 
@@ -24,7 +27,7 @@ hackflight: hackflight.o
 	g++ -o hackflight hackflight.o 
 
 hackflight.o: hackflight.cpp $(HF_SRC)/*.h $(HF_SRC)/pids/*.h
-	g++ $(CFLAGS) -I$(HF_SRC) -c hackflight.cpp
+	g++ $(CFLAGS) -I$(HF_SRC) -I$(ETL_SRC) -c hackflight.cpp
 
 run: hackflight
 	./hackflight

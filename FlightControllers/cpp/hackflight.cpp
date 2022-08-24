@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include <hackflight_core.h>
+#include <pids/angle.h>
 #include <pids/althold.h>
 #include <mixers/fixedpitch/quadxbf.h>
 
@@ -101,17 +102,18 @@ int main(int argc, char ** argv)
         // Reset PID controllers on zero throttle
         auto pidReset = demands.throttle < .05;
 
+        PidController * pidControllers[2] = {&anglePid, &altHoldPid};
+
         // Run core Hackflight algorithm to get motor values
         float motorvals[4] = {};
         HackflightCore::step(
                 &demands,
                 &vstate,
-                &anglePid,
+                pidControllers, 2,
                 pidReset,
                 usec,
                 &mixer,
-                motorvals,
-                &altHoldPid);
+                motorvals);
 
         // Convert motor values to doubles
         double dmotorvals[4] = {
