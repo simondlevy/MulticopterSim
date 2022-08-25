@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include <hfcore.h>
+#include <hackflight.h>
 #include <pids/angle.h>
 #include <pids/althold.h>
 #include <mixers/fixedpitch/quadxbf.h>
@@ -116,8 +116,8 @@ int main(int argc, char ** argv)
 
         // Run core Hackflight algorithm to get motor values
         float mvals[4] = {};
-        HackflightCore::step(
-                &demands,
+        Hackflight::step(
+                demands,
                 vstate,
                 pidControllers, 2,
                 pidReset,
