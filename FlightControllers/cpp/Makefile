@@ -26,7 +26,11 @@ all: $(ALL)
 hackflight: hackflight.o 
 	g++ -o hackflight hackflight.o 
 
-hackflight.o: hackflight.cpp $(HF_SRC)/*.h $(HF_SRC)/pids/*.h
+hackflight.o: hackflight.cpp \
+	$(HF_SRC)/*.h \
+	$(HF_SRC)/*/*.h \
+	$(HF_SRC)/mixers/*.h \
+	$(HF_SRC)/mixers/fixedpitch/*.h
 	g++ $(CFLAGS) -I$(HF_SRC) -I$(ETL_SRC) -c hackflight.cpp
 
 run: hackflight

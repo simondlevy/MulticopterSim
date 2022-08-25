@@ -82,7 +82,7 @@ int main(int argc, char ** argv)
             ALT_HOLD_KP,
             ALT_HOLD_KI);
 
-    QuadXbfMixer mixer; 
+    static Mixer mixer = QuadXbfMixer::make();
 
     printf("Hit the Play button ... ");
     fflush(stdout);
@@ -122,7 +122,7 @@ int main(int argc, char ** argv)
                 pidControllers, 2,
                 pidReset,
                 usec,
-                &mixer,
+                mixer,
                 mvals);
 
         // Convert motor values to doubles
