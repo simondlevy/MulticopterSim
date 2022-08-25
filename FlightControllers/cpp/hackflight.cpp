@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include <hackflight_core.h>
+#include <hfcore.h>
 #include <pids/angle.h>
 #include <pids/althold.h>
 #include <mixers/fixedpitch/quadxbf.h>
@@ -26,10 +26,10 @@ static uint16_t  TELEM_PORT = 5001;
 // PID constants
 
 static const float RATE_P  = 1.4e0;
-static const float RATE_I  = 0;//1.9e+1;
+static const float RATE_I  = 4.0e+1;
 static const float RATE_D  = 2.1e-2;
-static const float RATE_F  = 0;//1.6e-2;
-static const float LEVEL_P = 50.0;
+static const float RATE_F  = 1.6e0;
+static const float LEVEL_P = 0.0;
 
 static const float ALT_HOLD_KP = 7.5e-2;
 static const float ALT_HOLD_KI = 1.5e-1;
