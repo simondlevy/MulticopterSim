@@ -118,7 +118,7 @@ int main(int argc, char ** argv)
         float mvals[4] = {};
         HackflightCore::step(
                 &demands,
-                &vstate,
+                vstate,
                 pidControllers, 2,
                 pidReset,
                 usec,
