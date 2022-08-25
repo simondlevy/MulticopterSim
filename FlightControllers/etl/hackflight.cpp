@@ -116,16 +116,14 @@ int main(int argc, char ** argv)
         // Reset PID controllers on zero throttle
         auto pidReset = demands.throttle < .05;
 
-        PidController * pidControllers[2] = {&anglePid, &altHoldPid};
-
-        PidController::vector_t v = {&anglePid, &altHoldPid};
+        PidController::vector_t pidControllers = {&anglePid, &altHoldPid};
 
         // Run core Hackflight algorithm to get motor values
         float mvals[4] = {};
-        Hackflight::step(
+        Hackflight::newstep(
                 demands,
                 vstate,
-                pidControllers, 2,
+                pidControllers,
                 pidReset,
                 usec,
                 mixer,
