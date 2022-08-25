@@ -34,6 +34,34 @@ static const float LEVEL_P = 0.0;
 static const float ALT_HOLD_KP = 7.5e-2;
 static const float ALT_HOLD_KI = 1.5e-1;
 
+static vehicle_state_t state_from_telemetry(double telemetry[])
+{
+    return vehicle_state_t {
+        (float)telemetry[1],
+        (float)telemetry[2],
+        (float)telemetry[3],
+        (float)telemetry[4],
+        (float)telemetry[5],
+        (float)telemetry[6],
+        (float)telemetry[7],
+        (float)telemetry[8],
+        (float)telemetry[9],
+        (float)telemetry[10],
+        (float)telemetry[11],
+        (float)telemetry[12]
+    };
+}
+
+static demands_t demands_from_telemetry(double telemetry[])
+{
+    return demands_t {
+        (float)(telemetry[13] + 1) / 2, // [-1,+1] => [0,1]
+        (float)telemetry[14] * 670,
+        (float)telemetry[15] * 670,
+        (float)telemetry[16] * 670
+    };
+}
+
 int main(int argc, char ** argv)
 {
 
@@ -44,11 +72,11 @@ int main(int argc, char ** argv)
     // Create Hackflight objects
 
     static AnglePidController anglePid(
-        RATE_P,
-        RATE_I,
-        RATE_D,
-        RATE_F,
-        LEVEL_P);
+            RATE_P,
+            RATE_I,
+            RATE_D,
+            RATE_F,
+            LEVEL_P);
 
     static AltHoldPidController altHoldPid(
             ALT_HOLD_KP,
@@ -76,28 +104,10 @@ int main(int argc, char ** argv)
         uint32_t usec = (uint32_t)(time * 1e6);
 
         // Build vehicle state 
-        vehicle_state_t vstate = {
-            (float)telemetry[1],
-            (float)telemetry[2],
-            (float)telemetry[3],
-            (float)telemetry[4],
-            (float)telemetry[5],
-            (float)telemetry[6],
-            (float)telemetry[7],
-            (float)telemetry[8],
-            (float)telemetry[9],
-            (float)telemetry[10],
-            (float)telemetry[11],
-            (float)telemetry[12]
-        };
+        vehicle_state_t vstate = state_from_telemetry(telemetry);
 
         // Build demands
-        demands_t demands = {
-            (float)(telemetry[13] + 1) / 2, // [-1,+1] => [0,1]
-            (float)telemetry[14] * 670,
-            (float)telemetry[15] * 670,
-            (float)telemetry[16] * 670
-        };
+        demands_t demands = demands_from_telemetry(telemetry);
 
         // Reset PID controllers on zero throttle
         auto pidReset = demands.throttle < .05;
@@ -105,7 +115,7 @@ int main(int argc, char ** argv)
         PidController * pidControllers[2] = {&anglePid, &altHoldPid};
 
         // Run core Hackflight algorithm to get motor values
-        float motorvals[4] = {};
+        float mvals[4] = {};
         HackflightCore::step(
                 &demands,
                 &vstate,
@@ -113,15 +123,10 @@ int main(int argc, char ** argv)
                 pidReset,
                 usec,
                 &mixer,
-                motorvals);
+                mvals);
 
         // Convert motor values to doubles
-        double dmotorvals[4] = {
-            motorvals[0],
-            motorvals[1],
-            motorvals[2],
-            motorvals[3]
-        };
+        double dmotorvals[4] = {mvals[0], mvals[1], mvals[2], mvals[3]};
 
         // Send back motor values
         motorClient.sendData(dmotorvals, sizeof(dmotorvals));
