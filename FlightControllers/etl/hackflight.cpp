@@ -118,8 +118,7 @@ int main(int argc, char ** argv)
 
         PidController * pidControllers[2] = {&anglePid, &altHoldPid};
 
-        etl::vector<PidController *, PidController::MAX_SUPPORTED> v =
-        {&anglePid, &altHoldPid};
+        PidController::vector_t v = {&anglePid, &altHoldPid};
 
         // Run core Hackflight algorithm to get motor values
         float mvals[4] = {};
