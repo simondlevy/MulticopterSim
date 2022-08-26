@@ -25,10 +25,10 @@ static uint16_t  TELEM_PORT = 5001;
 
 // PID constants
 
-static const float RATE_P  = 1.4e0;
-static const float RATE_I  = 4.0e+1;
-static const float RATE_D  = 2.1e-2;
-static const float RATE_F  = 1.6e0;
+static const float RATE_P  = 1.441305;
+static const float RATE_I  = 19.55048;
+static const float RATE_D  = 0.021160;
+static const float RATE_F  = 0.0165048;
 static const float LEVEL_P = 0.0;
 
 static const float ALT_HOLD_KP = 7.5e-2;
@@ -52,14 +52,14 @@ static vehicle_state_t state_from_telemetry(double telemetry[])
     };
 }
 
-static demands_t demands_from_telemetry(double telemetry[])
+static Demands demands_from_telemetry(double telemetry[])
 {
-    return demands_t {
+    return Demands(
         (float)(telemetry[13] + 1) / 2, // [-1,+1] => [0,1]
         (float)telemetry[14] * 670,
         (float)telemetry[15] * 670,
         (float)telemetry[16] * 670
-    };
+    );
 }
 
 int main(int argc, char ** argv)
@@ -107,7 +107,7 @@ int main(int argc, char ** argv)
         vehicle_state_t vstate = state_from_telemetry(telemetry);
 
         // Build demands
-        demands_t demands = demands_from_telemetry(telemetry);
+        auto demands = demands_from_telemetry(telemetry);
 
         // Reset PID controllers on zero throttle
         auto pidReset = demands.throttle < .05;

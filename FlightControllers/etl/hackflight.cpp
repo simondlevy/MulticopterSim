@@ -56,14 +56,14 @@ static vehicle_state_t state_from_telemetry(double telemetry[])
     };
 }
 
-static demands_t demands_from_telemetry(double telemetry[])
+static Demands demands_from_telemetry(double telemetry[])
 {
-    return demands_t {
+    return Demands(
         (float)(telemetry[13] + 1) / 2, // [-1,+1] => [0,1]
         (float)telemetry[14] * 670,
         (float)telemetry[15] * 670,
         (float)telemetry[16] * 670
-    };
+    );
 }
 
 int main(int argc, char ** argv)
@@ -111,16 +111,16 @@ int main(int argc, char ** argv)
         vehicle_state_t vstate = state_from_telemetry(telemetry);
 
         // Build demands
-        demands_t demands = demands_from_telemetry(telemetry);
+        auto demands = demands_from_telemetry(telemetry);
 
         // Reset PID controllers on zero throttle
         auto pidReset = demands.throttle < .05;
 
-        PidController::vector_t pidControllers = {&anglePid, &altHoldPid};
+        PidController::vector_t pidControllers = {&anglePid/*, &altHoldPid*/};
 
         // Run core Hackflight algorithm to get motor values
         float mvals[4] = {};
-        Hackflight::newstep(
+        Hackflight::step(
                 demands,
                 vstate,
                 pidControllers,
