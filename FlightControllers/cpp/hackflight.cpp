@@ -82,7 +82,7 @@ int main(int argc, char ** argv)
             ALT_HOLD_KP,
             ALT_HOLD_KI);
 
-    static NewMixer mixer = NewQuadXbfMixer::make();
+    static Mixer mixer = QuadXbfMixer::make();
 
     printf("Hit the Play button ... ");
     fflush(stdout);
