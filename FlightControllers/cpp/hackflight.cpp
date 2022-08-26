@@ -82,7 +82,7 @@ int main(int argc, char ** argv)
             ALT_HOLD_KP,
             ALT_HOLD_KI);
 
-    static Mixer mixer = QuadXbfMixer::make();
+    static NewMixer mixer = NewQuadXbfMixer::make();
 
     printf("Hit the Play button ... ");
     fflush(stdout);
@@ -115,18 +115,22 @@ int main(int argc, char ** argv)
         PidController * pidControllers[2] = {&anglePid, &altHoldPid};
 
         // Run core Hackflight algorithm to get motor values
-        float mvals[4] = {};
-        Hackflight::step(
+        auto motors = Hackflight::step(
                 demands,
                 vstate,
-                pidControllers, 2,
+                pidControllers,
+                2,
                 pidReset,
                 usec,
-                mixer,
-                mvals);
+                mixer);
 
         // Convert motor values to doubles
-        double dmotorvals[4] = {mvals[0], mvals[1], mvals[2], mvals[3]};
+        double dmotorvals[4] = {
+            motors.values[0],
+            motors.values[1],
+            motors.values[2],
+            motors.values[3]
+        };
 
         // Send back motor values
         motorClient.sendData(dmotorvals, sizeof(dmotorvals));
