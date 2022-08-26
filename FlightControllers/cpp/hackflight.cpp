@@ -34,9 +34,9 @@ static const float LEVEL_P = 0.0;
 static const float ALT_HOLD_KP = 7.5e-2;
 static const float ALT_HOLD_KI = 1.5e-1;
 
-static vehicle_state_t state_from_telemetry(double telemetry[])
+static State state_from_telemetry(double telemetry[])
 {
-    return vehicle_state_t {
+    return State( 
         (float)telemetry[1],
         (float)telemetry[2],
         (float)telemetry[3],
@@ -49,7 +49,7 @@ static vehicle_state_t state_from_telemetry(double telemetry[])
         (float)telemetry[10],
         (float)telemetry[11],
         (float)telemetry[12]
-    };
+    );
 }
 
 static Demands demands_from_telemetry(double telemetry[])
@@ -104,7 +104,7 @@ int main(int argc, char ** argv)
         uint32_t usec = (uint32_t)(time * 1e6);
 
         // Build vehicle state 
-        vehicle_state_t vstate = state_from_telemetry(telemetry);
+        auto vstate = state_from_telemetry(telemetry);
 
         // Build demands
         auto demands = demands_from_telemetry(telemetry);
