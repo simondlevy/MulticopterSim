@@ -10,10 +10,10 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include <hackflight.h>
-#include <pids/angle.h>
-#include <pids/althold.h>
-#include <mixers/fixedpitch/quadxbf.h>
+#include <core/step.h>
+#include <core/pids/angle.h>
+#include <core/pids/althold.h>
+#include <core/mixers/fixedpitch/quadxbf.h>
 
 #include "../../Simulator/Source/MultiSim/sockets/UdpClientSocket.hpp"
 #include "../../Simulator/Source/MultiSim/sockets/UdpServerSocket.hpp"
@@ -115,7 +115,7 @@ int main(int argc, char ** argv)
         PidController * pidControllers[2] = {&anglePid, &altHoldPid};
 
         // Run core Hackflight algorithm to get motor values
-        auto motors = Hackflight::step(
+        auto motors = HackflightCore::step(
                 demands,
                 vstate,
                 pidControllers,
