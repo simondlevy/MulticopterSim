@@ -10,10 +10,15 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include <core/step.h>
+#include <core/hackflight.h>
 #include <core/pids/angle.h>
 #include <core/pids/althold.h>
 #include <core/mixers/fixedpitch/quadxbf.h>
+
+//#define ETL_NO_PROFILE_HEADER
+//#include <Embedded_Template_Library.h>
+//#include <etl/vector.h>
+//#include <etl/numeric.h>
 
 #include "../../Simulator/Source/MultiSim/sockets/UdpClientSocket.hpp"
 #include "../../Simulator/Source/MultiSim/sockets/UdpServerSocket.hpp"
@@ -112,6 +117,7 @@ int main(int argc, char ** argv)
         // Reset PID controllers on zero throttle
         auto pidReset = demands.throttle < .05;
 
+        // etl::vector<PidController *, 10> pidControllers =
         PidController * pidControllers[2] = {&anglePid, &altHoldPid};
 
         // Run core Hackflight algorithm to get motor values
