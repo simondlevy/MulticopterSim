@@ -15,11 +15,6 @@
 #include <core/pids/althold.h>
 #include <core/mixers/fixedpitch/quadxbf.h>
 
-//#define ETL_NO_PROFILE_HEADER
-//#include <Embedded_Template_Library.h>
-//#include <etl/vector.h>
-//#include <etl/numeric.h>
-
 #include "../../Simulator/Source/MultiSim/sockets/UdpClientSocket.hpp"
 #include "../../Simulator/Source/MultiSim/sockets/UdpServerSocket.hpp"
 
@@ -118,14 +113,13 @@ int main(int argc, char ** argv)
         auto pidReset = demands.throttle < .05;
 
         // etl::vector<PidController *, 10> pidControllers =
-        PidController * pidControllers[2] = {&anglePid, &altHoldPid};
+        std::vector<PidController *> pidControllers = {&anglePid, &altHoldPid};
 
         // Run core Hackflight algorithm to get motor values
         auto motors = HackflightCore::step(
                 demands,
                 vstate,
-                pidControllers,
-                2,
+                &pidControllers,
                 pidReset,
                 usec,
                 mixer);

@@ -6,8 +6,8 @@
 # MIT License
 # 
 
-ARDUINO_DIR = /mnt/d/Users/levys/Documents/Arduino/libraries
-#ARDUINO_DIR = $(HOME)/Documents/Arduino/libraries
+#ARDUINO_DIR = /mnt/d/Users/levys/Documents/Arduino/libraries
+ARDUINO_DIR = $(HOME)/Documents/Arduino/libraries
 
 HF_DIR = $(ARDUINO_DIR)/Hackflight
 
