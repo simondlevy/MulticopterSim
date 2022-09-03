@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include <core/hackflight.h>
 #include <core/pids/angle.h>
 #include <core/pids/althold.h>
 #include <core/mixers/fixedpitch/quadxbf.h>
@@ -116,13 +115,7 @@ int main(int argc, char ** argv)
         std::vector<PidController *> pidControllers = {&anglePid, &altHoldPid};
 
         // Run core Hackflight algorithm to get motor values
-        auto motors = HackflightCore::step(
-                demands,
-                vstate,
-                &pidControllers,
-                pidReset,
-                usec,
-                mixer);
+        auto motors = mixer.step(demands, vstate, &pidControllers, pidReset, usec);
 
         // Convert motor values to doubles
         double dmotorvals[4] = {
