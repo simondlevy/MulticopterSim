@@ -33,9 +33,9 @@ static const float LEVEL_P = 0.0;
 static const float ALT_HOLD_KP = 7.5e-2;
 static const float ALT_HOLD_KI = 1.5e-1;
 
-static State state_from_telemetry(double telemetry[])
+static VehicleState state_from_telemetry(double telemetry[])
 {
-    return State( 
+    return VehicleState( 
         (float)telemetry[1],
         (float)telemetry[2],
         (float)telemetry[3],
