@@ -41,19 +41,19 @@ static float rad2deg(const double rad)
 static VehicleState state_from_telemetry(const double telemetry[])
 {
     return VehicleState( 
-        (float)telemetry[1],    // x
-        (float)telemetry[2],    // dx
-        (float)telemetry[3],    // y
-        (float)telemetry[4],    // dy
-        (float)telemetry[5],    // z
-        (float)telemetry[6],    // dz
-        rad2deg(telemetry[7]),  // phi
-        rad2deg(telemetry[8]),  // dphi
-        -rad2deg(telemetry[9]),  // theta
-        -rad2deg(telemetry[10]), // dtheta
-        rad2deg(telemetry[11]), // psi
-        rad2deg(telemetry[12])  // dpsi
-    );
+            (float)telemetry[1],     // x
+            (float)telemetry[2],     // dx
+            (float)telemetry[3],     // y
+            (float)telemetry[4],     // dy
+            -(float)telemetry[5],    // z  [NED => ENU]
+            -(float)telemetry[6],    // dz [NED => ENU]
+            rad2deg(telemetry[7]),   // phi
+            rad2deg(telemetry[8]),   // dphi
+            -rad2deg(telemetry[9]),  // theta  [note sign reversal]
+            -rad2deg(telemetry[10]), // dtheta [note sign reversal]
+            rad2deg(telemetry[11]),  // psi
+            rad2deg(telemetry[12])   // dpsi
+            );
 }
 
 static Demands demands_from_telemetry(const double telemetry[])
@@ -61,11 +61,11 @@ static Demands demands_from_telemetry(const double telemetry[])
     constexpr float SCALE = 670;
 
     return Demands(
-        (float)(telemetry[13] + 1) / 2, // [-1,+1] => [0,1]
-        (float)telemetry[14] * SCALE,
-        (float)telemetry[15] * SCALE,
-        (float)telemetry[16] * SCALE
-    );
+            (float)(telemetry[13] + 1) / 2, // [-1,+1] => [0,1]
+            (float)telemetry[14] * SCALE,
+            (float)telemetry[15] * SCALE,
+            (float)telemetry[16] * SCALE
+            );
 }
 
 int main(int argc, char ** argv)
