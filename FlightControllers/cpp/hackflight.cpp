@@ -33,31 +33,38 @@ static const float LEVEL_P = 0.0;
 static const float ALT_HOLD_KP = 7.5e-2;
 static const float ALT_HOLD_KI = 1.5e-1;
 
-static VehicleState state_from_telemetry(double telemetry[])
+static float rad2deg(const double rad)
+{
+    return (float)(180 * rad / M_PI);
+}
+
+static VehicleState state_from_telemetry(const double telemetry[])
 {
     return VehicleState( 
-        (float)telemetry[1],
-        (float)telemetry[2],
-        (float)telemetry[3],
-        (float)telemetry[4],
-        (float)telemetry[5],
-        (float)telemetry[6],
-        (float)telemetry[7],
-        (float)telemetry[8],
-        (float)telemetry[9],
-        (float)telemetry[10],
-        (float)telemetry[11],
-        (float)telemetry[12]
+        (float)telemetry[1],    // x
+        (float)telemetry[2],    // dx
+        (float)telemetry[3],    // y
+        (float)telemetry[4],    // dy
+        (float)telemetry[5],    // z
+        (float)telemetry[6],    // dz
+        rad2deg(telemetry[7]),  // phi
+        rad2deg(telemetry[8]),  // dphi
+        -rad2deg(telemetry[9]),  // theta
+        -rad2deg(telemetry[10]), // dtheta
+        rad2deg(telemetry[11]), // psi
+        rad2deg(telemetry[12])  // dpsi
     );
 }
 
-static Demands demands_from_telemetry(double telemetry[])
+static Demands demands_from_telemetry(const double telemetry[])
 {
+    constexpr float SCALE = 670;
+
     return Demands(
         (float)(telemetry[13] + 1) / 2, // [-1,+1] => [0,1]
-        (float)telemetry[14] * 670,
-        (float)telemetry[15] * 670,
-        (float)telemetry[16] * 670
+        (float)telemetry[14] * SCALE,
+        (float)telemetry[15] * SCALE,
+        (float)telemetry[16] * SCALE
     );
 }
 
