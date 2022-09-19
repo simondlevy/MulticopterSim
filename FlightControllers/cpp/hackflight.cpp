@@ -58,13 +58,11 @@ static VehicleState state_from_telemetry(const double telemetry[])
 
 static Demands demands_from_telemetry(const double telemetry[])
 {
-    constexpr float SCALE = 670;
-
     return Demands(
             (float)(telemetry[13] + 1) / 2, // [-1,+1] => [0,1]
-            (float)telemetry[14] * SCALE,
-            (float)telemetry[15] * SCALE,
-            (float)telemetry[16] * SCALE
+            (float)telemetry[14],
+            (float)telemetry[15],
+            (float)telemetry[16]
             );
 }
 
