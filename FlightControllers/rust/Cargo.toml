@@ -1,6 +1,6 @@
 [package]
 name = "hackflight"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Simon D. Levy<simon.d.levy@gmail.com>"]
 license = "MIT"
 description = "Simple flight-control software for makers in Rust"
