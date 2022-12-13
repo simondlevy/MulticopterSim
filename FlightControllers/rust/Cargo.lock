@@ -4,13 +4,13 @@ version = 3
 
 [[package]]
 name = "hackflight"
-version = "0.1.4"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "648853210bb323c07f4b0a75649b9fbcfc4c53cd262ecedf062efcdaf4274817"
+checksum = "82f411c8b04fe33fd87132ee9e9a5ab3f9c30462fc87c7d2df910dc9fc1eb278"
 
 [[package]]
-name = "multisim"
-version = "0.1.0"
+name = "multisim-hackflight-rust"
+version = "0.1.1"
 dependencies = [
  "hackflight",
 ]
