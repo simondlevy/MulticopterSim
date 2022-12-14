@@ -6,9 +6,16 @@
    MIT License
 */
 
-use std::net::UdpSocket;
+extern crate hackflight;
+
+fn main() {
+
+    let bar = hackflight::tests::foo();
+}
 
 /*
+use std::net::UdpSocket;
+
 use datatypes::datatypes::Demands;
 use datatypes::datatypes::Motors;
 use datatypes::datatypes::VehicleState;
@@ -22,7 +29,6 @@ pub mod hackflight;
 pub mod mixers;
 pub mod pids;
 pub mod utils;
-*/
 
 fn main() -> std::io::Result<()> {
 
@@ -37,7 +43,6 @@ fn main() -> std::io::Result<()> {
         f64::from_le_bytes(dst) as f32
     }
 
-    /*
     fn read_vehicle_state(buf:[u8; IN_BUF_SIZE]) -> VehicleState {
         VehicleState {
             x:read_float(buf, 1),
@@ -75,7 +80,6 @@ fn main() -> std::io::Result<()> {
         }
         buf
     }
-    */
 
     // We have to bind client socket to some address
     let motor_client_socket = UdpSocket::bind("0.0.0.0:0")?;
@@ -83,7 +87,7 @@ fn main() -> std::io::Result<()> {
     // Bind server socket to address,port that client will connect to
     let telemetry_server_socket = UdpSocket::bind("127.0.0.1:5001")?;
 
-    // let mut pid_controller = new_pid_controller();
+    let mut pid_controller = new_pid_controller();
 
     println!("Hit the Play button ...");
 
@@ -96,7 +100,6 @@ fn main() -> std::io::Result<()> {
 
         if time < 0.0 { break Ok(()); }
 
-        /*
         let vehicle_state = read_vehicle_state(in_buf);
 
         let demands = read_demands(in_buf);
@@ -109,6 +112,5 @@ fn main() -> std::io::Result<()> {
         let out_buf = write_motors(motors);
 
         motor_client_socket.send_to(&out_buf, "127.0.0.1:5000")?;
-        */
     }
-}
+}*/
