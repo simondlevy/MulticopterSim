@@ -1,12 +1,9 @@
 [package]
-name = "multisim-hackflight-rust"
-version = "0.1.1"
-authors = ["Simon D. Levy<simon.d.levy@gmail.com>"]
-license = "MIT"
-description = "MultiSim flight-control server using Hackflight algorithms"
-documentation = "https://github.com/simondlevy/MultiSim/FlightControllers/rust"
-repository = "https://github.com/simondlevy/MultiSim"
-readme = "README.md"
+name = "multisim"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hackflight = "0.1.2"
+hackflight = "0.1.6"

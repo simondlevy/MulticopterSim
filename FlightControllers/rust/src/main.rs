@@ -1,26 +1,15 @@
-/*
-   Hackflight-style server for MulticopterSim socket module
-
-   Copyright (C) 2022 Simon D. Levy
-
-   MIT License
-*/
+extern crate hackflight;
 
 use std::net::UdpSocket;
 
-use datatypes::datatypes::Demands;
-use datatypes::datatypes::Motors;
-use datatypes::datatypes::VehicleState;
+use hackflight::datatypes::Demands;
+use hackflight::datatypes::Motors;
+use hackflight::datatypes::VehicleState;
 
-use pids::pids::new_controller as new_pid_controller;
-use hackflight::hackflight::run_hackflight;
-use mixers::fixedpitch::quadxbf as mixer;
+use hackflight::datatypes::run_hackflight;
 
-pub mod datatypes;
-pub mod hackflight;
-pub mod mixers;
-pub mod pids;
-pub mod utils;
+use hackflight::pids::pids::new_controller as new_pid_controller;
+use hackflight::mixers::mixers::run_quad_xbf;
 
 fn main() -> std::io::Result<()> {
 
@@ -97,7 +86,7 @@ fn main() -> std::io::Result<()> {
         let demands = read_demands(in_buf);
 
         let (motors, new_pid_controller) =
-            run_hackflight(demands, vehicle_state, pid_controller, &mixer::run);
+            run_hackflight(demands, vehicle_state, pid_controller, &run_quad_xbf);
 
         pid_controller = new_pid_controller;
 
