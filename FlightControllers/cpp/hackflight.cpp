@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include <core/pid.h>
 #include <core/pids/angle.h>
 #include <core/pids/althold.h>
 #include <core/mixers/fixedpitch/quadxbf.h>
@@ -21,17 +22,6 @@
 static const char * HOST = "127.0.0.1"; // localhost
 static uint16_t  MOTOR_PORT = 5000;
 static uint16_t  TELEM_PORT = 5001;
-
-// PID constants
-
-static const float RATE_P  = 1.441305;
-static const float RATE_I  = 19.55048;
-static const float RATE_D  = 0.021160;
-static const float RATE_F  = 0.0165048;
-static const float LEVEL_P = 0.0;
-
-static const float ALT_HOLD_KP = 7.5e-2;
-static const float ALT_HOLD_KI = 1.5e-1;
 
 static float rad2deg(const double rad)
 {
@@ -75,16 +65,8 @@ int main(int argc, char ** argv)
 
     // Create Hackflight objects
 
-    static AnglePidController anglePid(
-            RATE_P,
-            RATE_I,
-            RATE_D,
-            RATE_F,
-            LEVEL_P);
-
-    static AltHoldPidController altHoldPid(
-            ALT_HOLD_KP,
-            ALT_HOLD_KI);
+    static AnglePidController anglePid;
+    static AltHoldPidController altHoldPid;
 
     static Mixer mixer = QuadXbfMixer::make();
 
@@ -110,28 +92,25 @@ int main(int argc, char ** argv)
         // Build vehicle state 
         auto vstate = state_from_telemetry(telemetry);
 
-        // Build demands
+        // Build stick demands
         auto demands = demands_from_telemetry(telemetry);
-
+        
         // Reset PID controllers on zero throttle
         auto pidReset = demands.throttle < .05;
 
-        // etl::vector<PidController *, 10> pidControllers =
-        std::vector<PidController *> pidControllers = {&anglePid, &altHoldPid};
+        // Run stick demands through PID controllers to get final demands
+        std::vector<PidController *> pids = {&anglePid, &altHoldPid};
+        PidController::run(pids, demands, vstate, usec, pidReset);
 
-        // Run core Hackflight algorithm to get motor values
-        auto motors = mixer.step(demands, vstate, &pidControllers, pidReset, usec);
+        // Run final demands through mixer to get motor values
+        float mvals[4] = {};
+        mixer.getMotors(demands, mvals);
 
         // Convert motor values to doubles
-        double dmotorvals[4] = {
-            motors.values[0],
-            motors.values[1],
-            motors.values[2],
-            motors.values[3]
-        };
+        double dmvals[4] = { mvals[0], mvals[1], mvals[2], mvals[3] };
 
         // Send back motor values
-        motorClient.sendData(dmotorvals, sizeof(dmotorvals));
+        motorClient.sendData(dmvals, sizeof(dmvals));
 
     } // while (true)
 
