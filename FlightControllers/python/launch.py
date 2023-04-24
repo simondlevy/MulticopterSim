@@ -9,7 +9,7 @@ MIT License
 
 try:
     import cv2
-except Exception as _e:
+except Exception:
     pass
 
 import numpy as np
@@ -54,10 +54,9 @@ class LaunchCopter(MulticopterServer):
             if len(nonzero) > 0 and np.mean(nonzero) > 390 and self.time > 5:
                 self.target = 30
 
-        except Exception as _e:
+        except Exception:
             debug('Failed')
             pass
-
 
     def getMotors(self, t, state, _stickDemands):
 
