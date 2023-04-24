@@ -116,7 +116,8 @@ class MulticopterServer(object):
 
     def getMotors(self, time, state, demands):
         '''
-        Override for your application.  Should return motor values in interval [0,1]
+        Override for your application.  Should return motor values in interval [0,1].
+        This default implementation just keeps flying upward.
         '''
         return np.array([0.6, 0.6, 0.6, 0.6])
 
