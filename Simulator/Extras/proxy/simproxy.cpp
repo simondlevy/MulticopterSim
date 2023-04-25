@@ -10,8 +10,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "../../Source/SocketModule/sockets/UdpClientSocket.hpp"
-#include "../../Source/SocketModule/sockets/UdpServerSocket.hpp"
+#include "../../Source/MultiSim/sockets/UdpClientSocket.hpp"
+#include "../../Source/MultiSim/sockets/UdpServerSocket.hpp"
 //#include "../../Source/SocketModule/sockets/TcpClientSocket.hpp"
 
 //#include "../../Source/MainModule/dynamics/fixedpitch/QuadXBF.hpp"
