@@ -394,6 +394,8 @@ class Dynamics {
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + _wparams.g;
 
+            printf("airborne: %d\n", _airborne);
+
             // If we're airborne, check for low AGL on descent
             if (_airborne) {
 

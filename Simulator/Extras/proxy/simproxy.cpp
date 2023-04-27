@@ -101,9 +101,18 @@ int main(int argc, char ** argv)
             telemetry[0] = time;
 
             // Next 12 values are 12D state vector
-            for (uint8_t k=0; k<12; ++k) {
-                telemetry[k+1] = k;//dynamics.x(k);
-            }
+            telemetry[1] = dynamics.vstate.x;
+            telemetry[2] = dynamics.vstate.dx;
+            telemetry[3] = dynamics.vstate.y;
+            telemetry[4] = dynamics.vstate.dy;
+            telemetry[5] = dynamics.vstate.z;
+            telemetry[6] = dynamics.vstate.dz;
+            telemetry[7] = dynamics.vstate.phi;
+            telemetry[8] = dynamics.vstate.dphi;
+            telemetry[9] = dynamics.vstate.theta;
+            telemetry[10] = dynamics.vstate.dtheta;
+            telemetry[11] = dynamics.vstate.psi;
+            telemetry[12] = dynamics.vstate.dpsi;
 
             // Last four values are receiver demands
             telemetry[13] = 0.1;
