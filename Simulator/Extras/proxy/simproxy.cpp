@@ -127,7 +127,7 @@ int main(int argc, char ** argv)
                     motorvals[1],
                     motorvals[2],
                     motorvals[3],
-                    0.0/*dynamics.x(Dynamics::STATE_Z)*/);
+                    dynamics.vstate.z);
 
             // Update dynamics with motor values
             dynamics.update(motorvals, DELTA_T);
