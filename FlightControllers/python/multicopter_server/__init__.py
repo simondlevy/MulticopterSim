@@ -135,7 +135,6 @@ class MulticopterServer(object):
                 telemetry_bytes, _ = telemetryServerSocket.recvfrom(8*17)
             except Exception:
                 self.done = True
-                _debug('EXCEPTION')
                 break
 
             telemetryServerSocket.settimeout(.1)
