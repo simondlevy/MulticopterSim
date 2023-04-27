@@ -14,7 +14,7 @@ import time
 
 try:
     import cv2
-except Exception as _e:
+except Exception:
     pass
 
 
@@ -70,35 +70,36 @@ class MulticopterServer(object):
 
         # Serve a TCP socket for images socket with a maximum of one client
         imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        imageServerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        imageServerSocket.setsockopt(
+                socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
         imageServerSocket.bind((self.host, self.image_port))
         imageServerSocket.listen(1)
         imageConn, _ = imageServerSocket.accept()
         imageConn.settimeout(1)
 
         thread = Thread(target=self._run_thread,
-                        args=(telemetryServerSocket,
-                              motorClientSocket,
-                              imageServerSocket))
+                        args=(telemetryServerSocket, motorClientSocket))
 
         thread.start()
 
         while not self.done:
 
-            try: 
+            try:
                 time.sleep(.001)  # Yield to other thread
 
                 try:
-                    imgbytes = imageConn.recv(self.image_rows*self.image_cols*4)
+                    imgbytes = (imageConn.recv(
+                        self.image_rows * self.image_cols * 4))
 
                 except Exception:  # likely a timeout from sim quitting
-                    imageServerSocket.close()
                     break
 
                 if len(imgbytes) == self.image_rows*self.image_cols*4:
 
                     rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
-                                            (self.image_rows, self.image_cols, 4))
+                                            (self.image_rows,
+                                             self.image_cols,
+                                             4))
 
                     image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
 
@@ -114,13 +115,13 @@ class MulticopterServer(object):
         try:
             cv2.imshow('Image', image)
             cv2.waitKey(1)
-        except Exception as _e:
+        except Exception:
             pass
 
     def getMotors(self, time, state, demands):
         '''
-        Override for your application.  Should return motor values in interval [0,1].
-        This default implementation just keeps flying upward.
+        Override for your application.  Should return motor values in interval
+        [0,1].  This default implementation just keeps flying upward.
         '''
         return np.array([0.6, 0.6, 0.6, 0.6])
 
@@ -128,7 +129,7 @@ class MulticopterServer(object):
 
         return self.done
 
-    def _run_thread(self, telemetryServerSocket, motorClientSocket, imageServerSocket):
+    def _run_thread(self, telemetryServerSocket, motorClientSocket):
 
         running = False
 
@@ -137,9 +138,6 @@ class MulticopterServer(object):
             try:
                 telemetry_bytes, _ = telemetryServerSocket.recvfrom(8*17)
             except Exception:
-                motorClientSocket.close()
-                telemetryServerSocket.close()
-                imageServerSocket.close()
                 self.done = True
                 break
 
@@ -152,9 +150,6 @@ class MulticopterServer(object):
                 running = True
 
             if telemetry[0] < 0:
-                motorClientSocket.close()
-                telemetryServerSocket.close()
-                imageServerSocket.close()
                 self.done = True
                 break
 
