@@ -115,7 +115,7 @@ int main(int argc, char ** argv)
             telemClient.sendData(telemetry, sizeof(telemetry));
 
             // Send image data
-            //imageSocket.sendData(image, sizeof(image));
+            // imageSocket.sendData(image, sizeof(image));
 
             // Get incoming motor values
             double motorvals[4] = {};

@@ -134,6 +134,8 @@ class MulticopterServer(object):
             try:
                 telemetry_bytes, _ = telemetryServerSocket.recvfrom(8*17)
             except Exception:
+                motorClientSocket.close()
+                telemetryServerSocket.close()
                 self.done = True
                 break
 
@@ -148,6 +150,7 @@ class MulticopterServer(object):
             if telemetry[0] < 0:
                 motorClientSocket.close()
                 telemetryServerSocket.close()
+                imageServerSocket.close()
                 self.done = True
                 break
 
