@@ -68,16 +68,18 @@ class MulticopterServer(object):
 
         _debug('Hit the Play button ...')
 
-        thread = Thread(target=self._run_thread,
-                        args=(telemetryServerSocket,
-                              motorClientSocket))
-
         # Serve a TCP socket for images socket with a maximum of one client
         imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        imageServerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         imageServerSocket.bind((self.host, self.image_port))
         imageServerSocket.listen(1)
         imageConn, _ = imageServerSocket.accept()
         imageConn.settimeout(1)
+
+        thread = Thread(target=self._run_thread,
+                        args=(telemetryServerSocket,
+                              motorClientSocket,
+                              imageServerSocket))
 
         thread.start()
 
@@ -90,6 +92,7 @@ class MulticopterServer(object):
                     imgbytes = imageConn.recv(self.image_rows*self.image_cols*4)
 
                 except Exception:  # likely a timeout from sim quitting
+                    imageServerSocket.close()
                     break
 
                 if len(imgbytes) == self.image_rows*self.image_cols*4:
@@ -125,7 +128,7 @@ class MulticopterServer(object):
 
         return self.done
 
-    def _run_thread(self, telemetryServerSocket, motorClientSocket):
+    def _run_thread(self, telemetryServerSocket, motorClientSocket, imageServerSocket):
 
         running = False
 
@@ -136,6 +139,7 @@ class MulticopterServer(object):
             except Exception:
                 motorClientSocket.close()
                 telemetryServerSocket.close()
+                imageServerSocket.close()
                 self.done = True
                 break
 
