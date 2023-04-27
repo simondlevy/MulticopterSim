@@ -20,16 +20,15 @@
 static const char * HOST = "127.0.0.1"; // localhost
 static uint16_t  MOTOR_PORT = 5000;
 static uint16_t  TELEM_PORT = 5001;
-//static uint16_t  IMAGE_PORT = 5002;
+static uint16_t  IMAGE_PORT = 5002;
 
 // Image size
-//static uint16_t IMAGE_ROWS = 480;
-//static uint16_t IMAGE_COLS = 640;
+static uint16_t IMAGE_ROWS = 480;
+static uint16_t IMAGE_COLS = 640;
 
 // Time constant
 static const double DELTA_T = 0.001;
 
-/*
 static Dynamics::vehicle_params_t vparams = {
 
     // Estimated
@@ -53,11 +52,9 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
     5.E-06, // b force constatnt [F=b*w^2]
     0.350   // l arm length [m]
 };
-*/
 
 int main(int argc, char ** argv)
 {
-    /*
     // Allocate image bytes (rows * cols * rgba)
     uint8_t image[IMAGE_ROWS * IMAGE_COLS * 4];
 
@@ -70,7 +67,6 @@ int main(int argc, char ** argv)
             image[(j*IMAGE_COLS+l)*4] = 255;
         }
     }
-    */
 
     // Loop forever, waiting for clients
     while (true) {
@@ -82,18 +78,18 @@ int main(int argc, char ** argv)
             UdpServerSocket(MOTOR_PORT);
 
         // Create one-way server for images out
-        //TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
+        TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
 
         // Create quadcopter dynamics model
-        //QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
+        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
 
         // Set up initial conditions
         double time = 0;
-        //double rotation[3] = {0,0,0};
-        //dynamics.init(rotation);
+        double rotation[3] = {0,0,0};
+        dynamics.init(rotation);
 
         // Open image socket's connection to host
-        //imageSocket.openConnection();
+        imageSocket.openConnection();
 
         // Loop forever, communicating with server
         while (true) {
@@ -134,10 +130,10 @@ int main(int argc, char ** argv)
                     0.0/*dynamics.x(Dynamics::STATE_Z)*/);
 
             // Update dynamics with motor values
-            //dynamics.update(motorvals, DELTA_T);
+            dynamics.update(motorvals, DELTA_T);
 
             // Set AGL to arbitrary positive value to o avoid kinematic trick
-            //dynamics.setAgl(1);
+            dynamics.setAgl(1);
 
             time += DELTA_T;
         }
