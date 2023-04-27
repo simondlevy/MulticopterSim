@@ -74,19 +74,31 @@ class FixedPitchDynamics : public Dynamics {
 
         virtual int8_t getRotorDirection(uint8_t i) override
         {
-            static const int8_t d[4] = {_mixer[0].z, _mixer[1].z, _mixer[2].z, _mixer[3].z};
+            static const int8_t d[4] = {
+                (int8_t)_mixer[0].z, 
+                (int8_t)_mixer[1].z, 
+                (int8_t)_mixer[2].z, 
+                (int8_t)_mixer[3].z};
             return d[i];
         }
 
         int8_t getRotorRollContribution(uint8_t i)
         {
-            static const int8_t r[4] = {_mixer[0].x, _mixer[1].x, _mixer[2].x, _mixer[3].x};
+            static const int8_t r[4] = {
+                (int8_t)_mixer[0].x,
+                (int8_t)_mixer[1].x,
+                (int8_t)_mixer[2].x,
+                (int8_t)_mixer[3].x};
             return r[i];
         }
 
         int8_t getRotorPitchContribution(uint8_t i)
         {
-            static const int8_t p[4] = {_mixer[0].y, _mixer[1].y, _mixer[2].y, _mixer[3].y};
+            static const int8_t p[4] = {
+                (int8_t)_mixer[0].y,
+                (int8_t)_mixer[1].y, 
+                (int8_t)_mixer[2].y, 
+                (int8_t)_mixer[3].y};
             return p[i];
         }
 

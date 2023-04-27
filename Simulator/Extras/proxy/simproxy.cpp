@@ -12,9 +12,9 @@
 
 #include "../../Source/MultiSim/sockets/UdpClientSocket.hpp"
 #include "../../Source/MultiSim/sockets/UdpServerSocket.hpp"
-//#include "../../Source/SocketModule/sockets/TcpClientSocket.hpp"
+#include "../../Source/MultiSim/sockets/TcpClientSocket.hpp"
 
-//#include "../../Source/MainModule/dynamics/fixedpitch/QuadXBF.hpp"
+#include "../../Source/MultiSim/dynamics/fixedpitch/QuadXBF.hpp"
 
 // Comms
 static const char * HOST = "127.0.0.1"; // localhost
