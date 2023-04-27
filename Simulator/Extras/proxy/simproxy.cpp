@@ -81,7 +81,7 @@ int main(int argc, char ** argv)
         TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
 
         // Create quadcopter dynamics model
-        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
+        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams, false); // no auto-land
 
         // Set up initial conditions
         double time = 0;

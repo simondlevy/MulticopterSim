@@ -82,6 +82,8 @@ class Dynamics {
             1.225 // rho air density 
         };
 
+        bool _autoland; // support fly-to-zero-AGL
+
     public:
 
         typedef struct {
@@ -131,7 +133,10 @@ class Dynamics {
 
         vehicle_state_t _vstate_deriv;
 
-        Dynamics(uint8_t actuatorCount, vehicle_params_t & vparams)
+        Dynamics(
+                uint8_t actuatorCount,
+                vehicle_params_t & vparams,
+                bool autoland=true)
         {
             _actuatorCount = actuatorCount;
 
@@ -394,8 +399,6 @@ class Dynamics {
             // We're airborne once net downward acceleration goes below zero
             double netz = accelNED[2] + _wparams.g;
 
-            printf("airborne: %d\n", _airborne);
-
             // If we're airborne, check for low AGL on descent
             if (_airborne) {
 
@@ -449,7 +452,7 @@ class Dynamics {
                 _inertialAccel[1] = accelNED[1];
                 _inertialAccel[2] = accelNED[2];
             }
-            else {
+            else if (_autoland) {
                 //"fly" to agl=0
                 vstate.z += 5 * _agl * dt;
             }

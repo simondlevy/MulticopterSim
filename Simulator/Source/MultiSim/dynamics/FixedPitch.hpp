@@ -37,8 +37,9 @@ class FixedPitchDynamics : public Dynamics {
                 uint8_t nmotors,
                 Dynamics::vehicle_params_t &vparams,
                 fixed_pitch_params_t &fparams,
-                axes_t mixer [])
-            : Dynamics(nmotors, vparams)
+                axes_t mixer [],
+                bool autoland=true)
+            : Dynamics(nmotors, vparams, autoland)
         {
             memcpy(&_fparams, &fparams, sizeof(fixed_pitch_params_t));
             memcpy(_mixer, mixer, nmotors*sizeof(axes_t));

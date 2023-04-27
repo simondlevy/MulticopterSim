@@ -23,8 +23,9 @@ class QuadXAPDynamics : public FixedPitchDynamics {
 
         QuadXAPDynamics(
                 Dynamics::vehicle_params_t &vparams,
-                FixedPitchDynamics::fixed_pitch_params_t &fparams)
-            : FixedPitchDynamics(4, vparams, fparams, mixerQuadXAP)
+                FixedPitchDynamics::fixed_pitch_params_t &fparams,
+                bool autoland=true)
+            : FixedPitchDynamics(4, vparams, fparams, mixerQuadXAP, autoland)
         {
         }
 

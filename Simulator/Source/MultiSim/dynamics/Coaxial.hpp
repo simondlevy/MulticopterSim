@@ -58,8 +58,8 @@ class CoaxialDynamics : public Dynamics {
 
     public:	
 
-        CoaxialDynamics(Dynamics::vehicle_params_t &vparams)
-            : Dynamics(5, vparams)
+        CoaxialDynamics(Dynamics::vehicle_params_t &vparams, bool autoland=true)
+            : Dynamics(5, vparams, autoland)
         {
             _rotorCount = 2;
         }

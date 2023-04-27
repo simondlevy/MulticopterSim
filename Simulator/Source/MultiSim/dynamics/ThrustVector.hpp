@@ -53,8 +53,11 @@ class ThrustVectorDynamics : public Dynamics {
 
     public:	
 
-        ThrustVectorDynamics(Dynamics::vehicle_params_t &vparams, double nozzleMaxAngle)
-            : Dynamics(4, vparams)
+        ThrustVectorDynamics(
+                Dynamics::vehicle_params_t &vparams,
+                double nozzleMaxAngle,
+                bool autoland=true)
+            : Dynamics(4, vparams, autoland)
         {
             _rotorCount = 2;
 
