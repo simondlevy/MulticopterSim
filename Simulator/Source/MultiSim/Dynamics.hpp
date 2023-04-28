@@ -138,6 +138,8 @@ class Dynamics {
                 vehicle_params_t & vparams,
                 bool autoland=true)
         {
+            _autoland = autoland; 
+
             _actuatorCount = actuatorCount;
 
             // can be overridden for thrust-vectoring
