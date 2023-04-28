@@ -16,7 +16,7 @@ import numpy as np
 import argparse
 from argparse import ArgumentDefaultsHelpFormatter
 
-from launch_controller import LaunchController
+from controller import LaunchController
 from multicopter_server import MulticopterServer
 from mixers import PhantomMixer, IngenuityMixer
 from debugging import debug
