@@ -70,7 +70,7 @@ class LaunchCopter(MulticopterServer):
 
         # Get demands U [throttle, roll, pitch, yaw] from PID controller,
         # ignoring stick demands
-        u = self.ctrl.getDemands(self.target, z, dzdt, t)
+        u = self.ctrl.getDemands(self.target, z, dzdt)
 
         # Use mixer to convert demands U into motor values Omega
         omega = self.mixer.getMotors(u)
