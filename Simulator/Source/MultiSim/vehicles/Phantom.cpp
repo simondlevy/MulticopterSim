@@ -19,7 +19,7 @@ APhantom::APhantom()
     addRotor(PropCWStatics.mesh.Get(), -1, +1);
 
     // Un-comment for camera
-    //vehicle.addCamera(&camera);
+    vehicle.addCamera(&camera);
 }
 
 // Called when the game starts or when spawned
