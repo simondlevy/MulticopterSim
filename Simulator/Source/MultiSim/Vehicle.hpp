@@ -489,6 +489,15 @@ class Vehicle {
             // Run the game if a map has been selected
             if (_mapSelected) {
 
+                TArray<AActor*> ActorsToFind;
+
+                UGameplayStatics::GetAllActorsOfClass(
+                        _pawn->GetWorld(),
+                        ALandscape::StaticClass(),
+                        ActorsToFind);
+
+                debugline("Lanscape actors: %d", ActorsToFind.Num());
+
                 // Use spacebar to switch player-camera view
                 setPlayerCameraView();
 
@@ -525,7 +534,7 @@ class Vehicle {
                         case VIEW_CHASE:
                             _view = VIEW_FRONT;
                             break;
-                         case VIEW_FRONT:
+                        case VIEW_FRONT:
                             _view = VIEW_GROUND;
                             break;
                         case VIEW_GROUND:
@@ -550,8 +559,8 @@ class Vehicle {
             startPoint.Z += 100;
             // End at a point an "infinite" distance below the start point
             FVector endPoint = FVector(startPoint.X,
-                                       startPoint.Y,
-                                       startPoint.Z - INF);
+                    startPoint.Y,
+                    startPoint.Z - INF);
 
             float d = getImpactDistance(startPoint, endPoint);
 
@@ -573,8 +582,8 @@ class Vehicle {
             TArray<AActor*> actorsToIgnore;
             actorsToIgnore.Add(_pawn);
             FCollisionQueryParams traceParams(FName(TEXT("Distance Trace")),
-                                              true, 
-                                              actorsToIgnore[0]);
+                    true, 
+                    actorsToIgnore[0]);
             traceParams.AddIgnoredActors(actorsToIgnore);
 
             FHitResult OutHit;

@@ -37,6 +37,9 @@ class FFlightManager : public FRunnable {
         // Guards socket comms
         bool _connected = false;
 
+        // Vehicle pawn
+        APawn * _pawn = NULL;
+
         // Joystick / game controller / RC transmitter
         IJoystick * _joystick;
 
@@ -128,9 +131,14 @@ class FFlightManager : public FRunnable {
                 const short motorPort=5000,
                 const short telemPort=5001)
         {
+            _pawn = pawn;
+
             _thread =
-                FRunnableThread::Create(this, TEXT("FThreadedManage"), 0, TPri_BelowNormal); 
+                FRunnableThread::Create(
+                        this, TEXT("FThreadedManage"), 0, TPri_BelowNormal);
+
             _startTime = FPlatformTime::Seconds();
+
             _count = 0;
 
             // Constant
