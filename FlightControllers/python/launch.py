@@ -29,7 +29,7 @@ class LaunchCopter(MulticopterServer):
             mixer,
             kp=1.0,
             ki=0.0,
-            initial_target=15.0):
+            initial_target=2.5):
 
         MulticopterServer.__init__(self)
 

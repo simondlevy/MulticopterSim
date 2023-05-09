@@ -489,15 +489,6 @@ class Vehicle {
             // Run the game if a map has been selected
             if (_mapSelected) {
 
-                TArray<AActor*> ActorsToFind;
-
-                UGameplayStatics::GetAllActorsOfClass(
-                        _pawn->GetWorld(),
-                        ALandscape::StaticClass(),
-                        ActorsToFind);
-
-                debugline("Lanscape actors: %d", ActorsToFind.Num());
-
                 // Use spacebar to switch player-camera view
                 setPlayerCameraView();
 
