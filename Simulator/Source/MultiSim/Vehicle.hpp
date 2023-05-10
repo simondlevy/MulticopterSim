@@ -204,8 +204,6 @@ class Vehicle {
             }
         }
 
-    protected:
-
         UAudioComponent* _audioComponent = NULL;
 
         // Set in constructor

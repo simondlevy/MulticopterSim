@@ -1,6 +1,8 @@
 /*
  * Threaded flight-management class for MultiSim
  *
+ * Gets instantiated in Vehicle::beginPlay()
+ *
  * Copyright (C) 2019 Simon D. Levy
  *
  * MIT License
