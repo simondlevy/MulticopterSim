@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../Vehicle.hpp"
-#include "../FlightManager.hpp"
+#include "../VehicleThread.hpp"
 
 #include "../dynamics/fixedpitch/QuadXBF.hpp"
 

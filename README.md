@@ -87,16 +87,16 @@ directory contains code and instructions for different kinds of flight controlle
 # Design principles
 
 The core of MulticopterSim is the C++ 
-[FlightManager](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/FlightManager.hpp) 
+[VehicleThread](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/VehicleThread.hpp) 
 class. This class provides support for running the vehicle dynamics and the PID control
 regime on its own thread, after it first disables the
-built-in physics in UE5.  The dynamics I used are based directly on the model
+built-in physics in UE5.  The dynamics used are based directly on the model
 presented in this [paper](https://infoscience.epfl.ch/record/97532/files/325.pdf), 
 written as a standalone, header-only C++ 
 [class](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/Dynamics.hpp)
 that can be easily adapted for other simulators and applications if desired.
 This class also supports different frame configurations (quadcopter,
-hexacopter) via virtual methods. By running the FlightManager on its own
+hexacopter) via virtual methods. By running the vehicle dynamics on its own
 thread, I am able to achieve arbitrarily fast updates of the dynamics and
 flight-control.  It would also be possible to run the dynamics and control on
 separate threads, though I have not yet found it advantageous to do that.
@@ -106,7 +106,7 @@ The
 class can be instantiated to transmit
 the images collected by a simulated gimbal-mounted camera on the vehicle, using
 a library like OpenCV.  Computer-vision algorithms running in a Camera subclass can then be used
-as input to the PID control running in the FlightManager.  The following figure
+as input to the PID control running in the VehicleThread.  The following figure
 illustrates this arrangement, using a traditional
 [cascade-control](https://controlguru.com/the-cascade-control-architecture/)
 (slow outer loop / fast inner loop) diagram:

@@ -21,7 +21,7 @@
 
 #include "Utils.hpp"
 #include "Dynamics.hpp"
-#include "FlightManager.hpp"
+#include "VehicleThread.hpp"
 #include "Camera.hpp"
 
 #include <stdio.h>
@@ -216,7 +216,7 @@ class Vehicle {
 	    UStaticMeshComponent* _rotorMeshComponents[Dynamics::MAX_ROTORS] = {};
 
         // Threaded worker for running flight control
-        class FFlightManager* _flightManager = NULL;
+        class FVehicleThread* _flightManager = NULL;
 
         // Circular buffer for moving average of rotor values
         TCircularBuffer<float>* _rotorBuffer = NULL;
@@ -388,7 +388,7 @@ class Vehicle {
 
         void beginPlay(APawn * pawn, Dynamics * dynamics)
         {
-            _flightManager = new FFlightManager(pawn, dynamics);
+            _flightManager = new FVehicleThread(pawn, dynamics);
 
             // Player controller is useful for getting keyboard events,
             // switching cameas, etc.
@@ -474,7 +474,7 @@ class Vehicle {
 
         void endPlay(void)
         {
-            FFlightManager::stopThread(&_flightManager);
+            FVehicleThread::stopThread(&_flightManager);
         }
 
         void tick(float DeltaSeconds)

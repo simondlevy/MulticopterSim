@@ -21,7 +21,7 @@
 
 #include "Runtime/Core/Public/HAL/Runnable.h"
 
-class FFlightManager : public FRunnable {
+class FVehicleThread : public FRunnable {
 
     private:
 
@@ -127,7 +127,7 @@ class FFlightManager : public FRunnable {
     public:
 
         // Constructor, called main thread
-        FFlightManager(APawn * pawn,
+        FVehicleThread(APawn * pawn,
                 Dynamics * dynamics,
                 const char * host="127.0.0.1",
                 const short motorPort=5000,
@@ -159,7 +159,7 @@ class FFlightManager : public FRunnable {
             _connected = true;
         }
 
-        ~FFlightManager(void)
+        ~FVehicleThread(void)
         {
             // Send a bogus time value to tell remote server we're done
             _telemetry[0] = -1;
@@ -186,7 +186,7 @@ class FFlightManager : public FRunnable {
             return _count;
         }
 
-        static void stopThread(FFlightManager ** worker)
+        static void stopThread(FVehicleThread ** worker)
         {
             if (*worker) {
                 (*worker)->Stop();
@@ -245,4 +245,4 @@ class FFlightManager : public FRunnable {
             FRunnable::Stop();
         }
 
-}; // class FFlightManager
+}; // class FVehicleThread
