@@ -220,9 +220,8 @@ class FVehicleThread : public FRunnable {
                 // Update dynamics
                 _dynamics->update(_actuatorValues, currentTime - _previousTime);
 
-                // PID controller: update the flight manager (e.g.,
-                // HackflightManager) with the dynamics state, getting back the
-                // actuator values
+                // PID controller: update the vehicle thread with the dynamics
+                // state, getting back the actuator values
                 this->getMotors(currentTime, _actuatorValues);
 
                 // Track previous time for deltaT
