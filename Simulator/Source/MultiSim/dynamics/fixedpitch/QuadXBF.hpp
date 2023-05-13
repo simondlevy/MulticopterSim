@@ -15,9 +15,18 @@
 #pragma once
 
 #include "../FixedPitch.hpp"
-#include "../../mixers/quadxbf.h"
 
 class QuadXBFDynamics : public FixedPitchDynamics {
+
+    private:
+
+        Dynamics::axes_t mixer[4] = {
+            //  rol   pit    yaw
+            { -1.0f, +1.0f, -1.0f },          // REAR_R
+            { -1.0f, -1.0f, +1.0f },          // FRONT_R
+            { +1.0f, +1.0f, +1.0f },          // REAR_L
+            { +1.0f, -1.0f, -1.0f },          // FRONT_L
+        };
 
     public:	
 
@@ -25,7 +34,7 @@ class QuadXBFDynamics : public FixedPitchDynamics {
                 Dynamics::vehicle_params_t &vparams,
                 FixedPitchDynamics::fixed_pitch_params_t &fparams,
                 bool autoland=true)
-            : FixedPitchDynamics(4, vparams, fparams, mixerQuadXBF, autoland)
+            : FixedPitchDynamics(4, vparams, fparams, mixer, autoland)
         {
         }
 
