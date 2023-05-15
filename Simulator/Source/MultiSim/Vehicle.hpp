@@ -28,14 +28,7 @@
 
 #define SPRINTF sprintf_s
 
-// A macro for simplifying the declaration of static meshes
-#define DECLARE_STATIC_MESH(structname, assetstr, objname)   \
-    struct structname {                                             \
-        ConstructorHelpers::FObjectFinderOptional<UStaticMesh> mesh;   \
-        structname() : mesh(TEXT("/Game/MultiSim/Meshes/" assetstr)) { } \
-    };                                                                     \
-    static structname objname;
-
+#include "StaticMesh.h"
 
 class Vehicle {
 
