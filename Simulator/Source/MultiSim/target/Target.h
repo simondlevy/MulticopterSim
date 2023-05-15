@@ -8,11 +8,18 @@
 
 #pragma once
 
-/*
 #include <CoreMinimal.h>
 #include <GameFramework/Pawn.h>
 
 #include "Target.generated.h"
+
+// A macro for simplifying the declaration of static meshes
+#define DECLARE_STATIC_MESH(structname, assetstr, objname)   \
+    struct structname {                                             \
+        ConstructorHelpers::FObjectFinderOptional<UStaticMesh> mesh;   \
+        structname() : mesh(TEXT("/Game/MultiSim/Meshes/" assetstr)) { } \
+    };                                                                     \
+    static structname objname;
 
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "Target/Frame.Frame", FrameStatics)
@@ -28,18 +35,16 @@ class ATarget : public APawn {
 
         // AActor overrides
 
-        virtual void BeginPlay() override;
+        // virtual void BeginPlay() override;
 
-        virtual void Tick(float DeltaSeconds) override;
+        // virtual void Tick(float DeltaSeconds) override;
 
-        virtual void PostInitializeComponents() override;
+        // virtual void PostInitializeComponents() override;
 
-        virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+        // virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
     public:	
 
         ATarget();
 
 }; // ATarget
-
-*/
