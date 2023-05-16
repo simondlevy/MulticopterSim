@@ -11,6 +11,7 @@
 #include <CoreMinimal.h>
 #include <GameFramework/Pawn.h>
 
+#include "TargetThread.hpp"
 #include "../StaticMesh.h"
 
 #include "Target.generated.h"
