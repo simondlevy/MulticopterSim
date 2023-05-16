@@ -13,7 +13,6 @@ ATarget::ATarget()
 {
 }
 
-/*
 // Called when the game starts or when spawned
 void ATarget::BeginPlay()
 {
@@ -35,4 +34,3 @@ void ATarget::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 }
-*/
