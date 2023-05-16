@@ -39,7 +39,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-//#include "Utils.hpp"
+#include "Axes.hpp"
 
 class Dynamics {
 
@@ -85,12 +85,6 @@ class Dynamics {
         bool _autoland; // support fly-to-zero-AGL
 
     public:
-
-        typedef struct {
-            float x;
-            float y;
-            float z;
-        } axes_t;
 
         /**
          *  Vehicle parameters

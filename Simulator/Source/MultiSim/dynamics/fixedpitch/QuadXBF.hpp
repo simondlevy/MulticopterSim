@@ -14,13 +14,14 @@
 
 #pragma once
 
+#include "../Axes.hpp"
 #include "../FixedPitch.hpp"
 
 class QuadXBFDynamics : public FixedPitchDynamics {
 
     private:
 
-        Dynamics::axes_t mixer[4] = {
+        axes_t mixer[4] = {
             //  rol   pit    yaw
             { -1.0f, +1.0f, -1.0f },          // REAR_R
             { -1.0f, -1.0f, +1.0f },          // FRONT_R
