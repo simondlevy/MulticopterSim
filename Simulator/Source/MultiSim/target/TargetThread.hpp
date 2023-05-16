@@ -30,6 +30,9 @@ class FTargetThread : public FRunnable {
         // Vehicle pawn
         APawn * _pawn = NULL;
 
+        // Guards socket comms
+        bool _connected = false;
+
     public:
 
         // Constructor, called main thread
@@ -66,6 +69,17 @@ class FTargetThread : public FRunnable {
         virtual void Stop() override
         {
             FRunnable::Stop();
+        }
+
+        void getPose(
+                double & x, double & y, double & z, 
+                double & phi, double & theta, double &psi)
+        {
+            // Avoid null-pointer exceptions at startup, freeze after control
+            // program halts
+            if (!(_kinematicsServer && _connected)) {
+                return;
+            }
         }
 
 }; // class FTargetThread
