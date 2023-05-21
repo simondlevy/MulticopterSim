@@ -63,7 +63,11 @@ to build the project.
 <b>Content/C++ Classes/MulticopterSim/vehicles</b> folder and drag one of the
 vehicles into the map. 
 
-# Testing
+6. To enable interaction outside of the editor,  the first time you run the simulator you will
+want to go to <b>Edit -> Editor Preferences -> Performance</b> and disable the option <b>Use Less CPU
+when in Background</b>:
+
+# Testiug
 
 Run the <b>launch.py</b> script in <b>FlightControllers/python/</b>.  It will tell you to hit the Play
 button back in the simulator.  When you hit the button, the vehicle should rise quickly to an altitude of 10 meters.
