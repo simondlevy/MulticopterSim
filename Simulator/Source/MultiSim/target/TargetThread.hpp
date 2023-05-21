@@ -12,7 +12,6 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-#include "../axes.hpp"
 #include "../sockets/UdpServerSocket.hpp"
 
 #include "Runtime/Core/Public/HAL/Runnable.h"
@@ -72,7 +71,13 @@ class FTargetThread : public FRunnable {
             FRunnable::Stop();
         }
 
-        void getPose(axes_t & position, axes_t & angles) 
+        void getPose(
+                double & x,
+                double & y, 
+                double & z, 
+                double & phi, 
+                double & theta, 
+                double & psi)
         {
             // Avoid null-pointer exceptions at startup, freeze after control
             // program halts

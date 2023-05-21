@@ -42,12 +42,9 @@ The key mappings are based on those used in [Microsoft Flight Simulator](https:/
 
 ## Toolchain
 
-You will need Unreal Engine 5 (UE5). I am attempting to use the latest version, which as of the time of this
-writing is UE5.0.1. To install UE5, follow these [instructions](https://docs.unrealengine.com/en-US/GettingStarted/Installation/index.html).
-Because of
-[problems](https://forums.unrealengine.com/t/unhandled-exception-when-building-blank-project-version-1-2-is-not-supported-version/510668/17)
-getting UE5 to work with Visual Studio 2022, I have opted to stay with Visual Studio
-2019 for the time being.
+You will need Unreal Engine 5 (UE5) and Visual Studio C++. I am attempting to use the latest versions, which as of the time of this
+writing are UE5.2.0 and Visual Studio 2022. To install UE5 and Visual Studio, follow the directions 
+[here](https://dev.epicgames.com/community/learning/tutorials/XjvJ/unreal-engine-ue-5-1-visual-studio-2022-installation-guide).
 
 # Building
 

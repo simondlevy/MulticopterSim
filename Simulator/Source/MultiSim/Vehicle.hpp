@@ -226,8 +226,15 @@ class Vehicle {
             // Compute the sum of the rotor values
             float rotorSum = 0;
             for (uint8_t j = 0; j < _nrotors; ++j) {
-                rotorSum += _vehicleThread->actuatorValue(j);
+                rotorSum += 1; // _vehicleThread->actuatorValue(j);
             }
+
+            /*
+            debugline("%d %d %d %d", 
+                    _rotorDirections[0],
+                    _rotorDirections[1],
+                    _rotorDirections[2],
+                    _rotorDirections[3]);*/
 
             // Rotate rotors. For visual effect, we can ignore actual rotor
             // values, and just keep increasing the rotation.

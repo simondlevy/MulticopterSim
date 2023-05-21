@@ -14,20 +14,29 @@
 
 #pragma once
 
-#include "../Axes.hpp"
 #include "../FixedPitch.hpp"
 
 class QuadXBFDynamics : public FixedPitchDynamics {
 
-    private:
+    protected:
 
-        axes_t mixer[4] = {
-            //  rol   pit    yaw
-            { -1.0f, +1.0f, -1.0f },          // REAR_R
-            { -1.0f, -1.0f, +1.0f },          // FRONT_R
-            { +1.0f, +1.0f, +1.0f },          // REAR_L
-            { +1.0f, -1.0f, -1.0f },          // FRONT_L
-        };
+        virtual int8_t getRotorDirection(uint8_t i) override
+        {
+            static const int8_t d[4] = {-1, +1, +1, -1};
+            return d[i];
+        }
+
+        int8_t getRotorRollContribution(uint8_t i)
+        {
+            static const int8_t d[4] = {-1, -1, +1, +1};
+            return d[i];
+        }
+
+        int8_t getRotorPitchContribution(uint8_t i)
+        {
+            static const int8_t d[4] = {+1, -1, +1, -1};
+            return d[i];
+        }
 
     public:	
 
@@ -35,7 +44,7 @@ class QuadXBFDynamics : public FixedPitchDynamics {
                 Dynamics::vehicle_params_t &vparams,
                 FixedPitchDynamics::fixed_pitch_params_t &fparams,
                 bool autoland=true)
-            : FixedPitchDynamics(4, vparams, fparams, mixer, autoland)
+            : FixedPitchDynamics(4, vparams, fparams, autoland)
         {
         }
 
