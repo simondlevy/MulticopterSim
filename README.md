@@ -67,7 +67,7 @@ vehicles into the map.
 want to go to <b>Edit -> Editor Preferences -> Performance</b> and disable the option <b>Use Less CPU
 when in Background</b>:
 
-# Testiug
+# Testing
 
 Run the <b>launch.py</b> script in <b>FlightControllers/python/</b>.  It will tell you to hit the Play
 button back in the simulator.  When you hit the button, the vehicle should rise quickly to an altitude of 10 meters.
