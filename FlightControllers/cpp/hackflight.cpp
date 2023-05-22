@@ -93,6 +93,8 @@ int main(int argc, char ** argv)
         // Build vehicle state 
         auto vstate = state_from_telemetry(telemetry);
 
+        printf("dx=%+3.3f  dy=%+3.3f\n", vstate.dx, vstate.dy);
+
         // Build stick demands
         auto demands = demands_from_telemetry(telemetry);
         
