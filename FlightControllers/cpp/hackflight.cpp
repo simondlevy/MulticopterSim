@@ -68,8 +68,8 @@ int main(int argc, char ** argv)
 
     static AnglePidController anglePid = 
         AnglePidController(
-                10,   // K_p
-                10,    // K_i
+                10, // K_p
+                10, // K_i
                 1,  // K_d
                 0); // K_f
 
@@ -102,7 +102,11 @@ int main(int argc, char ** argv)
         // Convert heading angle to radians
         const auto psi = vstate.psi * M_PI / 180;
 
-        printf("dx=%+3.3f  dy=%+3.3f  psi=%+3.3f\n", vstate.dx, vstate.dy, psi);
+        // Use heading angle to rotate dx, dy into vehicle coordinates
+        const auto dx = cos(psi) * vstate.dx + sin(psi) *  vstate.dy;
+        const auto dy = sin(psi) * vstate.dx + cos(psi) *  vstate.dy;
+
+        printf("dx=%+3.3f  dy=%+3.3f\n", dx, dy);
 
         // Build stick demands
         auto demands = demands_from_telemetry(telemetry);
