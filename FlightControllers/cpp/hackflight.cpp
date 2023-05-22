@@ -75,6 +75,8 @@ int main(int argc, char ** argv)
 
     static AltHoldPidController altHoldPid;
 
+    static FlowHoldPidController flowHoldPid;
+
     static Mixer mixer = QuadXbfMixer::make();
 
     printf("Hit the Play button ... ");
@@ -99,14 +101,14 @@ int main(int argc, char ** argv)
         // Build vehicle state 
         auto vstate = state_from_telemetry(telemetry);
 
-        // Convert heading angle to radians
-        const auto psi = vstate.psi * M_PI / 180;
-
         // Use heading angle to rotate dx, dy into vehicle coordinates
+        const auto psi = vstate.psi * M_PI / 180; // deg => rad
         const auto dx = cos(psi) * vstate.dx + sin(psi) *  vstate.dy;
         const auto dy = sin(psi) * vstate.dx + cos(psi) *  vstate.dy;
+        vstate.dx = dx;
+        vstate.dy = dy;
 
-        printf("dx=%+3.3f  dy=%+3.3f\n", dx, dy);
+        printf("dx=%+3.3f  dy=%+3.3f\n", vstate.dx, vstate.dy);
 
         // Build stick demands
         auto demands = demands_from_telemetry(telemetry);
@@ -115,7 +117,7 @@ int main(int argc, char ** argv)
         auto pidReset = demands.throttle < .05;
 
         // Run stick demands through PID controllers to get final demands
-        std::vector<PidController *> pids = {&anglePid, &altHoldPid};
+        std::vector<PidController *> pids = {&anglePid, &altHoldPid, &flowHoldPid};
         PidController::run(pids, demands, vstate, usec, pidReset);
 
         // Run final demands through mixer to get motor values
