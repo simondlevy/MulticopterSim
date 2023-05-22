@@ -13,6 +13,7 @@
 #include <core/pid.h>
 #include <core/pids/angle.h>
 #include <core/pids/althold.h>
+#include <core/pids/flowhold.h>
 #include <core/mixers/fixedpitch/quadxbf.h>
 
 #include "../../Simulator/Source/MultiSim/sockets/UdpClientSocket.hpp"
