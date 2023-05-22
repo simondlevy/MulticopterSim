@@ -57,11 +57,6 @@ static Demands demands_from_telemetry(const double telemetry[])
             );
 }
 
-static float deg2rad(const float deg) 
-{
-    return deg * M_PI / 180;
-}
-
 int main(int argc, char ** argv)
 {
 
@@ -106,14 +101,10 @@ int main(int argc, char ** argv)
         // Build vehicle state 
         auto vstate = state_from_telemetry(telemetry);
 
-        // Convert angles to radians
-        vstate.phi = deg2rad(vstate.phi);
-        vstate.theta = deg2rad(vstate.theta);
-        vstate.psi = deg2rad(vstate.psi);
-
         // Use heading angle to rotate dx, dy into vehicle coordinates
-        const auto dx = cos(vstate.psi) * vstate.dx + sin(vstate.psi) *  vstate.dy;
-        const auto dy = sin(vstate.psi) * vstate.dx + cos(vstate.psi) *  vstate.dy;
+        const auto psi = vstate.psi * M_PI / 180;
+        const auto dx = cos(psi) * vstate.dx + sin(psi) *  vstate.dy;
+        const auto dy = sin(psi) * vstate.dx + cos(psi) *  vstate.dy;
         vstate.dx = dx;
         vstate.dy = dy;
 
