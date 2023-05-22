@@ -93,7 +93,10 @@ int main(int argc, char ** argv)
         // Build vehicle state 
         auto vstate = state_from_telemetry(telemetry);
 
-        printf("dx=%+3.3f  dy=%+3.3f\n", vstate.dx, vstate.dy);
+        // Convert heading angle to radians
+        const auto psi = vstate.psi * M_PI / 180;
+
+        printf("dx=%+3.3f  dy=%+3.3f  psi=%+3.3f\n", vstate.dx, vstate.dy, psi);
 
         // Build stick demands
         auto demands = demands_from_telemetry(telemetry);
