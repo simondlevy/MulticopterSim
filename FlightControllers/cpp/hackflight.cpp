@@ -66,7 +66,13 @@ int main(int argc, char ** argv)
 
     // Create Hackflight objects
 
-    static AnglePidController anglePid;
+    static AnglePidController anglePid = 
+        AnglePidController(
+                1.4,   // K_p
+                49,    // K_i
+                0.02   // K_d
+                0.02); // K_f
+
     static AltHoldPidController altHoldPid;
 
     static Mixer mixer = QuadXbfMixer::make();
