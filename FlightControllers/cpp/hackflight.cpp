@@ -68,10 +68,10 @@ int main(int argc, char ** argv)
 
     static AnglePidController anglePid = 
         AnglePidController(
-                1.4,   // K_p
-                49,    // K_i
-                0.02   // K_d
-                0.02); // K_f
+                10,   // K_p
+                10,    // K_i
+                1,  // K_d
+                0); // K_f
 
     static AltHoldPidController altHoldPid;
 
