@@ -43,7 +43,9 @@ class APhantom : public APawn {
             2,      // Iy [kg*m^2] 
             3,      // Iz [kg*m^2] 
             38E-04, // Jr prop inertial [kg*m^2] 
-            15000,// maxrpm
+            15000,  // maxrpm
+
+            20      // maxspeed [m/s]
         };
 
         FixedPitchDynamics::fixed_pitch_params_t fparams = {

@@ -78,7 +78,9 @@ class AIngenuity : public APawn {
             3,      // Iz [kg*m^2] 
             38E-04, // Jr prop inertial [kg*m^2] 
 
-            15000,// maxrpm
+            15000,  // maxrpm
+
+            10      // max speed [m/s]
         };
 
         CoaxialDynamics dynamics = CoaxialDynamics(vparams);

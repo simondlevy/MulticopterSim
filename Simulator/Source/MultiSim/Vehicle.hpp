@@ -370,7 +370,7 @@ class Vehicle {
             _vehicleThread = NULL;
         }
 
-        Vehicle(Dynamics* dynamics)
+        Vehicle(Dynamics * dynamics)
         {
             _dynamics = dynamics;
             _nrotors = dynamics->rotorCount();
@@ -479,6 +479,9 @@ class Vehicle {
 
         void tick(float DeltaSeconds)
         {
+            static uint32_t count;
+            debugline("%f", _dynamics->vstate.dx);
+
             // Quit on ESCape key
             if (hitKey(EKeys::Escape)) {
                 RequestEngineExit("User hit ESC");

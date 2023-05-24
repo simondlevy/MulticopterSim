@@ -82,6 +82,11 @@ class Dynamics {
 
         bool _autoland; // support fly-to-zero-AGL
 
+        double _capSpeed(const double speed)
+        {
+            return speed > _vparams.maxspeed ? _vparams.maxspeed : speed;
+        }
+
     public:
 
         /**
@@ -96,6 +101,7 @@ class Dynamics {
             double Iz; // [kg*m^2] 
             double Jr; // rotor inertial [kg*m^2] 
             uint16_t maxrpm; // maxrpm
+            double maxspeed; // [m/s]
 
         } vehicle_params_t; 
 
@@ -126,9 +132,9 @@ class Dynamics {
         vehicle_state_t _vstate_deriv;
 
         Dynamics(
-                uint8_t actuatorCount,
-                vehicle_params_t & vparams,
-                bool autoland=true)
+                const uint8_t actuatorCount,
+                const vehicle_params_t & vparams,
+                const bool autoland=true)
         {
             _autoland = autoland; 
 
@@ -251,15 +257,15 @@ class Dynamics {
             _vstate_deriv.phi = phidot;
 
             // phi''
-            _vstate_deriv.dphi = psidot * thedot * (Iy - Iz) / Ix - Jr / Ix * thedot *
-                omega + u2 / Ix;
+            _vstate_deriv.dphi = psidot * thedot * (Iy - Iz) / Ix - Jr / 
+                Ix * thedot * omega + u2 / Ix;
 
             // theta'
             _vstate_deriv.theta = thedot;
 
             // theta''
-            _vstate_deriv.dtheta = -(psidot * phidot * (Iz - Ix) / Iy + Jr / Iy * phidot *
-                    omega + u3 / Iy);
+            _vstate_deriv.dtheta = -(psidot * phidot * (Iz - Ix) / Iy + Jr / 
+                    Iy * phidot * omega + u3 / Iy);
 
             // psi'
             _vstate_deriv.psi = psidot;
@@ -439,6 +445,10 @@ class Dynamics {
                 vstate.dtheta += dt * _vstate_deriv.dtheta;
                 vstate.psi += dt * _vstate_deriv.psi;
                 vstate.dpsi += dt * _vstate_deriv.dpsi;
+
+                // Cap dx, dy by maximum speed
+                vstate.dx = _capSpeed(vstate.dx);
+                vstate.dy = _capSpeed(vstate.dy);
 
                 // Once airborne, inertial-frame acceleration is same as NED
                 // acceleration
