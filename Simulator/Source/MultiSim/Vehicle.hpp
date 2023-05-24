@@ -476,6 +476,19 @@ class Vehicle {
 
         void tick(float DeltaSeconds)
         {
+            static bool perturbed;
+
+            if (!perturbed) {
+
+                if (_dynamics->vstate.z < -5 && fabs(_dynamics->vstate.dz) < 0.1) {
+                    _dynamics->vstate.dy = -1;
+                    perturbed = true;
+                }
+            }
+
+            debugline("Z=%3.3f dZ=%3.3f\n", 
+                    _dynamics->vstate.z, _dynamics->vstate.dz);
+
             // Quit on ESCape key
             if (hitKey(EKeys::Escape)) {
                 RequestEngineExit("User hit ESC");
