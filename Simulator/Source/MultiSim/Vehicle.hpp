@@ -51,6 +51,8 @@ class Vehicle {
 
         uint8_t _nrotors = 0;
 
+        bool _perturbed;
+
         float rotorStartAngle(float rotorX, float rotorY)
         {
             FVector vehicleCenter = _pawn->GetActorLocation();
@@ -385,6 +387,8 @@ class Vehicle {
 
         void beginPlay(APawn * pawn, Dynamics * dynamics)
         {
+            _perturbed = false;
+
             _vehicleThread = new FVehicleThread(pawn, dynamics);
 
             // Player controller is useful for getting keyboard events,
@@ -476,13 +480,11 @@ class Vehicle {
 
         void tick(float DeltaSeconds)
         {
-            static bool perturbed;
-
-            if (!perturbed) {
+            if (!_perturbed) {
 
                 if (_dynamics->vstate.z < -5 && fabs(_dynamics->vstate.dz) < 0.1) {
                     _dynamics->vstate.dy = -1;
-                    perturbed = true;
+                    _perturbed = true;
                 }
             }
 
