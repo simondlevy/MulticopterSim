@@ -60,6 +60,7 @@ static Demands demands_from_telemetry(const double telemetry[])
 
 static void report(void)
 {
+    /*
     struct timeval time = {};
     gettimeofday(&time, NULL);
 
@@ -75,7 +76,7 @@ static void report(void)
         prev_sec = time.tv_sec;
     }
 
-    count++;
+    count++;*/
 }
 
 int main(int argc, char ** argv)
@@ -149,7 +150,7 @@ int main(int argc, char ** argv)
         // Send back motor values
         motorClient.sendData(dmvals, sizeof(dmvals));
 
-        // report();
+        report();
 
     } // while (true)
 
