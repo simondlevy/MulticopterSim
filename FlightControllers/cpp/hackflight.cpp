@@ -149,7 +149,7 @@ int main(int argc, char ** argv)
         // Send back motor values
         motorClient.sendData(dmvals, sizeof(dmvals));
 
-        report();
+        // report();
 
     } // while (true)
 

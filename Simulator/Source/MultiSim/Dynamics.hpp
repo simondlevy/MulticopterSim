@@ -84,7 +84,9 @@ class Dynamics {
 
         double _capSpeed(const double speed)
         {
-            return speed > _vparams.maxspeed ? _vparams.maxspeed : speed;
+            const auto cap = _vparams.maxspeed;
+
+            return speed < -cap ? -cap : speed > cap ? cap : speed;
         }
 
     public:

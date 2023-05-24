@@ -229,13 +229,6 @@ class Vehicle {
                 rotorSum += 1; // _vehicleThread->actuatorValue(j);
             }
 
-            /*
-            debugline("%d %d %d %d", 
-                    _rotorDirections[0],
-                    _rotorDirections[1],
-                    _rotorDirections[2],
-                    _rotorDirections[3]);*/
-
             // Rotate rotors. For visual effect, we can ignore actual rotor
             // values, and just keep increasing the rotation.
             if (rotorSum > 0) {
@@ -479,9 +472,6 @@ class Vehicle {
 
         void tick(float DeltaSeconds)
         {
-            static uint32_t count;
-            debugline("%f", _dynamics->vstate.dx);
-
             // Quit on ESCape key
             if (hitKey(EKeys::Escape)) {
                 RequestEngineExit("User hit ESC");
