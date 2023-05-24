@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <sys/time.h>
 
 #include <core/pid.h>
 #include <core/pids/angle.h>
@@ -55,6 +56,26 @@ static Demands demands_from_telemetry(const double telemetry[])
             (float)telemetry[15],
             (float)telemetry[16]
             );
+}
+
+static void report(void)
+{
+    struct timeval time = {};
+    gettimeofday(&time, NULL);
+
+    static uint32_t prev_sec;
+    static uint32_t count;
+
+    if (time.tv_sec != prev_sec) {
+        if (count != 0) {
+            printf("%d Hz", count);
+        }
+        printf("\n");
+        count = 0;
+        prev_sec = time.tv_sec;
+    }
+
+    count++;
 }
 
 int main(int argc, char ** argv)
@@ -127,6 +148,8 @@ int main(int argc, char ** argv)
 
         // Send back motor values
         motorClient.sendData(dmvals, sizeof(dmvals));
+
+        report();
 
     } // while (true)
 
