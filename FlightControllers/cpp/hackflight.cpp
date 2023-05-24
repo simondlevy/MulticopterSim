@@ -118,7 +118,7 @@ int main(int argc, char ** argv)
         }
 
         // Convert simulator time to microseconds
-        uint32_t usec = (uint32_t)(time * 1e6);
+        const auto usec = (uint32_t)(time * 1e6);
 
         // Build vehicle state 
         auto vstate = state_from_telemetry(telemetry);

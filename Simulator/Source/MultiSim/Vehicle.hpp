@@ -34,6 +34,9 @@ class Vehicle {
 
     private:
 
+        // Slowed down for simulation
+        static constexpr double MOTOR_RPM = 400;
+
         // Support cycling through views by hitting spacebar
         typedef enum {
 
@@ -43,6 +46,7 @@ class Vehicle {
             VIEW_COUNT
 
         } view_t;
+
         view_t _view = VIEW_CHASE;
 
         uint8_t _nrotors = 0;
@@ -59,7 +63,7 @@ class Vehicle {
         {
             static float rotation;
             for (uint8_t i = 0; i < _rotorCount; ++i) {
-                setRotorRotation(i, rotation * rotorDirections[i] * 200);
+                setRotorRotation(i, rotation * rotorDirections[i] * MOTOR_RPM);
             }
             rotation++;
         }
@@ -226,7 +230,7 @@ class Vehicle {
             // Compute the sum of the rotor values
             float rotorSum = 0;
             for (uint8_t j = 0; j < _nrotors; ++j) {
-                rotorSum += 1; // _vehicleThread->actuatorValue(j);
+                rotorSum += _vehicleThread->actuatorValue(j);
             }
 
             // Rotate rotors. For visual effect, we can ignore actual rotor
