@@ -482,14 +482,11 @@ class Vehicle {
         {
             if (!_perturbed) {
 
-                if (_dynamics->vstate.z < -5 && fabs(_dynamics->vstate.dz) < 0.1) {
-                    _dynamics->vstate.dy = -1;
+                if (_dynamics->vstate.z < -3 && fabs(_dynamics->vstate.dz) < 0.1) {
+                    // _dynamics->vstate.dy = -1;
                     _perturbed = true;
                 }
             }
-
-            debugline("Z=%3.3f dZ=%3.3f\n", 
-                    _dynamics->vstate.z, _dynamics->vstate.dz);
 
             // Quit on ESCape key
             if (hitKey(EKeys::Escape)) {

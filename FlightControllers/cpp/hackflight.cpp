@@ -90,10 +90,11 @@ int main(int argc, char ** argv)
 
     static AnglePidController anglePid = 
         AnglePidController(
-                10, // K_p
-                10, // K_i
-                1,  // K_d
-                0); // K_f
+                10, // K_rate_p
+                10, // K_rate_i
+                1,  // K_rate_d
+                0,  // K_rate_f
+                4); // K_level_p
 
     static AltHoldPidController altHoldPid;
 
@@ -137,7 +138,8 @@ int main(int argc, char ** argv)
         auto pidReset = demands.throttle < .05;
 
         // Run stick demands through PID controllers to get final demands
-        std::vector<PidController *> pids = {&anglePid, &altHoldPid, &flowHoldPid};
+        std::vector<PidController *> pids =
+            {&anglePid, &altHoldPid, &flowHoldPid};
         PidController::run(pids, demands, vstate, usec, pidReset);
 
         // Run final demands through mixer to get motor values
