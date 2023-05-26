@@ -78,9 +78,17 @@ static void report(void)
     count++;
 }
 
+static void rotateToVehicleFrame(VehicleState & vstate)
+{
+    const auto psi = vstate.psi * M_PI / 180;
+    const auto dx = cos(psi) * vstate.dx + sin(psi) *  vstate.dy;
+    const auto dy = sin(psi) * vstate.dx + cos(psi) *  vstate.dy;
+    vstate.dx = dx;
+    vstate.dy = dy;
+}
+
 int main(int argc, char ** argv)
 {
-
     // Create sockets for telemetry in, motors out
     UdpServerSocket telemServer = UdpServerSocket(TELEM_PORT);
     UdpClientSocket motorClient = UdpClientSocket(HOST, MOTOR_PORT);
@@ -104,6 +112,9 @@ int main(int argc, char ** argv)
     printf("Hit the Play button ... ");
     fflush(stdout);
 
+    std::vector<PidController *> pids =
+    {&anglePid, &altHoldPid, &flowHoldPid};
+
     // Loop forever, waiting for clients
     while (true) {
 
@@ -124,21 +135,15 @@ int main(int argc, char ** argv)
         auto vstate = state_from_telemetry(telemetry);
 
         // Use heading angle to rotate dx, dy into vehicle coordinates
-        const auto psi = vstate.psi * M_PI / 180;
-        const auto dx = cos(psi) * vstate.dx + sin(psi) *  vstate.dy;
-        const auto dy = sin(psi) * vstate.dx + cos(psi) *  vstate.dy;
-        vstate.dx = dx;
-        vstate.dy = dy;
+        rotateToVehicleFrame(vstate);
 
         // Build stick demands
         auto demands = demands_from_telemetry(telemetry);
-        
+
         // Reset PID controllers on zero throttle
         auto pidReset = demands.throttle < .05;
 
         // Run stick demands through PID controllers to get final demands
-        std::vector<PidController *> pids =
-            {&anglePid, &altHoldPid, &flowHoldPid};
         PidController::run(pids, demands, vstate, usec, pidReset);
 
         // Run final demands through mixer to get motor values
