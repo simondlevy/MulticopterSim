@@ -25,6 +25,8 @@ class FVehicleThread : public FRunnable {
 
     private:
 
+        static const uint32_t PID_FREQ = 8000;
+
         FRunnableThread * _thread = NULL;
 
         bool _running = false;
@@ -54,11 +56,13 @@ class FVehicleThread : public FRunnable {
         double _actuatorValues[100] = {}; 
 
         // For computing deltaT
-        double   _previousTime = 0;
+        double _previousTime = 0;
+
+        // For PID loop
+        double _pidLoopTime = 0;
 
         /**
          * Flight-control method running repeatedly on its own thread.  
-         * Override this method to implement your own flight controller.
          *
          * @param time current time in seconds (input)
          * @param values actuator values returned by your controller (output)
@@ -68,11 +72,6 @@ class FVehicleThread : public FRunnable {
         uint8_t _actuatorCount = 0;
 
         Dynamics * _dynamics = NULL;
-
-        uint32_t getFps(void)
-        {
-            return (uint32_t)(_count/(FPlatformTime::Seconds()-_startTime));
-        }
 
         void getMotors(const double time, double * values)
         {
@@ -143,13 +142,12 @@ class FVehicleThread : public FRunnable {
 
             _count = 0;
 
-            // Constant
             _actuatorCount = dynamics->actuatorCount();
 
             _dynamics = dynamics;
 
-            // For periodic update
             _previousTime = 0;
+            _pidLoopTime = 0;
 
             _telemClient = new UdpClientSocket(host, telemPort);
             _motorServer = new UdpServerSocket(motorPort);
@@ -172,6 +170,11 @@ class FVehicleThread : public FRunnable {
             UdpServerSocket::free(_motorServer);
 
            delete _thread;
+        }
+
+        uint32_t getFps(void)
+        {
+            return (uint32_t)(_count/(FPlatformTime::Seconds()-_startTime));
         }
 
         // Called by VehiclePawn::Tick() method to get actuator value for
@@ -220,9 +223,12 @@ class FVehicleThread : public FRunnable {
                 // Update dynamics
                 _dynamics->update(_actuatorValues, currentTime - _previousTime);
 
-                // PID controller: update the vehicle thread with the dynamics
-                // state, getting back the actuator values
-                this->getMotors(currentTime, _actuatorValues);
+                // PID controller: periodically update the vehicle thread with
+                // the dynamics state, getting back the actuator values
+                if ((currentTime - _pidLoopTime) > 1. / PID_FREQ) {
+                    this->getMotors(currentTime, _actuatorValues);
+                    _pidLoopTime = currentTime;
+                }
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;

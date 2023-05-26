@@ -480,10 +480,12 @@ class Vehicle {
 
         void tick(float DeltaSeconds)
         {
+            debugline("FPS=%3.3e", (double)_vehicleThread->getFps());
+
             if (!_perturbed) {
 
                 if (_dynamics->vstate.z < -3 && fabs(_dynamics->vstate.dz) < 0.1) {
-                    // _dynamics->vstate.dy = -1;
+                    //_dynamics->vstate.dy = -1;
                     _perturbed = true;
                 }
             }

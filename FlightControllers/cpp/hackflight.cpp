@@ -13,8 +13,8 @@
 
 #include <core/pid.h>
 #include <core/pids/angle.h>
-#include <core/pids/althold.h>
-#include <core/pids/flowhold.h>
+#include <core/pids/setpoints/althold.h>
+#include <core/pids/setpoints/flowhold.h>
 #include <core/mixers/fixedpitch/quadxbf.h>
 
 #include "../../Simulator/Source/MultiSim/sockets/UdpClientSocket.hpp"
@@ -60,7 +60,6 @@ static Demands demands_from_telemetry(const double telemetry[])
 
 static void report(void)
 {
-    /*
     struct timeval time = {};
     gettimeofday(&time, NULL);
 
@@ -76,7 +75,7 @@ static void report(void)
         prev_sec = time.tv_sec;
     }
 
-    count++;*/
+    count++;
 }
 
 int main(int argc, char ** argv)
