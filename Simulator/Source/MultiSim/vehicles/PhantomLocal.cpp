@@ -7,6 +7,7 @@
  */
 
 #include "PhantomLocal.h"
+#include "../threads/RemoteThread.hpp"
 
 APhantomLocal::APhantomLocal()
 {
@@ -25,7 +26,7 @@ APhantomLocal::APhantomLocal()
 // Called when the game starts or when spawned
 void APhantomLocal::BeginPlay()
 {
-    vehicle.beginPlay(this, &dynamics);
+    vehicle.beginPlay(new FRemoteThread(&dynamics));
 
     Super::BeginPlay();
 }

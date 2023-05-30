@@ -7,6 +7,7 @@
 */
 
 #include "IngenuityRemote.h"
+#include "../threads/RemoteThread.hpp"
 
 AIngenuityRemote::AIngenuityRemote()
 {
@@ -37,7 +38,7 @@ AIngenuityRemote::AIngenuityRemote()
 // Called when the game starts or when spawned
 void AIngenuityRemote::BeginPlay()
 {
-    vehicle.beginPlay(this, &dynamics);
+    vehicle.beginPlay(new FRemoteThread(&dynamics));
 
     Super::BeginPlay();
 }

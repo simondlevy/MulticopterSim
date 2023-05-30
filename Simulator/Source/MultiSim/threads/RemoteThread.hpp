@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "Thread.hpp"
+#include "../Thread.hpp"
 
-#include "sockets/UdpClientSocket.hpp"
-#include "sockets/UdpServerSocket.hpp"
+#include "../sockets/UdpClientSocket.hpp"
+#include "../sockets/UdpServerSocket.hpp"
 
 class FRemoteThread : public FVehicleThread {
 
@@ -83,13 +83,13 @@ class FRemoteThread : public FVehicleThread {
     public:
 
         // Constructor, called main thread
-        FRemoteThread(APawn * pawn,
+        FRemoteThread(
                 Dynamics * dynamics,
                 const char * host="127.0.0.1",
                 const short motorPort=5000,
                 const short telemPort=5001)
 
-            : FVehicleThread(pawn, dynamics)
+            : FVehicleThread(dynamics)
         {
             _telemClient = new UdpClientSocket(host, telemPort);
             _motorServer = new UdpServerSocket(motorPort);

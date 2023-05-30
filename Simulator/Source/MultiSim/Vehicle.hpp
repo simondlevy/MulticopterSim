@@ -23,7 +23,7 @@
 
 #include "Utils.hpp"
 #include "Dynamics.hpp"
-#include "threads/RemoteThread.hpp"
+#include "Thread.hpp"
 #include "Camera.hpp"
 
 #include <stdio.h>
@@ -217,7 +217,7 @@ class Vehicle {
 	    UStaticMeshComponent* _rotorMeshComponents[Dynamics::MAX_ROTORS] = {};
 
         // Threaded worker for running flight control
-        class FRemoteThread * _vehicleThread = NULL;
+        class FVehicleThread * _vehicleThread = NULL;
 
         // Circular buffer for moving average of rotor values
         TCircularBuffer<float>* _rotorBuffer = NULL;
@@ -387,11 +387,11 @@ class Vehicle {
         {
         }
 
-        void beginPlay(APawn * pawn, Dynamics * dynamics)
+        void beginPlay(FVehicleThread * thread)
         {
             _perturbed = false;
 
-            _vehicleThread = new FRemoteThread(pawn, dynamics);
+            _vehicleThread = thread;
 
             // Player controller is useful for getting keyboard events,
             // switching cameas, etc.
@@ -477,7 +477,7 @@ class Vehicle {
 
         void endPlay(void)
         {
-            FVehicleThread::stopThread((FVehicleThread **)&_vehicleThread);
+            FVehicleThread::stopThread(&_vehicleThread);
         }
 
         void tick(float DeltaSeconds)

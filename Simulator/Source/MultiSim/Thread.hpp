@@ -1,7 +1,9 @@
 /*
- * Threaded flight-management class for MultiSim
+ * Abstract hreaded flight-management class for MultiSim
  *
  * Gets instantiated in Vehicle::beginPlay()
+ *
+ * Subclasses should implement getMotors()
  *
  * Copyright (C) 2023 Simon D. Levy
  *
@@ -27,9 +29,6 @@ class FVehicleThread : public FRunnable {
         FRunnableThread * _thread = NULL;
 
         bool _running = false;
-
-        // Vehicle pawn
-        APawn * _pawn = NULL;
 
         // Joystick / game controller / RC transmitter
         IJoystick * _joystick;
@@ -72,13 +71,11 @@ class FVehicleThread : public FRunnable {
     public:
 
         // Constructor, called main thread
-        FVehicleThread(APawn * pawn, Dynamics * dynamics)
+        FVehicleThread(Dynamics * dynamics)
         {
-            _pawn = pawn;
-
             _thread =
                 FRunnableThread::Create(
-                        this, TEXT("FThreadedManage"), 0, TPri_BelowNormal);
+                        this, TEXT("FThreadedManager"), 0, TPri_BelowNormal);
 
             _startTime = FPlatformTime::Seconds();
 
