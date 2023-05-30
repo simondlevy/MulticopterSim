@@ -68,7 +68,7 @@ static void report(void)
 
     if (time.tv_sec != prev_sec) {
         if (count != 0) {
-            printf("%d Hz", count);
+            printf("%3.3e Hz", (double)count);
         }
         printf("\n");
         count = 0;

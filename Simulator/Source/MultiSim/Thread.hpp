@@ -16,9 +16,6 @@
 #include "Joystick.h"
 #include "Utils.hpp"
 
-#include "sockets/UdpClientSocket.hpp"
-#include "sockets/UdpServerSocket.hpp"
-
 #include "Runtime/Core/Public/HAL/Runnable.h"
 
 class FVehicleThread : public FRunnable {
@@ -30,16 +27,6 @@ class FVehicleThread : public FRunnable {
         FRunnableThread * _thread = NULL;
 
         bool _running = false;
-
-        // Socket comms
-        UdpClientSocket * _telemClient = NULL;
-        UdpServerSocket * _motorServer = NULL;
-
-	    // Time : State : Demands
-        double _telemetry[17] = {};
-
-        // Guards socket comms
-        bool _connected = false;
 
         // Vehicle pawn
         APawn * _pawn = NULL;
@@ -73,61 +60,19 @@ class FVehicleThread : public FRunnable {
 
         Dynamics * _dynamics = NULL;
 
-        void getMotors(
-                const double time, const double * joyvals)
-        {
-            // Avoid null-pointer exceptions at startup, freeze after control
-            // program halts
-            if (!(_telemClient && _motorServer && _connected)) {
-                return;
-            }
+    protected:
 
-            // First output value is time
-            _telemetry[0] = time;
-
-            // Next output values are state
-            _telemetry[1] = _dynamics->vstate.x;
-            _telemetry[2] = _dynamics->vstate.dx;
-            _telemetry[3] = _dynamics->vstate.y;
-            _telemetry[4] = _dynamics->vstate.dy;
-            _telemetry[5] = _dynamics->vstate.z;
-            _telemetry[6] = _dynamics->vstate.dz;
-            _telemetry[7] = _dynamics->vstate.phi;
-            _telemetry[8] = _dynamics->vstate.dphi;
-            _telemetry[9] = _dynamics->vstate.theta;
-            _telemetry[10] = _dynamics->vstate.dtheta;
-            _telemetry[11] = _dynamics->vstate.psi;
-            _telemetry[12] = _dynamics->vstate.dpsi;
-
-            // Remaining output values are stick demands
-            _telemetry[13] = joyvals[0];
-            _telemetry[14] = joyvals[1];
-            _telemetry[15] = joyvals[2];
-            _telemetry[16] = joyvals[3];
-
-            // Send telemetry values to server
-            _telemClient->sendData(_telemetry, sizeof(_telemetry));
-
-            // Get motor values from server
-            _actuatorValues[0] = 0;
-            _motorServer->receiveData(_actuatorValues, 8 * _actuatorCount);
-
-            // Server sends a -1 to halt
-            if (_actuatorValues[0] == -1) {
-				_actuatorValues[0] = 0;
-				_connected = false;
-				return;
-			}
-        }
+        virtual void getMotors(
+                const double time,
+                const double * joyvals,
+                const Dynamics * dynamics,
+                double *motors,
+                const uint8_t motorCount) = 0;
 
     public:
 
         // Constructor, called main thread
-        FVehicleThread(APawn * pawn,
-                Dynamics * dynamics,
-                const char * host="127.0.0.1",
-                const short motorPort=5000,
-                const short telemPort=5001)
+        FVehicleThread(APawn * pawn, Dynamics * dynamics)
         {
             _pawn = pawn;
 
@@ -146,26 +91,11 @@ class FVehicleThread : public FRunnable {
             _previousTime = 0;
             _pidLoopTime = 0;
 
-            _telemClient = new UdpClientSocket(host, telemPort);
-            _motorServer = new UdpServerSocket(motorPort);
-
             _joystick = new IJoystick();
-
-            _connected = true;
         }
 
         ~FVehicleThread(void)
         {
-            // Send a bogus time value to tell remote server we're done
-            _telemetry[0] = -1;
-            if (_telemClient) {
-                _telemClient->sendData(_telemetry, sizeof(_telemetry));
-            }
-
-            // Close sockets
-            UdpClientSocket::free(_telemClient);
-            UdpServerSocket::free(_motorServer);
-
            delete _thread;
         }
 
@@ -228,7 +158,11 @@ class FVehicleThread : public FRunnable {
                 if (_pid_count ==  PID_PERIOD) {
                     double joyvals[10] = {};
                     _joystick->poll(joyvals);
-                    this->getMotors(currentTime, joyvals);
+                    this->getMotors(
+                            currentTime,
+                            joyvals, _dynamics,
+                            _actuatorValues,
+                            _actuatorCount);
                     _pid_count = 0;
                 }
 
