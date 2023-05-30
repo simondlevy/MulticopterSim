@@ -23,7 +23,7 @@
 
 #include "Utils.hpp"
 #include "Dynamics.hpp"
-#include "VehicleThread.hpp"
+#include "Thread.hpp"
 #include "Camera.hpp"
 
 #include <stdio.h>

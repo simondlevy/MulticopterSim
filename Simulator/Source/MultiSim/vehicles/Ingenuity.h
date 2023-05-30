@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../Vehicle.hpp"
-#include "../VehicleThread.hpp"
+#include "../Thread.hpp"
 
 #include "../dynamics/Coaxial.hpp"
 

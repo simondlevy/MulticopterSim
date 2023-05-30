@@ -97,10 +97,7 @@ written as a standalone, header-only C++
 [class](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/Dynamics.hpp)
 that can be easily adapted for other simulators and applications if desired.
 This class also supports different frame configurations (quadcopter,
-hexacopter) via virtual methods. By running the vehicle dynamics on its own
-thread, I am able to achieve arbitrarily fast updates of the dynamics and
-flight-control.  It would also be possible to run the dynamics and control on
-separate threads, though I have not yet found it advantageous to do that.
+hexacopter) via virtual methods. 
 
 The
 [Camera](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/Camera.hpp)
