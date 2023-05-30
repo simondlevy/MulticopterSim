@@ -5,9 +5,11 @@
  *
  * (1) Statically builds meshes, cameras, and other UE4 objects
  *
+ * (2) Launches VehicleThread on APawn::BeginPlay()
+ *
  * (2) Provides basic support for displaying vehicle kinematics
  *
- * Copyright (C) 2019 Simon D. Levy, Daniel Katzav
+ * Copyright (C) 2023 Simon D. Levy, Daniel Katzav
  *
  * MIT License
  */

@@ -3,7 +3,7 @@
  *
  * Gets instantiated in Vehicle::beginPlay()
  *
- * Copyright (C) 2019 Simon D. Levy
+ * Copyright (C) 2023 Simon D. Levy
  *
  * MIT License
  */
@@ -73,17 +73,14 @@ class FVehicleThread : public FRunnable {
 
         Dynamics * _dynamics = NULL;
 
-        void getMotors(const double time, double * values)
+        void getMotors(
+                const double time, const double * joyvals)
         {
             // Avoid null-pointer exceptions at startup, freeze after control
             // program halts
             if (!(_telemClient && _motorServer && _connected)) {
                 return;
             }
-
-            double joyvals[10] = {};
-
-            _joystick->poll(joyvals);
 
             // First output value is time
             _telemetry[0] = time;
@@ -112,12 +109,12 @@ class FVehicleThread : public FRunnable {
             _telemClient->sendData(_telemetry, sizeof(_telemetry));
 
             // Get motor values from server
-            values[0] = 0;
-            _motorServer->receiveData(values, 8 * _actuatorCount);
+            _actuatorValues[0] = 0;
+            _motorServer->receiveData(_actuatorValues, 8 * _actuatorCount);
 
             // Server sends a -1 to halt
-            if (values[0] == -1) {
-				values[0] = 0;
+            if (_actuatorValues[0] == -1) {
+				_actuatorValues[0] = 0;
 				_connected = false;
 				return;
 			}
@@ -226,7 +223,9 @@ class FVehicleThread : public FRunnable {
                 // PID controller: periodically update the vehicle thread with
                 // the dynamics state, getting back the actuator values
                 if ((currentTime - _pidLoopTime) > 1. / PID_FREQ) {
-                    this->getMotors(currentTime, _actuatorValues);
+                    double joyvals[10] = {};
+                    _joystick->poll(joyvals);
+                    this->getMotors(currentTime, joyvals);
                     _pidLoopTime = currentTime;
                 }
 
