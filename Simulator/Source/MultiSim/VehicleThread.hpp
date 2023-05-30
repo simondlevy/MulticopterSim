@@ -25,7 +25,7 @@ class FVehicleThread : public FRunnable {
 
     private:
 
-        static const uint32_t PID_FREQ = 8000;
+        static const uint32_t PID_PERIOD = 100;
 
         FRunnableThread * _thread = NULL;
 
@@ -218,15 +218,18 @@ class FVehicleThread : public FRunnable {
                 double currentTime = FPlatformTime::Seconds() - _startTime;
 
                 // Update dynamics
-                _dynamics->update(_actuatorValues, currentTime - _previousTime);
+                _dynamics->update(
+                        _actuatorValues, currentTime - _previousTime);
 
                 // PID controller: periodically update the vehicle thread with
                 // the dynamics state, getting back the actuator values
-                if ((currentTime - _pidLoopTime) > 1. / PID_FREQ) {
+                static uint32_t _pid_count;
+                _pid_count ++;
+                if (_pid_count ==  PID_PERIOD) {
                     double joyvals[10] = {};
                     _joystick->poll(joyvals);
                     this->getMotors(currentTime, joyvals);
-                    _pidLoopTime = currentTime;
+                    _pid_count = 0;
                 }
 
                 // Track previous time for deltaT
