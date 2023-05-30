@@ -109,7 +109,7 @@ illustrates this arrangement, using a traditional
 [cascade-control](https://controlguru.com/the-cascade-control-architecture/)
 (slow outer loop / fast inner loop) diagram:
 
-<img src="Simulator/Extras/media/Control.png" width=800></a>
+<img src="Simulator/Extras/media/Control2.png" width=800></a>
 
 # Citing MulticopterSim
 
