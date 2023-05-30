@@ -6,9 +6,9 @@
 * MIT License
  */
 
-#include "Phantom.h"
+#include "PhantomLocal.h"
 
-APhantom::APhantom()
+APhantomLocal::APhantomLocal()
 {
     vehicle.buildFull(this, FrameStatics.mesh.Get());
 
@@ -23,21 +23,21 @@ APhantom::APhantom()
 }
 
 // Called when the game starts or when spawned
-void APhantom::BeginPlay()
+void APhantomLocal::BeginPlay()
 {
     vehicle.beginPlay(this, &dynamics);
 
     Super::BeginPlay();
 }
 
-void APhantom::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void APhantomLocal::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     vehicle.endPlay();
 
     Super::EndPlay(EndPlayReason);
 }
 
-void APhantom::PostInitializeComponents()
+void APhantomLocal::PostInitializeComponents()
 {
     vehicle.postInitializeComponents();
 
@@ -45,14 +45,14 @@ void APhantom::PostInitializeComponents()
 }
 
 // Called automatically on main thread
-void APhantom::Tick(float DeltaSeconds)
+void APhantomLocal::Tick(float DeltaSeconds)
 {
     vehicle.tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
 }
 
-void APhantom::addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy)
+void APhantomLocal::addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy)
 {
     vehicle.addRotor(mesh, dx*0.12, dy*0.12, 0.16);
 }

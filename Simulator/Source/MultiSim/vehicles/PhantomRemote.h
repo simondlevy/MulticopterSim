@@ -15,7 +15,7 @@
 #include <CoreMinimal.h>
 #include <GameFramework/Pawn.h>
 
-#include "Phantom.generated.h"
+#include "PhantomRemote.generated.h"
 
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "Phantom/Frame.Frame", FrameStatics)
@@ -23,7 +23,7 @@ DECLARE_STATIC_MESH(FPropCWStatics, "Phantom/PropCW.PropCW", PropCWStatics)
 DECLARE_STATIC_MESH(FPropCCWStatics, "Phantom/PropCCW.PropCCW", PropCCWStatics)
 
 UCLASS(Config=Game)
-class APhantom : public APawn {
+class APhantomRemote : public APawn {
 
     private:
 
@@ -74,6 +74,6 @@ class APhantom : public APawn {
 
     public:	
 
-        APhantom();
+        APhantomRemote();
 
-}; // APhantom
+}; // APhantomRemote

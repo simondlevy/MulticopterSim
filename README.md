@@ -60,8 +60,8 @@ to build the project.
 4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
 5. In UnrealEditor, select one of the maps in <b>Content Drawer/MulticopterSim/Maps</b>. Then open the
-<b>Content/C++ Classes/MulticopterSim/vehicles</b> folder and drag one of the
-vehicles into the map. 
+<b>Content/C++ Classes/MulticopterSim/vehicles</b> folder and drag the PhantomRemote pawn
+into the map. 
 
 6. To enable interaction outside of the editor,  the first time you run the simulator you will
 want to go to <b>Edit -> Editor Preferences -> Performance</b> and disable the option <b>Use Less CPU
