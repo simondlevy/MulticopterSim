@@ -9,7 +9,6 @@
 #pragma once
 
 #include "../Vehicle.hpp"
-#include "../Thread.hpp"
 
 #include "../dynamics/fixedpitch/QuadXBF.hpp"
 
