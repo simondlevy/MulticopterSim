@@ -1,5 +1,5 @@
-<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="Simulator/Extras/media/IndoorScene.png" height=275></a>
-<a href="https://www.youtube.com/watch?v=h6107MBgQ98"><img src="Simulator/Extras/media/Mars2.png" height=275></a>
+<a href="https://www.youtube.com/watch?v=mobemDcX9ew"><img src="Simulator/media/IndoorScene.png" height=275></a>
+<a href="https://www.youtube.com/watch?v=h6107MBgQ98"><img src="Simulator/media/Mars2.png" height=275></a>
 
 # About
 
@@ -109,7 +109,7 @@ illustrates this arrangement, using a traditional
 [cascade-control](https://controlguru.com/the-cascade-control-architecture/)
 (slow outer loop / fast inner loop) diagram:
 
-<img src="Simulator/Extras/media/Control2.png" width=800></a>
+<img src="Simulator/media/Control2.png" width=800></a>
 
 # Citing MulticopterSim
 

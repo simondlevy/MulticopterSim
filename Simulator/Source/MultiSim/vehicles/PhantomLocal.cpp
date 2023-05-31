@@ -7,7 +7,10 @@
  */
 
 #include "PhantomLocal.h"
-#include "../threads/LocalThread.hpp"
+
+// #include "../threads/LocalThread.hpp"
+
+#include "../threads/LocalHackflightThread.hpp"
 
 APhantomLocal::APhantomLocal()
 {

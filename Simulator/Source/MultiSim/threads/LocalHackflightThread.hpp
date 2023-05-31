@@ -1,7 +1,5 @@
 /*
- * Local flight-management stub for MultiSim
- *
- * Spins all motors at 60%
+ * Hacfklight local flight-management class for MultiSim
  *
  * Copyright (C) 2023 Simon D. Levy
  *
@@ -12,7 +10,9 @@
 
 #include "../Thread.hpp"
 
-class FLocalThread : public FVehicleThread {
+#include "../../../../../../Arduino/libraries/Hackflight/src/core/pid.h"
+
+class FLocalHackflightThread : public FVehicleThread {
 
     protected:
 
