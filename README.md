@@ -93,7 +93,7 @@ you can modify the behavior of the <b>PhantomLocal</b> pawn by modifing the ```g
 class.  Currently this method just ignores the joystick input and vechile state and runs the motors at 60%.
 By modifying the method you can implement your own flight-control algorithms in C++. The
 [HackflightLocalThread](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/threads/HackflightLocalThread.hpp)
-shows how to do this using the [Hackflight](https://github.com/simondlevy/Hackflight) flight-control code.
+class shows how to do this using the [Hackflight](https://github.com/simondlevy/Hackflight) flight-control code.
 
 # Design principles
 
