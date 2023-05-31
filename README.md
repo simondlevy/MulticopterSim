@@ -98,7 +98,7 @@ class shows how to do this using the [Hackflight](https://github.com/simondlevy/
 # Design principles
 
 The core of MulticopterSim is the C++ 
-[VehicleThread](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/VehicleThread.hpp) 
+[VehicleThread](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/Thread.hpp) 
 class. This class provides support for running the vehicle dynamics and the PID control
 regime on its own thread, after it first disables the
 built-in physics in UE5.  The dynamics used are based directly on the model
