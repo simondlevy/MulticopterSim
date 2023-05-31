@@ -482,7 +482,7 @@ class Vehicle {
 
         void tick(float DeltaSeconds)
         {
-            debugline("FPS=%3.3e", (double)_vehicleThread->getFps());
+            debugline("%s", _vehicleThread->getMessage());
 
             if (!_perturbed) {
 

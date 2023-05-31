@@ -47,14 +47,6 @@ class FVehicleThread : public FRunnable {
         // For PID loop
         double _pidLoopTime = 0;
 
-        /**
-         * Flight-control method running repeatedly on its own thread.  
-         *
-         * @param time current time in seconds (input)
-         * @param values actuator values returned by your controller (output)
-         *
-         */
-
         uint8_t _actuatorCount = 0;
 
         Dynamics * _dynamics = NULL;
@@ -96,9 +88,15 @@ class FVehicleThread : public FRunnable {
            delete _thread;
         }
 
-        uint32_t getFps(void)
+        const char * getMessage(void)
         {
-            return (uint32_t)(_count/(FPlatformTime::Seconds()-_startTime));
+            static char _message[100];
+
+            sprintf_s(_message,
+                    "FPS=%3.3e",
+                    _count/(FPlatformTime::Seconds()-_startTime));
+
+            return _message;
         }
 
         // Called by VehiclePawn::Tick() method to get actuator value for
@@ -106,11 +104,6 @@ class FVehicleThread : public FRunnable {
         double actuatorValue(uint8_t index)
         {
             return _actuatorValues[index];
-        }
-
-        uint32_t getCount(void)
-        {
-            return _count;
         }
 
         static void stopThread(FVehicleThread ** worker)
