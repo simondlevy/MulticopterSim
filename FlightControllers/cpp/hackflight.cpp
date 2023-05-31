@@ -112,8 +112,9 @@ int main(int argc, char ** argv)
     printf("Hit the Play button ... ");
     fflush(stdout);
 
-    std::vector<PidController *> pids =
-    {&anglePid, &altHoldPid, &flowHoldPid};
+    std::vector<PidController *> pids = {
+        &anglePid, &altHoldPid, &flowHoldPid
+    };
 
     // Loop forever, waiting for clients
     while (true) {

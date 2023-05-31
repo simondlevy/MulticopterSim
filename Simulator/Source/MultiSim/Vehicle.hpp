@@ -482,7 +482,10 @@ class Vehicle {
 
         void tick(float DeltaSeconds)
         {
-            debugline("FPS=%3.3e", (double)_vehicleThread->getFps());
+            // debugline("FPS=%3.3e", (double)_vehicleThread->getFps());
+            double * joy = _vehicleThread->myjoyvals;
+            debugline("t=%+3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f",
+                  joy[0], joy[1], joy[2], joy[3]);  
 
             if (!_perturbed) {
 

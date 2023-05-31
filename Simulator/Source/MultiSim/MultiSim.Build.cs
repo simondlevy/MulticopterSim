@@ -21,6 +21,7 @@ public class MultiSim : ModuleRules
                 { "Core", "CoreUObject", "Engine", "InputCore", "Landscape" });
 
         // Supports using Hackflight core code in local thread
-        PrivateIncludePaths.Add( "../../../../Arduino/libraries/Hackflight/src/core");
+        PrivateIncludePaths.Add(
+                "../../../../Arduino/libraries/Hackflight/src");
     }
 }
