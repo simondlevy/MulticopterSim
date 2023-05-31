@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "phantom_common.h"
+#include "phantom_common.hpp"
 
 #include "PhantomRemote.generated.h"
 

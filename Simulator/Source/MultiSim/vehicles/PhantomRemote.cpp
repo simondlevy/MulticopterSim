@@ -11,13 +11,7 @@
 
 APhantomRemote::APhantomRemote()
 {
-    vehicle.buildFull(this, FrameStatics.mesh.Get());
-
-    // Add propellers
-    addRotor(PropCCWStatics.mesh.Get(), +1, +1);
-    addRotor(PropCCWStatics.mesh.Get(), -1, -1);
-    addRotor(PropCWStatics.mesh.Get(), +1, -1);
-    addRotor(PropCWStatics.mesh.Get(), -1, +1);
+    buildPhantom(this, vehicle);
 
     // Un-comment for camera
     // vehicle.addCamera(&camera);
@@ -27,6 +21,7 @@ APhantomRemote::APhantomRemote()
 void APhantomRemote::BeginPlay()
 {
     vehicle.beginPlay(new FRemoteThread(&dynamics));
+
     Super::BeginPlay();
 }
 
@@ -50,9 +45,4 @@ void APhantomRemote::Tick(float DeltaSeconds)
     vehicle.tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
-}
-
-void APhantomRemote::addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy)
-{
-    vehicle.addRotor(mesh, dx*0.12, dy*0.12, 0.16);
 }

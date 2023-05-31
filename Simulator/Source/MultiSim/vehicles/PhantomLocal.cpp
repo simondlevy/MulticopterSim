@@ -11,16 +11,7 @@
 
 APhantomLocal::APhantomLocal()
 {
-    vehicle.buildFull(this, FrameStatics.mesh.Get());
-
-    // Add propellers
-    addRotor(PropCCWStatics.mesh.Get(), +1, +1);
-    addRotor(PropCCWStatics.mesh.Get(), -1, -1);
-    addRotor(PropCWStatics.mesh.Get(), +1, -1);
-    addRotor(PropCWStatics.mesh.Get(), -1, +1);
-
-    // Un-comment for camera
-    // vehicle.addCamera(&camera);
+    buildPhantom(this, vehicle);
 }
 
 // Called when the game starts or when spawned
@@ -51,9 +42,4 @@ void APhantomLocal::Tick(float DeltaSeconds)
     vehicle.tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
-}
-
-void APhantomLocal::addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy)
-{
-    vehicle.addRotor(mesh, dx*0.12, dy*0.12, 0.16);
 }

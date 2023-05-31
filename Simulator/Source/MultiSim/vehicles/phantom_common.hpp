@@ -44,3 +44,19 @@ static FixedPitchDynamics::fixed_pitch_params_t phantom_fparams = {
     5.E-06, // b thrust coefficient [F=b*w^2]
     0.350   // l arm length [m]
 };
+
+static void addPhantomProp(
+        Vehicle & vehicle, UStaticMesh * mesh, int8_t dx, int8_t dy)
+{
+    vehicle.addRotor(mesh, dx*0.12, dy*0.12, 0.16);
+}    
+
+static void buildPhantom(APawn * pawn, Vehicle & vehicle)
+{
+    vehicle.buildFull(pawn, FrameStatics.mesh.Get());
+
+    addPhantomProp(vehicle, PropCCWStatics.mesh.Get(), +1, +1);
+    addPhantomProp(vehicle, PropCCWStatics.mesh.Get(), -1, -1);
+    addPhantomProp(vehicle, PropCWStatics.mesh.Get(), +1, -1);
+    addPhantomProp(vehicle, PropCWStatics.mesh.Get(), -1, +1);
+}
