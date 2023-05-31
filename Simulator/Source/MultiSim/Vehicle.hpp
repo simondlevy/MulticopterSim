@@ -217,7 +217,7 @@ class Vehicle {
 	    UStaticMeshComponent* _rotorMeshComponents[Dynamics::MAX_ROTORS] = {};
 
         // Threaded worker for running flight control
-        class FVehicleThread * _vehicleThread = NULL;
+        class FVehicleThread * _thread = NULL;
 
         // Circular buffer for moving average of rotor values
         TCircularBuffer<float>* _rotorBuffer = NULL;
@@ -234,7 +234,7 @@ class Vehicle {
             // Compute the sum of the rotor values
             float rotorSum = 0;
             for (uint8_t j = 0; j < _nrotors; ++j) {
-                rotorSum += _vehicleThread->actuatorValue(j);
+                rotorSum += _thread->actuatorValue(j);
             }
 
             // Rotate rotors. For visual effect, we can ignore actual rotor
@@ -368,7 +368,7 @@ class Vehicle {
         Vehicle(void)
         {
             _dynamics = NULL;
-            _vehicleThread = NULL;
+            _thread = NULL;
         }
 
         Vehicle(Dynamics * dynamics)
@@ -380,7 +380,7 @@ class Vehicle {
                 _rotorDirections[i] = dynamics->getRotorDirection(i);
             }
 
-            _vehicleThread = NULL;
+            _thread = NULL;
         }
 
         virtual ~Vehicle(void)
@@ -391,7 +391,7 @@ class Vehicle {
         {
             _perturbed = false;
 
-            _vehicleThread = thread;
+            _thread = thread;
 
             // Player controller is useful for getting keyboard events,
             // switching cameas, etc.
@@ -477,12 +477,12 @@ class Vehicle {
 
         void endPlay(void)
         {
-            FVehicleThread::stopThread(&_vehicleThread);
+            FVehicleThread::stopThread(&_thread);
         }
 
         void tick(float DeltaSeconds)
         {
-            debugline("%s", _vehicleThread->getMessage());
+            debugline("%s", _thread->getMessage());
 
             if (!_perturbed) {
 
