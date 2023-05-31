@@ -24,8 +24,6 @@ class FVehicleThread : public FRunnable {
 
     private:
 
-        static const uint32_t PID_PERIOD = 100;
-
         FRunnableThread * _thread = NULL;
 
         bool _running = false;
@@ -40,13 +38,13 @@ class FVehicleThread : public FRunnable {
         uint32_t _dynamics_count;
         uint32_t _pid_count;
 
+        // Relates dynamics update to PID update
+        uint32_t _pid_period;
+
         double _actuatorValues[100] = {}; 
 
         // For computing deltaT
         double _previousTime = 0;
-
-        // For PID loop
-        double _pidLoopTime = 0;
 
         uint8_t _actuatorCount = 0;
 
@@ -64,11 +62,13 @@ class FVehicleThread : public FRunnable {
     public:
 
         // Constructor, called main thread
-        FVehicleThread(Dynamics * dynamics)
+        FVehicleThread(Dynamics * dynamics, const uint32_t pidPeriod=100)
         {
             _thread =
                 FRunnableThread::Create(
                         this, TEXT("FThreadedManager"), 0, TPri_BelowNormal);
+
+            _pid_period = pidPeriod;
 
             _startTime = FPlatformTime::Seconds();
 
@@ -80,7 +80,6 @@ class FVehicleThread : public FRunnable {
             _dynamics = dynamics;
 
             _previousTime = 0;
-            _pidLoopTime = 0;
 
             _joystick = new IJoystick();
         }
@@ -150,7 +149,7 @@ class FVehicleThread : public FRunnable {
                 // the dynamics state, getting back the actuator values
                 static uint32_t _pid_clock;
                 _pid_clock ++;
-                if (_pid_clock ==  PID_PERIOD) {
+                if (_pid_clock ==  _pid_period) {
                     double joyvals[10] = {};
                     _joystick->poll(joyvals);
                     this->getMotors(
