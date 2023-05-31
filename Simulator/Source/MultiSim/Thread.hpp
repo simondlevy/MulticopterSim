@@ -36,8 +36,9 @@ class FVehicleThread : public FRunnable {
         // Start-time offset so timing begins at zero
         double _startTime = 0;
 
-        // For FPS reporting
-        uint32_t _count;
+        // For benchmarking
+        uint32_t _dynamics_count;
+        uint32_t _pid_count;
 
         double _actuatorValues[100] = {}; 
 
@@ -71,7 +72,8 @@ class FVehicleThread : public FRunnable {
 
             _startTime = FPlatformTime::Seconds();
 
-            _count = 0;
+            _pid_count = 0;
+            _dynamics_count = 0;
 
             _actuatorCount = dynamics->actuatorCount();
 
@@ -92,9 +94,12 @@ class FVehicleThread : public FRunnable {
         {
             static char _message[100];
 
+            auto dt = FPlatformTime::Seconds()-_startTime;
+
             sprintf_s(_message,
-                    "FPS=%3.3e",
-                    _count/(FPlatformTime::Seconds()-_startTime));
+                    "Dynamics=%3.3e Hz  PID=%3.3e",
+                    _dynamics_count/dt,
+                    _pid_count/dt);
 
             return _message;
         }
@@ -143,9 +148,9 @@ class FVehicleThread : public FRunnable {
 
                 // PID controller: periodically update the vehicle thread with
                 // the dynamics state, getting back the actuator values
-                static uint32_t _pid_count;
-                _pid_count ++;
-                if (_pid_count ==  PID_PERIOD) {
+                static uint32_t _pid_clock;
+                _pid_clock ++;
+                if (_pid_clock ==  PID_PERIOD) {
                     double joyvals[10] = {};
                     _joystick->poll(joyvals);
                     this->getMotors(
@@ -154,14 +159,17 @@ class FVehicleThread : public FRunnable {
                             _dynamics,
                             _actuatorValues,
                             _actuatorCount);
-                    _pid_count = 0;
+
+                    _pid_clock = 0;
+
+                    // Increment count for FPS reporting
+                    _pid_count++;
                 }
+
+                _dynamics_count++;
 
                 // Track previous time for deltaT
                 _previousTime = currentTime;
-
-                // Increment count for FPS reporting
-                _count++;
             }
 
             return 0;
