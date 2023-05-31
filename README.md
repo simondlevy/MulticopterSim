@@ -90,8 +90,8 @@ directory contains code and instructions for different kinds of flight controlle
 If you like to program in C++ and want to avoid the potential slowdown of socket communications,
 you can modify the behavior of the <b>PhantomLocal</b> pawn by modifing the ```getMotors``` method of the
 [LocalThread](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/threads/LocalThread.hpp)
-class.  Currently this method just ignores the joystick input and vechile state and runs the motors at 60%, 
-but by modifying the method you can implement your own flight-control algorithms in C++. The
+class.  Currently this method just ignores the joystick input and vechile state and runs the motors at 60%.
+By modifying the method you can implement your own flight-control algorithms in C++. The
 [HackflightLocalThread](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/threads/HackflightLocalThread.hpp)
 shows how to do this using the [Hackflight](https://github.com/simondlevy/Hackflight) flight-control code.
 
