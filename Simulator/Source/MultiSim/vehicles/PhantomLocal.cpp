@@ -8,9 +8,8 @@
 
 #include "PhantomLocal.h"
 
-// #include "../threads/LocalThread.hpp"
-
-#include "../threads/LocalHackflightThread.hpp"
+#include "../threads/LocalThread.hpp"
+// #include "../threads/HackflightLocalThread.hpp"
 
 APhantomLocal::APhantomLocal()
 {

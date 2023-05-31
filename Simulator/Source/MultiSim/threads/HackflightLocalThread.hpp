@@ -10,9 +10,10 @@
 
 #include "../Thread.hpp"
 
-#include "../../../../../../Arduino/libraries/Hackflight/src/core/pid.h"
+// Supported by  ../MultiSim.Build.cs
+#include <pid.h>
 
-class FLocalHackflightThread : public FVehicleThread {
+class FLocalThread : public FVehicleThread {
 
     protected:
 
