@@ -39,6 +39,50 @@ class FLocalThread : public FVehicleThread {
             &anglePid, &altHoldPid, &flowHoldPid
         };
 
+        static Demands demands_from_joystick(const double joystick[])
+        {
+            return Demands(
+                    (float)(joystick[0] + 1) / 2, // [-1,+1] => [0,1]
+                    (float)joystick[1],
+                    (float)joystick[2],
+                    (float)joystick[3]
+                    );
+        }
+
+        static float rad2deg(const double rad)
+        {
+            return (float)(180 * rad / M_PI);
+        }
+
+        static VehicleState state_from_dynamics(const Dynamics * dynamics)
+        {
+            Dynamics::vehicle_state_t vstate = dynamics->vstate;
+
+            return VehicleState( 
+                    (float)vstate.x,
+                    (float)vstate.dx,
+                    (float)vstate.y,
+                    (float)vstate.dy,
+                    -(float)vstate.z,  // NED => ENI
+                    -(float)vstate.dz, // NED => ENI
+                    rad2deg(vstate.phi),
+                    rad2deg(vstate.dphi),
+                    -rad2deg(vstate.theta),  // note sign reveral
+                    -rad2deg(vstate.dtheta), // note sign reveral
+                    rad2deg(vstate.psi),
+                    rad2deg(vstate.dpsi)
+                    );
+        }
+
+        static void rotateToVehicleFrame(VehicleState & vstate)
+        {
+            const auto psi = vstate.psi * M_PI / 180;
+            const auto dx = cos(psi) * vstate.dx + sin(psi) *  vstate.dy;
+            const auto dy = sin(psi) * vstate.dx + cos(psi) *  vstate.dy;
+            vstate.dx = dx;
+            vstate.dy = dy;
+        }
+
     protected:
 
         virtual void getMotors(
@@ -51,15 +95,15 @@ class FLocalThread : public FVehicleThread {
             // Convert simulator time to microseconds
             const auto usec = (uint32_t)(time * 1e6);
 
-            /*
+            // Build stick demands
+            auto demands = demands_from_joystick(joyvals);
+
             // Build vehicle state 
-            auto vstate = state_from_telemetry(telemetry);
+            auto vstate = state_from_dynamics(dynamics);
 
             // Use heading angle to rotate dx, dy into vehicle coordinates
             rotateToVehicleFrame(vstate);
 
-            // Build stick demands
-            auto demands = demands_from_telemetry(telemetry);
 
             // Reset PID controllers on zero throttle
             auto pidReset = demands.throttle < .05;
@@ -70,10 +114,9 @@ class FLocalThread : public FVehicleThread {
             // Run final demands through mixer to get motor values
             float mvals[4] = {};
             mixer.getMotors(demands, mvals);
-            */
 
             for (auto k=0; k<motorCount; ++k) {
-                motors[k] = 0.6; // mvals[k];
+                motors[k] = mvals[k];
             }
         }
 

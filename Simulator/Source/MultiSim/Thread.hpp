@@ -132,9 +132,6 @@ class FVehicleThread : public FRunnable {
             return FRunnable::Init();
         }
 
-        // XXX belongs with poll() below
-        double myjoyvals[10] = {};
-
         virtual uint32_t Run() override
         {
             // Initial wait before starting
@@ -156,10 +153,11 @@ class FVehicleThread : public FRunnable {
                 static uint32_t _pid_count;
                 _pid_count ++;
                 if (_pid_count ==  PID_PERIOD) {
-                    _joystick->poll(myjoyvals);
+                    double joyvals[10] = {};
+                    _joystick->poll(joyvals);
                     this->getMotors(
                             currentTime,
-                            myjoyvals, 
+                            joyvals, 
                             _dynamics,
                             _actuatorValues,
                             _actuatorCount);
