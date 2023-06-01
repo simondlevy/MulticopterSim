@@ -126,4 +126,9 @@ class FLocalThread : public FVehicleThread {
         {
         }
 
+        virtual const char * getMessage(void) override
+        {
+            return "Hackflight";
+        }
+
 }; // class FLocalThread

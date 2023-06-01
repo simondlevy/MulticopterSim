@@ -89,7 +89,7 @@ class FVehicleThread : public FRunnable {
            delete _thread;
         }
 
-        const char * getMessage(void)
+        virtual const char * getMessage(void)
         {
             static char _message[100];
 
