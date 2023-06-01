@@ -39,13 +39,13 @@ class FLocalThread : public FVehicleThread {
             &anglePid, &altHoldPid, &flowHoldPid
         };
 
-        static Demands demands_from_joystick(const double joystick[])
+        static Demands demands_from_joystick(const float joystick[])
         {
             return Demands(
-                    (float)(joystick[0] + 1) / 2, // [-1,+1] => [0,1]
-                    (float)joystick[1],
-                    (float)joystick[2],
-                    (float)joystick[3]
+                    (joystick[0] + 1) / 2, // [-1,+1] => [0,1]
+                    joystick[1],
+                    joystick[2],
+                    joystick[3]
                     );
         }
 
@@ -87,7 +87,7 @@ class FLocalThread : public FVehicleThread {
 
         virtual void getMotors(
                 const double time,
-                const double * joyvals,
+                const float * joyvals,
                 const Dynamics * dynamics,
                 float * motorValues,
                 const uint8_t motorCount) override
@@ -103,7 +103,6 @@ class FLocalThread : public FVehicleThread {
 
             // Use heading angle to rotate dx, dy into vehicle coordinates
             rotateToVehicleFrame(vstate);
-
 
             // Reset PID controllers on zero throttle
             auto pidReset = demands.throttle < .05;

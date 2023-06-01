@@ -31,7 +31,7 @@ class FRemoteThread : public FVehicleThread {
 
         virtual void getMotors(
                 const double time,
-                const double * joyvals,
+                const float * joyvals,
                 const Dynamics * dynamics,
                 float * motors,
                 const uint8_t motorCount) override
@@ -60,10 +60,10 @@ class FRemoteThread : public FVehicleThread {
             _telemetry[12] = dynamics->vstate.dpsi;
 
             // Remaining output values are stick demands
-            _telemetry[13] = joyvals[0];
-            _telemetry[14] = joyvals[1];
-            _telemetry[15] = joyvals[2];
-            _telemetry[16] = joyvals[3];
+            _telemetry[13] = (double)joyvals[0];
+            _telemetry[14] = (double)joyvals[1];
+            _telemetry[15] = (double)joyvals[2];
+            _telemetry[16] = (double)joyvals[3];
 
             // Send telemetry values to server
             _telemClient->sendData(_telemetry, sizeof(_telemetry));

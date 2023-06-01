@@ -18,7 +18,7 @@ class FLocalThread : public FVehicleThread {
 
         virtual void getMotors(
                 const double time,
-                const double * joyvals,
+                const float * joyvals,
                 const Dynamics * dynamics,
                 float * motorValues,
                 const uint8_t motorCount) override
