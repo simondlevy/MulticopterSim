@@ -89,7 +89,7 @@ class FLocalThread : public FVehicleThread {
                 const double time,
                 const double * joyvals,
                 const Dynamics * dynamics,
-                double * motors,
+                float * motorValues,
                 const uint8_t motorCount) override
         {
             // Convert simulator time to microseconds
@@ -112,12 +112,7 @@ class FLocalThread : public FVehicleThread {
             PidController::run(pids, demands, vstate, usec, pidReset);
 
             // Run final demands through mixer to get motor values
-            float mvals[4] = {};
-            mixer.getMotors(demands, mvals);
-
-            for (auto k=0; k<motorCount; ++k) {
-                motors[k] = mvals[k];
-            }
+            mixer.getMotors(demands, motorValues);
         }
 
     public:

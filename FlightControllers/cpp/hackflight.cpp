@@ -151,11 +151,8 @@ int main(int argc, char ** argv)
         float mvals[4] = {};
         mixer.getMotors(demands, mvals);
 
-        // Convert motor values to doubles
-        double dmvals[4] = { mvals[0], mvals[1], mvals[2], mvals[3] };
-
         // Send back motor values
-        motorClient.sendData(dmvals, sizeof(dmvals));
+        motorClient.sendData(mvals, sizeof(mvals));
 
         report();
 

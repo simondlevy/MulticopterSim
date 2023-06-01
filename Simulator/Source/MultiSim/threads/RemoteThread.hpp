@@ -33,7 +33,7 @@ class FRemoteThread : public FVehicleThread {
                 const double time,
                 const double * joyvals,
                 const Dynamics * dynamics,
-                double * motors,
+                float * motors,
                 const uint8_t motorCount) override
         {
             // Avoid null-pointer exceptions at startup, freeze after control
@@ -70,7 +70,7 @@ class FRemoteThread : public FVehicleThread {
 
             // Get motor values from server
             motors[0] = 0;
-            _motorServer->receiveData(motors, 8 * motorCount);
+            _motorServer->receiveData(motors, sizeof(float) * motorCount);
 
             // Server sends a -1 to halt
             if (motors[0] == -1) {

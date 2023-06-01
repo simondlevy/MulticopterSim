@@ -20,11 +20,11 @@ class FLocalThread : public FVehicleThread {
                 const double time,
                 const double * joyvals,
                 const Dynamics * dynamics,
-                double * motors,
+                float * motorValues,
                 const uint8_t motorCount) override
         {
             for (auto k=0; k<motorCount; ++k) {
-                motors[k] = 0.6;
+                motorValues[k] = 0.6;
             }
         }
 

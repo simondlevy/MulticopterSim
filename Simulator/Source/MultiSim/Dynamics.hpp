@@ -358,8 +358,14 @@ class Dynamics {
                   (servos)
          * @param dt time in seconds since previous update
          */
-        void update(double * actuators, double dt) 
+        void update(float * factuators, double dt) 
         {
+            // Convert actuator values to double-precision for consistency
+            double actuators[10];
+            for (auto k=0; k<_rotorCount; ++k) {
+                actuators[k] = factuators[k];
+            }
+
             // Implement Equation 6 -------------------------------------------
 
             // Radians per second of rotors, and squared radians per second

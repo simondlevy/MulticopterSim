@@ -41,7 +41,7 @@ class FVehicleThread : public FRunnable {
         // Relates dynamics update to PID update
         uint32_t _pid_period;
 
-        double _actuatorValues[100] = {}; 
+        float _actuatorValues[100] = {}; 
 
         // For computing deltaT
         double _previousTime = 0;
@@ -56,7 +56,7 @@ class FVehicleThread : public FRunnable {
                 const double time,
                 const double * joyvals,
                 const Dynamics * dynamics,
-                double *motors,
+                float * motorValues,
                 const uint8_t motorCount) = 0;
 
     public:
@@ -105,7 +105,7 @@ class FVehicleThread : public FRunnable {
 
         // Called by VehiclePawn::Tick() method to get actuator value for
         // animation and sound
-        double actuatorValue(uint8_t index)
+        float actuatorValue(uint8_t index)
         {
             return _actuatorValues[index];
         }
