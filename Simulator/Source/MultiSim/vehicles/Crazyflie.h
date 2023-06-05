@@ -65,9 +65,10 @@ class ACrazyflie : public APawn {
 
         Vehicle vehicle = Vehicle(&dynamics);
 
-        void addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy);
-
-        void addProp(UStaticMesh * mesh, int8_t dx, int8_t dy);
+        void addArm(
+                uint8_t index,
+                UStaticMesh * motorMountMesh,
+                UStaticMesh * propellerMesh);
 
     protected:
 
