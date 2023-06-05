@@ -1,5 +1,5 @@
 /*
-* Class implementation for DJI Phantom pawn in MultiSim
+* Class implementation for  Crazyflie in MultiSim
 *
 * Copyright (C) 2018 Simon D. Levy
 *
@@ -12,7 +12,12 @@
 
 ACrazyflie::ACrazyflie()
 {
-    buildPhantom(this, vehicle);
+    vehicle.buildFull(this, FrameStatics.mesh.Get());
+
+    addProp(PropCCWStatics.mesh.Get(), +1, +1);
+    addProp(PropCCWStatics.mesh.Get(), -1, -1);
+    addProp(PropCWStatics.mesh.Get(), +1, -1);
+    addProp(PropCWStatics.mesh.Get(), -1, +1);
 }
 
 // Called when the game starts or when spawned
@@ -44,3 +49,8 @@ void ACrazyflie::Tick(float DeltaSeconds)
 
     Super::Tick(DeltaSeconds);
 }
+
+void ACrazyflie::addProp(UStaticMesh * mesh, int8_t dx, int8_t dy)
+{
+    vehicle.addRotor(mesh, dx*0.12, dy*0.12, 0.16);
+}    

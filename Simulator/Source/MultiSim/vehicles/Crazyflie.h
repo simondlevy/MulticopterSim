@@ -1,5 +1,5 @@
 /*
-* Class declaration for DJI Phantom pawn class using UDP sockets
+* Class declaration for Crazyflie pawn class using UDP sockets
 *
 * Copyright (C) 2019 Simon D. Levy
 *
@@ -8,9 +8,19 @@
 
 #pragma once
 
-#include "phantom_common.hpp"
+#include <CoreMinimal.h>
+#include <GameFramework/Pawn.h>
+
+#include "../Vehicle.hpp"
+
+#include "../dynamics/fixedpitch/QuadXBF.hpp"
 
 #include "Crazyflie.generated.h"
+
+// Structures to hold static mesh initializations
+DECLARE_STATIC_MESH(FFrameStatics, "Phantom/Frame.Frame", FrameStatics)
+DECLARE_STATIC_MESH(FPropCWStatics, "Phantom/PropCW.PropCW", PropCWStatics)
+DECLARE_STATIC_MESH(FPropCCWStatics, "Phantom/PropCCW.PropCCW", PropCCWStatics)
 
 UCLASS(Config=Game)
 class ACrazyflie : public APawn {
@@ -19,14 +29,41 @@ class ACrazyflie : public APawn {
 
         GENERATED_BODY()
 
+        // XXX for DJI Phantom
+        Dynamics::vehicle_params_t vparams = {
+
+                // Estimated
+                2.E-06, // d drag cofficient [T=d*w^2]
+
+                // https://www.dji.com/phantom-4/info
+                1.380,  // m mass [kg]
+
+                // Estimated
+                2,      // Ix [kg*m^2] 
+                2,      // Iy [kg*m^2] 
+                3,      // Iz [kg*m^2] 
+                38E-04, // Jr prop inertial [kg*m^2] 
+                15000,  // maxrpm
+
+                20      // maxspeed [m/s]
+            };
+
+        // XXX for DJI Phantom
+        FixedPitchDynamics::fixed_pitch_params_t fparams = {
+            5.E-06, // b thrust coefficient [F=b*w^2]
+            0.350   // l arm length [m]
+        };
+
+
         Camera camera;
 
-        QuadXBFDynamics dynamics =
-            QuadXBFDynamics(phantom_vparams, phantom_fparams);
+        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams);
 
         Vehicle vehicle = Vehicle(&dynamics);
 
         void addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy);
+
+        void addProp(UStaticMesh * mesh, int8_t dx, int8_t dy);
 
     protected:
 

@@ -15,8 +15,6 @@
 
 #include "../dynamics/fixedpitch/QuadXBF.hpp"
 
-#include "../dynamics/fixedpitch/QuadXBF.hpp"
-
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FFrameStatics, "Phantom/Frame.Frame", FrameStatics)
 DECLARE_STATIC_MESH(FPropCWStatics, "Phantom/PropCW.PropCW", PropCWStatics)

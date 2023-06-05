@@ -26,8 +26,6 @@ class APhantomRemote : public APawn {
 
         Vehicle vehicle = Vehicle(&dynamics);
 
-        void addRotor(UStaticMesh * mesh, int8_t dx, int8_t dy);
-
     protected:
 
         // AActor overrides
