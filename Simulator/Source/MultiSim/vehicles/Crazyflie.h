@@ -20,14 +20,17 @@
 // Structures to hold static mesh initializations
 DECLARE_STATIC_MESH(FPcbStatics, "Crazyflie/pcb.pcb", PcbStatics)
 
-DECLARE_STATIC_MESH(FPropCCWStatics, "Crazyflie/propeller1.propeller1", 
-        Propeller1Statics)
-
 DECLARE_STATIC_MESH(FMotorMount1Statics,
         "Crazyflie/motor_mount1.motor_mount1", MotorMount1Statics)
 
 DECLARE_STATIC_MESH(FMotor1Statics,
         "Crazyflie/motor1.motor1", Motor1Statics)
+
+DECLARE_STATIC_MESH(FPropCCWStatics, "Crazyflie/propeller1.propeller1", 
+        Propeller1Statics)
+
+DECLARE_STATIC_MESH(FMotorMount2Statics,
+        "Crazyflie/motor_mount2.motor_mount2", MotorMount2Statics)
 
 UCLASS(Config=Game)
 class ACrazyflie : public APawn {
@@ -71,8 +74,8 @@ class ACrazyflie : public APawn {
         void addArm(
                 uint8_t index,
                 UStaticMesh * motorMountMesh,
-                UStaticMesh * motorMesh,
-                UStaticMesh * propellerMesh);
+                UStaticMesh * motorMesh=NULL,
+                UStaticMesh * propellerMesh=NULL);
 
     protected:
 
