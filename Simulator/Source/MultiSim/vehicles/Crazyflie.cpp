@@ -12,7 +12,7 @@
 
 ACrazyflie::ACrazyflie()
 {
-    vehicle.buildFull(this, FrameStatics.mesh.Get());
+    vehicle.buildFull(this, PcbStatics.mesh.Get());
 
     addProp(PropCCWStatics.mesh.Get(), +1, +1);
     addProp(PropCCWStatics.mesh.Get(), -1, -1);

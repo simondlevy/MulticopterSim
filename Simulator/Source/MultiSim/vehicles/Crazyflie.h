@@ -18,7 +18,7 @@
 #include "Crazyflie.generated.h"
 
 // Structures to hold static mesh initializations
-DECLARE_STATIC_MESH(FFrameStatics, "Phantom/Frame.Frame", FrameStatics)
+DECLARE_STATIC_MESH(FPcbStatics, "Crazyflie/pcb.pcb", PcbStatics)
 DECLARE_STATIC_MESH(FPropCWStatics, "Phantom/PropCW.PropCW", PropCWStatics)
 DECLARE_STATIC_MESH(FPropCCWStatics, "Phantom/PropCCW.PropCCW", PropCCWStatics)
 
