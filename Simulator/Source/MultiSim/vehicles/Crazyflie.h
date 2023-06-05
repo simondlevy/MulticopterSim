@@ -26,11 +26,17 @@ DECLARE_STATIC_MESH(FMotorMount1Statics,
 DECLARE_STATIC_MESH(FMotor1Statics,
         "Crazyflie/motor1.motor1", Motor1Statics)
 
-DECLARE_STATIC_MESH(FPropCCWStatics, "Crazyflie/propeller1.propeller1", 
+DECLARE_STATIC_MESH(FPropeller1Statics, "Crazyflie/propeller1.propeller1", 
         Propeller1Statics)
 
 DECLARE_STATIC_MESH(FMotorMount2Statics,
         "Crazyflie/motor_mount2.motor_mount2", MotorMount2Statics)
+
+DECLARE_STATIC_MESH(FMotor2Statics,
+        "Crazyflie/motor2.motor2", Motor2Statics)
+
+DECLARE_STATIC_MESH(FPropeller2Statics, "Crazyflie/propeller2.propeller2", 
+        Propeller2Statics)
 
 UCLASS(Config=Game)
 class ACrazyflie : public APawn {
