@@ -23,8 +23,11 @@ ACrazyflie::ACrazyflie()
     addArm(2,
             MotorMount2Statics.mesh.Get(),
             Motor2Statics.mesh.Get(),
-            Propeller2Statics.mesh.Get()
-          );
+            Propeller2Statics.mesh.Get());
+
+    addArm(3,
+            MotorMount3Statics.mesh.Get(),
+            Motor3Statics.mesh.Get());
 }
 
 void ACrazyflie::addArm(
