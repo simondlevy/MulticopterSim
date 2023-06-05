@@ -10,11 +10,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "../../Source/MultiSim/sockets/UdpClientSocket.hpp"
-#include "../../Source/MultiSim/sockets/UdpServerSocket.hpp"
-#include "../../Source/MultiSim/sockets/TcpClientSocket.hpp"
+#include "../Source/MultiSim/sockets/UdpClientSocket.hpp"
+#include "../Source/MultiSim/sockets/UdpServerSocket.hpp"
+#include "../Source/MultiSim/sockets/TcpClientSocket.hpp"
 
-#include "../../Source/MultiSim/dynamics/fixedpitch/QuadXBF.hpp"
+#include "../Source/MultiSim/dynamics/fixedpitch/QuadXBF.hpp"
 
 // Comms
 static const char * HOST = "127.0.0.1"; // localhost
@@ -127,7 +127,7 @@ int main(int argc, char ** argv)
             // imageSocket.sendData(image, sizeof(image));
 
             // Get incoming motor values
-            double motorvals[4] = {};
+            float motorvals[4] = {};
             motorServer.receiveData(motorvals, sizeof(motorvals));
 
             printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 

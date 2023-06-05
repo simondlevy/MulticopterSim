@@ -11,8 +11,8 @@
 
 AIngenuityRemote::AIngenuityRemote()
 {
-    // Build the frame
-    vehicle.buildFull(this, BodyStatics.mesh.Get()); // Restore for cameras, audio
+    // Build the frame, restoring for cameras, audio
+    vehicle.buildFull(this, BodyStatics.mesh.Get()); 
 
     // Add rotors
     addRotor(RotorTopStatics.mesh.Get(), .250);
@@ -20,9 +20,10 @@ AIngenuityRemote::AIngenuityRemote()
 
     // Add mast, solar panel, antenna
     vehicle.addComponent(MastStatics.mesh.Get(), makeName("Mast", 1, "Mesh"));
-    vehicle.addComponent(SolarPanelStatics.mesh.Get(), makeName("SolarPanel", 1, "Mesh"),
-            0, 0, 0.34);
-    vehicle.addComponent(AntennaStatics.mesh.Get(), makeName("Antenna", 1, "Mesh"));
+    vehicle.addComponent(SolarPanelStatics.mesh.Get(),
+            makeName("SolarPanel", 1, "Mesh"), 0, 0, 0.34);
+    vehicle.addComponent(AntennaStatics.mesh.Get(),
+            makeName("Antenna", 1, "Mesh"));
 
     // Add legs
     addLeg(1, Leg1BracketStatics.mesh.Get(), Leg1TopStatics.mesh.Get(),

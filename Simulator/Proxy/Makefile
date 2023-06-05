@@ -17,7 +17,7 @@ all: $(ALL)
 simproxy: simproxy.o 
 	g++ -o simproxy simproxy.o 
 
-simproxy.o: simproxy.cpp ../../Source/MultiSim/Dynamics.hpp
+simproxy.o: simproxy.cpp ../Source/MultiSim/Dynamics.hpp
 	g++ $(CFLAGS) -c simproxy.cpp
 
 run: simproxy

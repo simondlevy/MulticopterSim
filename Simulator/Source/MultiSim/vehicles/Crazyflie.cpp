@@ -12,12 +12,14 @@
 
 ACrazyflie::ACrazyflie()
 {
+    // Build the frame, restoring for cameras, audio
     vehicle.buildFull(this, PcbStatics.mesh.Get());
 
-    addProp(PropCCWStatics.mesh.Get(), +1, +1);
-    addProp(PropCCWStatics.mesh.Get(), -1, -1);
-    addProp(PropCWStatics.mesh.Get(), +1, -1);
-    addProp(PropCWStatics.mesh.Get(), -1, +1);
+    vehicle.addComponent(Propeller1Statics.mesh.Get(),
+            makeName("propeller", 1, "Mesh"));
+
+    vehicle.addComponent(MotorMount1Statics.mesh.Get(),
+            makeName("motor_mount", 1, "Mesh"));
 }
 
 // Called when the game starts or when spawned
@@ -49,8 +51,3 @@ void ACrazyflie::Tick(float DeltaSeconds)
 
     Super::Tick(DeltaSeconds);
 }
-
-void ACrazyflie::addProp(UStaticMesh * mesh, int8_t dx, int8_t dy)
-{
-    vehicle.addRotor(mesh, dx*0.12, dy*0.12, 0.16);
-}    
