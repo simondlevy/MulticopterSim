@@ -41,6 +41,9 @@ DECLARE_STATIC_MESH(FMotor3Statics,
 DECLARE_STATIC_MESH(FPropeller3Statics, "Crazyflie/propeller3.propeller3", 
         Propeller3Statics)
 
+DECLARE_STATIC_MESH(FMotorMount4Statics,
+        "Crazyflie/motor_mount4.motor_mount4", MotorMount4Statics)
+
 UCLASS(Config=Game)
 class ACrazyflie : public APawn {
 
