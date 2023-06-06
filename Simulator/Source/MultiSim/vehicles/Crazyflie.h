@@ -18,7 +18,11 @@
 #include "Crazyflie.generated.h"
 
 // Structures to hold static mesh initializations
+
 DECLARE_STATIC_MESH(FPcbStatics, "Crazyflie/pcb.pcb", PcbStatics)
+
+DECLARE_STATIC_MESH(FBatteryStatics, "Crazyflie/battery.battery", 
+        BatteryStatics)
 
 DECLARE_STATIC_MESH(FMotorMount1Statics,
         "Crazyflie/motor_mount1.motor_mount1", MotorMount1Statics)
