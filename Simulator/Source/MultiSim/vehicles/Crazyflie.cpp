@@ -34,12 +34,12 @@ ACrazyflie::ACrazyflie()
     addArm(2,
             MotorMount4Statics.mesh.Get(),
             Motor4Statics.mesh.Get(),
-            PropCWStatics.mesh.Get(), -0.335, +0.34);
+            PropCWStatics.mesh.Get(), -0.335, +0.340);
 
     addArm(3,
             MotorMount3Statics.mesh.Get(),
             Motor3Statics.mesh.Get(),
-            PropCCWStatics.mesh.Get(), -0.35, -0.35);
+            PropCCWStatics.mesh.Get(), -0.355, -0.345);
 
     addArm(4,
             MotorMount2Statics.mesh.Get(),
