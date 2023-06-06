@@ -29,7 +29,7 @@ ACrazyflie::ACrazyflie()
     addArm(1,
             MotorMount1Statics.mesh.Get(),
             Motor1Statics.mesh.Get(),
-            PropCCWStatics.mesh.Get(), +0.35, +0.35);
+            PropCCWStatics.mesh.Get(), +0.3125, +0.325);
 
     addArm(2,
             MotorMount2Statics.mesh.Get(),
@@ -61,7 +61,7 @@ void ACrazyflie::addArm(
     vehicle.addComponent(motorMesh, 
             makeName("motor", index, "Mesh"));
 
-    vehicle.addRotor(propellerMesh, propellerX, propellerY, 0.16);
+    vehicle.addRotor(propellerMesh, propellerX, propellerY, 0.14);
 }
 
 
