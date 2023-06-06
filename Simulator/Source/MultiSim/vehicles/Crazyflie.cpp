@@ -32,9 +32,9 @@ ACrazyflie::ACrazyflie()
             PropCCWStatics.mesh.Get(), +0.3125, +0.325);
 
     addArm(2,
-            MotorMount2Statics.mesh.Get(),
-            Motor2Statics.mesh.Get(),
-            PropCWStatics.mesh.Get(), +0.35, -0.35);
+            MotorMount4Statics.mesh.Get(),
+            Motor4Statics.mesh.Get(),
+            PropCWStatics.mesh.Get(), -0.335, +0.34);
 
     addArm(3,
             MotorMount3Statics.mesh.Get(),
@@ -42,9 +42,9 @@ ACrazyflie::ACrazyflie()
             PropCCWStatics.mesh.Get(), -0.35, -0.35);
 
     addArm(4,
-            MotorMount4Statics.mesh.Get(),
-            Motor4Statics.mesh.Get(),
-            PropCWStatics.mesh.Get(), -0.35, +0.35);
+            MotorMount2Statics.mesh.Get(),
+            Motor2Statics.mesh.Get(),
+            PropCWStatics.mesh.Get(), +0.40, -0.33);
 }
 
 void ACrazyflie::addArm(
