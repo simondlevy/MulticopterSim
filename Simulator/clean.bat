@@ -9,7 +9,4 @@
 
 del /f /q *.sln *.vs > NUL
 
-del /f /q Binaries\Win64\*.target > NUL
-del /f /q Binaries\Win64\UE4* > NUL
-
-rmdir /q /s .vs Build DerivedDataCache Intermediate Saved > NUL:q
+rmdir /q /s .vs Binaries Build DerivedDataCache Intermediate Saved > NUL:q
