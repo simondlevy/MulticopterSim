@@ -22,28 +22,22 @@ DECLARE_STATIC_MESH(FPcbStatics, "Crazyflie/pcb.pcb", PcbStatics)
 
 DECLARE_STATIC_MESH(FMotorMount1Statics,
         "Crazyflie/motor_mount1.motor_mount1", MotorMount1Statics)
-
 DECLARE_STATIC_MESH(FMotor1Statics,
         "Crazyflie/motor1.motor1", Motor1Statics)
-
 DECLARE_STATIC_MESH(FPropeller1Statics, "Crazyflie/propeller1.propeller1", 
         Propeller1Statics)
 
 DECLARE_STATIC_MESH(FMotorMount2Statics,
         "Crazyflie/motor_mount2.motor_mount2", MotorMount2Statics)
-
 DECLARE_STATIC_MESH(FMotor2Statics,
         "Crazyflie/motor2.motor2", Motor2Statics)
-
 DECLARE_STATIC_MESH(FPropeller2Statics, "Crazyflie/propeller2.propeller2", 
         Propeller2Statics)
 
 DECLARE_STATIC_MESH(FMotorMount3Statics,
         "Crazyflie/motor_mount3.motor_mount3", MotorMount3Statics)
-
 DECLARE_STATIC_MESH(FMotor3Statics,
         "Crazyflie/motor3.motor3", Motor3Statics)
-
 DECLARE_STATIC_MESH(FPropeller3Statics, "Crazyflie/propeller3.propeller3", 
         Propeller3Statics)
 
