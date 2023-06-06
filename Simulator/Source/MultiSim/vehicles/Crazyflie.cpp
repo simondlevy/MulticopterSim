@@ -18,6 +18,9 @@ ACrazyflie::ACrazyflie()
     vehicle.addComponent(BatteryStatics.mesh.Get(),
             makeName("battery", 1, "Mesh"));
 
+    vehicle.addComponent(BatteryHolderStatics.mesh.Get(),
+            makeName("battery_holder", 1, "Mesh"));
+
     addArm(1,
             MotorMount1Statics.mesh.Get(),
             Motor1Statics.mesh.Get(),
