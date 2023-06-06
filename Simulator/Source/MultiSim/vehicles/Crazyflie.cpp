@@ -61,7 +61,7 @@ void ACrazyflie::addArm(
     vehicle.addComponent(motorMesh, 
             makeName("motor", index, "Mesh"));
 
-    vehicle.addRotor(propellerMesh, propellerX, propellerY, 0.14);
+    vehicle.addRotor(propellerMesh, propellerX, propellerY, 0.130);
 }
 
 
