@@ -30,8 +30,8 @@ DECLARE_STATIC_MESH(FBatteryHolderStatics,
 DECLARE_STATIC_MESH(FPinHeadersLeftStatics,
         "Crazyflie/pin_headers_left.pin_headers_left", PinHeadersLeftStatics)
 
-DECLARE_STATIC_MESH(FPinHeadersRightStatics,
-        "Crazyflie/pin_headers_right.pin_headers_right", PinHeadersRightStatics)
+//DECLARE_STATIC_MESH(FPinHeadersRightStatics,
+//        "Crazyflie/pin_headers_right.pin_headers_right", PinHeadersRightStatics)
 
 DECLARE_STATIC_MESH(FMotorMount1Statics,
         "Crazyflie/motor_mount1.motor_mount1", MotorMount1Statics)
