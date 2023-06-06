@@ -103,8 +103,8 @@ class ACrazyflie : public APawn {
                 UStaticMesh * motorMountMesh,
                 UStaticMesh * motorMesh,
                 UStaticMesh * propellerMesh,
-                const int8_t dx, 
-                const int8_t dy);
+                const float propellerX,
+                const float propellerY);
 
     protected:
 
