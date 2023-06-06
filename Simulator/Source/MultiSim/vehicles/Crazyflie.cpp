@@ -29,29 +29,31 @@ ACrazyflie::ACrazyflie()
     addArm(1,
             MotorMount1Statics.mesh.Get(),
             Motor1Statics.mesh.Get(),
-            Propeller1Statics.mesh.Get());
+            PropCCWStatics.mesh.Get(), +1, +1);
 
     addArm(2,
             MotorMount2Statics.mesh.Get(),
             Motor2Statics.mesh.Get(),
-            Propeller2Statics.mesh.Get());
+            PropCWStatics.mesh.Get(), -1, -1);
 
     addArm(3,
             MotorMount3Statics.mesh.Get(),
             Motor3Statics.mesh.Get(),
-            Propeller3Statics.mesh.Get());
+            PropCCWStatics.mesh.Get(), +1, -1);
 
     addArm(4,
             MotorMount4Statics.mesh.Get(),
             Motor4Statics.mesh.Get(),
-            Propeller4Statics.mesh.Get());
+            PropCWStatics.mesh.Get(), -1, +1);
 }
 
 void ACrazyflie::addArm(
         uint8_t index,
         UStaticMesh * motorMountMesh,
         UStaticMesh * motorMesh,
-        UStaticMesh * propellerMesh)
+        UStaticMesh * propellerMesh,
+        const int8_t dx, 
+        const int8_t dy)
 {
     vehicle.addComponent(motorMountMesh, 
             makeName("motor_mount", index, "Mesh"));
@@ -59,9 +61,7 @@ void ACrazyflie::addArm(
     vehicle.addComponent(motorMesh, 
             makeName("motor", index, "Mesh"));
 
-
-    vehicle.addComponent(propellerMesh, 
-            makeName("propeller", index, "Mesh"));
+    vehicle.addRotor(propellerMesh, dx*0.12, dy*0.12, 0.16);
 }
 
 
