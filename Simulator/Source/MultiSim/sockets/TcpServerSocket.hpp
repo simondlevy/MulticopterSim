@@ -26,26 +26,29 @@ class TcpServerSocket : public TcpSocket {
         {
             // Bind socket to address
             if (bind( _sock,
-                     _addressInfo->ai_addr,
-                     (int)_addressInfo->ai_addrlen) == SOCKET_ERROR) {
+                        _addressInfo->ai_addr,
+                        (int)_addressInfo->ai_addrlen) == SOCKET_ERROR) {
 
                 closesocket(_sock);
                 _sock = INVALID_SOCKET;
                 sprintf_s(_message, "bind() failed");
-                return;
             }
 
-            // Check for / set up optional timeout for receiveData
-            TcpSocket::setTcpTimeout(timeoutMsec);
+            else {
+
+                // Check for / set up optional timeout for receiveData
+                TcpSocket::setTcpTimeout(timeoutMsec);
+
+                // Listen for a connection, exiting on failure
+                if (listen(_sock, 1)  == -1) {
+                    sprintf_s(_message, "listen() failed");
+                }
+            }
         }
 
         bool acceptConnection(void)
         {
-            // Listen for a connection, exiting on failure
-            if (listen(_sock, 1)  == -1) {
-                sprintf_s(_message, "listen() failed");
-                return false;
-            }
+            return false;
 
             // Accept connection, exiting on failure
             printf("Waiting for client to connect on %s:%s ... ", _host, _port);
