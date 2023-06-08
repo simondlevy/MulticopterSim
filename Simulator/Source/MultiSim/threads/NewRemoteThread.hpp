@@ -32,9 +32,12 @@ class FNewRemoteThread : public FVehicleThread {
                 float * motorValues,
                 const uint8_t motorCount) override
         {
-            if (!_telemServer || !_connected) {
-                static long _count;
-                sprintf_s(_message, "Waiting on client: %ld", _count++);
+            if (_telemServer) {
+
+                if (!_connected) {
+                    static long _count;
+                    sprintf_s(_message, "Waiting on client: %ld", _count++);
+                }
             }
         }
 
@@ -55,4 +58,4 @@ class FNewRemoteThread : public FVehicleThread {
         {
         }
 
- }; // class FNewRemoteThread
+}; // class FNewRemoteThread

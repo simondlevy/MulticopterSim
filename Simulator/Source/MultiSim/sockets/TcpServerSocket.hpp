@@ -39,12 +39,12 @@ class TcpServerSocket : public TcpSocket {
             TcpSocket::setTcpTimeout(timeoutMsec);
         }
 
-        void acceptConnection(void)
+        bool acceptConnection(void)
         {
             // Listen for a connection, exiting on failure
             if (listen(_sock, 1)  == -1) {
                 sprintf_s(_message, "listen() failed");
-                return;
+                return false;
             }
 
             // Accept connection, exiting on failure
@@ -53,9 +53,9 @@ class TcpServerSocket : public TcpSocket {
             _conn = accept(_sock, (struct sockaddr *)NULL, NULL);
             if (_conn == SOCKET_ERROR) {
                 sprintf_s(_message, "accept() failed");
-                return;
+                return false;
             }
-            printf("connected\n");
-            fflush(stdout);
+
+            return true;
         }
 };
