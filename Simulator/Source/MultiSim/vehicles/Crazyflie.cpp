@@ -13,7 +13,7 @@
 ACrazyflie::ACrazyflie()
 {
     // Build the frame, restoring for cameras, audio
-    vehicle.buildFull(this, PcbStatics.mesh.Get());
+    vehicle.buildFull(this, PcbStatics.mesh.Get(), 0.5, 0.25);
 
     vehicle.addComponent(BatteryStatics.mesh.Get(), 
             makeMeshName("battery"));
