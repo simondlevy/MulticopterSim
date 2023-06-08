@@ -36,6 +36,8 @@ class Vehicle {
 
     private:
 
+        float _audioLevel;
+
         // Slowed down for simulation
         static constexpr double MOTOR_RPM = 400;
 
@@ -254,6 +256,8 @@ class Vehicle {
             }
             smoothedRotorMean /= _rotorBuffer->Capacity();
 
+            _audioLevel = smoothedRotorMean;
+
             // Use the mean rotor value to modulate the pitch and voume of the
             // rotor sound
             if (_audioComponent) {
@@ -313,7 +317,7 @@ class Vehicle {
                 // Set the audio component's volume to zero
                 _audioComponent->SetFloatParameter(FName("volume"), 0);
 
-                // Attach the sound to the pawn's root, the sound follows the
+                // Attach the sound to the pawn's root, so the sound follows the
                 // pawn around
                 _audioComponent->SetupAttachment(_pawn->GetRootComponent());
             }
@@ -482,7 +486,9 @@ class Vehicle {
 
         void tick(float DeltaSeconds)
         {
-            debugline("%s", _thread->getMessage());
+            // debugline("%s", _thread->getMessage());
+
+            debugline("Audio Level = %f", _audioLevel);
 
             if (!_perturbed) {
 
