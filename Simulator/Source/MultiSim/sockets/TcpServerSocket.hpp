@@ -18,7 +18,10 @@ class TcpServerSocket : public TcpSocket {
 
     public:
 
-        TcpServerSocket(const char * host, short port)
+        TcpServerSocket(
+                const char * host,
+                const uint16_t port,
+                const uint32_t timeoutMsec=0)
             : TcpSocket(host, port)        
         {
             // Bind socket to address
@@ -31,6 +34,9 @@ class TcpServerSocket : public TcpSocket {
                 sprintf_s(_message, "bind() failed");
                 return;
             }
+
+            // Check for / set up optional timeout for receiveData
+            TcpSocket::setTcpTimeout(timeoutMsec);
         }
 
         void acceptConnection(void)

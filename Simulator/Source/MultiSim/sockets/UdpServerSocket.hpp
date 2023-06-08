@@ -33,7 +33,11 @@ class UdpServerSocket : public UdpSocket {
             server.sin_port = htons(port);
 
             // Bind
-            if (bind(_sock, (struct sockaddr *)&server, sizeof(server)) == SOCKET_ERROR) {
+            if (bind(
+                        _sock,
+                        (struct sockaddr *)&server,
+                        sizeof(server)) == SOCKET_ERROR) {
+
                 sprintf_s(_message, "bind() failed");
                 return;
             }

@@ -72,7 +72,7 @@ class Socket {
 #endif
         }
 
-        void setTimeout(uint32_t msec)
+        void setTcpTimeout(uint32_t msec)
         {
 #ifdef _WIN32
             setsockopt(_sock, SOL_SOCKET, SO_RCVTIMEO, (char *) &msec, sizeof(msec));
