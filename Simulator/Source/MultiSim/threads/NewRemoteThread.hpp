@@ -12,7 +12,16 @@
 
 #include "../Thread.hpp"
 
+#include "../sockets/TcpServerSocket.hpp"
+
 class FNewRemoteThread : public FVehicleThread {
+
+    private: 
+        // Socket comms
+        TcpServerSocket * _telemServer = NULL;
+
+        // Guards socket comms
+        bool _connected = false;
 
     protected:
 
@@ -23,16 +32,22 @@ class FNewRemoteThread : public FVehicleThread {
                 float * motorValues,
                 const uint8_t motorCount) override
         {
-            static long _count;
-            sprintf_s(_message, "Waiting on client: %ld", _count++);
+            if (!_telemServer || !_connected) {
+                static long _count;
+                sprintf_s(_message, "Waiting on client: %ld", _count++);
+            }
         }
 
     public:
 
         // Constructor, called main thread
-        FNewRemoteThread(Dynamics * dynamics)
+        FNewRemoteThread(
+                Dynamics * dynamics,
+                const char * host = "127.0.0.1",
+                const short port = 5000)
             : FVehicleThread(dynamics)
         {
+            _telemServer = new TcpServerSocket(host, port);
         }
 
         ~FNewRemoteThread(void) 

@@ -45,13 +45,18 @@ class TcpSocket : public Socket {
             _addressInfo = NULL;
             int iResult = getaddrinfo(_host, _port, &hints, &_addressInfo);
             if ( iResult != 0 ) {
-                sprintf_s(_message, "getaddrinfo() failed with error: %d", iResult);
+                sprintf_s(
+                        _message, "getaddrinfo() failed with error: %d", 
+                        iResult);
                 cleanup();
                 return;
             }
 
             // Create a SOCKET for connecting to server, returning on failure
-            _sock = socket(_addressInfo->ai_family, _addressInfo->ai_socktype, _addressInfo->ai_protocol);
+            _sock = socket(
+                    _addressInfo->ai_family,
+                    _addressInfo->ai_socktype,
+                    _addressInfo->ai_protocol);
             if (_sock == INVALID_SOCKET) {
                 sprintf_s(_message, "socket() failed");
                 cleanup();
@@ -75,5 +80,4 @@ class TcpSocket : public Socket {
         {
             return _connected;
         }
-
 };

@@ -22,7 +22,10 @@ class TcpServerSocket : public TcpSocket {
             : TcpSocket(host, port)        
         {
             // Bind socket to address
-            if (bind(_sock, _addressInfo->ai_addr, (int)_addressInfo->ai_addrlen) == SOCKET_ERROR) {
+            if (bind( _sock,
+                     _addressInfo->ai_addr,
+                     (int)_addressInfo->ai_addrlen) == SOCKET_ERROR) {
+
                 closesocket(_sock);
                 _sock = INVALID_SOCKET;
                 sprintf_s(_message, "bind() failed");
