@@ -15,8 +15,10 @@ ACrazyflie::ACrazyflie()
     // Build the frame, restoring for cameras, audio
     vehicle.buildFull(this, PcbStatics.mesh.Get());
 
+    /*
     vehicle.addComponent(BatteryStatics.mesh.Get(),
             makeName("battery", 1, "Mesh"));
+
     vehicle.addComponent(BatteryHolderStatics.mesh.Get(),
             makeName("battery_holder", 1, "Mesh"));
 
@@ -25,26 +27,27 @@ ACrazyflie::ACrazyflie()
 
     vehicle.addComponent(PinHeadersLeftStatics.mesh.Get(),
             makeName("pin_headers_left", 1, "Mesh"));
+            */
 
     addArm(1,
             MotorMount1Statics.mesh.Get(),
             Motor1Statics.mesh.Get(),
-            PropCCWStatics.mesh.Get(), +0.3125, +0.325);
+            PropCCWStatics.mesh.Get(), +0.063, +0.065);
 
     addArm(2,
-            MotorMount4Statics.mesh.Get(),
-            Motor4Statics.mesh.Get(),
-            PropCWStatics.mesh.Get(), -0.335, +0.340);
+            MotorMount2Statics.mesh.Get(),
+            Motor2Statics.mesh.Get(),
+            PropCWStatics.mesh.Get(), -0.068, +0.068);
 
     addArm(3,
             MotorMount3Statics.mesh.Get(),
             Motor3Statics.mesh.Get(),
-            PropCCWStatics.mesh.Get(), -0.355, -0.345);
+            PropCCWStatics.mesh.Get(), -0.060, -0.060);
 
     addArm(4,
-            MotorMount2Statics.mesh.Get(),
-            Motor2Statics.mesh.Get(),
-            PropCWStatics.mesh.Get(), +0.335, -0.345); // 335
+            MotorMount4Statics.mesh.Get(),
+            Motor4Statics.mesh.Get(),
+            PropCWStatics.mesh.Get(), +0.060, -0.060);
 }
 
 void ACrazyflie::addArm(
@@ -61,7 +64,7 @@ void ACrazyflie::addArm(
     vehicle.addComponent(motorMesh, 
             makeName("motor", index, "Mesh"));
 
-    vehicle.addRotor(propellerMesh, propellerX, propellerY, 0.130);
+    vehicle.addRotor(propellerMesh, propellerX, propellerY, 0.0275);
 }
 
 
