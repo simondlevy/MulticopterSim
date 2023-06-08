@@ -30,6 +30,16 @@ static const FName makeName(const char * prefix, const uint8_t index, const char
     return FName(name);
 }
 
+static const FName makeMeshName(const char * prefix, const uint8_t index)
+{
+    return makeName(prefix, index, "Mesh");
+}
+
+static const FName makeMeshName(const char * prefix)
+{
+    return makeName(prefix, 0);
+}
+
 static void debug(const char * fmt, ...)
 {
 	va_list ap;

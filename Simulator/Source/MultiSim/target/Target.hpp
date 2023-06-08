@@ -647,7 +647,7 @@ class Vehicle {
                 float x, float y, float z, float angle)
         {
             UStaticMeshComponent * rotorMeshComponent =
-                addComponent(rotorMesh, makeName("Rotor", _rotorCount, "Mesh"),
+                addComponent(rotorMesh, makeName("Rotor", _rotorCount),
                         x, y, z, angle);
             _rotorMeshComponents[_rotorCount] = rotorMeshComponent;
             _rotorCount++;

@@ -15,17 +15,17 @@ ACrazyflie::ACrazyflie()
     // Build the frame, restoring for cameras, audio
     vehicle.buildFull(this, PcbStatics.mesh.Get());
 
-    vehicle.addComponent(BatteryStatics.mesh.Get(),
-            makeName("battery", 1, "Mesh"));
+    vehicle.addComponent(BatteryStatics.mesh.Get(), 
+            makeMeshName("battery"));
 
     vehicle.addComponent(BatteryHolderStatics.mesh.Get(),
-            makeName("battery_holder", 1, "Mesh"));
+            makeMeshName("battery_holder"));
 
     vehicle.addComponent(PinHeadersLeftStatics.mesh.Get(),
-            makeName("pin_headers_left", 1, "Mesh"));
+            makeMeshName("pin_headers_left"));
 
     vehicle.addComponent(PinHeadersRightStatics.mesh.Get(),
-            makeName("pin_headers_right", 1, "Mesh"));
+            makeMeshName("pin_headers_right"));
 
     addArm(1,
             MotorMount1Statics.mesh.Get(),
@@ -56,11 +56,9 @@ void ACrazyflie::addArm(
         const float propellerX,
         const float propellerY)
 {
-    vehicle.addComponent(motorMountMesh, 
-            makeName("motor_mount", index, "Mesh"));
+    vehicle.addComponent(motorMountMesh, makeMeshName("motor_mount", index));
 
-    vehicle.addComponent(motorMesh, 
-            makeName("motor", index, "Mesh"));
+    vehicle.addComponent(motorMesh, makeMeshName("motor", index));
 
     vehicle.addRotor(propellerMesh, propellerX, propellerY, 0.0275);
 }

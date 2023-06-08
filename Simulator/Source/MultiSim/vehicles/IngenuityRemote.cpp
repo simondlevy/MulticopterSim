@@ -19,11 +19,10 @@ AIngenuityRemote::AIngenuityRemote()
     addRotor(RotorBottomStatics.mesh.Get(), .170);
 
     // Add mast, solar panel, antenna
-    vehicle.addComponent(MastStatics.mesh.Get(), makeName("Mast", 1, "Mesh"));
+    vehicle.addComponent(MastStatics.mesh.Get(), makeMeshName("Mast"));
     vehicle.addComponent(SolarPanelStatics.mesh.Get(),
-            makeName("SolarPanel", 1, "Mesh"), 0, 0, 0.34);
-    vehicle.addComponent(AntennaStatics.mesh.Get(),
-            makeName("Antenna", 1, "Mesh"));
+            makeMeshName("SolarPanel"), 0, 0, 0.34);
+    vehicle.addComponent(AntennaStatics.mesh.Get(), makeMeshName("Antenna"));
 
     // Add legs
     addLeg(1, Leg1BracketStatics.mesh.Get(), Leg1TopStatics.mesh.Get(),
@@ -72,9 +71,9 @@ void AIngenuityRemote::addLeg(
         UStaticMesh * topMesh,
         UStaticMesh * bottomMesh)
 {
-    vehicle.addComponent(bracketMesh, makeName("LegBracket", index, "Mesh"));
-    vehicle.addComponent(topMesh,     makeName("LegTop", index, "Mesh"));
-    vehicle.addComponent(bottomMesh,  makeName("LegBottom", index, "Mesh"));
+    vehicle.addComponent(bracketMesh, makeName("LegBracket", index));
+    vehicle.addComponent(topMesh,     makeName("LegTop", index));
+    vehicle.addComponent(bottomMesh,  makeName("LegBottom", index));
 }
 
 void AIngenuityRemote::addRotor(UStaticMesh* propMesh, float z)
