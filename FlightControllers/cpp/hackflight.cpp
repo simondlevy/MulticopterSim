@@ -14,7 +14,6 @@
 #include <core/pid.h>
 #include <core/pids/angle.h>
 #include <core/pids/setpoints/althold.h>
-#include <core/pids/setpoints/flowhold.h>
 #include <core/mixers/fixedpitch/quadxbf.h>
 
 #include "../../Simulator/Source/MultiSim/sockets/UdpClientSocket.hpp"
@@ -105,16 +104,12 @@ int main(int argc, char ** argv)
 
     static AltHoldPidController altHoldPid;
 
-    static FlowHoldPidController flowHoldPid;
-
     static Mixer mixer = QuadXbfMixer::make();
 
     printf("Hit the Play button ... ");
     fflush(stdout);
 
-    std::vector<PidController *> pids = {
-        &anglePid, &altHoldPid, &flowHoldPid
-    };
+    std::vector<PidController *> pids = { &anglePid, &altHoldPid };
 
     // Loop forever, waiting for clients
     while (true) {

@@ -6,11 +6,12 @@
 * MIT License
  */
 
-#include "Crazyflie.h"
+#include "CrazyflieRemote.h"
 
-#include "../threads/RemoteThread.hpp" // XXX 
+// XXX Should be using Crazyflie firmware
+#include "../threads/RemoteThread.hpp" 
 
-ACrazyflie::ACrazyflie()
+ACrazyflieRemote::ACrazyflieRemote()
 {
     // Build the frame, restoring for cameras, audio
     vehicle.buildFull(this, PcbStatics.mesh.Get(), 0.5, 0.25);
@@ -48,7 +49,7 @@ ACrazyflie::ACrazyflie()
             PropCWStatics.mesh.Get(), +0.060, -0.060);
 }
 
-void ACrazyflie::addArm(
+void ACrazyflieRemote::addArm(
         uint8_t index,
         UStaticMesh * motorMountMesh,
         UStaticMesh * motorMesh,
@@ -65,21 +66,21 @@ void ACrazyflie::addArm(
 
 
 // Called when the game starts or when spawned
-void ACrazyflie::BeginPlay()
+void ACrazyflieRemote::BeginPlay()
 {
     vehicle.beginPlay(new FRemoteThread(&dynamics));
 
     Super::BeginPlay();
 }
 
-void ACrazyflie::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void ACrazyflieRemote::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     vehicle.endPlay();
 
     Super::EndPlay(EndPlayReason);
 }
 
-void ACrazyflie::PostInitializeComponents()
+void ACrazyflieRemote::PostInitializeComponents()
 {
     vehicle.postInitializeComponents();
 
@@ -87,7 +88,7 @@ void ACrazyflie::PostInitializeComponents()
 }
 
 // Called automatically on main thread
-void ACrazyflie::Tick(float DeltaSeconds)
+void ACrazyflieRemote::Tick(float DeltaSeconds)
 {
     vehicle.tick(DeltaSeconds);
 

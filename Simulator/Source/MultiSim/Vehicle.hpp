@@ -488,8 +488,6 @@ class Vehicle {
         {
             // debugline("%s", _thread->getMessage());
 
-            debugline("Audio Level = %f", _audioLevel);
-
             if (!_perturbed) {
 
                 if (_dynamics->vstate.z < -3 &&

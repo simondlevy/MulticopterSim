@@ -14,7 +14,6 @@
 #include <core/pid.h>
 #include <core/pids/angle.h>
 #include <core/pids/setpoints/althold.h>
-#include <core/pids/setpoints/flowhold.h>
 #include <core/mixers/fixedpitch/quadxbf.h>
 
 class FLocalThread : public FVehicleThread {
@@ -31,13 +30,9 @@ class FLocalThread : public FVehicleThread {
 
         AltHoldPidController altHoldPid;
 
-        FlowHoldPidController flowHoldPid;
-
         Mixer mixer = QuadXbfMixer::make();
 
-        std::vector<PidController *> pids = {
-            &anglePid, &altHoldPid, &flowHoldPid
-        };
+        std::vector<PidController *> pids = { &anglePid, &altHoldPid };
 
         static Demands demands_from_joystick(const float joystick[])
         {

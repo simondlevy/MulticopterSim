@@ -15,7 +15,7 @@
 
 #include "../dynamics/fixedpitch/QuadXBF.hpp"
 
-#include "Crazyflie.generated.h"
+#include "CrazyflieRemote.generated.h"
 
 // Structures to hold static mesh initializations
 
@@ -64,7 +64,7 @@ DECLARE_STATIC_MESH(FPropCCWStatics,
         "Crazyflie/propeller_ccw.propeller_ccw", PropCCWStatics)
 
 UCLASS(Config=Game)
-class ACrazyflie : public APawn {
+class ACrazyflieRemote : public APawn {
 
     private:
 
@@ -124,6 +124,6 @@ class ACrazyflie : public APawn {
 
     public:	
 
-        ACrazyflie();
+        ACrazyflieRemote();
 
-}; // ACrazyflie
+}; // ACrazyflieRemote
