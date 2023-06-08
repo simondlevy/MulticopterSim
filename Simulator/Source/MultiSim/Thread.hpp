@@ -52,7 +52,7 @@ class FVehicleThread : public FRunnable {
 
     protected:
 
-        char _message[100];
+        char _message[100] = "";
 
         virtual void getMotors(
                 const double time,
