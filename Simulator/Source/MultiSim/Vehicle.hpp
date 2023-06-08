@@ -55,8 +55,6 @@ class Vehicle {
 
         uint8_t _nrotors = 0;
 
-        bool _perturbed;
-
         float rotorStartAngle(float rotorX, float rotorY)
         {
             FVector vehicleCenter = _pawn->GetActorLocation();
@@ -393,8 +391,6 @@ class Vehicle {
 
         void beginPlay(FVehicleThread * thread)
         {
-            _perturbed = false;
-
             _thread = thread;
 
             // Player controller is useful for getting keyboard events,
@@ -404,7 +400,6 @@ class Vehicle {
 
             // Change view to player camera on start
             _playerController->SetViewTargetWithBlend(_pawn);
-
 
             // Check landscape for world parameters
             for (TActorIterator<ALandscape> LandscapeItr(_pawn->GetWorld());
@@ -486,15 +481,10 @@ class Vehicle {
 
         void tick(float DeltaSeconds)
         {
-            // debugline("%s", _thread->getMessage());
-
-            if (!_perturbed) {
-
-                if (_dynamics->vstate.z < -3 &&
-                        fabs(_dynamics->vstate.dz) < 0.1) {
-                    //_dynamics->vstate.dy = -1;
-                    _perturbed = true;
-                }
+            // Report any message from thread
+            const char * msg = _thread->getMessage();
+            if (*msg) {
+                debugline("%s", msg);
             }
 
             // Quit on ESCape key
