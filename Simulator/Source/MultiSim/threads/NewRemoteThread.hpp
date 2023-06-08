@@ -35,8 +35,17 @@ class FNewRemoteThread : public FVehicleThread {
             if (_telemServer) {
 
                 if (!_connected) {
-                    static long _count;
-                    sprintf_s(_message, "Waiting on client: %ld", _count++);
+
+                    if (_telemServer->acceptConnection()) {
+
+                        _connected = true;
+                    }
+
+                    else {
+                        static long _count;
+                        sprintf_s(_message,
+                                "Waiting on client: %ld", _count++);
+                    }
                 }
             }
         }

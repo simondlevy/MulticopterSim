@@ -8,7 +8,11 @@
 
 #pragma once
 
-#include "SocketCompat.hpp"
+#ifdef _WIN32
+#include "WindowsSockets.hpp"
+#else
+#include "LinuxSockets.hpp"
+#endif
 
 class UdpSocket : public Socket {
 
