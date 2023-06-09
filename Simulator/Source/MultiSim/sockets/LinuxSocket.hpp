@@ -8,14 +8,19 @@
 
 #pragma once
 
-#define sprintf_s sprintf
-#define RECVSIZE ssize_t
-typedef int SOCKET;
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <fcntl.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+
+// For Windows compatibility
+#define sprintf_s sprintf
+
+typedef int socket_t;
+typedef ssize_t recv_size_t;
+
 static const int INVALID_SOCKET = -1;
 static const int SOCKET_ERROR   = -1;
 
@@ -25,7 +30,7 @@ class Socket {
 
     protected:
 
-        SOCKET _sock;
+        int _sock;
 
         char _message[200];
 
@@ -67,7 +72,13 @@ class Socket {
 
         bool setNonblocking(void)
         {
-            return true;
+             auto flags = fcntl(_sock, F_GETFL);
+
+             if (flags == -1) {
+                 return false;
+             }
+
+            return fcntl(_sock, F_SETFL, flags | O_NONBLOCK) != -1;
         }
 
     public:

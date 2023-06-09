@@ -23,7 +23,10 @@ int main(int argc, char ** argv)
     TcpServerSocket * telemServer = new TcpServerSocket(HOST, TELEM_PORT, true);
 
     // Guards socket comms
-    bool _connected = false;
+    bool connected = false;
+
+    (void)telemServer;
+    (void)connected;
 
     // Loop forever, waiting for clients
     while (true) {

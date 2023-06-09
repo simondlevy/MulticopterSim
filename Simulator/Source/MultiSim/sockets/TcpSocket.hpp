@@ -21,7 +21,7 @@ class TcpSocket : public Socket {
         char _host[200];
         char _port[10];
 
-        SOCKET _conn;
+        socket_t _conn;
 
         struct addrinfo * _addressInfo;
 

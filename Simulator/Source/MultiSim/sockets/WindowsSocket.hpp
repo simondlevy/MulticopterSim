@@ -9,12 +9,16 @@
 #pragma once
 
 #pragma comment(lib,"ws2_32.lib")
+
 #define WIN32_LEAN_AND_MEAN
-#define RECVSIZE size_t
+
+typedef size_t recv_size_t;
+typedef SOCKET socket_t;
+
 #undef TEXT
+
 #include <winsock2.h>
 #include <ws2tcpip.h>
-
 
 #include <stdio.h>
 
@@ -22,7 +26,7 @@ class Socket {
 
     protected:
 
-        SOCKET _sock;
+        socket_t _sock;
 
         char _message[200];
 
