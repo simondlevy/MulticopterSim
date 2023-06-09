@@ -53,7 +53,7 @@ class TcpServerSocket : public TcpSocket {
 
         bool acceptConnection(void)
         {
-            // Accept connection, exiting on failure
+            // Accept connection, setting message on failure
             _conn = accept(_sock, (struct sockaddr *)NULL, NULL);
             if (_conn == SOCKET_ERROR) {
                 sprintf_s(_message, "accept() failed");
