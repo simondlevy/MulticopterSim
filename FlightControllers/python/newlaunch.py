@@ -17,12 +17,12 @@ import argparse
 from argparse import ArgumentDefaultsHelpFormatter
 
 from controller import LaunchController
-from multicopter_server import MulticopterServer
+from multicopter_client import MulticopterClient
 from mixers import PhantomMixer, IngenuityMixer
 from debugging import debug
 
 
-class LaunchCopter(MulticopterServer):
+class LaunchCopter(MulticopterClient):
 
     def __init__(
             self,
@@ -31,7 +31,7 @@ class LaunchCopter(MulticopterServer):
             ki=0.0,
             initial_target=2.5):
 
-        MulticopterServer.__init__(self)
+        MulticopterClient.__init__(self)
 
         self.mixer = mixer
 
@@ -65,8 +65,8 @@ class LaunchCopter(MulticopterServer):
 
         # Extract altitude from state.  Altitude is in NED coordinates, so we
         # negate it to use as input to PID controller.
-        z = -state[MulticopterServer.STATE_Z]
-        dzdt = -state[MulticopterServer.STATE_DZ]
+        z = -state[MulticopterClient.STATE_Z]
+        dzdt = -state[MulticopterClient.STATE_DZ]
 
         # Get demands U [throttle, roll, pitch, yaw] from PID controller,
         # ignoring stick demands

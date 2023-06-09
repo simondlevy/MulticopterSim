@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
 
             connected = telemServer.acceptConnection();
 
-            printf("listenting\n");
+            printf("listening\n");
 
         }
 
