@@ -23,4 +23,10 @@ class MulticopterClient(object):
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        s.connect((self.host, self.telemetry_port))
+        try:
+            s.connect((self.host, self.telemetry_port))
+
+        except ConnectionRefusedError:
+
+            print('Connection error; did you start the server first?')
+
