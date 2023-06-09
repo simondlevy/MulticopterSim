@@ -65,6 +65,11 @@ class Socket {
                     _sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
         }
 
+        bool setNonblocking(void)
+        {
+            return true;
+        }
+
     public:
 
         void closeConnection(void)

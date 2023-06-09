@@ -17,6 +17,7 @@
 class FNewRemoteThread : public FVehicleThread {
 
     private: 
+
         // Socket comms
         TcpServerSocket * _telemServer = NULL;
 

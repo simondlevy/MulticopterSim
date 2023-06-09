@@ -9,9 +9,9 @@
 #pragma once
 
 #ifdef _WIN32
-#include "WindowsSockets.hpp"
+#include "WindowsSocket.hpp"
 #else
-#include "LinuxSockets.hpp"
+#include "LinuxSocket.hpp"
 #endif
 
 class TcpSocket : public Socket {

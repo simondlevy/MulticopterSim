@@ -27,10 +27,16 @@ class TcpClientSocket : public TcpSocket {
         void openConnection(void)
         {
             // Connect to server, returning on failure
-            if (connect(_sock, _addressInfo->ai_addr, (int)_addressInfo->ai_addrlen) == SOCKET_ERROR) {
+            if (connect(
+                        _sock,
+                        _addressInfo->ai_addr,
+                        (int)_addressInfo->ai_addrlen) == SOCKET_ERROR) {
+
                 closesocket(_sock);
                 _sock = INVALID_SOCKET;
-                sprintf_s(_message, "connect() failed; please make sure server is running");
+                sprintf_s(
+                        _message, 
+                        "connect() failed; please make sure server is running");
                 return;
             }
 
