@@ -53,11 +53,7 @@ class TcpServerSocket : public TcpSocket {
 
         bool acceptConnection(void)
         {
-            return false;
-
             // Accept connection, exiting on failure
-            printf("Waiting for client to connect on %s:%s ... ", _host, _port);
-            fflush(stdout);
             _conn = accept(_sock, (struct sockaddr *)NULL, NULL);
             if (_conn == SOCKET_ERROR) {
                 sprintf_s(_message, "accept() failed");

@@ -20,16 +20,29 @@ int main(int argc, char ** argv)
 {
 
     // Use non-blocking socket
-    TcpServerSocket * telemServer = new TcpServerSocket(HOST, TELEM_PORT, true);
+    TcpServerSocket telemServer = TcpServerSocket(HOST, TELEM_PORT, true);
 
     // Guards socket comms
     bool connected = false;
 
-    (void)telemServer;
-    (void)connected;
+    uint32_t count = 0;
 
     // Loop forever, waiting for clients
     while (true) {
+
+        printf("%08d: ", count++);
+
+        if (connected) {
+            printf("connected\n");
+        }
+
+        else {
+
+            connected = telemServer.acceptConnection();
+
+            printf("listenting\n");
+
+        }
 
     } // while (true)
 
