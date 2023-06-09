@@ -21,11 +21,11 @@ class TcpServerSocket : public TcpSocket {
         TcpServerSocket(
                 const char * host,
                 const uint16_t port,
-                const uint32_t timeoutMsec=0)
+                const bool nonblock=false)
             : TcpSocket(host, port)        
         {
             // Bind socket to address
-            if (bind( _sock,
+            if (bind(_sock,
                         _addressInfo->ai_addr,
                         (int)_addressInfo->ai_addrlen) == SOCKET_ERROR) {
 
@@ -36,12 +36,17 @@ class TcpServerSocket : public TcpSocket {
 
             else {
 
-                // Check for / set up optional timeout for receiveData
-                TcpSocket::setTcpTimeout(timeoutMsec);
-
                 // Listen for a connection, exiting on failure
                 if (listen(_sock, 1)  == -1) {
                     sprintf_s(_message, "listen() failed");
+                }
+
+                if (nonblock) {
+
+                    if (!setNonblocking()) {
+                        sprintf_s(_message, "setNonblocking() failed");
+                    }
+                    
                 }
             }
         }

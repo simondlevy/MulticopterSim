@@ -52,14 +52,6 @@ class Socket {
             InetPton(AF_INET, wsz,   &(saddr_in.sin_addr.s_addr));
         }
 
-        void setTcpTimeout(uint32_t msec)
-        {
-            setsockopt(
-                    _sock, SOL_SOCKET,
-                    SO_RCVTIMEO,
-                    (char *) &msec, sizeof(msec));
-        }
-
         void setUdpTimeout(uint32_t msec)
         {
             setsockopt(
@@ -69,6 +61,11 @@ class Socket {
                     (char *)
                     &msec, sizeof(msec));
 
+        }
+
+        bool setNonblocking(void)
+        {
+            return true;
         }
 
     public:

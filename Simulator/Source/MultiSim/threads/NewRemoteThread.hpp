@@ -60,7 +60,8 @@ class FNewRemoteThread : public FVehicleThread {
                 const uint32_t timeoutMsec=1)
             : FVehicleThread(dynamics)
         {
-            _telemServer = new TcpServerSocket(host, port, 1);
+            // Use non-blocking socket
+            _telemServer = new TcpServerSocket(host, port, true);
         }
 
         ~FNewRemoteThread(void) 
