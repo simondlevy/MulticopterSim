@@ -7,9 +7,24 @@
 '''
 
 import socket
+import numpy as np
 
 
 class MulticopterClient(object):
+
+    # See Bouabdallah (2004)
+    (STATE_X,
+     STATE_DX,
+     STATE_Y,
+     STATE_DY,
+     STATE_Z,
+     STATE_DZ,
+     STATE_PHI,
+     STATE_DPHI,
+     STATE_THETA,
+     STATE_DTHETA,
+     STATE_PSI,
+     STATE_DPSI) = range(12)
 
     def __init__(
             self,
@@ -27,20 +42,20 @@ class MulticopterClient(object):
 
             try:
 
-                print('************************ Connecting')
-
                 sock.connect((self.host, self.telemetry_port))
 
-                while not done:
+                while True:
 
-                    try:
+                    telemetry_bytes = sock.recv(8*17)
 
-                        telemetry_bytes = sock.recv(8*17)
+                    telemetry = np.frombuffer(telemetry_bytes)
 
-                    except Exception as e:
-                        done = True
-                        print(str(e))
-                        break
+                    motorvals = self.getMotors(
+                            telemetry[0],     # time
+                            telemetry[1:13],  # vehicle state
+                            telemetry[13:])   # demands
+
+                    print(motorvals)
 
             except ConnectionRefusedError:
 
@@ -50,3 +65,11 @@ class MulticopterClient(object):
 
                 exit(0)
 
+    def getMotors(self, time, state, demands):
+        '''
+        Override for your application.  Should return motor values in interval
+        [0,1].  This default implementation just keeps flying upward.
+        '''
+        return np.array([0.6, 0.6, 0.6, 0.6])
+
+ 
