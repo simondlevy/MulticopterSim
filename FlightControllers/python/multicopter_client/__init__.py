@@ -50,6 +50,8 @@ class MulticopterClient(object):
 
                     telemetry = np.frombuffer(telemetry_bytes)
 
+                    print(telemetry[0])
+
                     motorvals = self.getMotors(
                             telemetry[0],     # time
                             telemetry[1:13],  # vehicle state

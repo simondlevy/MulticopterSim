@@ -69,6 +69,13 @@ class Socket {
 
         bool setNonblocking(void)
         {
+            ULONG nonblock = 1;
+
+            if (ioctlsocket(_sock, FIONBIO, &nonblock) == SOCKET_ERROR) {
+
+                return false;
+            }
+
             return true;
         }
 
