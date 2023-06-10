@@ -82,8 +82,7 @@ class FNewRemoteThread : public FVehicleThread {
 
                     doComms(time, dynamics, joyvals, motors, motorCount);
 
-                    sprintf_s(_message,
-                            "Connected: %ld", _count++);
+                    sprintf_s(_message, "m1=%f", motors[0]);
 
                     /*
                     sprintf_s(_message,
