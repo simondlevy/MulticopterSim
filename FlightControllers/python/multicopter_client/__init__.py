@@ -119,7 +119,7 @@ class MulticopterClient(object):
                             telemetry[1:13],  # vehicle state
                             telemetry[13:])   # demands
 
-                    sock.send(np.ndarray.tobytes(motorvals))
+                    sock.send(np.ndarray.tobytes(np.ndarray.astype(motorvals, np.float32)))
 
             except ConnectionRefusedError:
 
