@@ -69,7 +69,6 @@ class FRemoteThread : public FVehicleThread {
             _telemClient->sendData(_telemetry, sizeof(_telemetry));
 
             // Get motor values from server
-            // motors[0] = 0;
             _motorServer->receiveData(motors, sizeof(float) * motorCount);
 
             // Server sends a -1 to halt

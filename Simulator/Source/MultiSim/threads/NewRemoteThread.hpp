@@ -63,13 +63,7 @@ class FNewRemoteThread : public FVehicleThread {
             _telemServer->sendData(_telemetry, sizeof(_telemetry));
 
             // Get incoming motor values
-            double dmotors[4];
-            _telemServer->receiveData(dmotors, sizeof(double) * motorCount);
-
-            motors[0] = dmotors[0];
-            motors[1] = dmotors[1];
-            motors[2] = dmotors[2];
-            motors[3] = dmotors[3];
+            _telemServer->receiveData(motors, sizeof(float) * motorCount);
         }
 
     protected:
