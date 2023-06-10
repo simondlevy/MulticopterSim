@@ -50,7 +50,9 @@ class MulticopterClient(object):
 
                     telemetry = np.frombuffer(telemetry_bytes)
 
-                    print(telemetry[0])
+                    # Server sends -1 on quit
+                    if telemetry[0] == -1:
+                        break
 
                     motorvals = self.getMotors(
                             telemetry[0],     # time
