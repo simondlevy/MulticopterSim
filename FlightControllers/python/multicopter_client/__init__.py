@@ -46,3 +46,7 @@ class MulticopterClient(object):
 
                 print('Connection error; did you start the server first?')
 
+            except KeyboardInterrupt:
+
+                exit(0)
+
