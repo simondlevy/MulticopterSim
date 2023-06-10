@@ -1,7 +1,5 @@
 /*
- * Local flight-management stub for MultiSim
- *
- * Spins all motors at 60%
+ * Socket-based flight-management class for MultiSim
  *
  * Copyright (C) 2023 Simon D. Levy
  *
@@ -14,12 +12,12 @@
 
 #include "../sockets/TcpServerSocket.hpp"
 
-class FNewRemoteThread : public FVehicleThread {
+class FCrazyflieThread : public FVehicleThread {
 
     private: 
 
-        // Time : State : Demands
-        double _telemetry[17] = {};
+        // Time : State
+        double _telemetry[13] = {};
 
         // Socket comms
         TcpServerSocket * _telemServer = NULL;
@@ -27,15 +25,15 @@ class FNewRemoteThread : public FVehicleThread {
         // Guards socket comms
         bool _connected = false;
 
-        long _count;
-
         void doComms(
                 const double time,
                 const Dynamics * dynamics,
-                const float * joyvals,
                 float * motors,
-                const uint8_t motorCount)
+                float * newjoyvals)
         {
+            // XXX should get these from client
+            (void)newjoyvals;
+
             // First value is time
             _telemetry[0] = time;
 
@@ -53,17 +51,14 @@ class FNewRemoteThread : public FVehicleThread {
             _telemetry[11] = dynamics->vstate.psi;
             _telemetry[12] = dynamics->vstate.dpsi;
 
-            // Last four values are receiver demands
-            _telemetry[13] = (double)joyvals[0];
-            _telemetry[14] = (double)joyvals[1];
-            _telemetry[15] = (double)joyvals[2];
-            _telemetry[16] = (double)joyvals[3];
-
             // Send _telemetry data
             _telemServer->sendData(_telemetry, sizeof(_telemetry));
 
-            // Get incoming motor values
-            _telemServer->receiveData(motors, sizeof(float) * motorCount);
+            // XXX should get these from Crazyflie firmware
+            motors[0] = 0.6;
+            motors[1] = 0.6;
+            motors[2] = 0.6;
+            motors[3] = 0.6;
         }
 
     protected:
@@ -75,18 +70,15 @@ class FNewRemoteThread : public FVehicleThread {
                 float * motors,
                 const uint8_t motorCount) override
         {
+            (void)joyvals;
+            (void)motorCount;
+
             if (_telemServer) {
 
                 if (_connected) {
 
-                    doComms(time, dynamics, joyvals, motors, motorCount);
-
-                    sprintf_s(_message, "m1=%f", motors[0]);
-
-                    /*
-                    sprintf_s(_message,
-                            "m1=%3.3f  m2=%3.3f  m3=%3.3f  m4=%3.3f",
-                            motors[0], motors[1], motors[2], motors[3]);*/
+                    float newjoyvals[4];
+                    doComms(time, dynamics, motors, newjoyvals);
                 }
 
                 else {
@@ -94,13 +86,6 @@ class FNewRemoteThread : public FVehicleThread {
                     if (_telemServer->acceptConnection()) {
 
                         _connected = true;
-
-                        _count = 0;
-                    }
-
-                    else {
-                        sprintf_s(_message,
-                                "Waiting on client: %ld", _count++);
                     }
                 }
             }
@@ -109,20 +94,17 @@ class FNewRemoteThread : public FVehicleThread {
     public:
 
         // Constructor, called main thread
-        FNewRemoteThread(
+        FCrazyflieThread(
                 Dynamics * dynamics,
                 const char * host = "127.0.0.1",
-                const short port = 5000,
-                const uint32_t timeoutMsec=1)
+                const short port = 5000)
             : FVehicleThread(dynamics)
         {
             // Use non-blocking socket
             _telemServer = new TcpServerSocket(host, port, true);
-
-            _count = 0;
         }
 
-        ~FNewRemoteThread(void) 
+        ~FCrazyflieThread(void) 
         {
             // Send a bogus time value to tell remote server we're done
             _telemetry[0] = -1;
@@ -132,4 +114,4 @@ class FNewRemoteThread : public FVehicleThread {
             }
         }
 
-}; // class FNewRemoteThread
+}; // class FCrazyflieThread

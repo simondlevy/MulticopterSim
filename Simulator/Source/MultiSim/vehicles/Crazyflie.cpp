@@ -1,17 +1,16 @@
 /*
 * Class implementation for  Crazyflie in MultiSim
 *
-* Copyright (C) 2018 Simon D. Levy
+* Copyright (C) 2023 Simon D. Levy
 *
 * MIT License
  */
 
-#include "CrazyflieRemote.h"
+#include "Crazyflie.h"
 
-// XXX Should be using Crazyflie firmware
-#include "../threads/RemoteThread.hpp" 
+#include "../threads/CrazyflieThread.hpp" 
 
-ACrazyflieRemote::ACrazyflieRemote()
+ACrazyflie::ACrazyflie()
 {
     // Build the frame, restoring for cameras, audio
     vehicle.buildFull(this, PcbStatics.mesh.Get(), 0.5, 0.25);
@@ -49,7 +48,7 @@ ACrazyflieRemote::ACrazyflieRemote()
             PropCWStatics.mesh.Get(), +0.060, -0.060);
 }
 
-void ACrazyflieRemote::addArm(
+void ACrazyflie::addArm(
         uint8_t index,
         UStaticMesh * motorMountMesh,
         UStaticMesh * motorMesh,
@@ -66,21 +65,21 @@ void ACrazyflieRemote::addArm(
 
 
 // Called when the game starts or when spawned
-void ACrazyflieRemote::BeginPlay()
+void ACrazyflie::BeginPlay()
 {
-    vehicle.beginPlay(new FRemoteThread(&dynamics));
+    vehicle.beginPlay(new FCrazyflieThread(&dynamics));
 
     Super::BeginPlay();
 }
 
-void ACrazyflieRemote::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void ACrazyflie::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     vehicle.endPlay();
 
     Super::EndPlay(EndPlayReason);
 }
 
-void ACrazyflieRemote::PostInitializeComponents()
+void ACrazyflie::PostInitializeComponents()
 {
     vehicle.postInitializeComponents();
 
@@ -88,7 +87,7 @@ void ACrazyflieRemote::PostInitializeComponents()
 }
 
 // Called automatically on main thread
-void ACrazyflieRemote::Tick(float DeltaSeconds)
+void ACrazyflie::Tick(float DeltaSeconds)
 {
     vehicle.tick(DeltaSeconds);
 

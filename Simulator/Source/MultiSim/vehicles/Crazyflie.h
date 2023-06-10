@@ -13,9 +13,10 @@
 
 #include "../Vehicle.hpp"
 
+// Should use Crazyflie dynamics
 #include "../dynamics/fixedpitch/QuadXBF.hpp"
 
-#include "CrazyflieRemote.generated.h"
+#include "Crazyflie.generated.h"
 
 // Structures to hold static mesh initializations
 
@@ -64,7 +65,7 @@ DECLARE_STATIC_MESH(FPropCCWStatics,
         "Crazyflie/propeller_ccw.propeller_ccw", PropCCWStatics)
 
 UCLASS(Config=Game)
-class ACrazyflieRemote : public APawn {
+class ACrazyflie : public APawn {
 
     private:
 
@@ -124,6 +125,6 @@ class ACrazyflieRemote : public APawn {
 
     public:	
 
-        ACrazyflieRemote();
+        ACrazyflie();
 
-}; // ACrazyflieRemote
+}; // ACrazyflie
