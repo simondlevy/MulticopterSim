@@ -106,10 +106,7 @@ class FCrazyflieThread : public FVehicleThread {
 
         ~FCrazyflieThread(void) 
         {
-            // Send a bogus time value to tell remote server we're done
-            _telemetry[0] = -1;
             if (_telemServer) {
-                _telemServer->sendData(_telemetry, sizeof(_telemetry));
                 _telemServer->closeConnection();
             }
         }

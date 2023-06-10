@@ -35,6 +35,8 @@ class CrazyflieClient(object):
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 
+            sock.settimeout(0.5)
+
             try:
 
                 sock.connect((self.host, self.port))
@@ -53,6 +55,6 @@ class CrazyflieClient(object):
 
                 print('Connection error; did you start the server first?')
 
-            except KeyboardInterrupt:
+            except (KeyboardInterrupt, TimeoutError):
 
                 exit(0)
