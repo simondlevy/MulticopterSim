@@ -98,8 +98,8 @@ int main(int argc, char ** argv)
             telemServer.sendData(telemetry, sizeof(telemetry));
 
             // Get incoming motor values
-            float motorvals[4] = {};
-            //motorClient.receiveData(motorvals, sizeof(motorvals));
+            double motorvals[4] = {};
+            telemServer.receiveData(motorvals, sizeof(motorvals));
 
             printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
                     time,
@@ -109,8 +109,10 @@ int main(int argc, char ** argv)
                     motorvals[3],
                     dynamics.vstate.z);
 
+            float dvals[4] = {motorvals[0], motorvals[1], motorvals[2], motorvals[3]};
+
             // Update dynamics with motor values
-            dynamics.update(motorvals, DELTA_T);
+            dynamics.update(dvals, DELTA_T);
 
             // Set AGL to arbitrary positive value to avoid kinematic trick
             dynamics.setAgl(1);

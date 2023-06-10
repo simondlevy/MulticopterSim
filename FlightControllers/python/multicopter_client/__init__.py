@@ -55,7 +55,7 @@ class MulticopterClient(object):
                             telemetry[1:13],  # vehicle state
                             telemetry[13:])   # demands
 
-                    print(motorvals)
+                    sock.send(np.ndarray.tobytes(motorvals))
 
             except ConnectionRefusedError:
 
@@ -71,5 +71,3 @@ class MulticopterClient(object):
         [0,1].  This default implementation just keeps flying upward.
         '''
         return np.array([0.6, 0.6, 0.6, 0.6])
-
- 
