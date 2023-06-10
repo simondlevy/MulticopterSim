@@ -12,15 +12,15 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-typedef size_t recv_size_t;
-typedef SOCKET socket_t;
-
 #undef TEXT
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
 #include <stdio.h>
+
+typedef size_t recv_size_t;
+typedef SOCKET socket_t;
 
 class Socket {
 
