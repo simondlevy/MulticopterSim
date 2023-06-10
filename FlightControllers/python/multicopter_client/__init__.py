@@ -6,8 +6,21 @@
   MIT License
 '''
 
+from threading import Thread
 import socket
 import numpy as np
+import sys
+from time import sleep
+
+try:
+    import cv2
+except Exception:
+    pass
+
+
+def _debug(msg):
+    print(msg)
+    sys.stdout.flush()
 
 
 class MulticopterClient(object):
@@ -29,16 +42,63 @@ class MulticopterClient(object):
     def __init__(
             self,
             host='127.0.0.1',
-            telemetry_port=5000):
+            telemetry_port=5000,
+            image_port=5002,
+            image_rows=480,
+            image_cols=640):
 
         self.host = host
         self.telemetry_port = telemetry_port
+        self.image_port = image_port
+        self.image_rows = image_rows
+        self.image_cols = image_cols
+
+        self.image = None
 
     def start(self):
 
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        thread = Thread(target=self._run_thread)
 
-            done = False
+        thread.start()
+
+        # Serve a TCP socket for images socket with a maximum of one client
+        imageServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        imageServerSocket.setsockopt(
+                socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
+        imageServerSocket.bind((self.host, self.image_port))
+        imageServerSocket.listen(1)
+        imageConn, _ = imageServerSocket.accept()
+        imageConn.settimeout(1)
+
+        while True:  # not self.done:
+
+            try:
+                sleep(.001)  # Yield to other thread
+
+                try:
+                    imgbytes = (imageConn.recv(
+                        self.image_rows * self.image_cols * 4))
+
+                except Exception:  # likely a timeout from sim quitting
+                    break
+
+                if len(imgbytes) == self.image_rows*self.image_cols*4:
+
+                    rgba_image = np.reshape(np.frombuffer(imgbytes, 'uint8'),
+                                            (self.image_rows,
+                                             self.image_cols,
+                                             4))
+
+                    image = cv2.cvtColor(rgba_image, cv2.COLOR_RGBA2RGB)
+
+                    self.handleImage(image)
+
+            except KeyboardInterrupt:
+                break
+
+    def _run_thread(self):
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 
             try:
 

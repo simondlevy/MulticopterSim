@@ -10,7 +10,7 @@ from threading import Thread
 import socket
 import numpy as np
 import sys
-import time
+from time import sleep
 
 try:
     import cv2
@@ -55,7 +55,6 @@ class MulticopterServer(object):
         self.image_rows = image_rows
         self.image_cols = image_cols
 
-        self.telem = None
         self.image = None
         self.done = False
 
@@ -85,7 +84,7 @@ class MulticopterServer(object):
         while not self.done:
 
             try:
-                time.sleep(.001)  # Yield to other thread
+                sleep(.001)  # Yield to other thread
 
                 try:
                     imgbytes = (imageConn.recv(
@@ -160,7 +159,7 @@ class MulticopterServer(object):
             motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
                                      (self.host, self.motor_port))
 
-            time.sleep(.001)
+            sleep(.001)
 
     @staticmethod
     def _make_udpsocket():
