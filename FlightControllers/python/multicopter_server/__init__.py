@@ -156,8 +156,9 @@ class MulticopterServer(object):
                                        telemetry[1:13],  # vehicle state
                                        telemetry[13:])   # demands
 
-            motorClientSocket.sendto(np.ndarray.tobytes(motorvals),
-                                     (self.host, self.motor_port))
+            motorClientSocket.sendto(
+                    np.ndarray.tobytes(np.ndarray.astype(motorvals, np.float32)),
+                    (self.host, self.motor_port))
 
             sleep(.001)
 
