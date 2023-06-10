@@ -13,7 +13,6 @@
 #include "../Source/MultiSim/sockets/UdpClientSocket.hpp"
 #include "../Source/MultiSim/sockets/UdpServerSocket.hpp"
 #include "../Source/MultiSim/sockets/TcpClientSocket.hpp"
-
 #include "../Source/MultiSim/dynamics/fixedpitch/QuadXBF.hpp"
 
 // Comms
@@ -81,7 +80,8 @@ int main(int argc, char ** argv)
         TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
 
         // Create quadcopter dynamics model
-        QuadXBFDynamics dynamics = QuadXBFDynamics(vparams, fparams, false); // no auto-land
+        QuadXBFDynamics dynamics =
+            QuadXBFDynamics(vparams, fparams, false); // no auto-land
 
         // Set up initial conditions
         double time = 0;
@@ -141,7 +141,7 @@ int main(int argc, char ** argv)
             // Update dynamics with motor values
             dynamics.update(motorvals, DELTA_T);
 
-            // Set AGL to arbitrary positive value to o avoid kinematic trick
+            // Set AGL to arbitrary positive value to avoid kinematic trick
             dynamics.setAgl(1);
 
             time += DELTA_T;
