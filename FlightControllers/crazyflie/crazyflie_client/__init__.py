@@ -35,26 +35,26 @@ class CrazyflieClient(object):
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 
-            sock.settimeout(0.5)
-
             try:
 
                 sock.connect((self.host, self.port))
 
+                sock.settimeout(0.5)
+
                 while True:
 
-                    telemetry_bytes = sock.recv(8*13)
+                    try:
+                        telemetry_bytes = sock.recv(8*13)
+
+                    except socket.timeout:
+                        break
 
                     telemetry = np.frombuffer(telemetry_bytes)
-
-                    # Server sends -1 on quit
-                    if telemetry[0] == -1:
-                        break
 
             except ConnectionRefusedError:
 
                 print('Connection error; did you start the server first?')
 
-            except (KeyboardInterrupt, TimeoutError):
+            except KeyboardInterrupt:
 
                 exit(0)
