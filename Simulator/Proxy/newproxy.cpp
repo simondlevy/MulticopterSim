@@ -93,8 +93,10 @@ int main(int argc, char ** argv)
 
             const double telemetry[] = {
 
+                // time
                 get_current_time() - tstart,
 
+                // vehicle state
                 dynamics.vstate.x,
                 dynamics.vstate.dx,
                 dynamics.vstate.y,
@@ -106,7 +108,13 @@ int main(int argc, char ** argv)
                 dynamics.vstate.theta,
                 dynamics.vstate.dtheta,
                 dynamics.vstate.psi,
-                dynamics.vstate.dpsi
+                dynamics.vstate.dpsi,
+
+                // stick values
+                0.1,
+                0.2,
+                0.3,
+                0.4
             };
 
             server.sendData((void *)telemetry, sizeof(telemetry));
@@ -114,19 +122,6 @@ int main(int argc, char ** argv)
             delay(1e-4);
 
             /*
-
-            // Next 12 values are 12D state vector
-            telemetry[2] = dynamics.vstate.dx;
-            telemetry[3] = dynamics.vstate.y;
-            telemetry[4] = dynamics.vstate.dy;
-            telemetry[5] = dynamics.vstate.z;
-            telemetry[6] = dynamics.vstate.dz;
-            telemetry[7] = dynamics.vstate.phi;
-            telemetry[8] = dynamics.vstate.dphi;
-            telemetry[9] = dynamics.vstate.theta;
-            telemetry[10] = dynamics.vstate.dtheta;
-            telemetry[11] = dynamics.vstate.psi;
-            telemetry[12] = dynamics.vstate.dpsi;
 
             // Last four values are receiver demands
             telemetry[13] = 0.1;
