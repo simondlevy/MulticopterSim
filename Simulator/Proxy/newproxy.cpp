@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <sys/time.h>
 
 #include "../Source/MultiSim/sockets/TcpServerSocket.hpp"
 #include "../Source/MultiSim/dynamics/fixedpitch/QuadXBF.hpp"
@@ -47,7 +48,7 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
 int main(int argc, char ** argv)
 {
     // Use non-blocking socket
-    TcpServerSocket telemServer = TcpServerSocket(HOST, TELEM_PORT, true);
+    TcpServerSocket server = TcpServerSocket(HOST, TELEM_PORT, true);
 
     // Guards socket comms
     bool connected = false;
@@ -102,26 +103,26 @@ int main(int argc, char ** argv)
             telemetry[16] = 0.4;
 
             // Send telemetry data
-            telemServer.sendData(telemetry, sizeof(telemetry));
+            server.sendData(telemetry, sizeof(telemetry));
 
             /*
             // Get incoming motor values
             double motorvals[4] = {};
-            telemServer.receiveData(motorvals, sizeof(motorvals));
+            server.receiveData(motorvals, sizeof(motorvals));
 
             printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
-                    time,
-                    motorvals[0],
-                    motorvals[1],
-                    motorvals[2],
-                    motorvals[3],
-                    dynamics.vstate.z);
+            time,
+            motorvals[0],
+            motorvals[1],
+            motorvals[2],
+            motorvals[3],
+            dynamics.vstate.z);
 
             float dvals[4] = {motorvals[0], motorvals[1], motorvals[2], motorvals[3]};
 
             // Update dynamics with motor values
             dynamics.update(dvals, DELTA_T);
-            */
+             */
 
             // Set AGL to arbitrary positive value to avoid kinematic trick
             dynamics.setAgl(1);
@@ -131,7 +132,7 @@ int main(int argc, char ** argv)
 
         else {
 
-            connected = telemServer.acceptConnection();
+            connected = server.acceptConnection();
 
         }
 

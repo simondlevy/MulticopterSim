@@ -13,11 +13,6 @@ import sys
 from time import sleep
 
 
-def _debug(msg):
-    print(msg)
-    sys.stdout.flush()
-
-
 class MulticopterClient(object):
 
     # See Bouabdallah (2004)
@@ -39,7 +34,7 @@ class MulticopterClient(object):
         self.host = host
         self.telem_port = telem_port
 
-        self.telem_sock = MulticopterClient._make_tcpsocket()
+        self.sock = MulticopterClient._make_tcpsocket()
 
         self.done = False
 
@@ -70,13 +65,15 @@ class MulticopterClient(object):
 
     def _run_thread(self):
 
-        self.telem_sock.connect((self.host, self.telem_port))
+        self.sock.connect((self.host, self.telem_port))
 
         while True:
 
             try:
-                telemetry_bytes, _ = self.telem_sock.recvfrom(8*17)
-            except Exception:
+                telemetry_bytes = self.sock.recv(8*17)
+
+            except Exception as e:
+                print('Exception: ' + str(e))
                 self.done = True
                 break
 
