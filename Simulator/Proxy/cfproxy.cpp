@@ -89,12 +89,16 @@ int main(int argc, char ** argv)
                 was_connected = true;
             }
 
+            static double fake_z;
+
+            fake_z += .001;
+
             const double telemetry[] = {
 
                 // vehicle state
-                99, /*dynamics.vstate.x,*/
+                dynamics.vstate.x,
                 dynamics.vstate.y,
-                dynamics.vstate.z,
+                fake_z /*dynamics.vstate.z*/ ,
                 dynamics.vstate.phi,
                 dynamics.vstate.theta,
                 dynamics.vstate.psi
