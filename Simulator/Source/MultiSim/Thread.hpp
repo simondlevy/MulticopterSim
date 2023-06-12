@@ -61,6 +61,16 @@ class FVehicleThread : public FRunnable {
                 float * motorValues,
                 const uint8_t motorCount) = 0;
 
+        void reportRates(void)
+        {
+            auto dt = FPlatformTime::Seconds()-_startTime;
+
+            sprintf_s(_message,
+                    "Dynamics=%3.3e Hz  PID=%3.3e",
+                    _dynamics_count/dt,
+                    _pid_count/dt);
+        }
+
     public:
 
         // Constructor, called main thread
@@ -91,15 +101,8 @@ class FVehicleThread : public FRunnable {
            delete _thread;
         }
 
-        virtual const char * getMessage(void)
+        const char * getMessage(void)
         {
-            auto dt = FPlatformTime::Seconds()-_startTime;
-
-            sprintf_s(_message,
-                    "Dynamics=%3.3e Hz  PID=%3.3e",
-                    _dynamics_count/dt,
-                    _pid_count/dt);
-
             return _message;
         }
 

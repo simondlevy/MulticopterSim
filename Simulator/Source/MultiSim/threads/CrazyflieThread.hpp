@@ -78,10 +78,15 @@ class FCrazyflieThread : public FVehicleThread {
                 if (_connected) {
 
                     float newjoyvals[4];
+
                     doComms(time, dynamics, motors, newjoyvals);
+
+                    reportRates();
                 }
 
                 else {
+
+                    sprintf_s(_message, "Waiting for client ...");
 
                     if (_telemServer->acceptConnection()) {
 
