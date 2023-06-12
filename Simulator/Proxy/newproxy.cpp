@@ -124,8 +124,8 @@ int main(int argc, char ** argv)
             delay(1e-4);
 
             // Get incoming motor values
-            double motorvals[4] = {};
-            // server.receiveData(motorvals, sizeof(motorvals));
+            float motorvals[4] = {};
+            server.receiveData(motorvals, sizeof(motorvals));
 
             printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
             time,

@@ -70,6 +70,12 @@ class MulticopterClient(object):
 
                 print('%6.6f' % telemetry[-1])
 
+                motorvals = self.getMotors(telemetry[0],     # time
+                                           telemetry[1:13],  # vehicle state
+                                           telemetry[13:])   # demands
+                self.sock.send(
+                        np.ndarray.tobytes(np.ndarray.astype(motorvals, np.float32)))
+
             except Exception as e:
                 print('Exception: ' + str(e))
                 self.done = True
