@@ -96,12 +96,22 @@ int main(int argc, char ** argv)
                 get_current_time() - tstart,
 
                 dynamics.vstate.x,
-                dynamics.vstate.dx
+                dynamics.vstate.dx,
+                dynamics.vstate.y,
+                dynamics.vstate.dy,
+                dynamics.vstate.z,
+                dynamics.vstate.dz,
+                dynamics.vstate.phi,
+                dynamics.vstate.dphi,
+                dynamics.vstate.theta,
+                dynamics.vstate.dtheta,
+                dynamics.vstate.psi,
+                dynamics.vstate.dpsi
             };
 
             server.sendData((void *)telemetry, sizeof(telemetry));
 
-            delay(1e-6);
+            delay(1e-1);
 
             /*
 
