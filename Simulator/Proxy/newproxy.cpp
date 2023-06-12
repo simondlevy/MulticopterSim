@@ -68,6 +68,13 @@ int main(int argc, char ** argv)
 
         if (connected) {
 
+            static bool first;
+
+            if (!first) {
+                printf("Connected\n");
+                first = true;
+            }
+
             // To be sent to client
             double telemetry[17] = {0};
 
@@ -97,6 +104,7 @@ int main(int argc, char ** argv)
             // Send telemetry data
             telemServer.sendData(telemetry, sizeof(telemetry));
 
+            /*
             // Get incoming motor values
             double motorvals[4] = {};
             telemServer.receiveData(motorvals, sizeof(motorvals));
@@ -113,6 +121,7 @@ int main(int argc, char ** argv)
 
             // Update dynamics with motor values
             dynamics.update(dvals, DELTA_T);
+            */
 
             // Set AGL to arbitrary positive value to avoid kinematic trick
             dynamics.setAgl(1);
