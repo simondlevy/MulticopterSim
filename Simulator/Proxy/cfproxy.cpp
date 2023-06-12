@@ -92,6 +92,12 @@ int main(int argc, char ** argv)
 
             server.sendData((void *)telemetry, sizeof(telemetry));
 
+            double sticks[4] = {};
+            server.receiveData(sticks, sizeof(sticks));
+
+            printf("t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f\n",
+                    sticks[0], sticks[1], sticks[2], sticks[3]);
+
             // Update dynamics with motor values
             // dynamics.update(motorvals, DELTA_T);
 
