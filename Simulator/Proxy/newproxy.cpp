@@ -83,8 +83,12 @@ int main(int argc, char ** argv)
                 first = true;
             }
 
-            double t = get_current_time() - tstart;
-            server.sendData(&t, sizeof(t));
+            double telemetry[1] = {
+
+                get_current_time() - tstart
+            };
+
+            server.sendData(telemetry, sizeof(telemetry));
 
             /*
             // To be sent to client

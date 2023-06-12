@@ -50,6 +50,7 @@ class MulticopterClient(object):
                 sleep(0)  # Yield to other thread
 
             except KeyboardInterrupt:
+                self.done = True
                 break
 
     def isDone(self):
@@ -60,7 +61,7 @@ class MulticopterClient(object):
 
         self.sock.connect((self.host, self.port))
 
-        while True:
+        while not self.done:
 
             try:
                 # telemetry_bytes = self.sock.recv(8*17)
