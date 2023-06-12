@@ -45,6 +45,13 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
     0.350   // l arm length [m]
 };
 
+static double get_current_time(void)
+{
+    struct timeval tv = {};
+    gettimeofday(&tv,NULL);
+    return tv.tv_sec + tv.tv_usec / 1e6;
+}
+
 int main(int argc, char ** argv)
 {
     TcpServerSocket server = TcpServerSocket(HOST, TELEM_PORT);
@@ -57,11 +64,12 @@ int main(int argc, char ** argv)
         QuadXBFDynamics(vparams, fparams, false); // no auto-land
 
     // Set up initial conditions
-    uint32_t time = 0;
     double rotation[3] = {0,0,0};
     dynamics.init(rotation);
 
     printf("Listening for client on %s:%d \n", HOST, TELEM_PORT);
+
+    auto tstart = get_current_time();
 
     // Loop forever, waiting for clients
     while (true) {
@@ -75,10 +83,8 @@ int main(int argc, char ** argv)
                 first = true;
             }
 
-            double t = (double)time;
+            double t = get_current_time() - tstart;
             server.sendData(&t, sizeof(t));
-
-            time++;
 
             /*
             // To be sent to client
@@ -131,8 +137,6 @@ int main(int argc, char ** argv)
 
             // Set AGL to arbitrary positive value to avoid kinematic trick
             dynamics.setAgl(1);
-
-            time += DELTA_T;
         }
 
         else {
