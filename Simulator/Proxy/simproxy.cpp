@@ -67,87 +67,83 @@ int main(int argc, char ** argv)
         }
     }
 
-    // Loop forever, waiting for clients
+    // Create sockets for telemetry out, motors in
+    UdpClientSocket telemClient =
+        UdpClientSocket(HOST, TELEM_PORT);
+    UdpServerSocket motorServer =
+        UdpServerSocket(MOTOR_PORT);
+
+    // Create one-way server for images out
+    TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
+
+    // Create quadcopter dynamics model
+    QuadXBFDynamics dynamics =
+        QuadXBFDynamics(vparams, fparams, false); // no auto-land
+
+    // Set up initial conditions
+    double time = 0;
+    double rotation[3] = {0,0,0};
+    dynamics.init(rotation);
+
+    // Open image socket's connection to host
+    imageSocket.openConnection();
+
+    // Loop forever, communicating with server
     while (true) {
 
-        // Create sockets for telemetry out, motors in
-        UdpClientSocket telemClient =
-            UdpClientSocket(HOST, TELEM_PORT);
-        UdpServerSocket motorServer =
-            UdpServerSocket(MOTOR_PORT);
+        // To be sent to client
+        double telemetry[17] = {0};
 
-        // Create one-way server for images out
-        TcpClientSocket imageSocket = TcpClientSocket(HOST, IMAGE_PORT);
+        // First value is time
+        telemetry[0] = time;
 
-        // Create quadcopter dynamics model
-        QuadXBFDynamics dynamics =
-            QuadXBFDynamics(vparams, fparams, false); // no auto-land
+        // Next 12 values are 12D state vector
+        telemetry[1] = dynamics.vstate.x;
+        telemetry[2] = dynamics.vstate.dx;
+        telemetry[3] = dynamics.vstate.y;
+        telemetry[4] = dynamics.vstate.dy;
+        telemetry[5] = dynamics.vstate.z;
+        telemetry[6] = dynamics.vstate.dz;
+        telemetry[7] = dynamics.vstate.phi;
+        telemetry[8] = dynamics.vstate.dphi;
+        telemetry[9] = dynamics.vstate.theta;
+        telemetry[10] = dynamics.vstate.dtheta;
+        telemetry[11] = dynamics.vstate.psi;
+        telemetry[12] = dynamics.vstate.dpsi;
 
-        // Set up initial conditions
-        double time = 0;
-        double rotation[3] = {0,0,0};
-        dynamics.init(rotation);
+        // Last four values are receiver demands
+        telemetry[13] = 0.1;
+        telemetry[14] = 0.2;
+        telemetry[15] = 0.3;
+        telemetry[16] = 0.4;
 
-        // Open image socket's connection to host
-        imageSocket.openConnection();
+        // Send telemetry data
+        telemClient.sendData(telemetry, sizeof(telemetry));
 
-        // Loop forever, communicating with server
-        while (true) {
+        // Send image data
+        // imageSocket.sendData(image, sizeof(image));
 
-            // To be sent to client
-            double telemetry[17] = {0};
+        // Get incoming motor values
+        float motorvals[4] = {};
+        motorServer.receiveData(motorvals, sizeof(motorvals));
 
-            // First value is time
-            telemetry[0] = time;
+        printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
+                time,
+                motorvals[0],
+                motorvals[1],
+                motorvals[2],
+                motorvals[3],
+                dynamics.vstate.z);
 
-            // Next 12 values are 12D state vector
-            telemetry[1] = dynamics.vstate.x;
-            telemetry[2] = dynamics.vstate.dx;
-            telemetry[3] = dynamics.vstate.y;
-            telemetry[4] = dynamics.vstate.dy;
-            telemetry[5] = dynamics.vstate.z;
-            telemetry[6] = dynamics.vstate.dz;
-            telemetry[7] = dynamics.vstate.phi;
-            telemetry[8] = dynamics.vstate.dphi;
-            telemetry[9] = dynamics.vstate.theta;
-            telemetry[10] = dynamics.vstate.dtheta;
-            telemetry[11] = dynamics.vstate.psi;
-            telemetry[12] = dynamics.vstate.dpsi;
+        // Update dynamics with motor values
+        dynamics.update(motorvals, DELTA_T);
 
-            // Last four values are receiver demands
-            telemetry[13] = 0.1;
-            telemetry[14] = 0.2;
-            telemetry[15] = 0.3;
-            telemetry[16] = 0.4;
+        // Set AGL to arbitrary positive value to avoid kinematic trick
+        dynamics.setAgl(1);
 
-            // Send telemetry data
-            telemClient.sendData(telemetry, sizeof(telemetry));
+        time += DELTA_T;
+    }
 
-            // Send image data
-            // imageSocket.sendData(image, sizeof(image));
-
-            // Get incoming motor values
-            float motorvals[4] = {};
-            motorServer.receiveData(motorvals, sizeof(motorvals));
-
-            printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
-                    time,
-                    motorvals[0],
-                    motorvals[1],
-                    motorvals[2],
-                    motorvals[3],
-                    dynamics.vstate.z);
-
-            // Update dynamics with motor values
-            dynamics.update(motorvals, DELTA_T);
-
-            // Set AGL to arbitrary positive value to avoid kinematic trick
-            dynamics.setAgl(1);
-
-            time += DELTA_T;
-        }
-
-    } // while (true)
 
     return 0;
 }
