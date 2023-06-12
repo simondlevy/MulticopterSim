@@ -68,7 +68,7 @@ class MulticopterClient(object):
 
                 telemetry = np.frombuffer(telemetry_bytes)
 
-                print(telemetry)
+                print('%6.6f' % telemetry[0])
 
             except Exception as e:
                 print('Exception: ' + str(e))

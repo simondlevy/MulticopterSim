@@ -101,7 +101,7 @@ int main(int argc, char ** argv)
 
             server.sendData((void *)telemetry, sizeof(telemetry));
 
-            delay(0.1);
+            delay(0.01);
 
             /*
 
