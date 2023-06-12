@@ -91,10 +91,12 @@ int main(int argc, char ** argv)
                 first = true;
             }
 
+            const double time = get_current_time() - tstart;
+
             const double telemetry[] = {
 
                 // time
-                get_current_time() - tstart,
+                time,
 
                 // vehicle state
                 dynamics.vstate.x,
@@ -121,20 +123,9 @@ int main(int argc, char ** argv)
 
             delay(1e-4);
 
-            /*
-
-            // Last four values are receiver demands
-            telemetry[13] = 0.1;
-            telemetry[14] = 0.2;
-            telemetry[15] = 0.3;
-            telemetry[16] = 0.4;
-
-            // Send telemetry data
-            server.sendData(telemetry, sizeof(telemetry));
-
             // Get incoming motor values
             double motorvals[4] = {};
-            server.receiveData(motorvals, sizeof(motorvals));
+            // server.receiveData(motorvals, sizeof(motorvals));
 
             printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
             time,
@@ -144,11 +135,15 @@ int main(int argc, char ** argv)
             motorvals[3],
             dynamics.vstate.z);
 
-            float dvals[4] = {motorvals[0], motorvals[1], motorvals[2], motorvals[3]};
+            float dvals[] = {
+                (float)motorvals[0],
+                (float)motorvals[1],
+                (float)motorvals[2],
+                (float)motorvals[3]
+            };
 
             // Update dynamics with motor values
             dynamics.update(dvals, DELTA_T);
-             */
 
             // Set AGL to arbitrary positive value to avoid kinematic trick
             dynamics.setAgl(1);
