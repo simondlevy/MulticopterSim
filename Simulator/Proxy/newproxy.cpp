@@ -47,8 +47,7 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
 
 int main(int argc, char ** argv)
 {
-    // Use non-blocking socket
-    TcpServerSocket server = TcpServerSocket(HOST, TELEM_PORT, true);
+    TcpServerSocket server = TcpServerSocket(HOST, TELEM_PORT);
 
     // Guards socket comms
     bool connected = false;
@@ -58,7 +57,7 @@ int main(int argc, char ** argv)
         QuadXBFDynamics(vparams, fparams, false); // no auto-land
 
     // Set up initial conditions
-    double time = 0;
+    uint32_t time = 0;
     double rotation[3] = {0,0,0};
     dynamics.init(rotation);
 
@@ -76,11 +75,18 @@ int main(int argc, char ** argv)
                 first = true;
             }
 
+            double t = (double)time;
+            server.sendData(&t, sizeof(t));
+
+            time++;
+
+            /*
             // To be sent to client
             double telemetry[17] = {0};
 
             // First value is time
-            telemetry[0] = time;
+            telemetry[0] = (double)time;
+            time++;
 
             // Next 12 values are 12D state vector
             telemetry[1] = dynamics.vstate.x;
@@ -105,7 +111,6 @@ int main(int argc, char ** argv)
             // Send telemetry data
             server.sendData(telemetry, sizeof(telemetry));
 
-            /*
             // Get incoming motor values
             double motorvals[4] = {};
             server.receiveData(motorvals, sizeof(motorvals));

@@ -29,10 +29,10 @@ class MulticopterClient(object):
      STATE_PSI,
      STATE_DPSI) = range(12)
 
-    def __init__(self, host='127.0.0.1', telem_port=5000):
+    def __init__(self, host='127.0.0.1', port=5000):
 
         self.host = host
-        self.telem_port = telem_port
+        self.port = port
 
         self.sock = MulticopterClient._make_tcpsocket()
 
@@ -52,44 +52,28 @@ class MulticopterClient(object):
             except KeyboardInterrupt:
                 break
 
-    def getMotors(self, time, state, demands):
-        '''
-        Override for your application.  Should return motor values in interval
-        [0,1].  This default implementation just keeps flying upward.
-        '''
-        return np.array([0.6, 0.6, 0.6, 0.6])
-
     def isDone(self):
 
         return self.done
 
     def _run_thread(self):
 
-        self.sock.connect((self.host, self.telem_port))
+        self.sock.connect((self.host, self.port))
 
         while True:
 
             try:
-                telemetry_bytes = self.sock.recv(8*17)
+                # telemetry_bytes = self.sock.recv(8*17)
+                telemetry_bytes = self.sock.recv(8); 
+
+                telemetry = np.frombuffer(telemetry_bytes)
+
+                print(telemetry)
 
             except Exception as e:
                 print('Exception: ' + str(e))
                 self.done = True
                 break
-
-            telemetry = np.frombuffer(telemetry_bytes)
-
-            # Server sends -1 for time when done
-            t = telemetry[0]
-            if t < 0:
-                self.done = True
-                break
-
-            print(t)
-
-            motorvals = self.getMotors(t,                # time
-                                       telemetry[1:13],  # vehicle state
-                                       telemetry[13:])   # demands
 
             sleep(0)  # yield to other thread
 
