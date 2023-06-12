@@ -52,6 +52,14 @@ static double get_current_time(void)
     return tv.tv_sec + tv.tv_usec / 1e6;
 }
 
+static void delay(const double t)
+{
+    auto tstart = get_current_time();
+
+    while (get_current_time() - tstart < t) {
+    }
+}
+
 int main(int argc, char ** argv)
 {
     TcpServerSocket server = TcpServerSocket(HOST, TELEM_PORT);
@@ -83,14 +91,17 @@ int main(int argc, char ** argv)
                 first = true;
             }
 
-            double telemetry[2] = {
+            const double telemetry[] = {
 
                 get_current_time() - tstart,
 
-                dynamics.vstate.x
+                dynamics.vstate.x,
+                dynamics.vstate.dx
             };
 
-            server.sendData(telemetry, sizeof(telemetry));
+            server.sendData((void *)telemetry, sizeof(telemetry));
+
+            delay(0.1);
 
             /*
 
