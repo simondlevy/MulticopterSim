@@ -62,7 +62,7 @@ static void delay(const double t)
 
 int main(int argc, char ** argv)
 {
-    TcpServerSocket server = TcpServerSocket(HOST, TELEM_PORT);
+    TcpServerSocket server = TcpServerSocket(HOST, TELEM_PORT, true);
 
     // Guards socket comms
     bool connected = false;
@@ -83,13 +83,6 @@ int main(int argc, char ** argv)
     while (true) {
 
         if (connected) {
-
-            static bool first;
-
-            if (!first) {
-                printf("Connected\n");
-                first = true;
-            }
 
             const double time = get_current_time() - tstart;
 
