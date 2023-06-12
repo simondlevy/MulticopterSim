@@ -1,5 +1,5 @@
 /*
-   Proxy for testing MulticopterSim socket comms
+   Proxy for testing MulticopterSim CrazyFlie comms
 
    Copyright(C) 2019 Simon D.Levy
 
@@ -84,6 +84,15 @@ int main(int argc, char ** argv)
 
         if (connected) {
 
+            static bool was_connected;
+            if (!was_connected) {
+                printf("Connected");
+                was_connected = true;
+            }
+
+            static uint32_t count;
+            printf("%d\n", count++);
+
             const double time = get_current_time() - tstart;
 
             const double telemetry[] = {
@@ -116,6 +125,8 @@ int main(int argc, char ** argv)
 
             delay(1e-4);
 
+            /*
+
             // Get incoming motor values
             float motorvals[4] = {};
             server.receiveData(motorvals, sizeof(motorvals));
@@ -140,6 +151,7 @@ int main(int argc, char ** argv)
 
             // Set AGL to arbitrary positive value to avoid kinematic trick
             dynamics.setAgl(1);
+            */
         }
 
         else {
