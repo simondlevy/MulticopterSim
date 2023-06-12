@@ -86,12 +86,10 @@ int main(int argc, char ** argv)
 
             static bool was_connected;
             if (!was_connected) {
-                printf("Connected");
+                printf("Connected\n");
+                fflush(stdout);
                 was_connected = true;
             }
-
-            static uint32_t count;
-            printf("%d\n", count++);
 
             const double time = get_current_time() - tstart;
 
@@ -123,7 +121,7 @@ int main(int argc, char ** argv)
 
             server.sendData((void *)telemetry, sizeof(telemetry));
 
-            delay(1e-4);
+            delay(1e-2);
 
             /*
 
