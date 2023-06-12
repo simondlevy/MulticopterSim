@@ -83,23 +83,18 @@ int main(int argc, char ** argv)
                 first = true;
             }
 
-            double telemetry[1] = {
+            double telemetry[2] = {
 
-                get_current_time() - tstart
+                get_current_time() - tstart,
+
+                dynamics.vstate.x
             };
 
             server.sendData(telemetry, sizeof(telemetry));
 
             /*
-            // To be sent to client
-            double telemetry[17] = {0};
-
-            // First value is time
-            telemetry[0] = (double)time;
-            time++;
 
             // Next 12 values are 12D state vector
-            telemetry[1] = dynamics.vstate.x;
             telemetry[2] = dynamics.vstate.dx;
             telemetry[3] = dynamics.vstate.y;
             telemetry[4] = dynamics.vstate.dy;

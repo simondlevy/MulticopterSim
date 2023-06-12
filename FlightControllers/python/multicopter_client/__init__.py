@@ -64,8 +64,7 @@ class MulticopterClient(object):
         while not self.done:
 
             try:
-                # telemetry_bytes = self.sock.recv(8*17)
-                telemetry_bytes = self.sock.recv(8); 
+                telemetry_bytes = self.sock.recv(8 * 2); 
 
                 telemetry = np.frombuffer(telemetry_bytes)
 
