@@ -45,20 +45,6 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
     0.350   // l arm length [m]
 };
 
-static double get_current_time(void)
-{
-    struct timeval tv = {};
-    gettimeofday(&tv,NULL);
-    return tv.tv_sec + tv.tv_usec / 1e6;
-}
-
-static void delay(const double t)
-{
-    auto tstart = get_current_time();
-
-    while (get_current_time() - tstart < t) {
-    }
-}
 
 int main(int argc, char ** argv)
 {
@@ -106,33 +92,9 @@ int main(int argc, char ** argv)
 
             server.sendData((void *)telemetry, sizeof(telemetry));
 
-            delay(1e-4);
-
-            /*
-
-            // Get incoming stick values
-            float motorvals[4] = {};
-            server.receiveData(motorvals, sizeof(motorvals));
-
-            printf("t=%05f   m=%f %f %f %f  z=%+3.3f\n", 
-            time,
-            motorvals[0],
-            motorvals[1],
-            motorvals[2],
-            motorvals[3],
-            dynamics.vstate.z);
-
-            float dvals[] = {
-                (float)motorvals[0],
-                (float)motorvals[1],
-                (float)motorvals[2],
-                (float)motorvals[3]
-            };
-
             // Update dynamics with motor values
-            dynamics.update(dvals, DELTA_T);
+            // dynamics.update(motorvals, DELTA_T);
 
-            */
 
             // Set AGL to arbitrary positive value to avoid kinematic trick
             dynamics.setAgl(1);
