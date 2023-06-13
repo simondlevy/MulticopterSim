@@ -130,11 +130,10 @@ class FCrazyflieThread : public FVehicleThread {
                 // FVehicleThread::getMessage(message);
 
                 mysprintf(message, 
-                        "t=%f  r=%+3.3f  p=%+3.3f  y=%+3.3f",
-                        _cfjoyvals[0],
-                        _cfjoyvals[1],
-                        _cfjoyvals[2],
-                        _cfjoyvals[3]);
+                        "x=%f  y=%+3.3f  z=%+3.3f",
+                        _pose[0],
+                        _pose[1],
+                        _pose[2]);
             }
             else {
                 mysprintf(message, "Waiting for client ...");
