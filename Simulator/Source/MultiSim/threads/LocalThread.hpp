@@ -12,7 +12,20 @@
 
 #include "../Thread.hpp"
 
+// Un-comment for Hackflight support
+// #define HACKFLIGHT
+
+#ifdef HACKFLIGHT
+#include "hackflight.hpp"
+#endif
+
 class FLocalThread : public FVehicleThread {
+
+#ifdef HACKFLIGHT
+    private:
+
+        HackflightForSim _hf;
+#endif
 
     protected:
 
@@ -23,9 +36,13 @@ class FLocalThread : public FVehicleThread {
                 float * motorValues,
                 const uint8_t motorCount) override
         {
+#ifdef HACKFLIGHT
+            _hf.getMotors(time, joyvals, dynamics, motorValues, motorCount);
+#else
             for (auto k=0; k<motorCount; ++k) {
                 motorValues[k] = 0.6;
             }
+#endif
         }
 
     public:
