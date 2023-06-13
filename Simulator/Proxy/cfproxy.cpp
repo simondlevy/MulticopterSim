@@ -77,10 +77,6 @@ int main(int argc, char ** argv)
                 was_connected = true;
             }
 
-            static double fake_z;
-
-            fake_z += .001;
-
             const double pose[] = {
 
                 dynamics.vstate.x,

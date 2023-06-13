@@ -19,8 +19,9 @@ class FCrazyflieThread : public FVehicleThread {
 
     private: 
 
-        // Time : State
-        double _telemetry[13] = {};
+        // Time constant
+        static constexpr double DELTA_T = 0.001;
+        uint32_t _count;
 
         // Socket comms
         TcpServerSocket * _server = NULL;
@@ -28,9 +29,7 @@ class FCrazyflieThread : public FVehicleThread {
         // Guards socket comms
         bool _connected = false;
 
-        double _sticks[4] = {};
-
-        HackflightForSim _hf;
+        HackflightForSim hf;
 
     protected:
 
@@ -44,27 +43,51 @@ class FCrazyflieThread : public FVehicleThread {
                 const uint8_t motorCount) override
         {
 
+            (void)time;
+            (void)joyvals;
+            (void)motorCount;
+
             if (_server) {
 
                 if (_connected) {
 
-                    const double telemetry[] = {
+                    static bool was_connected;
+                    if (!was_connected) {
+                        printf("Connected\n");
+                        fflush(stdout);
+                        was_connected = true;
+                    }
 
-                        // vehicle state
+                    const double pose[] = {
+
                         dynamics_in->vstate.x,
                         dynamics_in->vstate.y,
-                        dynamics_in->vstate.z,
+                        -dynamics_in->vstate.z,  // NED => ENU
                         dynamics_in->vstate.phi,
                         dynamics_in->vstate.theta,
                         dynamics_in->vstate.psi
                     };
 
-                    _server->sendData((void *)telemetry, sizeof(telemetry));
+                    _server->sendData((void *)pose, sizeof(pose));
 
-                    _server->receiveData(_sticks, sizeof(_sticks));
+                    double cfjoyvals[4] = {};
+                    _server->receiveData(cfjoyvals, sizeof(cfjoyvals));
 
-                    _hf.getMotors(
-                            time, joyvals, dynamics_in, motors_out, motorCount);
+                    float sticks[4] = {
+                        (float)cfjoyvals[0] / 80,
+                        (float)cfjoyvals[1] / 31,
+                        (float)cfjoyvals[2] / 31,
+                        (float)cfjoyvals[3] / 200,
+                    };
+
+                    // Run flight controller to get motor values
+                    float motors[4] = {};
+                    hf.step(
+                            _count++ * DELTA_T,
+                            sticks,
+                            dynamics_in,
+                            motors_out,
+                            4);
                 }
 
                 else {

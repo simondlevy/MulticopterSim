@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "dynamics/fixedpitch/QuadXBF.hpp"
+#include "../dynamics/fixedpitch/QuadXBF.hpp"
 
 // Supported by  ../MultiSim.Build.cs
 #include <core/pid.h>
