@@ -85,7 +85,7 @@ int main(int argc, char ** argv)
 
                 dynamics.vstate.x,
                 dynamics.vstate.y,
-                dynamics.vstate.z,
+                -dynamics.vstate.z,  // NED => ENU
                 dynamics.vstate.phi,
                 dynamics.vstate.theta,
                 dynamics.vstate.psi
@@ -103,8 +103,11 @@ int main(int argc, char ** argv)
                 (float)joyvals[3] / 200,
             };
 
-            printf("t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f\n",
+            printf("t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f | ",
                     sticks[0], sticks[1], sticks[2], sticks[3]);
+
+            printf("x=%3.3f  y=%+3.3f  z=%+3.3f  ph=%+3.3f  th=%+3.3f  ps=%+3.3f\n",
+                    pose[0], pose[1], pose[2], pose[3], pose[4], pose[5]);
 
             // Run flight controller to get motor values
             float motors[4] = {};
