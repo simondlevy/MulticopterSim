@@ -25,6 +25,8 @@ class FCrazyflieThread : public FVehicleThread {
         // Guards socket comms
         bool _connected = false;
 
+        double _sticks[4] = {};
+
     protected:
 
         virtual void getMotors(
@@ -58,15 +60,7 @@ class FCrazyflieThread : public FVehicleThread {
 
                     _server->sendData((void *)telemetry, sizeof(telemetry));
 
-                    double sticks[4] = {};
-                    _server->receiveData(sticks, sizeof(sticks));
-
-                    /*
-                    sprintf_s(_message,
-                            "t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f\n",
-                            sticks[0], sticks[1], sticks[2], sticks[3]);*/
-
-                    // reportRates();
+                    _server->receiveData(_sticks, sizeof(_sticks));
                 }
 
                 else {
@@ -107,10 +101,12 @@ class FCrazyflieThread : public FVehicleThread {
         virtual void getMessage(char * message) override 
         {
             if (_connected) {
-                strcpy(message, "Connected");
+                sprintf(message, 
+                        "t=%3.3f  r=%+3.3f  p=%+3.f  y=%+3.3f",
+                        _sticks[0], _sticks[1], _sticks[2], _sticks[3]);
             }
             else {
-                strcpy(message, "Waiting for client ...");
+                sprintf(message, "Waiting for client ...");
             }
         }
 
