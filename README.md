@@ -3,7 +3,7 @@
 
 # About
 
-MulticopterSim is a simple multicopter flight simulator using Unreal Engine.  It runs on Windows, using UDP
+MulticopterSim is a simple multicopter flight simulator using Unreal Engine.  It runs on Windows, using 
 sockets to communicate stick demands, vehicle state and camera images with flight-control programs
 written in various languages.  This approach supports rapid prototyping of flight-control
 algorithms without having to recompile the simulator itself.
