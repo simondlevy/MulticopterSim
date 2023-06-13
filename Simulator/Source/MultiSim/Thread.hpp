@@ -52,24 +52,12 @@ class FVehicleThread : public FRunnable {
 
     protected:
 
-        char _message[100] = "";
-
         virtual void getMotors(
                 const double time,
                 const float * joyvals,
                 const Dynamics * dynamics,
                 float * motorValues,
                 const uint8_t motorCount) = 0;
-
-        void reportRates(void)
-        {
-            auto dt = FPlatformTime::Seconds()-_startTime;
-
-            sprintf_s(_message,
-                    "Dynamics=%3.3e Hz  PID=%3.3e",
-                    _dynamics_count/dt,
-                    _pid_count/dt);
-        }
 
     public:
 
@@ -101,9 +89,16 @@ class FVehicleThread : public FRunnable {
            delete _thread;
         }
 
-        const char * getMessage(void)
+        // Called by Vehicle::tick()
+        virtual void getMessage(char * message)
         {
-            return _message;
+            auto dt = FPlatformTime::Seconds()-_startTime;
+
+            sprintf_s(message,
+                    sizeof(message),
+                    "Dynamics=%3.3e Hz  PID=%3.3e",
+                    _dynamics_count/dt,
+                    _pid_count/dt);
         }
 
         // Called by VehiclePawn::Tick() method to get actuator value for

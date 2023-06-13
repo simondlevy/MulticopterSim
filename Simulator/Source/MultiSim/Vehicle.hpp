@@ -26,10 +26,6 @@
 #include "Thread.hpp"
 #include "Camera.hpp"
 
-#include <stdio.h>
-
-#define SPRINTF sprintf_s
-
 #include "StaticMesh.h"
 
 class Vehicle {
@@ -482,10 +478,9 @@ class Vehicle {
         void tick(float DeltaSeconds)
         {
             // Report any message from thread
-            const char * msg = _thread->getMessage();
-            if (*msg) {
-                debugline("%s", msg);
-            }
+            char message[100] = {};
+            _thread->getMessage(message);
+            debugline("%s", message);
 
             // Quit on ESCape key
             if (hitKey(EKeys::Escape)) {

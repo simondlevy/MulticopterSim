@@ -1,7 +1,7 @@
 /*
    Proxy for testing MulticopterSim CrazyFlie comms
 
-   Copyright(C) 2019 Simon D.Levy
+   Copyright(C) 2023 Simon D.Levy
 
    MIT License
  */
