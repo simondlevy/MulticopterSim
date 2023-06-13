@@ -10,6 +10,13 @@
 
 #include "../Thread.hpp"
 
+// XXX Fake up flight control with Hackflight for now
+// #define HACKFLIGHT
+
+#ifdef HACKFLIGHT
+#include "hackflight.hpp"
+#endif
+
 #include "../sockets/TcpServerSocket.hpp"
 
 class FCrazyflieThread : public FVehicleThread {
@@ -27,6 +34,10 @@ class FCrazyflieThread : public FVehicleThread {
 
         double _sticks[4] = {};
 
+#ifdef HACKFLIGHT
+        HackflightForSim _hf;
+#endif
+
     protected:
 
         virtual void getMotors(
@@ -38,24 +49,17 @@ class FCrazyflieThread : public FVehicleThread {
                 const float * joyvals,
                 const uint8_t motorCount) override
         {
-            (void)time;
-            (void)joyvals;    // use joystick from Crazyflie client
-            (void)motorCount; // Crayflie has four motors
 
             if (_server) {
 
                 if (_connected) {
-
-                    static double fake_z;
-
-                    fake_z += .001;
 
                     const double telemetry[] = {
 
                         // vehicle state
                         dynamics_in->vstate.x,
                         dynamics_in->vstate.y,
-                        fake_z /*dynamics_in->vstate.z*/ ,
+                        dynamics_in->vstate.z,
                         dynamics_in->vstate.phi,
                         dynamics_in->vstate.theta,
                         dynamics_in->vstate.psi
@@ -64,6 +68,15 @@ class FCrazyflieThread : public FVehicleThread {
                     _server->sendData((void *)telemetry, sizeof(telemetry));
 
                     _server->receiveData(_sticks, sizeof(_sticks));
+
+#ifdef HACKFLIGHT
+                    _hf.getMotors(
+                            time, joyvals, dynamics_in, motors_out, motorCount);
+#else
+                    for (auto k=0; k<motorCount; ++k) {
+                        motors_out[k] = 0.6;
+                    }
+#endif
                 }
 
                 else {
@@ -104,7 +117,7 @@ class FCrazyflieThread : public FVehicleThread {
         virtual void getMessage(char * message) override 
         {
             if (_connected) {
-                
+
                 FVehicleThread::getMessage(message);
             }
             else {
