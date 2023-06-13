@@ -62,12 +62,21 @@ class FCrazyflieThread : public FVehicleThread {
                         was_connected = true;
                     }
 
+                    /*
                     _pose[0] = dynamics_in->vstate.x;
                     _pose[1] = dynamics_in->vstate.y;
                     _pose[2] = -dynamics_in->vstate.z;  // NED => ENU
                     _pose[3] = dynamics_in->vstate.phi;
                     _pose[4] = dynamics_in->vstate.theta;
                     _pose[5] = dynamics_in->vstate.psi;
+                    */
+
+                    _pose[0] = 1;
+                    _pose[1] = 2;
+                    _pose[2] = 3;
+                    _pose[3] = 4;
+                    _pose[4] = 5;
+                    _pose[5] = 6;
 
                     _server->sendData((void *)_pose, sizeof(_pose));
 
@@ -131,9 +140,7 @@ class FCrazyflieThread : public FVehicleThread {
 
                 mysprintf(message, 
                         "x=%f  y=%+3.3f  z=%+3.3f",
-                        _pose[0],
-                        _pose[1],
-                        _pose[2]);
+                        _pose[0], _pose[1], _pose[2]);
             }
             else {
                 mysprintf(message, "Waiting for client ...");
