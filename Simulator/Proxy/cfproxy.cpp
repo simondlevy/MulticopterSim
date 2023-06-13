@@ -106,16 +106,9 @@ int main(int argc, char ** argv)
             printf("t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f\n",
                     sticks[0], sticks[1], sticks[2], sticks[3]);
 
-            float motors[4] = {0.6, 0.6, 0.6, 0.6};
-
             // Run flight controller to get motor values
-            /*
-            hf.getMotors(
-                    k * DELTA_T,
-                    joyvals, 
-                    dynamics, 
-                    motors, 
-                    4);*/
+            float motors[4] = {};
+            hf.step( k * DELTA_T, sticks, &dynamics, motors, 4);
 
             // Update dynamics with motor values
             dynamics.update(motors, DELTA_T);

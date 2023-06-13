@@ -80,7 +80,7 @@ class HackflightForSim {
 
     public:
 
-        virtual void getMotors(
+        virtual void step(
                 const double time,
                 const float * sticks,
                 const Dynamics * dynamics,
