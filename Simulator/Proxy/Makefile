@@ -12,12 +12,15 @@ all: $(ALL)
 
 CFLAGS = -Wall -std=c++11
 
+HFDIR = $(HOME)/Documents/Arduino/libraries/Hackflight/src/
+MSDIR = ../Source/MultiSim/
+
 all: $(ALL)
 
 simproxy: simproxy.o 
 	g++ -o simproxy simproxy.o 
 
-simproxy.o: simproxy.cpp ../Source/MultiSim/Dynamics.hpp
+simproxy.o: simproxy.cpp $(MSDIR)/Dynamics.hpp
 	g++ $(CFLAGS) -c simproxy.cpp
 
 run: simproxy
@@ -26,8 +29,8 @@ run: simproxy
 cfproxy: cfproxy.o 
 	g++ -o cfproxy cfproxy.o 
 
-cfproxy.o: cfproxy.cpp ../Source/MultiSim/Dynamics.hpp
-	g++ $(CFLAGS) -c cfproxy.cpp
+cfproxy.o: cfproxy.cpp $(MSDIR)/Dynamics.hpp
+	g++ $(CFLAGS) -I$(HFDIR) -I$(MSDIR) -c cfproxy.cpp
 
 cfrun: cfproxy
 	./cfproxy

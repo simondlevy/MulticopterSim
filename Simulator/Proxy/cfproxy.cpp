@@ -9,10 +9,11 @@
 #include <stdio.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <sys/time.h>
 
 #include "../Source/MultiSim/sockets/TcpServerSocket.hpp"
-#include "../Source/MultiSim/dynamics/fixedpitch/QuadXBF.hpp"
+
+// XXX Fake up flight control with Hackflight for now
+#include "../Source/MultiSim/threads/hackflight.hpp"
 
 // Comms
 static const char * HOST = "127.0.0.1"; // localhost
@@ -45,7 +46,6 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
     0.350   // l arm length [m]
 };
 
-
 int main(int argc, char ** argv)
 {
     TcpServerSocket server = TcpServerSocket(HOST, TELEM_PORT, true);
@@ -63,8 +63,10 @@ int main(int argc, char ** argv)
 
     printf("Listening for client on %s:%d \n", HOST, TELEM_PORT);
 
+    HackflightForSim hf = {};
+
     // Loop forever, waiting for clients
-    while (true) {
+    for (uint32_t k=0; ; k++) {
 
         if (connected) {
 
@@ -79,28 +81,44 @@ int main(int argc, char ** argv)
 
             fake_z += .001;
 
-            const double telemetry[] = {
+            const double pose[] = {
 
-                // vehicle state
                 dynamics.vstate.x,
                 dynamics.vstate.y,
-                fake_z /*dynamics.vstate.z*/ ,
+                dynamics.vstate.z,
                 dynamics.vstate.phi,
                 dynamics.vstate.theta,
                 dynamics.vstate.psi
             };
 
-            server.sendData((void *)telemetry, sizeof(telemetry));
+            server.sendData((void *)pose, sizeof(pose));
 
-            double sticks[4] = {};
-            server.receiveData(sticks, sizeof(sticks));
+            double joyvals[4] = {};
+            server.receiveData(joyvals, sizeof(joyvals));
+
+            float sticks[4] = {
+                (float)joyvals[0] / 80,
+                (float)joyvals[1] / 31,
+                (float)joyvals[2] / 31,
+                (float)joyvals[3] / 200,
+            };
 
             printf("t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f\n",
                     sticks[0], sticks[1], sticks[2], sticks[3]);
 
-            // Update dynamics with motor values
-            // dynamics.update(motorvals, DELTA_T);
+            float motors[4] = {0.6, 0.6, 0.6, 0.6};
 
+            // Run flight controller to get motor values
+            /*
+            hf.getMotors(
+                    k * DELTA_T,
+                    joyvals, 
+                    dynamics, 
+                    motors, 
+                    4);*/
+
+            // Update dynamics with motor values
+            dynamics.update(motors, DELTA_T);
 
             // Set AGL to arbitrary positive value to avoid kinematic trick
             dynamics.setAgl(1);

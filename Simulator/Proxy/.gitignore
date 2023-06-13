@@ -1,4 +1,4 @@
 sockets/
-proxy
+simproxy
 cfproxy
 *.o

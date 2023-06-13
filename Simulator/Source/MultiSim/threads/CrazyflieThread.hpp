@@ -11,11 +11,7 @@
 #include "../Thread.hpp"
 
 // XXX Fake up flight control with Hackflight for now
-// #define HACKFLIGHT
-
-#ifdef HACKFLIGHT
 #include "hackflight.hpp"
-#endif
 
 #include "../sockets/TcpServerSocket.hpp"
 
@@ -34,9 +30,7 @@ class FCrazyflieThread : public FVehicleThread {
 
         double _sticks[4] = {};
 
-#ifdef HACKFLIGHT
         HackflightForSim _hf;
-#endif
 
     protected:
 
@@ -69,14 +63,8 @@ class FCrazyflieThread : public FVehicleThread {
 
                     _server->receiveData(_sticks, sizeof(_sticks));
 
-#ifdef HACKFLIGHT
                     _hf.getMotors(
                             time, joyvals, dynamics_in, motors_out, motorCount);
-#else
-                    for (auto k=0; k<motorCount; ++k) {
-                        motors_out[k] = 0.6;
-                    }
-#endif
                 }
 
                 else {

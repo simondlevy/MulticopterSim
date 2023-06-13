@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../Thread.hpp"
+#include "dynamics/fixedpitch/QuadXBF.hpp"
 
 // Supported by  ../MultiSim.Build.cs
 #include <core/pid.h>
@@ -82,7 +82,7 @@ class HackflightForSim {
 
         virtual void getMotors(
                 const double time,
-                const float * joyvals,
+                const float * sticks,
                 const Dynamics * dynamics,
                 float * motorValues,
                 const uint8_t motorCount)
@@ -91,7 +91,7 @@ class HackflightForSim {
             const auto usec = (uint32_t)(time * 1e6);
 
             // Build stick demands
-            auto demands = demands_from_joystick(joyvals);
+            auto demands = demands_from_joystick(sticks);
 
             // Build vehicle state 
             auto vstate = state_from_dynamics(dynamics);
