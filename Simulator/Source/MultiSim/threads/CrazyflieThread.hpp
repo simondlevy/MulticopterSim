@@ -31,6 +31,10 @@ class FCrazyflieThread : public FVehicleThread {
 
         HackflightForSim hf;
 
+        double _pose[6];
+        float _sticks[4];
+        double _cfjoyvals[4];
+
     protected:
 
         virtual void getMotors(
@@ -58,33 +62,27 @@ class FCrazyflieThread : public FVehicleThread {
                         was_connected = true;
                     }
 
-                    const double pose[] = {
+                    _pose[0] = dynamics_in->vstate.x;
+                    _pose[1] = dynamics_in->vstate.y;
+                    _pose[2] = -dynamics_in->vstate.z;  // NED => ENU
+                    _pose[3] = dynamics_in->vstate.phi;
+                    _pose[4] = dynamics_in->vstate.theta;
+                    _pose[5] = dynamics_in->vstate.psi;
 
-                        dynamics_in->vstate.x,
-                        dynamics_in->vstate.y,
-                        -dynamics_in->vstate.z,  // NED => ENU
-                        dynamics_in->vstate.phi,
-                        dynamics_in->vstate.theta,
-                        dynamics_in->vstate.psi
-                    };
+                    _server->sendData((void *)_pose, sizeof(_pose));
 
-                    _server->sendData((void *)pose, sizeof(pose));
+                    _server->receiveData(_cfjoyvals, sizeof(_cfjoyvals));
 
-                    double cfjoyvals[4] = {};
-                    _server->receiveData(cfjoyvals, sizeof(cfjoyvals));
-
-                    float sticks[4] = {
-                        (float)cfjoyvals[0] / 80,
-                        (float)cfjoyvals[1] / 31,
-                        (float)cfjoyvals[2] / 31,
-                        (float)cfjoyvals[3] / 200,
-                    };
+                    _sticks[0] = (float)_cfjoyvals[0] / 80;
+                    _sticks[1] = (float)_cfjoyvals[1] / 31;
+                    _sticks[2] = (float)_cfjoyvals[2] / 31;
+                    _sticks[3] = (float)_cfjoyvals[3] / 200;
 
                     // Run flight controller to get motor values
                     float motors[4] = {};
                     hf.step(
                             _count++ * DELTA_T,
-                            sticks,
+                            _sticks,
                             dynamics_in,
                             motors_out,
                             4);
@@ -129,7 +127,14 @@ class FCrazyflieThread : public FVehicleThread {
         {
             if (_connected) {
 
-                FVehicleThread::getMessage(message);
+                // FVehicleThread::getMessage(message);
+
+                mysprintf(message, 
+                        "t=%f  r=%+3.3f  p=%+3.3f  y=%+3.3f",
+                        _cfjoyvals[0],
+                        _cfjoyvals[1],
+                        _cfjoyvals[2],
+                        _cfjoyvals[3]);
             }
             else {
                 mysprintf(message, "Waiting for client ...");
