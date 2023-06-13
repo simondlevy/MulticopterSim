@@ -30,14 +30,17 @@ class FCrazyflieThread : public FVehicleThread {
     protected:
 
         virtual void getMotors(
+
+                const Dynamics * dynamics_in,
+                float * motors_out,
+
                 const double time,
                 const float * joyvals,
-                const Dynamics * dynamics,
-                float * motors,
                 const uint8_t motorCount) override
         {
-            (void)joyvals;
-            (void)motorCount;
+            (void)time;
+            (void)joyvals;    // use joystick from Crazyflie client
+            (void)motorCount; // Crayflie has four motors
 
             if (_server) {
 
@@ -50,12 +53,12 @@ class FCrazyflieThread : public FVehicleThread {
                     const double telemetry[] = {
 
                         // vehicle state
-                        dynamics->vstate.x,
-                        dynamics->vstate.y,
-                        fake_z /*dynamics->vstate.z*/ ,
-                        dynamics->vstate.phi,
-                        dynamics->vstate.theta,
-                        dynamics->vstate.psi
+                        dynamics_in->vstate.x,
+                        dynamics_in->vstate.y,
+                        fake_z /*dynamics_in->vstate.z*/ ,
+                        dynamics_in->vstate.phi,
+                        dynamics_in->vstate.theta,
+                        dynamics_in->vstate.psi
                     };
 
                     _server->sendData((void *)telemetry, sizeof(telemetry));

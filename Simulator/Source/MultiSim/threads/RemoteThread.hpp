@@ -30,10 +30,11 @@ class FRemoteThread : public FVehicleThread {
     protected:
 
         virtual void getMotors(
+                const Dynamics * dynamics_in,
+                float * motors_out,
+
                 const double time,
                 const float * joyvals,
-                const Dynamics * dynamics,
-                float * motors,
                 const uint8_t motorCount) override
         {
             // Avoid null-pointer exceptions at startup, freeze after control
@@ -46,18 +47,18 @@ class FRemoteThread : public FVehicleThread {
             _telemetry[0] = time;
 
             // Next output values are state
-            _telemetry[1] = dynamics->vstate.x;
-            _telemetry[2] = dynamics->vstate.dx;
-            _telemetry[3] = dynamics->vstate.y;
-            _telemetry[4] = dynamics->vstate.dy;
-            _telemetry[5] = dynamics->vstate.z;
-            _telemetry[6] = dynamics->vstate.dz;
-            _telemetry[7] = dynamics->vstate.phi;
-            _telemetry[8] = dynamics->vstate.dphi;
-            _telemetry[9] = dynamics->vstate.theta;
-            _telemetry[10] = dynamics->vstate.dtheta;
-            _telemetry[11] = dynamics->vstate.psi;
-            _telemetry[12] = dynamics->vstate.dpsi;
+            _telemetry[1] = dynamics_in->vstate.x;
+            _telemetry[2] = dynamics_in->vstate.dx;
+            _telemetry[3] = dynamics_in->vstate.y;
+            _telemetry[4] = dynamics_in->vstate.dy;
+            _telemetry[5] = dynamics_in->vstate.z;
+            _telemetry[6] = dynamics_in->vstate.dz;
+            _telemetry[7] = dynamics_in->vstate.phi;
+            _telemetry[8] = dynamics_in->vstate.dphi;
+            _telemetry[9] = dynamics_in->vstate.theta;
+            _telemetry[10] = dynamics_in->vstate.dtheta;
+            _telemetry[11] = dynamics_in->vstate.psi;
+            _telemetry[12] = dynamics_in->vstate.dpsi;
 
             // Remaining output values are stick demands
             _telemetry[13] = (double)joyvals[0];
@@ -69,11 +70,11 @@ class FRemoteThread : public FVehicleThread {
             _telemClient->sendData(_telemetry, sizeof(_telemetry));
 
             // Get motor values from server
-            _motorServer->receiveData(motors, sizeof(float) * motorCount);
+            _motorServer->receiveData(motors_out, sizeof(float) * motorCount);
 
             // Server sends a -1 to halt
-            if (motors[0] == -1) {
-                motors[0] = 0;
+            if (motors_out[0] == -1) {
+                motors_out[0] = 0;
                 _connected = false;
                 return;
             }

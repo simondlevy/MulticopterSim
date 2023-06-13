@@ -53,10 +53,12 @@ class FVehicleThread : public FRunnable {
     protected:
 
         virtual void getMotors(
+
+                const Dynamics * dynamics_in,
+                float * motors_out,
+
                 const double time,
                 const float * joyvals,
-                const Dynamics * dynamics,
-                float * motorValues,
                 const uint8_t motorCount) = 0;
 
     public:
@@ -150,10 +152,10 @@ class FVehicleThread : public FRunnable {
                     float joyvals[10] = {};
                     _joystick->poll(joyvals);
                     this->getMotors(
-                            currentTime,
-                            joyvals, 
                             _dynamics,
                             _actuatorValues,
+                            currentTime,
+                            joyvals, 
                             _actuatorCount);
 
                     _pid_clock = 0;

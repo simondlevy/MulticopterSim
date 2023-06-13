@@ -30,17 +30,19 @@ class FLocalThread : public FVehicleThread {
     protected:
 
         virtual void getMotors(
+
+                const Dynamics * dynamics_in,
+                float * motors_out,
+
                 const double time,
                 const float * joyvals,
-                const Dynamics * dynamics,
-                float * motorValues,
                 const uint8_t motorCount) override
         {
 #ifdef HACKFLIGHT
-            _hf.getMotors(time, joyvals, dynamics, motorValues, motorCount);
+            _hf.getMotors(time, joyvals, dynamics_in, motors_out, motorCount);
 #else
             for (auto k=0; k<motorCount; ++k) {
-                motorValues[k] = 0.6;
+                motors_out[k] = 0.6;
             }
 #endif
         }
