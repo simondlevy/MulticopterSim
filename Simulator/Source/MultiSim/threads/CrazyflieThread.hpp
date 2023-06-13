@@ -101,12 +101,11 @@ class FCrazyflieThread : public FVehicleThread {
         virtual void getMessage(char * message) override 
         {
             if (_connected) {
-                sprintf(message, 
-                        "t=%3.3f  r=%+3.3f  p=%+3.f  y=%+3.3f",
-                        _sticks[0], _sticks[1], _sticks[2], _sticks[3]);
+                
+                FVehicleThread::getMessage(message);
             }
             else {
-                sprintf(message, "Waiting for client ...");
+                mysprintf(message, "Waiting for client ...");
             }
         }
 

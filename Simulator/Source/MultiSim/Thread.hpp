@@ -94,8 +94,7 @@ class FVehicleThread : public FRunnable {
         {
             auto dt = FPlatformTime::Seconds()-_startTime;
 
-            sprintf_s(message,
-                    sizeof(message),
+            mysprintf(message,
                     "Dynamics=%3.3e Hz  PID=%3.3e",
                     _dynamics_count/dt,
                     _pid_count/dt);
