@@ -35,7 +35,7 @@ class FVehicleThread : public FRunnable {
         uint32_t _pid_count;
 
         // Relates dynamics update to PID update
-        uint32_t _pid_period;
+        uint32_t _controller_period;
 
         float _actuatorValues[100] = {}; 
 
@@ -54,13 +54,13 @@ class FVehicleThread : public FRunnable {
     public:
 
         // Constructor, called main thread
-        FVehicleThread(Dynamics * dynamics, const uint32_t pidPeriod=100)
+        FVehicleThread(Dynamics * dynamics, const uint32_t controllerPeriod=100)
         {
             _thread =
                 FRunnableThread::Create(
                         this, TEXT("FThreadedManager"), 0, TPri_BelowNormal);
 
-            _pid_period = pidPeriod;
+            _controller_period = controllerPeriod;
 
             _startTime = FPlatformTime::Seconds();
 
@@ -83,7 +83,7 @@ class FVehicleThread : public FRunnable {
             auto dt = FPlatformTime::Seconds()-_startTime;
 
             mysprintf(message,
-                    "Dynamics=%3.3e Hz  PID=%3.3e",
+                    "Dynamics=%3.3e Hz  Control=%3.3e Hz",
                     _dynamics_count/dt,
                     _pid_count/dt);
         }
@@ -123,27 +123,31 @@ class FVehicleThread : public FRunnable {
 
             while (_running) {
 
-                // For computing deltaT
-                static double _previousTime;
+                // For computing dynamics deltaT
+                static double _previousDynamicsTime;
+
+                // For computing dynamics deltaT
+                static double _previousControllerTime;
 
                 // Get a high-fidelity current time value from the OS
                 double currentTime = FPlatformTime::Seconds() - _startTime;
 
                 // Update dynamics
-                _dynamics->update(_actuatorValues, currentTime - _previousTime);
+                _dynamics->update(_actuatorValues, 
+                        currentTime - _previousDynamicsTime);
 
                 // PID controller: periodically update the vehicle thread with
                 // the dynamics state, getting back the actuator values
-                static uint32_t _pid_clock;
-                _pid_clock ++;
-                if (_pid_clock ==  _pid_period) {
+                static uint32_t _controllerClock;
+                _controllerClock ++;
+                if (_controllerClock == _controller_period) {
                     getActuators(
                             _dynamics, 
                             currentTime,
                             _actuatorCount,
                             _actuatorValues);
 
-                    _pid_clock = 0;
+                    _controllerClock = 0;
 
                     // Increment count for FPS reporting
                     _pid_count++;
@@ -152,7 +156,7 @@ class FVehicleThread : public FRunnable {
                 _dynamics_count++;
 
                 // Track previous time for deltaT
-                _previousTime = currentTime;
+                _previousDynamicsTime = currentTime;
             }
 
             return 0;

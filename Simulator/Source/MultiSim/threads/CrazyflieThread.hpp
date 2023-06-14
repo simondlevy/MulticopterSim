@@ -115,9 +115,7 @@ class FCrazyflieThread : public FVehicleThread {
         {
             if (_connected) {
 
-                // FVehicleThread::getMessage(message);
-
-                mysprintf(message, "z=%+3.3f", _pose[2]);
+                FVehicleThread::getMessage(message);
             }
             else {
                 mysprintf(message, "Listening for client on %s:%d", 
