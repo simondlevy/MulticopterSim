@@ -28,8 +28,8 @@ class FCrazyflieThread : public FVehicleThread {
 
         double _pose[6];
         float _sticks[4];
-        double _joyvals[4];
 
+        // For reporting
         char _host[100];
         uint16_t _port;
 
@@ -58,12 +58,13 @@ class FCrazyflieThread : public FVehicleThread {
 
                     _server->sendData((void *)_pose, sizeof(_pose));
 
-                    _server->receiveData(_joyvals, sizeof(_joyvals));
+                    double joyvals[4] = {};
+                    _server->receiveData(joyvals, sizeof(joyvals));
 
-                    _sticks[0] = (float)_joyvals[0] / 80;
-                    _sticks[1] = (float)_joyvals[1] / 31;
-                    _sticks[2] = (float)_joyvals[2] / 31;
-                    _sticks[3] = (float)_joyvals[3] / 200;
+                    _sticks[0] = (float)joyvals[0] / 80;
+                    _sticks[1] = (float)joyvals[1] / 31;
+                    _sticks[2] = (float)joyvals[2] / 31;
+                    _sticks[3] = (float)joyvals[3] / 200;
 
                     actuatorValues[0] = 0.6;
                     actuatorValues[1] = 0.6;

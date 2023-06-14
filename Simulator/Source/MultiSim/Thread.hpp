@@ -39,9 +39,6 @@ class FVehicleThread : public FRunnable {
 
         float _actuatorValues[100] = {}; 
 
-        // For computing deltaT
-        double _previousTime = 0;
-
         uint8_t _actuatorCount = 0;
 
         Dynamics * _dynamics = NULL;
@@ -73,8 +70,6 @@ class FVehicleThread : public FRunnable {
             _actuatorCount = dynamics->actuatorCount();
 
             _dynamics = dynamics;
-
-            _previousTime = 0;
         }
 
         ~FVehicleThread(void)
@@ -127,6 +122,9 @@ class FVehicleThread : public FRunnable {
             _running = true;
 
             while (_running) {
+
+                // For computing deltaT
+                static double _previousTime;
 
                 // Get a high-fidelity current time value from the OS
                 double currentTime = FPlatformTime::Seconds() - _startTime;
