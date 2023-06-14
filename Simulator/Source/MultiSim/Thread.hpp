@@ -25,18 +25,20 @@ class FVehicleThread : public FRunnable {
 
         FRunnableThread * _thread = NULL;
 
+        // Flags set by begin/end play
         bool _running = false;
 
         // Start-time offset so timing begins at zero
         double _startTime = 0;
 
         // For benchmarking
-        uint32_t _dynamics_count;
-        uint32_t _pid_count;
+        uint32_t _dynamicsCount;
+        uint32_t _pidCount;
 
         // Relates dynamics update to PID update
-        uint32_t _controller_period;
+        uint32_t _controllerPeriod;
 
+        // Set by controller; returned for animation
         float _actuatorValues[100] = {}; 
 
         uint8_t _actuatorCount = 0;
@@ -60,12 +62,12 @@ class FVehicleThread : public FRunnable {
                 FRunnableThread::Create(
                         this, TEXT("FThreadedManager"), 0, TPri_BelowNormal);
 
-            _controller_period = controllerPeriod;
+            _controllerPeriod = controllerPeriod;
 
             _startTime = FPlatformTime::Seconds();
 
-            _pid_count = 0;
-            _dynamics_count = 0;
+            _pidCount = 0;
+            _dynamicsCount = 0;
 
             _actuatorCount = dynamics->actuatorCount();
 
@@ -84,8 +86,8 @@ class FVehicleThread : public FRunnable {
 
             mysprintf(message,
                     "Dynamics=%3.3e Hz  Control=%3.3e Hz",
-                    _dynamics_count/dt,
-                    _pid_count/dt);
+                    _dynamicsCount/dt,
+                    _pidCount/dt);
         }
 
         // Called by VehiclePawn::Tick() method to get actuator value for
@@ -140,7 +142,7 @@ class FVehicleThread : public FRunnable {
                 // the dynamics state, getting back the actuator values
                 static uint32_t _controllerClock;
                 _controllerClock ++;
-                if (_controllerClock == _controller_period) {
+                if (_controllerClock == _controllerPeriod) {
                     getActuators(
                             _dynamics, 
                             currentTime,
@@ -150,10 +152,12 @@ class FVehicleThread : public FRunnable {
                     _controllerClock = 0;
 
                     // Increment count for FPS reporting
-                    _pid_count++;
+                    _pidCount++;
+
+                    _previousControllerTime = currentTime;
                 }
 
-                _dynamics_count++;
+                _dynamicsCount++;
 
                 // Track previous time for deltaT
                 _previousDynamicsTime = currentTime;
