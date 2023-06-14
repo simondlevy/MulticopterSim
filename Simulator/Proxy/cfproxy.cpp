@@ -11,13 +11,11 @@
 #include <stdint.h>
 
 #include "../Source/MultiSim/sockets/TcpServerSocket.hpp"
-
-// XXX Fake up flight control with Hackflight for now
-#include "../Source/MultiSim/threads/hackflight.hpp"
+#include "../Source/MultiSim/dynamics/fixedpitch/QuadXBF.hpp"
 
 // Comms
 static const char * HOST = "127.0.0.1"; // localhost
-static uint16_t  TELEM_PORT = 5000;
+static uint16_t  PORT = 5000;
 
 // Time constant
 static const double DELTA_T = 0.001;
@@ -48,7 +46,7 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
 
 int main(int argc, char ** argv)
 {
-    TcpServerSocket server = TcpServerSocket(HOST, TELEM_PORT, true);
+    TcpServerSocket server = TcpServerSocket(HOST, PORT, true);
 
     // Guards socket comms
     bool connected = false;
@@ -61,9 +59,7 @@ int main(int argc, char ** argv)
     double rotation[3] = {0,0,0};
     dynamics.init(rotation);
 
-    printf("Listening for client on %s:%d \n", HOST, TELEM_PORT);
-
-    HackflightForSim hf = {};
+    printf("Listening for client on %s:%d \n", HOST, PORT);
 
     // Loop forever, waiting for clients
     for (uint32_t k=0; ; k++) {
@@ -106,8 +102,7 @@ int main(int argc, char ** argv)
                     pose[0], pose[1], pose[2], pose[3], pose[4], pose[5]);
 
             // Run flight controller to get motor values
-            float motors[4] = {};
-            hf.step( k * DELTA_T, sticks, &dynamics, motors, 4);
+            float motors[4] = {0.6, 0.6, 0.6, 0.6};
 
             // Update dynamics with motor values
             dynamics.update(motors, DELTA_T);
