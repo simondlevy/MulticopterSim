@@ -56,7 +56,9 @@ class FVehicleThread : public FRunnable {
     public:
 
         // Constructor, called main thread
-        FVehicleThread(Dynamics * dynamics, const uint32_t controllerPeriod=100)
+        FVehicleThread(
+                Dynamics * dynamics,
+                const uint32_t controllerPeriod=100)
         {
             _thread =
                 FRunnableThread::Create(

@@ -16,9 +16,7 @@ class FCrazyflieThread : public FVehicleThread {
 
     private: 
 
-        // Time constant
-        static constexpr double DELTA_T = 0.001;
-        uint32_t _count;
+        const uint32_t PERIOD = 100000;)
 
         // Socket comms
         TcpServerSocket * _server = NULL;
@@ -88,9 +86,8 @@ class FCrazyflieThread : public FVehicleThread {
         FCrazyflieThread(
                 Dynamics * dynamics,
                 const char * host = "127.0.0.1",
-                const short port = 5000,
-                const uint32_t controllerPeriod=100000)
-            : FVehicleThread(dynamics, controllerPeriod)
+                const short port = 5000)
+            : FVehicleThread(dynamics, PERIOD)
         {
             // Use non-blocking socket
             _server = new TcpServerSocket(host, port, true);
