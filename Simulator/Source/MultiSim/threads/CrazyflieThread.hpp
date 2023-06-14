@@ -30,6 +30,9 @@ class FCrazyflieThread : public FVehicleThread {
         float _sticks[4];
         double _joyvals[4];
 
+        char _host[100];
+        uint16_t _port;
+
     protected:
 
         virtual void getActuators(
@@ -96,6 +99,9 @@ class FCrazyflieThread : public FVehicleThread {
             _server = new TcpServerSocket(host, port, true);
 
             _connected = false;
+
+            strcpy(_host, host);
+            _port = port;
         }
 
         ~FCrazyflieThread(void) 
@@ -117,7 +123,8 @@ class FCrazyflieThread : public FVehicleThread {
                 mysprintf(message, "z=%+3.3f", _pose[2]);
             }
             else {
-                strcpy(message, "Waiting for client");
+                mysprintf(message, "Listening for client on %s:%d", 
+                        _host, _port);
             }
         }
 
