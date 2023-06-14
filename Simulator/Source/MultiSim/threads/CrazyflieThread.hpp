@@ -28,7 +28,7 @@ class FCrazyflieThread : public FVehicleThread {
 
         double _pose[6];
         float _sticks[4];
-        double _cfjoyvals[4];
+        double _joyvals[4];
 
     protected:
 
@@ -46,13 +46,6 @@ class FCrazyflieThread : public FVehicleThread {
 
                 if (_connected) {
 
-                    static bool was_connected;
-                    if (!was_connected) {
-                        printf("Connected\n");
-                        fflush(stdout);
-                        was_connected = true;
-                    }
-
                     _pose[0] = dynamics->vstate.x;
                     _pose[1] = dynamics->vstate.y;
                     _pose[2] = -dynamics->vstate.z;  // NED => ENU
@@ -60,19 +53,23 @@ class FCrazyflieThread : public FVehicleThread {
                     _pose[4] = dynamics->vstate.theta;
                     _pose[5] = dynamics->vstate.psi;
 
+                    static double z;
+                    _pose[2] = z;
+                    z += .01;
+
                     _server->sendData((void *)_pose, sizeof(_pose));
 
-                    _server->receiveData(_cfjoyvals, sizeof(_cfjoyvals));
+                    _server->receiveData(_joyvals, sizeof(_joyvals));
 
-                    _sticks[0] = (float)_cfjoyvals[0] / 80;
-                    _sticks[1] = (float)_cfjoyvals[1] / 31;
-                    _sticks[2] = (float)_cfjoyvals[2] / 31;
-                    _sticks[3] = (float)_cfjoyvals[3] / 200;
+                    _sticks[0] = (float)_joyvals[0] / 80;
+                    _sticks[1] = (float)_joyvals[1] / 31;
+                    _sticks[2] = (float)_joyvals[2] / 31;
+                    _sticks[3] = (float)_joyvals[3] / 200;
 
-                    actuatorValues[0] = 0.6;
-                    actuatorValues[1] = 0.6;
-                    actuatorValues[2] = 0.6;
-                    actuatorValues[3] = 0.6;
+                    actuatorValues[0] = 0.0;
+                    actuatorValues[1] = 0.0;
+                    actuatorValues[2] = 0.0;
+                    actuatorValues[3] = 0.0;
                 }
 
                 else {
@@ -92,7 +89,7 @@ class FCrazyflieThread : public FVehicleThread {
                 Dynamics * dynamics,
                 const char * host = "127.0.0.1",
                 const short port = 5000,
-                const uint32_t pidPeriod=10000)
+                const uint32_t pidPeriod=100000)
             : FVehicleThread(dynamics, pidPeriod)
         {
             // Use non-blocking socket
@@ -117,12 +114,10 @@ class FCrazyflieThread : public FVehicleThread {
 
                 // FVehicleThread::getMessage(message);
 
-                mysprintf(message, 
-                        "x=%+3.3f  y=%+3.3f  z=%+3.3f",
-                        _pose[0], _pose[1], _pose[2]);
+                mysprintf(message, "z=%+3.3f", _pose[2]);
             }
             else {
-                mysprintf(message, "Waiting for client ...");
+                strcpy(message, "Waiting for client");
             }
         }
 

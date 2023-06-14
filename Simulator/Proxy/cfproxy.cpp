@@ -66,13 +66,6 @@ int main(int argc, char ** argv)
 
         if (connected) {
 
-            static bool was_connected;
-            if (!was_connected) {
-                printf("Connected\n");
-                fflush(stdout);
-                was_connected = true;
-            }
-
             const double pose[] = {
 
                 dynamics.vstate.x,
@@ -95,11 +88,7 @@ int main(int argc, char ** argv)
                 (float)joyvals[3] / 200,
             };
 
-            printf("t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f | ",
-                    sticks[0], sticks[1], sticks[2], sticks[3]);
-
-            printf("x=%3.3f  y=%+3.3f  z=%+3.3f  ph=%+3.3f  th=%+3.3f  ps=%+3.3f\n",
-                    pose[0], pose[1], pose[2], pose[3], pose[4], pose[5]);
+            printf("t=%3.3f  z=%+3.3f\n", sticks[0], pose[2]);
 
             // Run flight controller to get motor values
             float motors[4] = {0.6, 0.6, 0.6, 0.6};

@@ -138,7 +138,7 @@ class FVehicleThread : public FRunnable {
                 // the dynamics state, getting back the actuator values
                 static uint32_t _pid_clock;
                 _pid_clock ++;
-                if (true /*_pid_clock ==  _pid_period*/) {
+                if (_pid_clock ==  _pid_period) {
                     getActuators(
                             _dynamics, 
                             currentTime,
