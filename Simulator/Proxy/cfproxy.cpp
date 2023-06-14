@@ -75,31 +75,31 @@ int main(int argc, char ** argv)
                 was_connected = true;
             }
 
-            static double fake_z;
-
-            fake_z += .001;
-
-            const double telemetry[] = {
+            const double pose[] = {
 
                 // vehicle state
                 dynamics.vstate.x,
                 dynamics.vstate.y,
-                fake_z /*dynamics.vstate.z*/ ,
+                -dynamics.vstate.z,  // NED => ENU
                 dynamics.vstate.phi,
                 dynamics.vstate.theta,
                 dynamics.vstate.psi
             };
 
-            server.sendData((void *)telemetry, sizeof(telemetry));
+            server.sendData((void *)pose, sizeof(pose));
 
             double sticks[4] = {};
             server.receiveData(sticks, sizeof(sticks));
 
-            printf("t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f\n",
-                    sticks[0], sticks[1], sticks[2], sticks[3]);
+            /* printf("t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f\n",
+                    sticks[0], sticks[1], sticks[2], sticks[3]);*/
+
+            printf("z=%3.3f\n", pose[2]);
+
+            float motorvals[4] = {0.6, 0.6, 0.6, 0.6};
 
             // Update dynamics with motor values
-            // dynamics.update(motorvals, DELTA_T);
+            dynamics.update(motorvals, DELTA_T);
 
 
             // Set AGL to arbitrary positive value to avoid kinematic trick
