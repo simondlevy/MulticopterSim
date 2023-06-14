@@ -56,10 +56,6 @@ class FCrazyflieThread : public FVehicleThread {
                     _pose[4] = dynamics->vstate.theta;
                     _pose[5] = dynamics->vstate.psi;
 
-                    static double z;
-                    _pose[2] = z;
-                    z += .01;
-
                     _server->sendData((void *)_pose, sizeof(_pose));
 
                     _server->receiveData(_joyvals, sizeof(_joyvals));
@@ -69,10 +65,10 @@ class FCrazyflieThread : public FVehicleThread {
                     _sticks[2] = (float)_joyvals[2] / 31;
                     _sticks[3] = (float)_joyvals[3] / 200;
 
-                    actuatorValues[0] = 0.0;
-                    actuatorValues[1] = 0.0;
-                    actuatorValues[2] = 0.0;
-                    actuatorValues[3] = 0.0;
+                    actuatorValues[0] = 0.6;
+                    actuatorValues[1] = 0.6;
+                    actuatorValues[2] = 0.6;
+                    actuatorValues[3] = 0.6;
                 }
 
                 else {
