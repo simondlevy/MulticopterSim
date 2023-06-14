@@ -84,8 +84,8 @@ class HackflightForSim {
                 const double time,
                 const float * sticks,
                 const Dynamics * dynamics,
-                float * motorValues,
-                const uint8_t motorCount)
+                const uint8_t motorCount,
+                float * motorValues)
         {
             // Convert simulator time to microseconds
             const auto usec = (uint32_t)(time * 1e6);

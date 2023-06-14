@@ -3,7 +3,7 @@
  *
  * Gets instantiated in Vehicle::beginPlay()
  *
- * Subclasses should implement getMotors()
+ * Subclasses should implement getActuators()
  *
  * Copyright (C) 2023 Simon D. Levy
  *
@@ -15,7 +15,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "Dynamics.hpp"
-#include "Joystick.h"
 #include "Utils.hpp"
 
 #include "Runtime/Core/Public/HAL/Runnable.h"
@@ -27,9 +26,6 @@ class FVehicleThread : public FRunnable {
         FRunnableThread * _thread = NULL;
 
         bool _running = false;
-
-        // Joystick / game controller / RC transmitter
-        IJoystick * _joystick;
 
         // Start-time offset so timing begins at zero
         double _startTime = 0;
@@ -52,14 +48,11 @@ class FVehicleThread : public FRunnable {
 
     protected:
 
-        virtual void getMotors(
-
-                const Dynamics * dynamics_in,
-                float * motors_out,
-
-                const double time,
-                const float * joyvals,
-                const uint8_t motorCount) = 0;
+        virtual void getActuators(
+                const Dynamics * dynamics,
+                const double timeSec,
+                const uint8_t motorCount,
+                float * motors) = 0;
 
     public:
 
@@ -82,8 +75,6 @@ class FVehicleThread : public FRunnable {
             _dynamics = dynamics;
 
             _previousTime = 0;
-
-            _joystick = new IJoystick();
         }
 
         ~FVehicleThread(void)
@@ -141,22 +132,18 @@ class FVehicleThread : public FRunnable {
                 double currentTime = FPlatformTime::Seconds() - _startTime;
 
                 // Update dynamics
-                _dynamics->update(
-                        _actuatorValues, currentTime - _previousTime);
+                _dynamics->update(_actuatorValues, currentTime - _previousTime);
 
                 // PID controller: periodically update the vehicle thread with
                 // the dynamics state, getting back the actuator values
                 static uint32_t _pid_clock;
                 _pid_clock ++;
                 if (_pid_clock ==  _pid_period) {
-                    float joyvals[10] = {};
-                    _joystick->poll(joyvals);
-                    this->getMotors(
-                            _dynamics,
-                            _actuatorValues,
+                    getActuators(
+                            _dynamics, 
                             currentTime,
-                            joyvals, 
-                            _actuatorCount);
+                            _actuatorCount,
+                            _actuatorValues);
 
                     _pid_clock = 0;
 

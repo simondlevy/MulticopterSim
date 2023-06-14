@@ -10,9 +10,6 @@
 
 #include "../Thread.hpp"
 
-// XXX Fake up flight control with Hackflight for now
-#include "hackflight.hpp"
-
 #include "../sockets/TcpServerSocket.hpp"
 
 class FCrazyflieThread : public FVehicleThread {
@@ -29,27 +26,21 @@ class FCrazyflieThread : public FVehicleThread {
         // Guards socket comms
         bool _connected = false;
 
-        HackflightForSim hf;
-
         double _pose[6];
         float _sticks[4];
         double _cfjoyvals[4];
 
     protected:
 
-        virtual void getMotors(
-
-                const Dynamics * dynamics_in,
-                float * motors_out,
-
-                const double time,
-                const float * joyvals,
-                const uint8_t motorCount) override
+        virtual void getActuators(
+                const Dynamics * dynamics,
+                const double timeSec,
+                const uint8_t actuatorCount,
+                float * actuatorValues) override
         {
 
-            (void)time;
-            (void)joyvals;
-            (void)motorCount;
+            (void)timeSec;
+            (void)actuatorCount;
 
             if (_server) {
 
@@ -62,12 +53,12 @@ class FCrazyflieThread : public FVehicleThread {
                         was_connected = true;
                     }
 
-                    _pose[0] = dynamics_in->vstate.x;
-                    _pose[1] = dynamics_in->vstate.y;
-                    _pose[2] = -dynamics_in->vstate.z;  // NED => ENU
-                    _pose[3] = dynamics_in->vstate.phi;
-                    _pose[4] = dynamics_in->vstate.theta;
-                    _pose[5] = dynamics_in->vstate.psi;
+                    _pose[0] = dynamics->vstate.x;
+                    _pose[1] = dynamics->vstate.y;
+                    _pose[2] = -dynamics->vstate.z;  // NED => ENU
+                    _pose[3] = dynamics->vstate.phi;
+                    _pose[4] = dynamics->vstate.theta;
+                    _pose[5] = dynamics->vstate.psi;
 
                     _server->sendData((void *)_pose, sizeof(_pose));
 
@@ -78,14 +69,10 @@ class FCrazyflieThread : public FVehicleThread {
                     _sticks[2] = (float)_cfjoyvals[2] / 31;
                     _sticks[3] = (float)_cfjoyvals[3] / 200;
 
-                    // Run flight controller to get motor values
-                    float motors[4] = {};
-                    hf.step(
-                            _count++ * DELTA_T,
-                            _sticks,
-                            dynamics_in,
-                            motors_out,
-                            4);
+                    actuatorValues[0] = 0.6;
+                    actuatorValues[1] = 0.6;
+                    actuatorValues[2] = 0.6;
+                    actuatorValues[3] = 0.6;
                 }
 
                 else {

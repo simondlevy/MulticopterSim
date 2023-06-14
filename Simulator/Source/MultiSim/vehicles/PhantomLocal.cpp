@@ -8,7 +8,7 @@
 
 #include "PhantomLocal.h"
 
-#include "../threads/LocalThread.hpp"
+#include "../threads/local_control/LocalControlThread.hpp"
 
 APhantomLocal::APhantomLocal()
 {
@@ -18,7 +18,7 @@ APhantomLocal::APhantomLocal()
 // Called when the game starts or when spawned
 void APhantomLocal::BeginPlay()
 {
-    vehicle.beginPlay(new FLocalThread(&dynamics));
+    vehicle.beginPlay(new FLocalControlThread(&dynamics));
 
     Super::BeginPlay();
 }

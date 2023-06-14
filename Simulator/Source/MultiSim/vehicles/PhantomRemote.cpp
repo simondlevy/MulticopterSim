@@ -7,7 +7,7 @@
  */
 
 #include "PhantomRemote.h"
-#include "../threads/RemoteThread.hpp"
+#include "../threads/remote_control/RemoteControlThread.hpp"
 
 APhantomRemote::APhantomRemote()
 {
@@ -20,7 +20,7 @@ APhantomRemote::APhantomRemote()
 // Called when the game starts or when spawned
 void APhantomRemote::BeginPlay()
 {
-    vehicle.beginPlay(new FRemoteThread(&dynamics));
+    vehicle.beginPlay(new FRemoteControlThread(&dynamics));
 
     Super::BeginPlay();
 }
