@@ -60,6 +60,8 @@ class FCrazyflieThread : public FVehicleThread {
         char _host[100];
         uint16_t _port;
 
+        bool _airborne;
+
     protected:
 
         virtual void getActuators(
@@ -85,23 +87,31 @@ class FCrazyflieThread : public FVehicleThread {
                     _pose[4] = vstate.theta;
                     _pose[5] = vstate.psi;
 
-                    _server->sendData((void *)_pose, sizeof(_pose));
+                    static uint32_t clock;
 
-                    double joyvals[4] = {};
-                    _server->receiveData(joyvals, sizeof(joyvals));
+                    if (clock % 1000 == 0) {
 
-                    _sticks[0] = (float)joyvals[0] / 80;
-                    _sticks[1] = (float)joyvals[1] / 31;
-                    _sticks[2] = (float)joyvals[2] / 31;
-                    _sticks[3] = (float)joyvals[3] / 200;
+                        clock = 0;
 
-                    static bool airborne;
+                        _server->sendData((void *)_pose, sizeof(_pose));
 
-                    if (_sticks[0] > THROTTLE_THRESHOLD) {
-                        airborne = true;
+                        double joyvals[4] = {};
+                        _server->receiveData(joyvals, sizeof(joyvals));
+
+                        _sticks[0] = (float)joyvals[0] / 80;
+                        _sticks[1] = (float)joyvals[1] / 31;
+                        _sticks[2] = (float)joyvals[2] / 31;
+                        _sticks[3] = (float)joyvals[3] / 200;
+
                     }
 
-                    const auto throttle = airborne ? 
+                    clock++;
+
+                    if (_sticks[0] > THROTTLE_THRESHOLD) {
+                        _airborne = true;
+                    }
+
+                    const auto throttle = _airborne ? 
                         getThrottle(-vstate.z, -vstate.dz) : 
                         0;
 
@@ -129,7 +139,7 @@ class FCrazyflieThread : public FVehicleThread {
                 Dynamics * dynamics,
                 const char * host = "127.0.0.1",
                 const short port = 5000,
-                const uint32_t controlPeriod=100000)
+                const uint32_t controlPeriod=100)
 
             : FVehicleThread(dynamics, controlPeriod)
             {
@@ -140,6 +150,8 @@ class FCrazyflieThread : public FVehicleThread {
 
                 strcpy(_host, host);
                 _port = port;
+
+                _airborne = false;
             }
 
         ~FCrazyflieThread(void) 
