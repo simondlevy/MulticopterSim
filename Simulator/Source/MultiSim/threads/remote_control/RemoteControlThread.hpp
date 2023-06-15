@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include "../Thread.hpp"
+#include "../LocalJoystickThread.hpp"
 
 #include "../sockets/UdpClientSocket.hpp"
 #include "../sockets/UdpServerSocket.hpp"
 
-class FRemoteThread : public FVehicleThread {
+class FRemoteControlThread : public FLocalJoystickThread {
 
     private:
 
@@ -29,13 +29,13 @@ class FRemoteThread : public FVehicleThread {
 
     protected:
 
-        virtual void getMotors(
-                const Dynamics * dynamics_in,
-                float * motors_out,
+        virtual void getActuators(
 
-                const double time,
+                const Dynamics * dynamics,
+                const double timeSec,
                 const float * joyvals,
-                const uint8_t motorCount) override
+                const uint8_t actuatorCount,
+                float * actuatorValues) override
         {
             // Avoid null-pointer exceptions at startup, freeze after control
             // program halts
@@ -44,21 +44,21 @@ class FRemoteThread : public FVehicleThread {
             }
 
             // First output value is time
-            _telemetry[0] = time;
+            _telemetry[0] = timeSec;
 
             // Next output values are state
-            _telemetry[1] = dynamics_in->vstate.x;
-            _telemetry[2] = dynamics_in->vstate.dx;
-            _telemetry[3] = dynamics_in->vstate.y;
-            _telemetry[4] = dynamics_in->vstate.dy;
-            _telemetry[5] = dynamics_in->vstate.z;
-            _telemetry[6] = dynamics_in->vstate.dz;
-            _telemetry[7] = dynamics_in->vstate.phi;
-            _telemetry[8] = dynamics_in->vstate.dphi;
-            _telemetry[9] = dynamics_in->vstate.theta;
-            _telemetry[10] = dynamics_in->vstate.dtheta;
-            _telemetry[11] = dynamics_in->vstate.psi;
-            _telemetry[12] = dynamics_in->vstate.dpsi;
+            _telemetry[1] = dynamics->vstate.x;
+            _telemetry[2] = dynamics->vstate.dx;
+            _telemetry[3] = dynamics->vstate.y;
+            _telemetry[4] = dynamics->vstate.dy;
+            _telemetry[5] = dynamics->vstate.z;
+            _telemetry[6] = dynamics->vstate.dz;
+            _telemetry[7] = dynamics->vstate.phi;
+            _telemetry[8] = dynamics->vstate.dphi;
+            _telemetry[9] = dynamics->vstate.theta;
+            _telemetry[10] = dynamics->vstate.dtheta;
+            _telemetry[11] = dynamics->vstate.psi;
+            _telemetry[12] = dynamics->vstate.dpsi;
 
             // Remaining output values are stick demands
             _telemetry[13] = (double)joyvals[0];
@@ -70,11 +70,12 @@ class FRemoteThread : public FVehicleThread {
             _telemClient->sendData(_telemetry, sizeof(_telemetry));
 
             // Get motor values from server
-            _motorServer->receiveData(motors_out, sizeof(float) * motorCount);
+            _motorServer->receiveData(
+                    actuatorValues, sizeof(float) * actuatorCount);
 
             // Server sends a -1 to halt
-            if (motors_out[0] == -1) {
-                motors_out[0] = 0;
+            if (actuatorValues[0] == -1) {
+                actuatorValues[0] = 0;
                 _connected = false;
                 return;
             }
@@ -83,13 +84,13 @@ class FRemoteThread : public FVehicleThread {
     public:
 
         // Constructor, called main thread
-        FRemoteThread(
+        FRemoteControlThread(
                 Dynamics * dynamics,
                 const char * host="127.0.0.1",
                 const short motorPort=5000,
                 const short telemPort=5001)
 
-            : FVehicleThread(dynamics)
+            : FLocalJoystickThread(dynamics)
         {
             _telemClient = new UdpClientSocket(host, telemPort);
             _motorServer = new UdpServerSocket(motorPort);
@@ -97,7 +98,7 @@ class FRemoteThread : public FVehicleThread {
             _connected = true;
         }
 
-        ~FRemoteThread(void) 
+        ~FRemoteControlThread(void) 
         {
             // Send a bogus time value to tell remote server we're done
             _telemetry[0] = -1;
@@ -110,4 +111,4 @@ class FRemoteThread : public FVehicleThread {
             UdpServerSocket::free(_motorServer);
         }
 
- }; // class FRemoteThread
+ }; // class FRemoteControlThread

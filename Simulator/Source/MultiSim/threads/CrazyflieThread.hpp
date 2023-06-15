@@ -10,21 +10,11 @@
 
 #include "../Thread.hpp"
 
-// XXX Fake up flight control with Hackflight for now
-// #define HACKFLIGHT
-
-#ifdef HACKFLIGHT
-#include "hackflight.hpp"
-#endif
-
 #include "../sockets/TcpServerSocket.hpp"
 
 class FCrazyflieThread : public FVehicleThread {
 
     private: 
-
-        // Time : State
-        double _telemetry[13] = {};
 
         // Socket comms
         TcpServerSocket * _server = NULL;
@@ -32,51 +22,50 @@ class FCrazyflieThread : public FVehicleThread {
         // Guards socket comms
         bool _connected = false;
 
-        double _sticks[4] = {};
+        double _pose[6];
+        float _sticks[4];
 
-#ifdef HACKFLIGHT
-        HackflightForSim _hf;
-#endif
+        // For reporting
+        char _host[100];
+        uint16_t _port;
 
     protected:
 
-        virtual void getMotors(
-
-                const Dynamics * dynamics_in,
-                float * motors_out,
-
-                const double time,
-                const float * joyvals,
-                const uint8_t motorCount) override
+        virtual void getActuators(
+                const Dynamics * dynamics,
+                const double timeSec,
+                const uint8_t actuatorCount,
+                float * actuatorValues) override
         {
+
+            (void)timeSec;
+            (void)actuatorCount;
 
             if (_server) {
 
                 if (_connected) {
 
-                    const double telemetry[] = {
+                    _pose[0] = dynamics->vstate.x;
+                    _pose[1] = dynamics->vstate.y;
+                    _pose[2] = -dynamics->vstate.z;  // NED => ENU
+                    _pose[3] = dynamics->vstate.phi;
+                    _pose[4] = dynamics->vstate.theta;
+                    _pose[5] = dynamics->vstate.psi;
 
-                        // vehicle state
-                        dynamics_in->vstate.x,
-                        dynamics_in->vstate.y,
-                        dynamics_in->vstate.z,
-                        dynamics_in->vstate.phi,
-                        dynamics_in->vstate.theta,
-                        dynamics_in->vstate.psi
-                    };
+                    _server->sendData((void *)_pose, sizeof(_pose));
 
-                    _server->sendData((void *)telemetry, sizeof(telemetry));
+                    double joyvals[4] = {};
+                    _server->receiveData(joyvals, sizeof(joyvals));
 
-                    _server->receiveData(_sticks, sizeof(_sticks));
+                    _sticks[0] = (float)joyvals[0] / 80;
+                    _sticks[1] = (float)joyvals[1] / 31;
+                    _sticks[2] = (float)joyvals[2] / 31;
+                    _sticks[3] = (float)joyvals[3] / 200;
 
-#ifdef HACKFLIGHT
-                    _hf.getMotors(
-                            time, joyvals, dynamics_in, motors_out, motorCount);
-#else
-                    for (auto k=0; k<motorCount; ++k) {
-                        motors_out[k] = 0.6;
-                    }
-#endif
+                    actuatorValues[0] = 0.6;
+                    actuatorValues[1] = 0.6;
+                    actuatorValues[2] = 0.6;
+                    actuatorValues[3] = 0.6;
                 }
 
                 else {
@@ -95,13 +84,18 @@ class FCrazyflieThread : public FVehicleThread {
         FCrazyflieThread(
                 Dynamics * dynamics,
                 const char * host = "127.0.0.1",
-                const short port = 5000)
-            : FVehicleThread(dynamics)
+                const short port = 5000,
+                const uint32_t controlPeriod=100000)
+
+            : FVehicleThread(dynamics, controlPeriod)
         {
             // Use non-blocking socket
             _server = new TcpServerSocket(host, port, true);
 
             _connected = false;
+
+            strcpy(_host, host);
+            _port = port;
         }
 
         ~FCrazyflieThread(void) 
@@ -121,7 +115,8 @@ class FCrazyflieThread : public FVehicleThread {
                 FVehicleThread::getMessage(message);
             }
             else {
-                mysprintf(message, "Waiting for client ...");
+                mysprintf(message, "Listening for client on %s:%d", 
+                        _host, _port);
             }
         }
 

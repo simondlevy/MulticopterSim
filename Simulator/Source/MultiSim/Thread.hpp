@@ -3,7 +3,7 @@
  *
  * Gets instantiated in Vehicle::beginPlay()
  *
- * Subclasses should implement getMotors()
+ * Subclasses should implement getActuators()
  *
  * Copyright (C) 2023 Simon D. Levy
  *
@@ -15,7 +15,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "Dynamics.hpp"
-#include "Joystick.h"
 #include "Utils.hpp"
 
 #include "Runtime/Core/Public/HAL/Runnable.h"
@@ -26,25 +25,21 @@ class FVehicleThread : public FRunnable {
 
         FRunnableThread * _thread = NULL;
 
+        // Flags set by begin/end play
         bool _running = false;
-
-        // Joystick / game controller / RC transmitter
-        IJoystick * _joystick;
 
         // Start-time offset so timing begins at zero
         double _startTime = 0;
 
         // For benchmarking
-        uint32_t _dynamics_count;
-        uint32_t _pid_count;
+        uint32_t _dynamicsCount;
+        uint32_t _pidCount;
 
         // Relates dynamics update to PID update
-        uint32_t _pid_period;
+        uint32_t _controllerPeriod;
 
+        // Set by controller; returned for animation
         float _actuatorValues[100] = {}; 
-
-        // For computing deltaT
-        double _previousTime = 0;
 
         uint8_t _actuatorCount = 0;
 
@@ -52,38 +47,31 @@ class FVehicleThread : public FRunnable {
 
     protected:
 
-        virtual void getMotors(
-
-                const Dynamics * dynamics_in,
-                float * motors_out,
-
-                const double time,
-                const float * joyvals,
-                const uint8_t motorCount) = 0;
+        virtual void getActuators(
+                const Dynamics * dynamics,
+                const double timeSec,
+                const uint8_t motorCount,
+                float * motors) = 0;
 
     public:
 
         // Constructor, called main thread
-        FVehicleThread(Dynamics * dynamics, const uint32_t pidPeriod=100)
+        FVehicleThread(Dynamics * dynamics, const uint32_t controllerPeriod)
         {
             _thread =
                 FRunnableThread::Create(
                         this, TEXT("FThreadedManager"), 0, TPri_BelowNormal);
 
-            _pid_period = pidPeriod;
+            _controllerPeriod = controllerPeriod;
 
             _startTime = FPlatformTime::Seconds();
 
-            _pid_count = 0;
-            _dynamics_count = 0;
+            _pidCount = 0;
+            _dynamicsCount = 0;
 
             _actuatorCount = dynamics->actuatorCount();
 
             _dynamics = dynamics;
-
-            _previousTime = 0;
-
-            _joystick = new IJoystick();
         }
 
         ~FVehicleThread(void)
@@ -97,9 +85,9 @@ class FVehicleThread : public FRunnable {
             auto dt = FPlatformTime::Seconds()-_startTime;
 
             mysprintf(message,
-                    "Dynamics=%3.3e Hz  PID=%3.3e",
-                    _dynamics_count/dt,
-                    _pid_count/dt);
+                    "Dynamics=%3.3e Hz  Control=%3.3e Hz",
+                    _dynamicsCount/dt,
+                    _pidCount/dt);
         }
 
         // Called by VehiclePawn::Tick() method to get actuator value for
@@ -137,37 +125,42 @@ class FVehicleThread : public FRunnable {
 
             while (_running) {
 
+                // For computing dynamics deltaT
+                static double _previousDynamicsTime;
+
+                // For computing dynamics deltaT
+                static double _previousControllerTime;
+
                 // Get a high-fidelity current time value from the OS
                 double currentTime = FPlatformTime::Seconds() - _startTime;
 
                 // Update dynamics
-                _dynamics->update(
-                        _actuatorValues, currentTime - _previousTime);
+                _dynamics->update(_actuatorValues, 
+                        currentTime - _previousDynamicsTime);
 
                 // PID controller: periodically update the vehicle thread with
                 // the dynamics state, getting back the actuator values
-                static uint32_t _pid_clock;
-                _pid_clock ++;
-                if (_pid_clock ==  _pid_period) {
-                    float joyvals[10] = {};
-                    _joystick->poll(joyvals);
-                    this->getMotors(
-                            _dynamics,
-                            _actuatorValues,
+                static uint32_t _controllerClock;
+                _controllerClock ++;
+                if (_controllerClock == _controllerPeriod) {
+                    getActuators(
+                            _dynamics, 
                             currentTime,
-                            joyvals, 
-                            _actuatorCount);
+                            _actuatorCount,
+                            _actuatorValues);
 
-                    _pid_clock = 0;
+                    _controllerClock = 0;
 
                     // Increment count for FPS reporting
-                    _pid_count++;
+                    _pidCount++;
+
+                    _previousControllerTime = currentTime;
                 }
 
-                _dynamics_count++;
+                _dynamicsCount++;
 
                 // Track previous time for deltaT
-                _previousTime = currentTime;
+                _previousDynamicsTime = currentTime;
             }
 
             return 0;
