@@ -13,7 +13,7 @@
 #include "../LocalJoystickThread.hpp"
 
 // Un-comment for Hackflight support
-#define HACKFLIGHT
+// #define HACKFLIGHT
 
 #ifdef HACKFLIGHT
 #include "hackflight.hpp"
