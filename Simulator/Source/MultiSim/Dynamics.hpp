@@ -171,7 +171,8 @@ class Dynamics {
         }
 
         // bodyToInertial method optimized for body X=Y=0
-        static void bodyZToInertial(double bodyZ,
+        static void bodyZToInertial(
+                const double bodyZ,
                 const double rotation[3],
                 double inertial[3])
         {
@@ -287,7 +288,7 @@ class Dynamics {
          * @param airborne allows us to start on the ground (default) or in the
          * air (e.g., gravity test)
          */
-        void init(double rotation[3], bool airborne = false)
+        void init(const double rotation[3], const bool airborne = false)
         {
             // Always start at location (0,0,0)
             memset(&vstate, 0, sizeof(vstate));
@@ -310,14 +311,17 @@ class Dynamics {
          * Sets height above ground level (AGL).
          * This method can be called by the kinematic visualization.
          */
-        void setAgl(double agl)
+        void setAgl(const double agl)
         {
             _agl = agl;
         }
 
         // Different for each vehicle
-        virtual int8_t getRotorDirection(uint8_t i) = 0;
+
+        virtual int8_t getRotorDirection(const uint8_t i) = 0;
+
         virtual double getThrustCoefficient(double * actuators) = 0;
+
         virtual void computeRollAndPitch(double * actuators,
                                          double * omegas2,
                                          double & roll,
@@ -345,7 +349,7 @@ class Dynamics {
         /**
           * Sets world parameters (currently just gravity and air density)
           */
-        void setWorldParams(double g, double rho)
+        void setWorldParams(const double g, const double rho)
         {
             _wparams.g = g;
             _wparams.rho = rho;
@@ -358,7 +362,7 @@ class Dynamics {
                   (servos)
          * @param dt time in seconds since previous update
          */
-        void update(float * factuators, double dt) 
+        void update(const float * factuators, const double dt) 
         {
             // Convert actuator values to double-precision for consistency
             double actuators[10];

@@ -9,11 +9,10 @@ MIT License
 
 class LaunchController(object):
 
-    def __init__(self, Kp, windupMax=10):
+    def __init__(self, Kp):
 
         # Constants
         self.Kp = Kp
-        self.windupMax = windupMax
 
     def getDemands(self, target, alt, vel):
 

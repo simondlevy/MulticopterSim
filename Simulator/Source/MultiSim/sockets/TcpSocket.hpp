@@ -56,7 +56,7 @@ class TcpSocket : public Socket {
                 return;
             }
 
-            // Create a SOCKET for connecting to server, returning on failure
+            // Create a socket for connecting to server, returning on failure
             _sock = socket(
                     _addressInfo->ai_family,
                     _addressInfo->ai_socktype,

@@ -18,7 +18,7 @@
 
 // Comms
 static const char * HOST = "127.0.0.1"; // localhost
-static uint16_t  PORT = 5000;
+static const uint16_t  PORT = 5000;
 
 // Time constant
 static const double DELTA_T = 0.001;
@@ -27,7 +27,7 @@ static const double DELTA_T = 0.001;
 static const float THROTTLE_THRESHOLD = 0.5;
 
 // PI controller constants
-static const double K_P = 1.0;
+static const double K_P = 2.0;
 static const double K_I = 0.0;
 static const double Z_TARGET = 0.40;
 
@@ -56,24 +56,25 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
 };
 
 // Altitude PI controller
-static float getThrottle(const Dynamics & dynamics)
+static float getThrottle(const double z, const double dz)
 {
-    return 0.6;
+    const auto error = (Z_TARGET - z) - dz;
+
+    return K_P * error;
 }
 
 int main(int argc, char ** argv)
 {
-    TcpServerSocket server = TcpServerSocket(HOST, PORT, true);
+    auto server = TcpServerSocket(HOST, PORT, true);
 
     // Guards socket comms
-    bool connected = false;
+    auto connected = false;
 
     // Create quadcopter dynamics model
-    QuadXBFDynamics dynamics =
-        QuadXBFDynamics(vparams, fparams, false); // no auto-land
+    auto dynamics = QuadXBFDynamics(vparams, fparams, false); // no auto-land
 
     // Set up initial conditions
-    double rotation[3] = {0,0,0};
+    const double rotation[3] = {0,0,0};
     dynamics.init(rotation);
 
     printf("Listening for client on %s:%d \n", HOST, PORT);
@@ -82,15 +83,17 @@ int main(int argc, char ** argv)
     for (uint32_t k=0; ; k++) {
 
         if (connected) {
+
+            const auto vstate = dynamics.vstate;
           
             const double pose[] = {
 
-                dynamics.vstate.x,
-                dynamics.vstate.y,
-                -dynamics.vstate.z, // NED => ENU
-                dynamics.vstate.phi,
-                dynamics.vstate.theta,
-                dynamics.vstate.psi
+                vstate.x,
+                vstate.y,
+                -vstate.z, // NED => ENU
+                vstate.phi,
+                vstate.theta,
+                vstate.psi
             };
 
             server.sendData((void *)pose, sizeof(pose));
@@ -111,10 +114,14 @@ int main(int argc, char ** argv)
                 airborne = true;
             }
 
-            const float throttle = airborne ? getThrottle(dynamics) : 0;
+            const auto throttle = airborne ? 
+                getThrottle(-vstate.z, -vstate.dz) : 
+                0;
 
+            printf("throttle=%3.3f  altitude=%3.3f\n", throttle, -vstate.z);
+            
             // Set all motors to same value for now
-            float motors[4] = {throttle, throttle, throttle, throttle};
+            const float motors[4] = {throttle, throttle, throttle, throttle};
 
             // Update dynamics with motor values
             dynamics.update(motors, DELTA_T);
