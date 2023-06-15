@@ -12,6 +12,37 @@
 
 #include "../sockets/TcpServerSocket.hpp"
 
+// Simple altitude-hold PI controller ///////////////////////////////////
+
+// Throttle threshold for liftoff
+static const float THROTTLE_THRESHOLD = 0.5;
+
+// PI controller constants
+static const double K_P = 4.0;
+static const double K_I = 1.0;
+static const double K_WINDUP_MAX = 1.0;
+static const double Z_TARGET = 0.40;
+
+static float constrain(const float val, const float min, const float max)
+{
+    return val < min ? min : val > max ? max : val;
+}
+
+static float getThrottle(const double z, const double dz)
+{
+    const auto error = (Z_TARGET - z) - dz;
+
+    static double errorIntegral;
+
+    errorIntegral = constrain(
+            errorIntegral + error, -K_WINDUP_MAX, +K_WINDUP_MAX);
+
+    return constrain(K_P * error + K_I * errorIntegral, 0, 1);
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+
 class FCrazyflieThread : public FVehicleThread {
 
     private: 
@@ -45,12 +76,14 @@ class FCrazyflieThread : public FVehicleThread {
 
                 if (_connected) {
 
-                    _pose[0] = dynamics->vstate.x;
-                    _pose[1] = dynamics->vstate.y;
-                    _pose[2] = -dynamics->vstate.z;  // NED => ENU
-                    _pose[3] = dynamics->vstate.phi;
-                    _pose[4] = dynamics->vstate.theta;
-                    _pose[5] = dynamics->vstate.psi;
+                    const auto vstate = dynamics->vstate;
+
+                    _pose[0] = vstate.x;
+                    _pose[1] = vstate.y;
+                    _pose[2] = -vstate.z;  // NED => ENU
+                    _pose[3] = vstate.phi;
+                    _pose[4] = vstate.theta;
+                    _pose[5] = vstate.psi;
 
                     _server->sendData((void *)_pose, sizeof(_pose));
 
@@ -62,10 +95,21 @@ class FCrazyflieThread : public FVehicleThread {
                     _sticks[2] = (float)joyvals[2] / 31;
                     _sticks[3] = (float)joyvals[3] / 200;
 
-                    actuatorValues[0] = 0.6;
-                    actuatorValues[1] = 0.6;
-                    actuatorValues[2] = 0.6;
-                    actuatorValues[3] = 0.6;
+                    static bool airborne;
+
+                    if (_sticks[0] > THROTTLE_THRESHOLD) {
+                        airborne = true;
+                    }
+
+                    const auto throttle = airborne ? 
+                        getThrottle(-vstate.z, -vstate.dz) : 
+                        0;
+
+                    // Set all motors to same value for now
+                    actuatorValues[0] = throttle;
+                    actuatorValues[1] = throttle;
+                    actuatorValues[2] = throttle;
+                    actuatorValues[3] = throttle;
                 }
 
                 else {
@@ -88,15 +132,15 @@ class FCrazyflieThread : public FVehicleThread {
                 const uint32_t controlPeriod=100000)
 
             : FVehicleThread(dynamics, controlPeriod)
-        {
-            // Use non-blocking socket
-            _server = new TcpServerSocket(host, port, true);
+            {
+                // Use non-blocking socket
+                _server = new TcpServerSocket(host, port, true);
 
-            _connected = false;
+                _connected = false;
 
-            strcpy(_host, host);
-            _port = port;
-        }
+                strcpy(_host, host);
+                _port = port;
+            }
 
         ~FCrazyflieThread(void) 
         {

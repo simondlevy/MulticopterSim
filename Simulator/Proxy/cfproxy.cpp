@@ -56,6 +56,11 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
     0.350   // l arm length [m]
 };
 
+static float constrain(const float val, const float min, const float max)
+{
+    return val < min ? min : val > max ? max : val;
+}
+
 // Altitude PI controller
 static float getThrottle(const double z, const double dz)
 {
@@ -63,16 +68,10 @@ static float getThrottle(const double z, const double dz)
 
     static double errorIntegral;
 
-    errorIntegral = errorIntegral + error;
+    errorIntegral = constrain(
+            errorIntegral + error, -K_WINDUP_MAX, +K_WINDUP_MAX);
 
-    errorIntegral = 
-        errorIntegral < -K_WINDUP_MAX ?
-        -K_WINDUP_MAX :
-        errorIntegral > +K_WINDUP_MAX ?
-        +K_WINDUP_MAX :
-        errorIntegral;
-
-    return K_P * error + K_I * errorIntegral;
+    return constrain(K_P * error + K_I * errorIntegral, 0, 1);
 }
 
 int main(int argc, char ** argv)
