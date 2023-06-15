@@ -88,6 +88,9 @@ int main(int argc, char ** argv)
                 (float)joyvals[3] / 200,
             };
 
+            printf("t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f\n",
+                    sticks[0], sticks[1], sticks[2], sticks[3]);
+
             // Run flight controller to get motor values
             float motors[4] = {0.6, 0.6, 0.6, 0.6};
 
