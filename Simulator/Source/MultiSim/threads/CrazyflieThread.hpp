@@ -138,10 +138,9 @@ class FCrazyflieThread : public FVehicleThread {
         FCrazyflieThread(
                 Dynamics * dynamics,
                 const char * host = "127.0.0.1",
-                const short port = 5000,
-                const uint32_t controlPeriod=100)
+                const short port = 5000)
 
-            : FVehicleThread(dynamics, controlPeriod)
+            : FVehicleThread(dynamics)
             {
                 // Use non-blocking socket
                 _server = new TcpServerSocket(host, port, true);

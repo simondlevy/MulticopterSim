@@ -44,10 +44,8 @@ class FLocalJoystickThread : public FVehicleThread {
     public:
 
         // Constructor, called main thread
-        FLocalJoystickThread(
-                Dynamics * dynamics,
-                const uint32_t controlPeriod = 100)
-            : FVehicleThread(dynamics, controlPeriod)
+        FLocalJoystickThread( Dynamics * dynamics)
+            : FVehicleThread(dynamics)
         {
             _joystick = new IJoystick();
         }

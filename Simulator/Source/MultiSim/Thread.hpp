@@ -23,6 +23,9 @@ class FVehicleThread : public FRunnable {
 
     private:
 
+        // Relates dynamics update to PID update
+        static const uint32_t CONTROLLER_PERIOD = 100;
+
         FRunnableThread * _thread = NULL;
 
         // Flags set by begin/end play
@@ -34,9 +37,6 @@ class FVehicleThread : public FRunnable {
         // For benchmarking
         uint32_t _dynamicsCount;
         uint32_t _pidCount;
-
-        // Relates dynamics update to PID update
-        uint32_t _controllerPeriod;
 
         // Set by controller; returned for animation
         float _actuatorValues[100] = {}; 
@@ -56,13 +56,11 @@ class FVehicleThread : public FRunnable {
     public:
 
         // Constructor, called main thread
-        FVehicleThread(Dynamics * dynamics, const uint32_t controllerPeriod)
+        FVehicleThread(Dynamics * dynamics)
         {
             _thread =
                 FRunnableThread::Create(
                         this, TEXT("FThreadedManager"), 0, TPri_BelowNormal);
-
-            _controllerPeriod = controllerPeriod;
 
             _startTime = FPlatformTime::Seconds();
 
@@ -142,7 +140,7 @@ class FVehicleThread : public FRunnable {
                 // the dynamics state, getting back the actuator values
                 static uint32_t _controllerClock;
                 _controllerClock ++;
-                if (_controllerClock == _controllerPeriod) {
+                if (_controllerClock == CONTROLLER_PERIOD) {
                     getActuators(
                             _dynamics, 
                             currentTime,
