@@ -89,7 +89,7 @@ class FCrazyflieThread : public FVehicleThread {
 
                     static uint32_t clock;
 
-                    if (clock % 1000 == 0) {
+                    if (clock % 10000 == 0) {
 
                         clock = 0;
 
