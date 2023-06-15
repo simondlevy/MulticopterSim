@@ -1,6 +1,9 @@
 /*
    Proxy for testing MulticopterSim CrazyFlie comms
 
+   Just lifts off to 40cm after enough throttle is applied; no
+   other control.
+
    Copyright(C) 2023 Simon D.Levy
 
    MIT License
@@ -88,8 +91,13 @@ int main(int argc, char ** argv)
                 (float)joyvals[3] / 200,
             };
 
-            printf("t=%3.3f  r=%+3.3f  p=%+3.3f  y=%+3.3f\n",
-                    sticks[0], sticks[1], sticks[2], sticks[3]);
+            static bool airborne;
+
+            if (sticks[0] > 0.5) {
+                airborne = true;
+            }
+
+            printf("%d\n", airborne);
 
             // Run flight controller to get motor values
             float motors[4] = {0.6, 0.6, 0.6, 0.6};
