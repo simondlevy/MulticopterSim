@@ -27,8 +27,9 @@ static const double DELTA_T = 0.001;
 static const float THROTTLE_THRESHOLD = 0.5;
 
 // PI controller constants
-static const double K_P = 2.0;
-static const double K_I = 0.0;
+static const double K_P = 4.0;
+static const double K_I = 1.0;
+static const double K_WINDUP_MAX = 1.0;
 static const double Z_TARGET = 0.40;
 
 static Dynamics::vehicle_params_t vparams = {
@@ -60,7 +61,18 @@ static float getThrottle(const double z, const double dz)
 {
     const auto error = (Z_TARGET - z) - dz;
 
-    return K_P * error;
+    static double errorIntegral;
+
+    errorIntegral = errorIntegral + error;
+
+    errorIntegral = 
+        errorIntegral < -K_WINDUP_MAX ?
+        -K_WINDUP_MAX :
+        errorIntegral > +K_WINDUP_MAX ?
+        +K_WINDUP_MAX :
+        errorIntegral;
+
+    return K_P * error + K_I * errorIntegral;
 }
 
 int main(int argc, char ** argv)
