@@ -100,7 +100,7 @@ LocalThread.hpp, and select the *PhantomLocal* vehicle instead of PhantomRemote.
 
 As shown in this [video](https://www.youtube.com/watch?v=wSZAVRtMxLI), MuticopterSim supports connecting
 to the GUI client for the amazing [Crazyflie](https://www.bitcraze.io/products/old-products/crazyflie-2-0)
-development platform.  The only additional thing you'll need to do is to install my fork 
+development platform.  The only additional thing you'll need to do is to install my
 [fork](https://github.com/simondlevy/crazyflie-clients-python) of the client. Then,
 you can select the <b>Crazyflie</b> pawn, launch the client, press the UE5 play button, and connect
 to the simulator as shown in the video.  Currently the only behavior supported is a simple takeoff,
