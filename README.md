@@ -96,6 +96,17 @@ download the [Hackflight](https://github.com/simondlevy/Hackflight) flight-contr
 the ```#define HACKFLIGHT``` line in
 LocalThread.hpp, and select the *PhantomLocal* vehicle instead of PhantomRemote.
 
+# Crazyflie support
+
+As shown in this [video](https://www.youtube.com/watch?v=wSZAVRtMxLI), MuticopterSim supports connecting
+to the GUI client for the amazing [Crazyflie](https://www.bitcraze.io/products/old-products/crazyflie-2-0)
+development platform.  The only additional thing you'll need to do is to install my fork 
+[fork](https://github.com/simondlevy/crazyflie-clients-python) of the client. Then,
+you can select the <b>Crazyflie</b> pawn, launch the client, press the UE5 play button, and connect
+to the simulator as shown in the video.  Currently the only behavior supported is a simple takeoff,
+triggered by throttling up above 50%.  I'm working on incorporating the actual Crazyflie flight-control
+code into the simulator.
+
 # Design principles
 
 The core of MulticopterSim is the C++ 
