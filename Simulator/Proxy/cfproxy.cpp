@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
     for (uint32_t k=0; ; k++) {
 
         if (connected) {
-
+          
             const double pose[] = {
 
                 dynamics.vstate.x,
@@ -87,8 +87,6 @@ int main(int argc, char ** argv)
                 (float)joyvals[2] / 31,
                 (float)joyvals[3] / 200,
             };
-
-            printf("t=%3.3f  z=%+3.3f\n", sticks[0], pose[2]);
 
             // Run flight controller to get motor values
             float motors[4] = {0.6, 0.6, 0.6, 0.6};
