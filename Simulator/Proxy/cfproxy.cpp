@@ -23,6 +23,14 @@ static uint16_t  PORT = 5000;
 // Time constant
 static const double DELTA_T = 0.001;
 
+// Throttle threshold for liftoff
+static const float THROTTLE_THRESHOLD = 0.5;
+
+// PI controller constants
+static const double K_P = 1.0;
+static const double K_I = 0.0;
+static const double Z_TARGET = 0.40;
+
 static Dynamics::vehicle_params_t vparams = {
 
     // Estimated
@@ -46,6 +54,12 @@ static FixedPitchDynamics::fixed_pitch_params_t fparams = {
     5.E-06, // b force constatnt [F=b*w^2]
     0.350   // l arm length [m]
 };
+
+// Altitude PI controller
+static float getThrottle(const Dynamics & dynamics)
+{
+    return 0.6;
+}
 
 int main(int argc, char ** argv)
 {
@@ -73,7 +87,7 @@ int main(int argc, char ** argv)
 
                 dynamics.vstate.x,
                 dynamics.vstate.y,
-                -dynamics.vstate.z,  // NED => ENU
+                -dynamics.vstate.z, // NED => ENU
                 dynamics.vstate.phi,
                 dynamics.vstate.theta,
                 dynamics.vstate.psi
@@ -93,14 +107,14 @@ int main(int argc, char ** argv)
 
             static bool airborne;
 
-            if (sticks[0] > 0.5) {
+            if (sticks[0] > THROTTLE_THRESHOLD) {
                 airborne = true;
             }
 
-            printf("%d\n", airborne);
+            const float throttle = airborne ? getThrottle(dynamics) : 0;
 
-            // Run flight controller to get motor values
-            float motors[4] = {0.6, 0.6, 0.6, 0.6};
+            // Set all motors to same value for now
+            float motors[4] = {throttle, throttle, throttle, throttle};
 
             // Update dynamics with motor values
             dynamics.update(motors, DELTA_T);
