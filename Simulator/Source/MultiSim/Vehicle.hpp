@@ -233,6 +233,9 @@ class Vehicle {
                 rotorSum += _thread->actuatorValue(j);
             }
 
+            // XXX Used fixed rotor sum for now
+            rotorSum = 4;
+
             // Rotate rotors. For visual effect, we can ignore actual rotor
             // values, and just keep increasing the rotation.
             if (rotorSum > 0) {
