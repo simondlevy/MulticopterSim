@@ -90,7 +90,7 @@ class FVehicleThread : public FRunnable {
             _telemetry[12] = _dynamics->vstate.dpsi;
 
             // Remaining output values are stick demands
-            _telemetry[13] = (double)joyvals[0];
+            _telemetry[13] = ((double)joyvals[0] + 1) / 2;  // [-1,+1] => [0,1]
             _telemetry[14] = (double)joyvals[1];
             _telemetry[15] = (double)joyvals[2];
             _telemetry[16] = (double)joyvals[3];

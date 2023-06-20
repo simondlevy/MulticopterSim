@@ -84,7 +84,7 @@ class MulticopterServer(object):
         while not self.done:
 
             try:
-                sleep(.001)  # Yield to other thread
+                sleep(0)  # Yield to other thread
 
                 try:
                     imgbytes = (imageConn.recv(
@@ -160,7 +160,7 @@ class MulticopterServer(object):
                     np.ndarray.tobytes(np.ndarray.astype(motorvals, np.float32)),
                     (self.host, self.motor_port))
 
-            sleep(.001)
+            sleep(0)  # yield to other thread
 
     @staticmethod
     def _make_udpsocket():
