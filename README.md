@@ -60,7 +60,7 @@ to build the project.
 4. In VisualStudio, hit the F5 key to build the project and launch UnrealEditor.
 
 5. In UnrealEditor, select one of the maps in <b>Content Drawer/MulticopterSim/Maps</b>. Then open the
-<b>Content/C++ Classes/MulticopterSim/vehicles</b> folder and drag the <b>PhantomRemote</b> pawn
+<b>Content/C++ Classes/MulticopterSim/vehicles</b> folder and drag the <b>Phantom</b> pawn
 into the map. 
 
 6. To enable interaction outside of the editor,  the first time you run the simulator you will
@@ -84,17 +84,6 @@ OpenCV.  This feature can be glitchy the first time you try it.
 
 The [FlightControllers](https://github.com/simondlevy/MulticopterSim/tree/master/FlightControllers)
 directory contains code and instructions for different kinds of flight controllers written in various languages.
-
-# Working directly with C++
-
-If you like to program in C++ and want to avoid the potential slowdown of socket communications,
-you can modify the behavior of the <b>PhantomLocal</b> pawn by editing the
-[LocalThread](https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/threads/LocalThread.hpp)
-class.  Currently this class just ignores the joystick input and vechile state and runs the motors at 60%.
-By modifying the method you can implement your own flight-control algorithms in C++. To see this feature at work,
-download the [Hackflight](https://github.com/simondlevy/Hackflight) flight-control package, un-comment
-the ```#define HACKFLIGHT``` line in
-LocalThread.hpp, and select the *PhantomLocal* vehicle instead of PhantomRemote.
 
 # Crazyflie support
 
