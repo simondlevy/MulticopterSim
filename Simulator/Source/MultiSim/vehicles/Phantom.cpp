@@ -7,7 +7,7 @@
  */
 
 #include "Phantom.h"
-#include "../threads/remote_control/RemoteControlThread.hpp"
+#include "../threads/RemoteControlThread.hpp"
 
 APhantom::APhantom()
 {

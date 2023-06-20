@@ -7,7 +7,7 @@
 */
 
 #include "Ingenuity.h"
-#include "../threads/remote_control/RemoteControlThread.hpp"
+#include "../threads/RemoteControlThread.hpp"
 
 AIngenuity::AIngenuity()
 {

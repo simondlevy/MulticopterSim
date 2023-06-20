@@ -8,12 +8,13 @@
 
 #pragma once
 
-#include "../LocalJoystickThread.hpp"
-
 #include "../sockets/UdpClientSocket.hpp"
 #include "../sockets/UdpServerSocket.hpp"
 
-class FRemoteControlThread : public FLocalJoystickThread {
+#include "../Joystick.h"
+#include "../Thread.hpp"
+
+class FRemoteControlThread : public FVehicleThread {
 
     private:
 
@@ -27,16 +28,21 @@ class FRemoteControlThread : public FLocalJoystickThread {
         // Guards socket comms
         bool _connected = false;
 
+        // Joystick / game controller / RC transmitter
+        IJoystick * _joystick;
+
     protected:
 
         virtual void getActuators(
 
                 const Dynamics * dynamics,
                 const double timeSec,
-                const float * joyvals,
                 const uint8_t actuatorCount,
                 float * actuatorValues) override
         {
+            float joyvals[10] = {};
+            _joystick->poll(joyvals);
+
             // Avoid null-pointer exceptions at startup, freeze after control
             // program halts
             if (!(_telemClient && _motorServer && _connected)) {
@@ -90,8 +96,10 @@ class FRemoteControlThread : public FLocalJoystickThread {
                 const short motorPort=5000,
                 const short telemPort=5001)
 
-            : FLocalJoystickThread(dynamics)
+            : FVehicleThread(dynamics)
         {
+            _joystick = new IJoystick();
+
             _telemClient = new UdpClientSocket(host, telemPort);
             _motorServer = new UdpServerSocket(motorPort);
 
