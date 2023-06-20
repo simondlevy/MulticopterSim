@@ -1,7 +1,7 @@
 /*
-   UDP proxy for testing MulticopterSim socket comms
+   C++ client for MulticopterSim
 
-   Copyright(C) 2019 Simon D.Levy
+   Copyright(C) 2023 Simon D.Levy
 
    MIT License
  */
