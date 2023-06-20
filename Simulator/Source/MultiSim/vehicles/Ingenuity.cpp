@@ -7,7 +7,7 @@
 */
 
 #include "Ingenuity.h"
-#include "../threads/RemoteControlThread.hpp"
+#include "../Thread.hpp"
 
 AIngenuity::AIngenuity()
 {
@@ -38,7 +38,7 @@ AIngenuity::AIngenuity()
 // Called when the game starts or when spawned
 void AIngenuity::BeginPlay()
 {
-    vehicle.beginPlay(new FRemoteControlThread(&dynamics));
+    vehicle.beginPlay(new FVehicleThread(&dynamics));
 
     Super::BeginPlay();
 }

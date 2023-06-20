@@ -8,7 +8,7 @@
 
 #include "Crazyflie.h"
 
-#include "../threads/CrazyflieThread.hpp" 
+#include "../Thread.hpp" 
 
 ACrazyflie::ACrazyflie()
 {
@@ -67,7 +67,7 @@ void ACrazyflie::addArm(
 // Called when the game starts or when spawned
 void ACrazyflie::BeginPlay()
 {
-    vehicle.beginPlay(new FCrazyflieThread(&dynamics));
+    vehicle.beginPlay(new FVehicleThread(&dynamics));
 
     Super::BeginPlay();
 }
