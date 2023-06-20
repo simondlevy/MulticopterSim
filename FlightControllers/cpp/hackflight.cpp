@@ -77,15 +77,6 @@ static void report(void)
     count++;
 }
 
-static void rotateToVehicleFrame(VehicleState & vstate)
-{
-    const auto psi = vstate.psi * M_PI / 180;
-    const auto dx = cos(psi) * vstate.dx + sin(psi) *  vstate.dy;
-    const auto dy = sin(psi) * vstate.dx + cos(psi) *  vstate.dy;
-    vstate.dx = dx;
-    vstate.dy = dy;
-}
-
 int main(int argc, char ** argv)
 {
     // Create sockets for telemetry in, motors out
@@ -129,9 +120,6 @@ int main(int argc, char ** argv)
 
         // Build vehicle state 
         auto vstate = state_from_telemetry(telemetry);
-
-        // Use heading angle to rotate dx, dy into vehicle coordinates
-        rotateToVehicleFrame(vstate);
 
         // Build stick demands
         auto demands = demands_from_telemetry(telemetry);
