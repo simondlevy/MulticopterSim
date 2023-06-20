@@ -15,7 +15,7 @@
 #include <CoreMinimal.h>
 #include <GameFramework/Pawn.h>
 
-#include "IngenuityRemote.generated.h"
+#include "Ingenuity.generated.h"
 
 // Structures to hold static mesh initializations
 
@@ -57,7 +57,7 @@ DECLARE_STATIC_MESH(FLeg4TopStatics, "Ingenuity/Leg4_Top.Leg4_Top",
         Leg4TopStatics)
 
 UCLASS(Config=Game)
-class AIngenuityRemote : public APawn {
+class AIngenuity : public APawn {
 
     private:
 
@@ -110,6 +110,6 @@ class AIngenuityRemote : public APawn {
 
     public:	
 
-        AIngenuityRemote();
+        AIngenuity();
 
-}; // AIngenuityRemote
+}; // AIngenuity

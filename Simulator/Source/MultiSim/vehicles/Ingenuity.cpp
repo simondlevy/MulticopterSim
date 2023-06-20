@@ -6,10 +6,10 @@
 * MIT License
 */
 
-#include "IngenuityRemote.h"
+#include "Ingenuity.h"
 #include "../threads/remote_control/RemoteControlThread.hpp"
 
-AIngenuityRemote::AIngenuityRemote()
+AIngenuity::AIngenuity()
 {
     // Build the frame, restoring for cameras, audio
     vehicle.buildFull(this, BodyStatics.mesh.Get()); 
@@ -36,21 +36,21 @@ AIngenuityRemote::AIngenuityRemote()
 }
 
 // Called when the game starts or when spawned
-void AIngenuityRemote::BeginPlay()
+void AIngenuity::BeginPlay()
 {
     vehicle.beginPlay(new FRemoteControlThread(&dynamics));
 
     Super::BeginPlay();
 }
 
-void AIngenuityRemote::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AIngenuity::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     vehicle.endPlay();
 
     Super::EndPlay(EndPlayReason);
 }
 
-void AIngenuityRemote::PostInitializeComponents()
+void AIngenuity::PostInitializeComponents()
 {
     vehicle.postInitializeComponents();
 
@@ -58,14 +58,14 @@ void AIngenuityRemote::PostInitializeComponents()
 }
 
 // Called automatically on main thread
-void AIngenuityRemote::Tick(float DeltaSeconds)
+void AIngenuity::Tick(float DeltaSeconds)
 {
     vehicle.tick(DeltaSeconds);
 
     Super::Tick(DeltaSeconds);
 }
 
-void AIngenuityRemote::addLeg(
+void AIngenuity::addLeg(
         uint8_t index,
         UStaticMesh * bracketMesh,
         UStaticMesh * topMesh,
@@ -76,7 +76,7 @@ void AIngenuityRemote::addLeg(
     vehicle.addComponent(bottomMesh,  makeName("LegBottom", index));
 }
 
-void AIngenuityRemote::addRotor(UStaticMesh* propMesh, float z)
+void AIngenuity::addRotor(UStaticMesh* propMesh, float z)
 {
     vehicle.addRotor(propMesh, 0, 0, z);
 }

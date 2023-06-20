@@ -6,31 +6,33 @@
 * MIT License
  */
 
-#include "PhantomLocal.h"
+#include "Phantom.h"
+#include "../threads/remote_control/RemoteControlThread.hpp"
 
-#include "../threads/local_control/LocalControlThread.hpp"
-
-APhantomLocal::APhantomLocal()
+APhantom::APhantom()
 {
     buildPhantom(this, vehicle);
+
+    // Un-comment for camera
+    // vehicle.addCamera(&camera);
 }
 
 // Called when the game starts or when spawned
-void APhantomLocal::BeginPlay()
+void APhantom::BeginPlay()
 {
-    vehicle.beginPlay(new FLocalControlThread(&dynamics));
+    vehicle.beginPlay(new FRemoteControlThread(&dynamics));
 
     Super::BeginPlay();
 }
 
-void APhantomLocal::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void APhantom::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     vehicle.endPlay();
 
     Super::EndPlay(EndPlayReason);
 }
 
-void APhantomLocal::PostInitializeComponents()
+void APhantom::PostInitializeComponents()
 {
     vehicle.postInitializeComponents();
 
@@ -38,7 +40,7 @@ void APhantomLocal::PostInitializeComponents()
 }
 
 // Called automatically on main thread
-void APhantomLocal::Tick(float DeltaSeconds)
+void APhantom::Tick(float DeltaSeconds)
 {
     vehicle.tick(DeltaSeconds);
 

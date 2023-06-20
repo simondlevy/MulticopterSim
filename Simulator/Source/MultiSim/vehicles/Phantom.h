@@ -10,10 +10,10 @@
 
 #include "phantom_common.hpp"
 
-#include "PhantomRemote.generated.h"
+#include "Phantom.generated.h"
 
 UCLASS(Config=Game)
-class APhantomRemote : public APawn {
+class APhantom : public APawn {
 
     private:
 
@@ -40,6 +40,6 @@ class APhantomRemote : public APawn {
 
     public:	
 
-        APhantomRemote();
+        APhantom();
 
-}; // APhantomRemote
+}; // APhantom
