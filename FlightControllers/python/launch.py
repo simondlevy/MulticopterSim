@@ -28,7 +28,6 @@ class LaunchCopter(MulticopterServer):
             self,
             mixer,
             kp=1.0,
-            ki=0.0,
             initial_target=2.5):
 
         MulticopterServer.__init__(self)
@@ -39,7 +38,7 @@ class LaunchCopter(MulticopterServer):
         self.target = initial_target
 
         # Create PID controller
-        self.ctrl = LaunchController(kp, ki)
+        self.ctrl = LaunchController(kp)
 
     def handleImage(self, image):
         try:
