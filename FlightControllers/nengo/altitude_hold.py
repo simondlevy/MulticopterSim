@@ -47,9 +47,8 @@ def runpid(copter, pid):
     # Get vehicle state from sim
     telem = copter.getState()
 
-    # Extract altitude from state.  Altitude is in NED coordinates, so we
-    # negate it to use as input to PID controller.
-    z = -telem[5]
+    # Extract altitude from state.  
+    z = telem[5]
 
     # Get correction from PID controller
     u = pid.getCorrection(ALTITUDE_TARGET, z)[0]

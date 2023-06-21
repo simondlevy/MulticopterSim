@@ -43,9 +43,9 @@ while true
         break 
     end
     
-    % Extract altitude from state.  Altitude is in NED coordinates, so we negate it to use as input
+    % Extract altitude from state.
     % to PID controller.
-    z = -telem(10);    
+    z = telem(10);    
     
     % Compute vertical climb rate as first difference of altitude over time
     if t > tprev

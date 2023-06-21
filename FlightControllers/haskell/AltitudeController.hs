@@ -34,9 +34,9 @@ makeAltitudeController constants =
          ki = altitude_Ki constants
          windupMax = altitude_windupMax constants
 
-         -- Get vehicle state, negating for NED
-         z = -(state_z vehicleState)
-         dzdt = -(state_dz vehicleState)
+         -- Get vehicle state
+         z = state_z vehicleState
+         dzdt = state_dz vehicleState
 
          -- Compute dzdt setpoint and error
          dzdt_error = (ztarget - z) - dzdt

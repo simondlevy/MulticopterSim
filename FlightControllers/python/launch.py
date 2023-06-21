@@ -62,10 +62,9 @@ class LaunchCopter(MulticopterServer):
         # Track current time to share it with handleImage()
         self.time = t
 
-        # Extract altitude from state.  Altitude is in NED coordinates, so we
-        # negate it to use as input to PID controller.
-        z = -state[MulticopterServer.STATE_Z]
-        dzdt = -state[MulticopterServer.STATE_DZ]
+        # Extract altitude and its first derivative from state.  
+        z = state[MulticopterServer.STATE_Z]
+        dzdt = state[MulticopterServer.STATE_DZ]
 
         # Get demands U [throttle, roll, pitch, yaw] from PID controller,
         # ignoring stick demands

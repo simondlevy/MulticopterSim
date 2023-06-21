@@ -24,11 +24,6 @@ static const char * HOST = "127.0.0.1"; // localhost
 static uint16_t  MOTOR_PORT = 5000;
 static uint16_t  TELEM_PORT = 5001;
 
-static float rad2deg(const double rad)
-{
-    return (float)(180 * rad / M_PI);
-}
-
 static VehicleState state_from_telemetry(const double telemetry[])
 {
     return VehicleState( 
@@ -36,14 +31,14 @@ static VehicleState state_from_telemetry(const double telemetry[])
             (float)telemetry[2],     // dx
             (float)telemetry[3],     // y
             (float)telemetry[4],     // dy
-            -(float)telemetry[5],    // z  [NED => ENU]
-            -(float)telemetry[6],    // dz [NED => ENU]
-            rad2deg(telemetry[7]),   // phi
-            rad2deg(telemetry[8]),   // dphi
-            -rad2deg(telemetry[9]),  // theta  [note sign reversal]
-            -rad2deg(telemetry[10]), // dtheta [note sign reversal]
-            rad2deg(telemetry[11]),  // psi
-            rad2deg(telemetry[12])   // dpsi
+            (float)telemetry[5],     // z  
+            (float)telemetry[6],     // dz 
+            telemetry[7],   // phi
+            telemetry[8],   // dphi
+            -telemetry[9],  // theta  [note sign reversal]
+            -telemetry[10], // dtheta [note sign reversal]
+            telemetry[11],  // psi
+            telemetry[12]   // dpsi
             );
 }
 

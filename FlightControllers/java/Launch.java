@@ -42,11 +42,9 @@ public class Launch {
             // Get state from sim
             double [] state = copter.getVehicleState();
 
-            // Extract altitude and its first derivative from state.  Launch
-            // is in NED coordinates, so we negate it to use as input to PID
-            // controller.
-            double z = -state[Multicopter.STATE_Z];
-            double dz = -state[Multicopter.STATE_DZ];
+            // Extract altitude and its first derivative from state.
+            double z = state[Multicopter.STATE_Z];
+            double dz = state[Multicopter.STATE_DZ];
 
             // Start with zeros for demands
             double []  omega = new double[4];
