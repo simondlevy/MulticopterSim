@@ -89,8 +89,8 @@ class FVehicleThread : public FRunnable {
             _telemetry[6] = -_dynamics->vstate.dz;       // NED => ENU
             _telemetry[7] = rad2deg(_dynamics->vstate.phi);
             _telemetry[8] = rad2deg(_dynamics->vstate.dphi);
-            _telemetry[9] = rad2deg(_dynamics->vstate.theta);
-            _telemetry[10] = rad2deg(_dynamics->vstate.dtheta);
+            _telemetry[9] = -rad2deg(_dynamics->vstate.theta);   // nose-up pos
+            _telemetry[10] = -rad2deg(_dynamics->vstate.dtheta); // nose-up pos
             _telemetry[11] = rad2deg(_dynamics->vstate.psi);
             _telemetry[12] = rad2deg(_dynamics->vstate.dpsi);
 

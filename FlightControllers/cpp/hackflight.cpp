@@ -27,18 +27,18 @@ static uint16_t  TELEM_PORT = 5001;
 static VehicleState state_from_telemetry(const double telemetry[])
 {
     return VehicleState( 
-            (float)telemetry[1],     // x
-            (float)telemetry[2],     // dx
-            (float)telemetry[3],     // y
-            (float)telemetry[4],     // dy
-            (float)telemetry[5],     // z  
-            (float)telemetry[6],     // dz 
-            telemetry[7],   // phi
-            telemetry[8],   // dphi
-            -telemetry[9],  // theta  [note sign reversal]
-            -telemetry[10], // dtheta [note sign reversal]
-            telemetry[11],  // psi
-            telemetry[12]   // dpsi
+            telemetry[1],  // x
+            telemetry[2],  // dx
+            telemetry[3],  // y
+            telemetry[4],  // dy
+            telemetry[5],  // z  
+            telemetry[6],  // dz 
+            telemetry[7],  // phi
+            telemetry[8],  // dphi
+            telemetry[9],  // theta  
+            telemetry[10], // dtheta
+            telemetry[11], // psi
+            telemetry[12]  // dpsi
             );
 }
 
