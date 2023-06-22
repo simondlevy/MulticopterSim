@@ -32,8 +32,6 @@ class Vehicle {
 
     private:
 
-        float _audioLevel;
-
         // Slowed down for simulation
         static constexpr double MOTOR_RPM = 400;
 
@@ -48,6 +46,8 @@ class Vehicle {
         } view_t;
 
         view_t _view = VIEW_CHASE;
+
+        float _rotorSum;
 
         uint8_t _nrotors = 0;
 
@@ -228,23 +228,20 @@ class Vehicle {
         virtual void animateActuators(void)
         {
             // Compute the sum of the rotor values
-            float rotorSum = 0;
+            _rotorSum = 0;
             for (uint8_t j = 0; j < _nrotors; ++j) {
-                rotorSum += _thread->actuatorValue(j);
+                _rotorSum += _thread->actuatorValue(j);
             }
-
-            // XXX Used fixed rotor sum for now
-            rotorSum = 4;
 
             // Rotate rotors. For visual effect, we can ignore actual rotor
             // values, and just keep increasing the rotation.
-            if (rotorSum > 0) {
+            if (_rotorSum > 0) {
                 rotateRotors(_rotorDirections);
             }
 
             // Add mean to circular buffer for moving average
             _bufferIndex = _rotorBuffer->GetNextIndex(_bufferIndex);
-            (*_rotorBuffer)[_bufferIndex] = rotorSum / _nrotors;
+            (*_rotorBuffer)[_bufferIndex] = _rotorSum / _nrotors;
 
             // Compute the mean rotor value over the buffer frames
             float smoothedRotorMean = 0;
@@ -252,8 +249,6 @@ class Vehicle {
                 smoothedRotorMean += (*_rotorBuffer)[i];
             }
             smoothedRotorMean /= _rotorBuffer->Capacity();
-
-            _audioLevel = smoothedRotorMean;
 
             // Use the mean rotor value to modulate the pitch and voume of the
             // rotor sound
@@ -314,8 +309,11 @@ class Vehicle {
                 // Set the audio component's volume to zero
                 _audioComponent->SetFloatParameter(FName("volume"), 0);
 
-                // Attach the sound to the pawn's root, so the sound follows the
-                // pawn around
+                // Don't play immediately
+                _audioComponent->bAutoActivate = false;
+
+                // Attach the sound to the pawn's root, so the sound follows
+                // the pawn around
                 _audioComponent->SetupAttachment(_pawn->GetRootComponent());
             }
 
@@ -482,8 +480,8 @@ class Vehicle {
         {
             // Report any message from thread
             char message[100] = {};
-            _thread->getMessage(message);
-            debugline("%s", message);
+            //_thread->getMessage(message);
+            //debugline(message);
 
             // Quit on ESCape key
             if (hitKey(EKeys::Escape)) {
