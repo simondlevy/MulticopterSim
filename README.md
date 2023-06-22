@@ -87,14 +87,14 @@ directory contains code and instructions for different kinds of flight controlle
 
 # Crazyflie support
 
-As shown in this [video](https://www.youtube.com/watch?v=wSZAVRtMxLI), MuticopterSim supports connecting
+As shown in this [video](https://youtu.be/04b04p_Zei4), MuticopterSim supports connecting
 to the GUI client for the amazing [Crazyflie](https://www.bitcraze.io/products/crazyflie-2-1/)
 development platform.  The only additional thing you'll need to do is to install my
 [fork](https://github.com/simondlevy/crazyflie-clients-python) of the client. Then,
-you can select the <b>Crazyflie</b> pawn, launch the client, press the UE5 play button, and connect
-to the simulator as shown in the video.  Currently the only behavior supported is a simple takeoff,
-triggered by throttling up above 50%.  I'm working on incorporating the actual Crazyflie flight-control
-code into the simulator.
+you can connect to the simulator as shown in the video.  The flight-control algorithms
+I'm using are from the simple [Hackflight](https://github.com/simondlevy/hackflight) 
+software, but I'm working on incorporating the actual Crazyflie 
+[firmware](https://github.com/bitcraze/crazyflie-firmware) into the client.
 
 # Design principles
 
