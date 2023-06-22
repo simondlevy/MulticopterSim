@@ -167,11 +167,10 @@ class FVehicleThread : public FRunnable {
         {
             auto dt = FPlatformTime::Seconds()-_startTime;
 
-            /*
             mysprintf(message,
                     "Dynamics=%3.3e Hz  Control=%3.3e Hz",
                     _dynamicsCount/dt,
-                    _pidCount/dt);*/
+                    _pidCount/dt);
         }
 
         // Called by VehiclePawn::Tick() method to get actuator value for

@@ -65,7 +65,6 @@ static void mysprintf(char buf[200], const char * fmt, ...)
 	va_list ap;
 	va_start(ap, fmt);
 	vsnprintf(buf, 200, fmt, ap);
-	osd(buf, false, true);
 	va_end(ap);
 }
 

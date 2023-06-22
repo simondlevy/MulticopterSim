@@ -480,8 +480,8 @@ class Vehicle {
         {
             // Report any message from thread
             char message[100] = {};
-            //_thread->getMessage(message);
-            //debugline(message);
+            _thread->getMessage(message);
+            debugline(message);
 
             // Quit on ESCape key
             if (hitKey(EKeys::Escape)) {
