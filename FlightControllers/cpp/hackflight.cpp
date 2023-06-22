@@ -27,18 +27,18 @@ static uint16_t  TELEM_PORT = 5001;
 static VehicleState state_from_telemetry(const double telemetry[])
 {
     return VehicleState( 
-            telemetry[1],  // x
-            telemetry[2],  // dx
-            telemetry[3],  // y
-            telemetry[4],  // dy
-            telemetry[5],  // z  
-            telemetry[6],  // dz 
-            telemetry[7],  // phi
-            telemetry[8],  // dphi
-            telemetry[9],  // theta  
-            telemetry[10], // dtheta
-            telemetry[11], // psi
-            telemetry[12]  // dpsi
+            telemetry[1],   // x
+            telemetry[2],   // dx
+            telemetry[3],   // y
+            telemetry[4],   // dy
+            telemetry[5],   // z  
+            telemetry[6],   // dz 
+            telemetry[7],   // phi
+            telemetry[8],   // dphi
+            -telemetry[9],  // theta  Make nose-down positive
+            -telemetry[10], // dtheta  for PID controller
+            telemetry[11],  // psi
+            telemetry[12]   // dpsi
             );
 }
 
@@ -50,26 +50,6 @@ static Demands demands_from_telemetry(const double telemetry[])
             (float)telemetry[15],
             (float)telemetry[16]
             );
-}
-
-static void report(void)
-{
-    struct timeval time = {};
-    gettimeofday(&time, NULL);
-
-    static uint32_t prev_sec;
-    static uint32_t count;
-
-    if (time.tv_sec != prev_sec) {
-        if (count != 0) {
-            printf("%3.3e Hz", (double)count);
-        }
-        printf("\n");
-        count = 0;
-        prev_sec = time.tv_sec;
-    }
-
-    count++;
 }
 
 int main(int argc, char ** argv)
@@ -131,8 +111,6 @@ int main(int argc, char ** argv)
 
         // Send back motor values
         motorClient.sendData(mvals, sizeof(mvals));
-
-        report();
 
     } // while (true)
 
