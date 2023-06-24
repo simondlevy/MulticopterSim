@@ -81,18 +81,18 @@ class FVehicleThread : public FRunnable {
             _telemetry[0] = timeSec;
 
             // Next output values are state
-            _telemetry[1] = _dynamics->vstate.x;
-            _telemetry[2] = _dynamics->vstate.dx;
-            _telemetry[3] = _dynamics->vstate.y;
-            _telemetry[4] = _dynamics->vstate.dy;
-            _telemetry[5] = -_dynamics->vstate.z;        // NED => END
-            _telemetry[6] = -_dynamics->vstate.dz;       // NED => ENU
-            _telemetry[7] = rad2deg(_dynamics->vstate.phi);
-            _telemetry[8] = rad2deg(_dynamics->vstate.dphi);
-            _telemetry[9] = rad2deg(_dynamics->vstate.theta);
-            _telemetry[10] = rad2deg(_dynamics->vstate.dtheta);
-            _telemetry[11] = rad2deg(_dynamics->vstate.psi);
-            _telemetry[12] = rad2deg(_dynamics->vstate.dpsi);
+            _telemetry[1] = _dynamics->getStateX();
+            _telemetry[2] = _dynamics->getStateDx();
+            _telemetry[3] = _dynamics->getStateY();
+            _telemetry[4] = _dynamics->getStateDy();
+            _telemetry[5] = _dynamics->getStateZ();
+            _telemetry[6] = _dynamics->getStateDz();
+            _telemetry[7] = rad2deg(_dynamics->getStatePhi());
+            _telemetry[8] = rad2deg(_dynamics->getStateDphi());
+            _telemetry[9] = rad2deg(_dynamics->getStateTheta());
+            _telemetry[10] = rad2deg(_dynamics->getStateDtheta());
+            _telemetry[11] = rad2deg(_dynamics->getStatePsi());
+            _telemetry[12] = rad2deg(_dynamics->getStateDpsi());
 
             // Remaining output values are stick demands
             _telemetry[13] = ((double)joyvals[0] + 1) / 2;  // [-1,+1] => [0,1]

@@ -113,15 +113,17 @@ class Vehicle {
         {
             // Set vehicle pose in animation
             _pawn->SetActorLocation(_startLocation +
-                100 * FVector(_dynamics->vstate.x,
-                              _dynamics->vstate.y,
-                              -_dynamics->vstate.z)); // for NED
+                    100 * FVector(
+                        _dynamics->getStateX(),
+                        _dynamics->getStateY(),
+                        _dynamics->getStateZ()));
 
             _pawn->SetActorRotation(
                     FMath::RadiansToDegrees(
-                        FRotator(_dynamics->vstate.theta,
-                            _dynamics->vstate.psi,
-                            _dynamics->vstate.phi)));
+                        FRotator(
+                            _dynamics->getStateTheta(),
+                            _dynamics->getStatePsi(),
+                            _dynamics->getStatePhi())));
         }
 
         void grabImages(void)
@@ -162,7 +164,7 @@ class Vehicle {
                 _pawn->CreateDefaultSubobject<UCameraComponent>(
                         TEXT("PlayerCamera"));
             _playerCamera->SetupAttachment(_playerCameraSpringArm,
-                                          USpringArmComponent::SocketName);
+                    USpringArmComponent::SocketName);
         }
 
 
@@ -173,31 +175,31 @@ class Vehicle {
             }
 
             switch (_view) {
-            case VIEW_FRONT:
-                _playerController->SetViewTargetWithBlend(_pawn);
-                _playerCameraSpringArm->SetRelativeLocationAndRotation(
-                        FVector::ZeroVector, FRotator::ZeroRotator);
+                case VIEW_FRONT:
+                    _playerController->SetViewTargetWithBlend(_pawn);
+                    _playerCameraSpringArm->SetRelativeLocationAndRotation(
+                            FVector::ZeroVector, FRotator::ZeroRotator);
 
-                // empircally determined to be far enough ahead of vehicle
-                _playerCameraSpringArm->TargetArmLength = -30; 
+                    // empircally determined to be far enough ahead of vehicle
+                    _playerCameraSpringArm->TargetArmLength = -30; 
 
-                _bodyHorizontalSpringArm->bInheritYaw = true;
-                break;
-            case VIEW_GROUND:
-                if (_groundCamera) {
-                    _playerController->SetViewTargetWithBlend(_groundCamera);
-                }
-                break;
-            default:
-                _playerController->SetViewTargetWithBlend(_pawn);
-                _playerCameraSpringArm->SetRelativeLocationAndRotation(
-                        FVector(-_playerCameraFollowMeters, 0, 
+                    _bodyHorizontalSpringArm->bInheritYaw = true;
+                    break;
+                case VIEW_GROUND:
+                    if (_groundCamera) {
+                        _playerController->SetViewTargetWithBlend(_groundCamera);
+                    }
+                    break;
+                default:
+                    _playerController->SetViewTargetWithBlend(_pawn);
+                    _playerCameraSpringArm->SetRelativeLocationAndRotation(
+                            FVector(-_playerCameraFollowMeters, 0, 
                                 _playerCameraElevationMeters) * 100,
-                    FRotator::ZeroRotator);;
-                _playerCameraSpringArm->TargetArmLength =
-                    _playerCameraFollowMeters * 100;
+                            FRotator::ZeroRotator);;
+                    _playerCameraSpringArm->TargetArmLength =
+                        _playerCameraFollowMeters * 100;
 
-                _bodyHorizontalSpringArm->bInheritYaw = false;
+                    _bodyHorizontalSpringArm->bInheritYaw = false;
             }
         }
 

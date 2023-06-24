@@ -46,6 +46,8 @@ class Dynamics {
         // arbitrary; avoids dynamic allocation
         static const uint8_t MAX_ROTORS = 20; 
 
+    private:
+
         // state vector (see Eqn. 11)
         typedef struct {
 
@@ -64,9 +66,7 @@ class Dynamics {
 
         } vehicle_state_t;
 
-        vehicle_state_t vstate;
-
-    private:
+        vehicle_state_t _vstate;
 
         typedef struct {
 
@@ -150,7 +150,7 @@ class Dynamics {
             // Default to Earth params (can be overridden by setWorldParams())
             memcpy(&_wparams, &EARTH_PARAMS, sizeof(world_params_t));
 
-            memset(&vstate, 0, sizeof(vstate));
+            memset(&_vstate, 0, sizeof(_vstate));
         }        
 
         // Flag for whether we're airborne and can update dynamics
@@ -229,9 +229,9 @@ class Dynamics {
                                     double u3,
                                     double u4)
         {
-            double phidot = vstate.dphi;
-            double thedot = vstate.dtheta;
-            double psidot = vstate.dpsi;
+            double phidot = _vstate.dphi;
+            double thedot = _vstate.dtheta;
+            double psidot = _vstate.dpsi;
 
             double Ix = _vparams.Ix;
             double Iy = _vparams.Iy;
@@ -239,19 +239,19 @@ class Dynamics {
             double Jr = _vparams.Jr;
 
             // x'
-            _vstate_deriv.x = vstate.dx;
+            _vstate_deriv.x = _vstate.dx;
             
             // x''
             _vstate_deriv.dx = accelNED[0];
 
             // y'
-            _vstate_deriv.y = vstate.dy;
+            _vstate_deriv.y = _vstate.dy;
 
             // y''
             _vstate_deriv.dy = accelNED[1];
 
             // z'
-            _vstate_deriv.z = vstate.dz;
+            _vstate_deriv.z = _vstate.dz;
 
             // z''
             _vstate_deriv.dz = netz;
@@ -291,11 +291,11 @@ class Dynamics {
         void init(const double rotation[3], const bool airborne = false)
         {
             // Always start at location (0,0,0)
-            memset(&vstate, 0, sizeof(vstate));
+            memset(&_vstate, 0, sizeof(_vstate));
 
-            vstate.phi   = rotation[0];
-            vstate.theta = rotation[1];
-            vstate.psi   = rotation[2];
+            _vstate.phi   = rotation[0];
+            _vstate.theta = rotation[1];
+            _vstate.psi   = rotation[2];
 
             _airborne = airborne;
 
@@ -404,7 +404,7 @@ class Dynamics {
 
             // Use the current Euler angles to rotate the orthogonal thrust
             // vector into the inertial frame.  Negate to use NED.
-            double euler[3] = {vstate.phi, vstate.theta, vstate.psi};
+            double euler[3] = {_vstate.phi, _vstate.theta, _vstate.psi};
             double accelNED[3] = {};
             bodyZToInertial(-u1 / _vparams.m, euler, accelNED);
 
@@ -418,16 +418,16 @@ class Dynamics {
 
                     _airborne = false;
 
-                    vstate.dx = 0;
-                    vstate.dy = 0;
-                    vstate.dz = 0;
-                    vstate.phi = 0;
-                    vstate.dphi = 0;
-                    vstate.theta = 0;
-                    vstate.dtheta = 0;
-                    vstate.dpsi = 0;
+                    _vstate.dx = 0;
+                    _vstate.dy = 0;
+                    _vstate.dz = 0;
+                    _vstate.phi = 0;
+                    _vstate.dphi = 0;
+                    _vstate.theta = 0;
+                    _vstate.dtheta = 0;
+                    _vstate.dpsi = 0;
 
-                    vstate.z += _agl;
+                    _vstate.z += _agl;
                 }
             }
 
@@ -445,22 +445,22 @@ class Dynamics {
 
                 // Compute state as first temporal integral of first temporal
                 // derivative
-                vstate.x += dt * _vstate_deriv.x;
-                vstate.dx += dt * _vstate_deriv.dx;
-                vstate.y += dt * _vstate_deriv.y;
-                vstate.dy += dt * _vstate_deriv.dy;
-                vstate.z += dt * _vstate_deriv.z;
-                vstate.dz += dt * _vstate_deriv.dz;
-                vstate.phi += dt * _vstate_deriv.phi;
-                vstate.dphi += dt * _vstate_deriv.dphi;
-                vstate.theta += dt * _vstate_deriv.theta;
-                vstate.dtheta += dt * _vstate_deriv.dtheta;
-                vstate.psi += dt * _vstate_deriv.psi;
-                vstate.dpsi += dt * _vstate_deriv.dpsi;
+                _vstate.x += dt * _vstate_deriv.x;
+                _vstate.dx += dt * _vstate_deriv.dx;
+                _vstate.y += dt * _vstate_deriv.y;
+                _vstate.dy += dt * _vstate_deriv.dy;
+                _vstate.z += dt * _vstate_deriv.z;
+                _vstate.dz += dt * _vstate_deriv.dz;
+                _vstate.phi += dt * _vstate_deriv.phi;
+                _vstate.dphi += dt * _vstate_deriv.dphi;
+                _vstate.theta += dt * _vstate_deriv.theta;
+                _vstate.dtheta += dt * _vstate_deriv.dtheta;
+                _vstate.psi += dt * _vstate_deriv.psi;
+                _vstate.dpsi += dt * _vstate_deriv.dpsi;
 
                 // Cap dx, dy by maximum speed
-                vstate.dx = _capSpeed(vstate.dx);
-                vstate.dy = _capSpeed(vstate.dy);
+                _vstate.dx = _capSpeed(_vstate.dx);
+                _vstate.dy = _capSpeed(_vstate.dy);
 
                 // Once airborne, inertial-frame acceleration is same as NED
                 // acceleration
@@ -470,12 +470,72 @@ class Dynamics {
             }
             else if (_autoland) {
                 //"fly" to agl=0
-                vstate.z += 5 * _agl * dt;
+                _vstate.z += 5 * _agl * dt;
             }
 
             // XXX
             //vstate.z = -1;
 
         } // update
+
+        double getStateX(void)
+        {
+            return _vstate.x;
+        }
+
+        double getStateDx(void)
+        {
+            return _vstate.dx;
+        }
+
+        double getStateY(void)
+        {
+            return _vstate.y;
+        }
+
+        double getStateDy(void)
+        {
+            return _vstate.dy;
+        }
+
+        double getStateZ(void)
+        {
+            return -_vstate.z; // NED => ENU
+        }
+
+        double getStateDz(void)
+        {
+            return -_vstate.dz; // NED => ENU
+        }
+
+        double getStatePhi(void)
+        {
+            return _vstate.phi;
+        }
+
+        double getStateDphi(void)
+        {
+            return _vstate.dphi;
+        }
+
+        double getStateTheta(void)
+        {
+            return _vstate.theta;
+        }
+
+        double getStateDtheta(void)
+        {
+            return _vstate.dtheta;
+        }
+
+        double getStatePsi(void)
+        {
+            return _vstate.psi;
+        }
+
+        double getStateDpsi(void)
+        {
+            return _vstate.dpsi;
+        }
 
 }; // class Dynamics
