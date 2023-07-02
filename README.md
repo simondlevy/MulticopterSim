@@ -69,7 +69,8 @@ when in Background</b>:
 
 # Testing
 
-Run the <b>launch.py</b> script in <b>FlightControllers/python/</b>.  It will tell you to hit the Play
+Clone the [SimFlightControl](https://github.com/simondlevy/SimFlightControl) repository.
+Run the <b>launch.py</b> script in <b>SimFlightControl/python/</b>.  It will tell you to hit the Play
 button back in the simulator.  When you hit the button, the vehicle should rise quickly to an altitude of 10 meters.
 
 # Image processing
@@ -79,22 +80,6 @@ un-commenting the
 <tt><a href="https://github.com/simondlevy/MulticopterSim/blob/master/Simulator/Source/MultiSim/vehicles/Phantom.cpp#L21-L22">vehicle.addCamera()</a></tt>
 line in the source code.  Running the Python launch program again, you should see a 640x480 image showing edge detection in 
 OpenCV.  This feature can be glitchy the first time you try it.
-
-# Support for other languages
-
-The [FlightControllers](https://github.com/simondlevy/MulticopterSim/tree/master/FlightControllers)
-directory contains code and instructions for different kinds of flight controllers written in various languages.
-
-# Crazyflie support
-
-As shown in this [video](https://youtu.be/04b04p_Zei4), MuticopterSim supports connecting
-to the GUI client for the amazing [Crazyflie](https://www.bitcraze.io/products/crazyflie-2-1/)
-development platform.  The only additional thing you'll need to do is to install my
-[fork](https://github.com/simondlevy/crazyflie-clients-python) of the client. Then,
-you can connect to the simulator as shown in the video.  The flight-control algorithms
-I'm using are from the simple [Hackflight](https://github.com/simondlevy/hackflight) 
-software, but I'm working on incorporating the actual Crazyflie 
-[firmware](https://github.com/bitcraze/crazyflie-firmware) into the client.
 
 # Design principles
 
