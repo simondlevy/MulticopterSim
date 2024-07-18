@@ -46,7 +46,8 @@ class Dynamics {
         // arbitrary; avoids dynamic allocation
         static const uint8_t MAX_ROTORS = 20; 
 
-    private:
+    // private:
+    public:
 
         // state vector (see Eqn. 11)
         typedef struct {

@@ -98,18 +98,18 @@ int main(int argc, char ** argv)
         telemetry[0] = time;
 
         // Next 12 values are 12D state vector
-        telemetry[1] = dynamics.vstate.x;
-        telemetry[2] = dynamics.vstate.dx;
-        telemetry[3] = dynamics.vstate.y;
-        telemetry[4] = dynamics.vstate.dy;
-        telemetry[5] = dynamics.vstate.z;
-        telemetry[6] = dynamics.vstate.dz;
-        telemetry[7] = dynamics.vstate.phi;
-        telemetry[8] = dynamics.vstate.dphi;
-        telemetry[9] = dynamics.vstate.theta;
-        telemetry[10] = dynamics.vstate.dtheta;
-        telemetry[11] = dynamics.vstate.psi;
-        telemetry[12] = dynamics.vstate.dpsi;
+        telemetry[1] = dynamics._vstate.x;
+        telemetry[2] = dynamics._vstate.dx;
+        telemetry[3] = dynamics._vstate.y;
+        telemetry[4] = dynamics._vstate.dy;
+        telemetry[5] = dynamics._vstate.z;
+        telemetry[6] = dynamics._vstate.dz;
+        telemetry[7] = dynamics._vstate.phi;
+        telemetry[8] = dynamics._vstate.dphi;
+        telemetry[9] = dynamics._vstate.theta;
+        telemetry[10] = dynamics._vstate.dtheta;
+        telemetry[11] = dynamics._vstate.psi;
+        telemetry[12] = dynamics._vstate.dpsi;
 
         // Last four values are receiver demands
         telemetry[13] = 0.1;
@@ -133,7 +133,7 @@ int main(int argc, char ** argv)
                 motorvals[1],
                 motorvals[2],
                 motorvals[3],
-                dynamics.vstate.z);
+                dynamics._vstate.z);
 
         // Update dynamics with motor values
         dynamics.update(motorvals, DELTA_T);
