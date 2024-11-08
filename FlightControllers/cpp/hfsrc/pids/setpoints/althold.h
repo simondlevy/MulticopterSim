@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include "core/pid.h"
-#include "core/pids/setpoint.h"
+#include "pid.h"
+#include "pids/setpoint.h"
 
 class AltHoldPidController : public PidController {
     

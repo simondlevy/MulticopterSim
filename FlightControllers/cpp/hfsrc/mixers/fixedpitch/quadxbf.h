@@ -27,8 +27,8 @@
    with Hackflight. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "core/axes.h"
-#include "core/mixers/fixedpitch.h"
+#include "axes.h"
+#include "mixers/fixedpitch.h"
 
 class QuadXbfMixer {
 

@@ -25,10 +25,10 @@
 #include <stdint.h>
 #include <sys/time.h>
 
-#include <core/pid.h>
-#include <core/pids/angle.h>
-#include <core/pids/setpoints/althold.h>
-#include <core/mixers/fixedpitch/quadxbf.h>
+#include <pid.h>
+#include <pids/angle.h>
+#include <pids/setpoints/althold.h>
+#include <mixers/fixedpitch/quadxbf.h>
 
 #include <UdpClientSocket.hpp>
 #include <UdpServerSocket.hpp>

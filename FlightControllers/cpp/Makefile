@@ -33,10 +33,10 @@ hackflight: hackflight.o
 	g++ -o hackflight hackflight.o 
 
 hackflight.o: hackflight.cpp \
-	$(HF_SRC)/core/*.h \
-	$(HF_SRC)/core/*/*.h \
-	$(HF_SRC)/core/mixers/*.h \
-	$(HF_SRC)/core/mixers/fixedpitch/*.h
+	$(HF_SRC)/*.h \
+	$(HF_SRC)/*/*.h \
+	$(HF_SRC)/mixers/*.h \
+	$(HF_SRC)/mixers/fixedpitch/*.h
 	g++ $(CFLAGS) -I$(HF_SRC) -Isockets -c hackflight.cpp
 
 run: hackflight

@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "core/pid.h"
+#include "pid.h"
 
 class SetPointPid {
     

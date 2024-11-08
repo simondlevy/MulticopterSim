@@ -21,9 +21,9 @@
 
 #include <stdbool.h>
 
-#include "core/axes.h"
-#include "core/constrain.h"
-#include "core/mixer.h"
+#include "axes.h"
+#include "constrain.h"
+#include "mixer.h"
 
 class FixedPitchMixer : public Mixer {
 
