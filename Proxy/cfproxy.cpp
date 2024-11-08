@@ -95,7 +95,7 @@ int main(int argc, char ** argv)
 
         if (connected) {
 
-            const auto vstate = dynamics.vstate;
+            const auto vstate = dynamics._vstate;
           
             const double pose[] = {
 
