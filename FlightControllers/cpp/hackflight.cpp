@@ -98,8 +98,6 @@ int main(int argc, char ** argv)
         double telemetry[17] = {};
         telemServer.receiveData(telemetry, sizeof(telemetry));
 
-        printf("%3.3f\n", telemetry[0]);
-
         // Sim sends negative time value on halt
         double time = telemetry[0];
         if (time < 0) {
@@ -125,14 +123,10 @@ int main(int argc, char ** argv)
         float mvals[4] = {};
         mixer.getMotors(demands, mvals);
 
-        printf("%3.3f\n", mvals[0]);
-
         // Send back motor values
         motorClient.sendData(mvals, sizeof(mvals));
 
     } // while (true)
-
-    printf("\n");
 
     return 0;
 }
