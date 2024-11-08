@@ -19,12 +19,7 @@
 #  SimFlightControl. If not, see <https://www.gnu.org/licenses/>.
 
 
-ARDUINO_DIR = /mnt/d/Users/levys/Documents/Arduino/libraries
-#ARDUINO_DIR = $(HOME)/Documents/Arduino/libraries
-
-HF_DIR = $(ARDUINO_DIR)/Hackflight
-
-HF_SRC = $(HF_DIR)/src/
+HF_SRC = hfsrc/
 
 ALL = hackflight
 
